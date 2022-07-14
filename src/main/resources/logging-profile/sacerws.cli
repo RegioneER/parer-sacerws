@@ -1,0 +1,46 @@
+batch
+echo "Logging-Profile: SACERWS (Sviluppo)" 
+/subsystem=logging/logging-profile=SACERWS:add
+echo "Log su console"
+/subsystem=logging/logging-profile=SACERWS/console-handler=SACERWS_console_handler:add
+/subsystem=logging/logging-profile=SACERWS/console-handler=SACERWS_console_handler:write-attribute(name="level",value="DEBUG")
+/subsystem=logging/logging-profile=SACERWS/console-handler=SACERWS_console_handler:write-attribute(name="formatter",value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %X{log_uuid} %s%E%n")
+echo "Log su file"
+/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:add(file={"path"=>"SACERWS.log","relative-to"=> "jboss.server.log.dir"}, suffix=".yyyy-MM-dd",append="true" )
+/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:write-attribute(name="level", value="DEBUG")
+/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:write-attribute(name="formatter",value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %X{log_uuid} %s%E%n")
+echo "Logger specifici"
+/subsystem=logging/logging-profile=SACERWS/logger=org.eclipse.persistence:add
+/subsystem=logging/logging-profile=SACERWS/logger=org.eclipse.persistence:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=org.eclipse.persistence:write-attribute(name="level", value="FINE")
+/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:add
+/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=httpclient.wire.content:add
+/subsystem=logging/logging-profile=SACERWS/logger=httpclient.wire.content:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=httpclient.wire.content:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.cxf:add
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.cxf:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.cxf:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=javax.activation:add
+/subsystem=logging/logging-profile=SACERWS/logger=javax.activation:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=javax.activation:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:add
+/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.jasper.compiler:add
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.jasper.compiler:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=org.apache.jasper.compiler:write-attribute(name="level", value="INFO")
+/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.firma.retry.RetryRestInterceptor:add
+/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.firma.retry.RetryRestInterceptor:write-attribute(name="use-parent-handlers", value="true")
+/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.firma.retry.RetryRestInterceptor:write-attribute(name="level", value="DEBUG")
+/subsystem=logging/logging-profile=SACERWS/root-logger=ROOT:add(handlers=[SACERWS_console_handler,SACERWS_handler])
+/subsystem=logging/logging-profile=SACERWS/root-logger=ROOT:write-attribute(name ="level",value="DEBUG")
+run-batch
+
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>sacerws</artifactId>
+        <groupId>it.eng.parer</groupId>
+        <version>3.3.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>it.eng.parer</groupId>
+    <artifactId>sacerws-ear</artifactId>    
+    <packaging>ear</packaging>
+    <name>sacerws-ear</name>
+    <description>EAR</description>
+    <properties>
+        <maven.build.timestamp.format>dd-MM-yyyy HH:mm</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sacerws-ejb</artifactId>                
+            <type>ejb</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xml-apis-ext</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+       
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sacerws-web</artifactId>                   
+            <type>war</type>            
+        </dependency>
+        
+        <!-- INIZIO Dipendenze del progetto WEB/WAR aggiunte qui perchè Netbeans non
+        supporta skinny WAR -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>            
+        </dependency>  
+
+        <dependency>
+            <groupId>it.eng.parer</groupId>
+            <artifactId>spagofat-core</artifactId>            
+        </dependency>
+
+        <dependency>
+            <groupId>it.eng.parer</groupId>
+            <artifactId>spagofat-middle</artifactId>       
+        </dependency>
+        <!-- xalan & co -->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+        </dependency>
+
+        <!-- FINE dipendenze progetto WEB -->
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sacer-jpa-el</artifactId>  
+            <classifier>sacer-vers</classifier>
+        </dependency>
+
+    </dependencies>   
+    <build>
+        <finalName>sacerws-${project.version}</finalName>
+        <plugins>      
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <classifier>${build.env}</classifier> 
+                    <modules>                         
+                        <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sacerws-ejb</artifactId>                                                                                      
+                        </ejbModule>
+                        <webModule>                            
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sacerws-web</artifactId>                                                           
+                            <contextRoot>/sacerws</contextRoot>                                                        
+                        </webModule>
+                    </modules>   
+                    <archive>                                  
+                        <manifestEntries>
+                            <App-Name>Sacerws @application.xml_env@</App-Name>
+                            <App-Version>${project.version}</App-Version>
+                            <App-BuildDate>${maven.build.timestamp}</App-BuildDate>
+                            <Logging-Profile>SACERWS</Logging-Profile>
+                        </manifestEntries>                        
+                    </archive>
+                    <version>6</version>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>     
+                    <filtering>true</filtering>       
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

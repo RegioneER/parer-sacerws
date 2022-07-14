@@ -1,0 +1,53 @@
+batch
+echo "Logging-Profile: SACERWS (Puglia Test)" 
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS:add
+echo "Log su file"
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:add(file={"path"=>"SACERWS.log","relative-to"=> "jboss.server.log.dir"}, suffix=".yyyy-MM-dd",append="true" )
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:write-attribute(name="level", value="DEBUG")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/periodic-rotating-file-handler=SACERWS_handler:write-attribute(name="formatter",value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %X{log_uuid} %s%E%n")
+echo "Logger specifici"
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.springframework:write-attribute(name="level", value="ERROR")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.opensaml:write-attribute(name="level", value="ERROR")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=es.mityc:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=es.mityc:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=es.mityc:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.crypto:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.crypto:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.crypto:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.crypto:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.crypto:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.crypto:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.volume:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.volume:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.volume:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.restWS:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.restWS:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.restWS:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.admin:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.admin:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.admin:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.web:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.web:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.web:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.spagoLite:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.spagoLite:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.spagoLite:write-attribute(name="level", value="INFO")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws.utils.AvanzamentoWs:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws.utils.AvanzamentoWs:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=it.eng.parer.ws.utils.AvanzamentoWs:write-attribute(name="level", value="OFF")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.NamespacesStack:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.NamespacesStack:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.NamespacesStack:write-attribute(name="level", value="OFF")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.EndElementProcessor:add
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.EndElementProcessor:write-attribute(name="use-parent-handlers", value="true")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/logger=org.exolab.castor.xml.EndElementProcessor:write-attribute(name="level", value="ERROR")
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/root-logger=ROOT:add(handlers=[SACERWS_handler])
+/profile=puglia-test/subsystem=logging/logging-profile=SACERWS/root-logger=ROOT:write-attribute(name ="level",value="INFO")
+run-batch

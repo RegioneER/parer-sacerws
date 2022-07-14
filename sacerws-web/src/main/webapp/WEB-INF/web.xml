@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>Sacerws</display-name>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    <!-- UUID filter logging -->
+    <filter>
+		<filter-name>UUID Logger filter</filter-name>
+		<filter-class>it.eng.spagoCore.util.UUIDLoggerFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UUID Logger filter</filter-name>
+		<url-pattern>/VersamentoFascicoloSync</url-pattern>
+		<url-pattern>/VersamentoSync</url-pattern>
+		<url-pattern>/AggiuntaAllegatiSync</url-pattern>
+		<url-pattern>/VersamentoMultiMedia</url-pattern>
+		<url-pattern>/AggiornamentoUnitaDocumentariaSync</url-pattern>
+	</filter-mapping>
+	
+	
+    <!-- WS RESTful implementati tramite servlet --> 
+    <servlet>
+        <description/>
+        <display-name>VersamentoFascicoloSync</display-name>
+        <servlet-name>VersamentoFascicoloSync</servlet-name>
+        <servlet-class>it.eng.parer.restWS.VersamentoFascicoloSrvlt</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VersamentoFascicoloSync</servlet-name>
+        <url-pattern>/VersamentoFascicoloSync</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <description/>
+        <display-name>VersamentoSync</display-name>
+        <servlet-name>VersamentoSync</servlet-name>
+        <servlet-class>it.eng.parer.restWS.VersamentoSyncSrvlt</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VersamentoSync</servlet-name>
+        <url-pattern>/VersamentoSync</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <display-name>AggiuntaAllegatiSync</display-name>
+        <servlet-name>AggiuntaAllegatiSync</servlet-name>
+        <servlet-class>it.eng.parer.restWS.AggAllegatiSyncSrvlt</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AggiuntaAllegatiSync</servlet-name>
+        <url-pattern>/AggiuntaAllegatiSync</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>VersamentoMultiMedia</servlet-name>
+        <servlet-class>it.eng.parer.restWS.VersamentoMultiMSyncSrvlt</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VersamentoMultiMedia</servlet-name>
+        <url-pattern>/VersamentoMultiMedia</url-pattern>
+    </servlet-mapping>
+     <servlet>
+        <display-name>AggiornamentoUnitaDocumentariaSync</display-name>
+        <servlet-name>AggiornamentoUnitaDocumentariaSync</servlet-name>
+        <servlet-class>it.eng.parer.restWS.UpdVersamentoSrvlt</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AggiornamentoUnitaDocumentariaSync</servlet-name>
+        <url-pattern>/AggiornamentoUnitaDocumentariaSync</url-pattern>
+    </servlet-mapping>
+ 
+    
+    <session-config>
+        <session-timeout>60</session-timeout>
+         <cookie-config>
+             <http-only>true</http-only>
+             <secure>true</secure>
+          </cookie-config>
+          <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+    
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/genericError.jsp</location>
+    </error-page>
+
+</web-app>

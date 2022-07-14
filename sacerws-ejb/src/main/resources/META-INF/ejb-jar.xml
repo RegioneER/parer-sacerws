@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar  xmlns = "http://java.sun.com/xml/ns/javaee" 
+          version = "3.1"
+          xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" 
+          xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+
+    <module-name>sacerws-ejb</module-name>
+    <!-- Eccezione unchecked che diventa application exception -->
+    <assembly-descriptor>
+        <application-exception>
+            <exception-class>it.eng.parer.crypto.model.exceptions.CryptoParerException</exception-class>
+            <rollback>false</rollback>
+        </application-exception>
+        <application-exception>
+            <exception-class>it.eng.parer.eidas.model.exception.EidasParerException</exception-class>    
+            <rollback>false</rollback>
+        </application-exception>
+    </assembly-descriptor>
+</ejb-jar>

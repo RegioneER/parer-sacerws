@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>sacerws</artifactId>
+        <groupId>it.eng.parer</groupId>
+        <version>3.3.0-SNAPSHOT</version>
+    </parent>
+    <groupId>it.eng.parer</groupId>
+    <artifactId>sacerws-web</artifactId>
+    <packaging>war</packaging>
+    <name>sacerws-web</name>
+    <description>WEB</description>
+    <properties>
+        <maven.build.timestamp.format>dd-MM-yyyy HH:mm</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+
+        <dependency>  
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.eng.parer</groupId>
+            <artifactId>spagofat-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.eng.parer</groupId>
+            <artifactId>spagofat-middle</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>it.eng.parer</groupId>
+            <artifactId>sacerws-ejb</artifactId>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Librerie da aggiungere nel pom.xml del progetto ear con scope compile -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+
+        <resources>
+            <resource>
+                <!-- il filtraggio riguarda solo questo file: verranno sostituite  -->
+                <!-- le proprietà del repo GIT fornite dal plugin git-commit-id-plugin  -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>git.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>git.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>git-commit-id</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <!-- il riferimento alla directory, posizionata sul progetto padre -->
+                            <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                            <!-- -->
+                            <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                            <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                            <gitDescribe>
+                                <skip>false</skip>
+                                <always>true</always>
+                                <dirty>-DEV</dirty>
+                            </gitDescribe>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- DISABILITATO: Skinny WAR non supportato da NetBeans https://netbeans.org/bugzilla/show_bug.cgi?id=213960 ; tutte le dipendenze devono essere di tipo PROVIDED e dichiarate COMPILE nel pom dell'ear! -->
+                    <!--<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>-->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <archive>
+                        <manifestEntries>
+                            <App-Name>Sacerws @application.xml_env@</App-Name>
+                            <App-Version>${project.version}</App-Version>
+                            <App-BuildDate>${maven.build.timestamp}</App-BuildDate>
+                        </manifestEntries>
+                    </archive>
+
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

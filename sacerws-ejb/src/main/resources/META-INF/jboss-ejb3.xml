@@ -1,0 +1,78 @@
+<?xml version="1.1" encoding="UTF-8"?>
+   <jboss:ejb-jar xmlns:jboss="http://www.jboss.com/xml/ns/javaee"
+                  xmlns="http://java.sun.com/xml/ns/javaee"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:c="urn:clustering:1.0"
+                  xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/j2ee/schema/jboss-ejb3-2_0.xsd http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+                  version="3.1"
+                  impl-version="2.0">
+      <enterprise-beans>
+        <!-- Riferimenti alle code per l'ejb session di VersamentoSync -->
+        <session>
+            <ejb-name>VersamentoSync</ejb-name>
+            <ejb-class>it.eng.parer.ws.versamento.ejb.VersamentoSync</ejb-class>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ProducerConnectionFactory</resource-env-ref-name>
+                <jndi-name>java:/SacerJmsXA</jndi-name>
+            </resource-env-ref>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+            </resource-env-ref>
+        </session>
+        
+        <!-- Riferimenti alle code per l'ejb session di VersamentoSyncMM -->
+        <session>
+            <ejb-name>VersamentoSyncMM</ejb-name>
+            <ejb-class>it.eng.parer.ws.versamentoMM.ejb.VersamentoSyncMM</ejb-class>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ProducerConnectionFactory</resource-env-ref-name>
+                <jndi-name>java:/SacerJmsXA</jndi-name>
+            </resource-env-ref>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+            </resource-env-ref>
+        </session>
+        
+        <!-- Riferimenti alle code per l'ejb session di AggiuntaAllSync -->
+        <session>
+            <ejb-name>AggiuntaAllSync</ejb-name>
+            <ejb-class>it.eng.parer.ws.versamento.ejb.AggiuntaAllSync</ejb-class>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ProducerConnectionFactory</resource-env-ref-name>
+                <jndi-name>java:/SacerJmsXA</jndi-name>
+            </resource-env-ref>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+            </resource-env-ref>
+        </session>
+        
+        <!-- Riferimenti alle code per l'ejb session di SalvataggioUpdVersamento -->
+        <session>
+            <ejb-name>SalvataggioUpdVersamento</ejb-name>
+            <ejb-class>it.eng.parer.ws.versamentoUpd.ejb.SalvataggioUpdVersamento</ejb-class>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ProducerConnectionFactory</resource-env-ref-name>
+                <jndi-name>java:/SacerJmsXA</jndi-name>
+            </resource-env-ref>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+            </resource-env-ref>
+        </session>
+
+
+        
+        <session>
+            <ejb-name>SalvataggioCompFS</ejb-name>
+            <ejb-class>it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS</ejb-class>
+            <resource-ref>
+                <res-ref-name>jca/xadiskLocal</res-ref-name>
+                <lookup-name>java:/jca/xadiskLocal</lookup-name>
+            </resource-ref>
+        </session>
+
+    </enterprise-beans>
+</jboss:ejb-jar>

@@ -1,0 +1,47 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <deployment>
+        <dependencies>
+            <module name="deployment.XADisk.rar"/>
+            <module name="org.eclipse.persistence" export="TRUE" />
+            <!-- Questo serve per evitare l'errore di CASTOR
+                Could not instantiate serializer com.sun.org.apache.xml.internal.serialize.XMLSerializer: 
+                    java.lang.ClassNotFoundException: com.sun.org.apache.xml.internal.serialize.XMLSerializer
+            -->
+            <system>
+                <paths>
+                    <path name="com/sun/org/apache/xml/internal/serialize"/>
+                </paths>
+            </system> 
+        </dependencies>
+        <exclusions>
+            <!--            <module name="org.slf4j" />
+            <module name="org.slf4j.impl" />-->
+            <module name="org.apache.xalan" />
+            <module name="org.apache.xerces" />
+            <module name="org.apache.commons.logging"/>
+        </exclusions> 
+    </deployment>
+    <sub-deployment name="sacerws-ejb-${project.version}.jar">
+        <dependencies>
+            <module name="deployment.XADisk.rar" export="TRUE"/>
+            <module name="org.eclipse.persistence" export="TRUE" />
+        </dependencies>
+        <exclusions>
+            <!--            <module name="org.slf4j" />
+            <module name="org.slf4j.impl" />-->
+            <module name="org.apache.xalan" />
+            <module name="org.apache.xerces" />
+            <module name="org.apache.commons.logging"/>
+        </exclusions> 
+    </sub-deployment>
+    <sub-deployment name="sacerws-web-${project.version}.war">
+        <!-- Exclusions allow you to prevent the server from automatically adding some dependencies     -->
+        <exclusions>
+            <!--            <module name="org.slf4j" />
+            <module name="org.slf4j.impl" />-->
+            <module name="org.apache.xalan" />
+            <module name="org.apache.xerces"/>
+            <module name="org.apache.commons.logging"/>
+        </exclusions>
+    </sub-deployment>
+</jboss-deployment-structure>
