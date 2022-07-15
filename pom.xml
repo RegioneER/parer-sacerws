@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>it.eng.parer</groupId>
     <artifactId>sacerws</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
@@ -288,6 +288,6 @@
     </modules>
     <scm>
         <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.sacerws.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>sacerws-3.2.0</tag>
     </scm>
 </project>
