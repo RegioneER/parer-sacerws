@@ -25,13 +25,7 @@
         <verificafirma-crypto-beans.version>1.0.1</verificafirma-crypto-beans.version>
         <parer-retry.version>2.0.3</parer-retry.version>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/RegioneER/parer.sacer.sacerws</url>
-          </repository>     
-    </distributionManagement>
+    
 
     <repositories>
         <repository>
@@ -245,6 +239,14 @@
     </dependencyManagement>
     <build>
         <plugins>
+            <!-- artifact disponibile attraverso compilazione del singolo TAG pubblicato -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
