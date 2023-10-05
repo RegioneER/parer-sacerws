@@ -26,16 +26,18 @@
         <parer-retry.version>2.0.3</parer-retry.version>
     </properties>
     
+    <distributionManagement>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/RegioneER/parer-sacerws</url>
+        </repository>      
+    </distributionManagement>
 
     <repositories>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/RegioneER/parer.sacer.parent/</url>           
+            <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>           
         </repository>
-        <repository>
-			<id>redhatga</id>
-			<url>https://maven.repository.redhat.com/ga/</url>
-		</repository>         
      </repositories>
 
     <dependencyManagement>
