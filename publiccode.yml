@@ -1,0 +1,71 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.3'
+categories:
+  - data-collection
+  - data-visualization
+dependsOn:
+  open:
+    - name: SacerWS
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - archiviazione documentale
+    genericName: Sacer
+    longDescription: |
+      SacerWS (Sacer Web Service) è il modulo del Sistema di Conservazione SACER che espone i web service REST di versamento dei Pacchetti 
+      di Versamento (detti anche SIP o PdV) nel sistema di conservazione SACER.
+
+      DA REVISIONARE
+    shortDescription: |-
+      SACERWS espone i web service REST di versamento dei Pacchetti di Versamento (detti anche SIP o PdV) nel sistema di conservazione SACER.
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: r_emiro
+landingURL: 'https://github.com/RegioneER/parer-sacer'
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Regione Emilia-Romagna
+  repoOwner: Regione Emilia-Romagna
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+logo: |-
+  https://raw.githubusercontent.com/RegioneER/parer-verifica-firma-crypto/master/src/docs/rer-logo.png
+maintenance:
+  contacts:
+    - email: areasviluppoparer@regione.emilia-romagna.it
+      name: Cristiano Casagni
+  contractors:
+    - name: ' Engineering Ingegneria Informatica S.p.A.'
+      until: '2024-06-30'
+  type: contract
+name: Parer - SacerWS
+platforms:
+  - linux
+releaseDate: '2023-11-13'
+softwareType: standalone/backend
+url: 'https://github.com/RegioneER/parer-sacer.git'
+applicationSuite: SACER
