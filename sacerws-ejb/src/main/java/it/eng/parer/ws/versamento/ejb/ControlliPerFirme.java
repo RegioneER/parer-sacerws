@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
 
 import java.math.BigDecimal;
@@ -17,6 +34,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +47,7 @@ import it.eng.parer.entity.FirCertifFirmatario;
 import it.eng.parer.entity.FirCertifOcsp;
 import it.eng.parer.entity.FirCrl;
 import it.eng.parer.entity.FirOcsp;
+import it.eng.parer.entity.OrgEnte;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
 import it.eng.parer.entity.converter.NeverendingDateConverter;
@@ -42,6 +61,7 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
  * @author Gilioli_P ... edited by Francesco Fioravanti
  *
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliPerFirme")
 @LocalBean
 public class ControlliPerFirme {
@@ -57,16 +77,18 @@ public class ControlliPerFirme {
         RispostaControlli rs;
         rs = new RispostaControlli();
         rs.setrLong(-1);
-        OrgStrut os = null;
 
         try {
-            os = entityManager.find(OrgStrut.class, idStrutVers);
+            final TypedQuery<OrgStrut> query = entityManager.createQuery(
+                    "SELECT org FROM OrgStrut org JOIN FETCH org.orgEnte WHERE org.idStrut=:idStrut", OrgStrut.class);
+            query.setParameter("idStrut", idStrutVers);
+            OrgStrut os = query.getSingleResult();
             rs.setrLong(0);
             rs.setrObject(os);
         } catch (Exception e) {
             rs.setCodErr(MessaggiWSBundle.ERR_666);
             rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliPerFirme.getOrgStrutt: " + e.getMessage()));
+                    "ControlliPerFirme.getOrgStrutt: " + ExceptionUtils.getRootCauseMessage(e)));
             LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
         }
         return rs;
@@ -88,8 +110,10 @@ public class ControlliPerFirme {
         try {
             return entityManager.find(OrgStrut.class, idStrutVers);
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getOrgStruttAsEntity: " + e.getMessage()), e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getOrgStruttAsEntity: " + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
         }
     }
 
@@ -110,9 +134,11 @@ public class ControlliPerFirme {
         try {
             return entityManager.find(DecFormatoFileStandard.class, idDecFormatoFileStandard);
         } catch (Exception e) {
-            LOG.error("Eccezione nella lettura  della tabella di decodifica " + e);
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getDecFormatoFileStandard: " + e.getMessage()), e);
+            LOG.error("Eccezione nella lettura della tabella di decodifica ", e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFormatoFileStandard: " + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
         }
 
     }
@@ -145,7 +171,7 @@ public class ControlliPerFirme {
         } catch (Exception e) {
             rs.setCodErr(MessaggiWSBundle.ERR_666);
             rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliPerFirme.confrontaFormati: " + e.getMessage()));
+                    "ControlliPerFirme.confrontaFormati: " + ExceptionUtils.getRootCauseMessage(e)));
             LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
         }
         return rs;
@@ -171,8 +197,10 @@ public class ControlliPerFirme {
             q.setParameter("formato", formato);
             return q.getResultList();
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getDecEstensioneFiles: " + e.getMessage()), e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecEstensioneFiles: " + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
         }
     }
 
@@ -196,9 +224,9 @@ public class ControlliPerFirme {
             q.setParameter("estensioneFile", formatoVersato);
             return q.getResultList();
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                            "ControlliPerFirme.getDecFmtFileStdFromEstensioneFiles: " + e.getMessage()),
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getDecFmtFileStdFromEstensioneFiles: " + ExceptionUtils.getRootCauseMessage(e)),
                     e);
         }
     }
@@ -223,9 +251,9 @@ public class ControlliPerFirme {
             q.setParameter("formatoTika", tikaMime);
             return q.getResultList();
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                            "ControlliPerFirme.getDecFmtFileStandardFromTikaMimes: " + e.getMessage()),
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getDecFmtFileStandardFromTikaMimes: " + ExceptionUtils.getRootCauseMessage(e)),
                     e);
         }
     }
@@ -251,9 +279,9 @@ public class ControlliPerFirme {
             q.setParameter("formati", tiFormatoFirmaMarca);
             return q.getResultList();
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                            "ControlliPerFirme.getDecFmtFileStandardFromFmtMarcas: " + e.getMessage()),
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getDecFmtFileStandardFromFmtMarcas: " + ExceptionUtils.getRootCauseMessage(e)),
                     e);
         }
     }
@@ -285,7 +313,8 @@ public class ControlliPerFirme {
             dffs = q.getResultList();
         } catch (Exception e) {
             throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getDecFmtFileStandardFromFmtDocs: " + e.getMessage()));
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getDecFmtFileStandardFromFmtDocs: " + ExceptionUtils.getRootCauseMessage(e)));
         }
         // configuration error (666 blocking error code)
         if (dffs == null || dffs.isEmpty()) {
@@ -313,8 +342,10 @@ public class ControlliPerFirme {
         try {
             return entityManager.find(DecFormatoFileDoc.class, idFormatoFileDoc);
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getDecFormatoFileDoc: " + e.getMessage()), e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFormatoFileDoc: " + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
         }
     }
 
@@ -351,8 +382,9 @@ public class ControlliPerFirme {
                 firCertifCa = firCertifCas.get(0);
             }
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle
-                    .getString(MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCertifCa: " + e.getMessage()));
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifCa: " + ExceptionUtils.getRootCauseMessage(e)));
         }
         // result
         return firCertifCa;
@@ -403,8 +435,8 @@ public class ControlliPerFirme {
             }
             return firCrl;
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle
-                    .getString(MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCrl: " + e.getMessage()));
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCrl: " + ExceptionUtils.getRootCauseMessage(e)));
         }
     }
 
@@ -423,8 +455,9 @@ public class ControlliPerFirme {
 
             return firCertifOcsp;
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle
-                    .getString(MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCertifOcsp: " + e.getMessage()));
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifOcsp: " + ExceptionUtils.getRootCauseMessage(e)));
         }
     }
 
@@ -468,8 +501,9 @@ public class ControlliPerFirme {
             }
             return firOcsp;
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle
-                    .getString(MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirOcsp: " + e.getMessage()));
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirOcsp: " + ExceptionUtils.getRootCauseMessage(e)));
         }
     }
 
@@ -503,8 +537,9 @@ public class ControlliPerFirme {
             return firFirCertifFirmatario;
         } catch (Exception e) {
             LOG.error("Eccezione nella lettura della tabella FirCertifFirmatario ", e);
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCertifFirmatario: " + e.getMessage()));
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifFirmatario: " + ExceptionUtils.getRootCauseMessage(e)));
         }
     }
 
@@ -539,8 +574,10 @@ public class ControlliPerFirme {
             firFirCertifFirmatarios = entityManager.createQuery(criteriaQuery).getResultList();
             return firFirCertifFirmatarios;
         } catch (Exception e) {
-            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getFirCertifFirmatarioIds: " + e.getMessage()), e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifFirmatarioIds: " + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
         }
     }
 
@@ -564,7 +601,13 @@ public class ControlliPerFirme {
             return dec.get(0);
         } catch (Exception e) {
             throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-                    MessaggiWSBundle.ERR_666, "ControlliPerFirme.getDecServizioVerificaCompDoc: " + e.getMessage()), e);
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getDecServizioVerificaCompDoc: " + ExceptionUtils.getRootCauseMessage(e)), e);
         }
+    }
+
+    public void retrieveOrgEnteFor(OrgStrut os) {
+        OrgEnte orgEnte = entityManager.find(OrgEnte.class, os.getOrgEnte().getIdEnte());
+        os.setOrgEnte(orgEnte);
     }
 }

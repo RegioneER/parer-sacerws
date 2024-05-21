@@ -1,10 +1,30 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versamentoUpd.ejb;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
@@ -17,11 +37,23 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBElement;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import it.eng.parer.entity.AroCompDoc;
 import it.eng.parer.entity.AroDoc;
@@ -30,42 +62,50 @@ import it.eng.parer.entity.AroXmlUpdUnitaDoc;
 import it.eng.parer.entity.DecTipoUnitaDoc;
 import it.eng.parer.entity.IamAbilTipoDato;
 import it.eng.parer.entity.OrgStrut;
+import it.eng.parer.entity.VrsXmlModelloSessioneVers;
 import it.eng.parer.entity.constraint.AroXmlUpdUnitaDoc.TiXmlUpdUnitaDoc;
+import it.eng.parer.entity.constraint.DecModelloXsdUd;
+import it.eng.parer.exception.SacerWsException;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
-import it.eng.parer.viewEntity.OrgVChkPartitionUpdByAa;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.RispostaControlli;
-import it.eng.parer.ws.ejb.ControlliSemantici;
 import it.eng.parer.ws.ejb.ControlliSemantici.TipiGestioneUDAnnullate;
+import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.CostantiDB.StatoConservazioneUnitaDoc;
 import it.eng.parer.ws.utils.CostantiDB.TipiHash;
 import it.eng.parer.ws.utils.HashCalculator;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.utils.ParametroApplDB.ParametroApplFl;
+import it.eng.parer.ws.utils.XmlUtils;
+import it.eng.parer.ws.versamento.ejb.ControlliProfiliUd;
 import it.eng.parer.ws.versamentoUpd.dto.FlControlliUpd;
 import it.eng.parer.ws.versamentoUpd.dto.UpdFascPrincipale;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
-import it.eng.parer.ws.versamentoUpd.utils.UpdCostanti.StrutAaPartion;
 import it.eng.parer.ws.xml.versUpdReq.CamiciaFascicoloType;
+import javax.persistence.TypedQuery;
+import it.eng.parer.ws.xml.versUpdReq.ProfiloNormativoType;
+
+import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;
 
 /**
  *
  * @author sinatti_s
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliUpdVersamento")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
 public class ControlliUpdVersamento {
 
     private static final Logger log = LoggerFactory.getLogger(ControlliUpdVersamento.class);
+    private static final String ERRORE_TABELLA_DECODIFICA = "Eccezione nella lettura della tabella di decodifica ";
 
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
     @EJB
-    private ControlliSemantici controlliSemantici;
-
+    private ControlliProfiliUd controlliProfiliUd;
     @EJB
     private ConfigurationHelper configurationHelper;
 
@@ -73,9 +113,9 @@ public class ControlliUpdVersamento {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(true);// default il controllo passa a meno che il calcolo su SIP non dica il
-        // contrario ...
+                                            // contrario ...
 
-        List<AroXmlUpdUnitaDoc> aroXmlUpdUnitaDocs = null;
+        List<AroXmlUpdUnitaDoc> aroXmlUpdUnitaDocs;
 
         try {
             String queryStr = "select t from AroXmlUpdUnitaDoc t "
@@ -90,25 +130,25 @@ public class ControlliUpdVersamento {
             // l'ultimo
             // aggiornamento
             // registrato
-            javax.persistence.Query query = entityManager.createQuery(queryStr, AroXmlUpdUnitaDoc.class);
+            TypedQuery<AroXmlUpdUnitaDoc> query = entityManager.createQuery(queryStr, AroXmlUpdUnitaDoc.class);
             query.setParameter("idUnitaDoc", idUnitaDoc);
             query.setParameter("tiXmlUpdUnitaDoc", TiXmlUpdUnitaDoc.RICHIESTA);
             aroXmlUpdUnitaDocs = query.getResultList();
 
-            if (aroXmlUpdUnitaDocs.size() >= 1) {
+            if (!aroXmlUpdUnitaDocs.isEmpty()) {
                 // se trovato, recupero il risultato che interessa per la verifica
 
                 AroXmlUpdUnitaDoc last = aroXmlUpdUnitaDocs.get(0);
                 // SIP hex binary
-                String SIPhexBinary = new HashCalculator().calculateHashSHAX(sipXml, TipiHash.SHA_256).toHexBinary();
+                String sipHexBinary = new HashCalculator().calculateHashSHAX(sipXml, TipiHash.SHA_256).toHexBinary();
 
                 // se stesso hash calcolato ....
-                if (last.getDsHashXml().equals(SIPhexBinary)) {
+                if (last.getDsHashXml().equals(sipHexBinary)) {
                     rispostaControlli.setCodErr(MessaggiWSBundle.UD_015_002);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_015_002, descKey));
                     rispostaControlli.setrBoolean(false);
                 } else {
-                    rispostaControlli.setrString(SIPhexBinary);
+                    rispostaControlli.setrString(sipHexBinary);
                     rispostaControlli.setrBoolean(true);
                 }
             }
@@ -133,15 +173,16 @@ public class ControlliUpdVersamento {
 
         try {
 
-            List<Long> ids = Arrays.asList(idTipologiaUnitaDocumentaria, idRegistro);
+            List<BigDecimal> ids = Arrays.asList(new BigDecimal(idTipologiaUnitaDocumentaria),
+                    new BigDecimal(idRegistro));
 
             String queryStr = "select t from IamAbilTipoDato t "
                     + "where t.iamAbilOrganiz.iamUser.idUserIam = :idUserIam "
                     + "and t.iamAbilOrganiz.idOrganizApplic = :idOrganizApplic  "
                     + "and t.idTipoDatoApplic in :idTipoDato  "
                     + "and t.nmClasseTipoDato in ('TIPO_UNITA_DOC','REGISTRO')  ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr, IamAbilTipoDato.class);
-            query.setParameter("idOrganizApplic", idStruttura);
+            TypedQuery<IamAbilTipoDato> query = entityManager.createQuery(queryStr, IamAbilTipoDato.class);
+            query.setParameter("idOrganizApplic", new BigDecimal(idStruttura));
             query.setParameter("idUserIam", idUser);
             query.setParameter("idTipoDato", ids);
 
@@ -161,7 +202,7 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliUpdVersamento.checkTipoUDRegIamUserOrganizzazione: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -192,26 +233,19 @@ public class ControlliUpdVersamento {
             return rispostaControlli;// errore non previsto !
         }
 
-        String flAbilitaUpdMeta = null, flAccettaUpdMetaInark = null, flForzaUpdMetaInark = null;
-
-        // fl (possono essere nulli -> recepisco quelli dell'organizzazione)
-        // flAbilitaUpdMeta = StringUtils.isNotBlank(decTipoUnitaDoc.getFlAbilitaUpdMeta())
-        // ? decTipoUnitaDoc.getFlAbilitaUpdMeta()
-        // : orgStrut.getFlAbilitaUpdMeta();
-        // flAccettaUpdMetaInark = StringUtils.isNotBlank(decTipoUnitaDoc.getFlAccettaUpdMetaInark())
-        // ? decTipoUnitaDoc.getFlAccettaUpdMetaInark()
-        // : orgStrut.getFlAccettaUpdMetaInark();
-        // flForzaUpdMetaInark = StringUtils.isNotBlank(decTipoUnitaDoc.getFlForzaUpdMetaInark())
-        // ? decTipoUnitaDoc.getFlForzaUpdMetaInark()
-        // : orgStrut.getFlForzaUpdMetaInark();
+        String flAbilitaUpdMeta;
+        String flAccettaUpdMetaInark;
+        String flForzaUpdMetaInark;
 
         // from PigParamApplic
-        flAbilitaUpdMeta = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_ABILITA_UPD_META,
+        flAbilitaUpdMeta = configurationHelper.getValoreParamApplicByTipoUdAsFl(ParametroApplFl.FL_ABILITA_UPD_META,
                 orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD);
-        flAccettaUpdMetaInark = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_ACCETTA_UPD_META_INARK,
-                orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD);
-        flForzaUpdMetaInark = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_FORZA_UPD_META_INARK,
-                orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD);
+        flAccettaUpdMetaInark = configurationHelper.getValoreParamApplicByTipoUdAsFl(
+                ParametroApplFl.FL_ACCETTA_UPD_META_INARK, orgStrut.getIdStrut(),
+                orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD);
+        flForzaUpdMetaInark = configurationHelper.getValoreParamApplicByTipoUdAsFl(
+                ParametroApplFl.FL_FORZA_UPD_META_INARK, orgStrut.getIdStrut(),
+                orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD);
 
         // costruzione oggetto
         FlControlliUpd flControlliUpd = new FlControlliUpd();
@@ -219,16 +253,16 @@ public class ControlliUpdVersamento {
         flControlliUpd.setFlAbilitaUpdMeta("1".equalsIgnoreCase(flAbilitaUpdMeta));
         flControlliUpd.setFlAccettaUpdMetaInark("1".equalsIgnoreCase(flAccettaUpdMetaInark));
         if (isForzaAggiornamento != null) {
-            flControlliUpd.setFlForzaUpdMetaInark(isForzaAggiornamento.booleanValue());
+            flControlliUpd.setFlForzaUpdMetaInark(isForzaAggiornamento);
         } else {
             flControlliUpd.setFlForzaUpdMetaInark("1".equalsIgnoreCase(flForzaUpdMetaInark));
         }
         //
         flControlliUpd.setFlProfiloUdObbOggetto(
-                "1".equals(configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_OBBL_OGGETTO,
+                "1".equals(configurationHelper.getValoreParamApplicByTipoUdAsFl(ParametroApplFl.FL_OBBL_OGGETTO,
                         orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD)));
         flControlliUpd.setFlProfiloUdObbData(
-                "1".equals(configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_OBBL_DATA,
+                "1".equals(configurationHelper.getValoreParamApplicByTipoUdAsFl(ParametroApplFl.FL_OBBL_DATA,
                         orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUD)));
 
         rispostaControlli.setrObject(flControlliUpd);
@@ -237,8 +271,7 @@ public class ControlliUpdVersamento {
         return rispostaControlli;
     }
 
-    public RispostaControlli checkIdDocumentoInUD(long idUnitaDoc, String idDocumento, String tipoEntita,
-            String tipoDocumento, String descChiaveDoc) {
+    public RispostaControlli checkIdDocumentoInUD(long idUnitaDoc, String idDocumento, String descChiaveDoc) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
@@ -281,17 +314,17 @@ public class ControlliUpdVersamento {
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
 
-        List<IamAbilTipoDato> iamAbilTipoDatos = null;
+        List<IamAbilTipoDato> iamAbilTipoDatos;
 
         try {
             String queryStr = "select t from IamAbilTipoDato t "
                     + "where t.iamAbilOrganiz.iamUser.idUserIam = :idUserIam "
                     + "and t.iamAbilOrganiz.idOrganizApplic = :idOrganizApplic  "
                     + "and t.idTipoDatoApplic = :idTipoDocumento  " + "and t.nmClasseTipoDato = 'TIPO_DOC'  ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr, IamAbilTipoDato.class);
-            query.setParameter("idOrganizApplic", idStruttura);
+            TypedQuery<IamAbilTipoDato> query = entityManager.createQuery(queryStr, IamAbilTipoDato.class);
+            query.setParameter("idOrganizApplic", new BigDecimal(idStruttura));
             query.setParameter("idUserIam", idUser);
-            query.setParameter("idTipoDocumento", idTipoDocumento);
+            query.setParameter("idTipoDocumento", new BigDecimal(idTipoDocumento));
 
             iamAbilTipoDatos = query.getResultList();
 
@@ -307,7 +340,7 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliUpdVersamento.checkTipoDocRegIamUserOrganizzazione: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -323,7 +356,7 @@ public class ControlliUpdVersamento {
         try {
             String queryStr = "select t from AroCompDoc t " + "where t.aroStrutDoc.aroDoc.idDoc = :idDocIn "
                     + "and t.niOrdCompDoc = :niOrdCompDocIn ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr);
+            TypedQuery<AroCompDoc> query = entityManager.createQuery(queryStr, AroCompDoc.class);
             query.setParameter("idDocIn", idDocIn);
             query.setParameter("niOrdCompDocIn", new BigDecimal(progressivo));
 
@@ -403,7 +436,7 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.getAroCompDocById: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica " + e);
+            log.error("Eccezione nella lettura della tabella di decodifica", e);
         }
         return rispostaControlli;
     }
@@ -428,7 +461,7 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.getDecTipoUnitaDocById: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica " + e);
+            log.error("Eccezione nella lettura della tabella di decodifica", e);
         }
         return rispostaControlli;
     }
@@ -464,7 +497,7 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliUpdVersamento.getFascicoloPrincipale: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella " + e);
+            log.error("Eccezione nella lettura della tabella ", e);
         }
         return rispostaControlli;
     }
@@ -504,7 +537,7 @@ public class ControlliUpdVersamento {
             tmpArrP[4] = updFascPrincipale.getSottoOggetto();
         }
 
-        List tmpListP = Arrays.asList(tmpArrP);
+        List<String> tmpListP = Arrays.asList(tmpArrP);
         // verifica i fascicoli/sottofascicoli
         // rispetto il principale
         for (CamiciaFascicoloType fascicolo : versamento.getVersamento().getUnitaDocumentaria().getProfiloArchivistico()
@@ -525,7 +558,7 @@ public class ControlliUpdVersamento {
             if (fascicolo.getSottoFascicolo() != null && fascicolo.getSottoFascicolo().getOggetto() != null) {
                 tmpArr[4] = fascicolo.getSottoFascicolo().getOggetto();
             }
-            List tmpList = Arrays.asList(tmpArr);
+            List<String> tmpList = Arrays.asList(tmpArr);
             if (tmpListP.equals(tmpList)) {
                 // se il fascicolo è uguale al principale,
                 // restituisco errore
@@ -537,104 +570,6 @@ public class ControlliUpdVersamento {
         }
         // tutto ok
         rispostaControlli.setrBoolean(true);
-        return rispostaControlli;
-    }
-
-    public RispostaControlli checkPartizioniStruttuaByAA(String descKey, long idStruttura, long anno) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-        StringBuilder sb = new StringBuilder();
-
-        List<OrgVChkPartitionUpdByAa> ovcspupd = null;
-        try {
-            String queryStr = "select t from OrgVChkPartitionUpdByAa t " + "where t.idStrut = :idStrutIn "
-                    + "and t.anno = :annoIn ";
-
-            javax.persistence.Query query = entityManager.createQuery(queryStr, OrgVChkPartitionUpdByAa.class);
-            query.setParameter("idStrutIn", new BigDecimal(idStruttura));
-            query.setParameter("annoIn", new BigDecimal(anno));
-
-            //
-            ovcspupd = query.getResultList();
-
-            if (ovcspupd.size() == 1) {
-                // trovata la struttura, vediamo se è tutta ben partizionata.
-                // se ci sono problemi il versamento è sempre e comunque errato
-                if (ovcspupd.get(0).getFlPartVersinidatispecAaOk().equals("1")
-                        && ovcspupd.get(0).getFlPartVersinidatispecOk().equals("1")
-                        && ovcspupd.get(0).getFlPartUpddatispecAaOk().equals("1")
-                        && ovcspupd.get(0).getFlPartUpddatispecOk().equals("1")
-                        && ovcspupd.get(0).getFlPartXmlupdOk().equals("1")
-                        && ovcspupd.get(0).getFlPartXmlupdAaOk().equals("1")
-                        && ovcspupd.get(0).getFlPartUpdkoAaOk().equals("1")
-                        && ovcspupd.get(0).getFlPartUpdkoOk().equals("1")
-                        && ovcspupd.get(0).getFlPartSesupdkoAaOk().equals("1")
-                        && ovcspupd.get(0).getFlPartSesupdkoOk().equals("1")
-                        && ovcspupd.get(0).getFlPartXmlsesupdkoOk().equals("1")
-                        && ovcspupd.get(0).getFlPartXmlsesupdkpAaOk().equals("1")) {
-
-                    rispostaControlli.setrBoolean(true);
-
-                } else {
-                    // recupero i flag settati a 0 e li concateno per inserirli nel messaggio di
-                    // errore
-                    if (ovcspupd.get(0).getFlPartVersinidatispecOk().equals("0")
-                            || ovcspupd.get(0).getFlPartVersinidatispecAaOk().equals("0")) {
-                        sb.append(StrutAaPartion.VERSINIDATISPEC.getPartitionName());
-                    }
-                    if (ovcspupd.get(0).getFlPartUpddatispecAaOk().equals("0")
-                            || ovcspupd.get(0).getFlPartUpddatispecOk().equals("0")) {
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(StrutAaPartion.UPDDATISPECUNITADOC.getPartitionName());
-                    }
-                    if (ovcspupd.get(0).getFlPartUpdkoOk().equals("0")
-                            || ovcspupd.get(0).getFlPartUpdkoAaOk().equals("0")) {
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(StrutAaPartion.UPDUNITADOCKO.getPartitionName());
-                    }
-                    if (ovcspupd.get(0).getFlPartXmlsesupdkoOk().equals("0")
-                            || ovcspupd.get(0).getFlPartXmlsesupdkpAaOk().equals("0")) {
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(StrutAaPartion.XMLSESUPDUNITADOCKO.getPartitionName());
-                    }
-                    if (ovcspupd.get(0).getFlPartXmlupdOk().equals("0")
-                            || ovcspupd.get(0).getFlPartXmlupdAaOk().equals("0")) {
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(StrutAaPartion.XMLUPDUNITADOC.getPartitionName());
-                    }
-                    if (ovcspupd.get(0).getFlPartSesupdkoAaOk().equals("0")
-                            || ovcspupd.get(0).getFlPartSesupdkoOk().equals("0")) {
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        sb.append(StrutAaPartion.SESUPDUNITADOCKO.getPartitionName());
-                    }
-
-                }
-            }
-
-            if (!rispostaControlli.isrBoolean()) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.PART_006_001);
-                rispostaControlli
-                        .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PART_006_001, String.valueOf(anno),
-                                (sb.length() == 0 ? sb.append(StrutAaPartion.printAll()) : sb.toString())));
-            }
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "UpdControlliPartizioni.verificaPartizioniStruttuaByAA: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica ", e);
-        }
-
         return rispostaControlli;
     }
 
@@ -650,7 +585,7 @@ public class ControlliUpdVersamento {
         String tipoReg = key.getTipoRegistro();
 
         // lista entity JPA ritornate dalle Query
-        List results = null;
+        List<Object[]> results = null;
 
         // lancio query di controllo
         try {
@@ -664,7 +599,7 @@ public class ControlliUpdVersamento {
             javax.persistence.Query query = entityManager.createQuery(queryStr);
             query.setParameter("idStrutIn", idStruttura);
             query.setParameter("cdKeyUnitaDocIn", numero);
-            query.setParameter("aaKeyUnitaDocIn", anno);
+            query.setParameter("aaKeyUnitaDocIn", new BigDecimal(anno));
             query.setParameter("cdRegistroKeyUnitaDocIn", tipoReg);
             query.setParameter("documentoPrinc", "1");// fixed : non ha senso recuperare altri tipi dato il controllo
             // adhoc
@@ -672,8 +607,8 @@ public class ControlliUpdVersamento {
 
             // chiave già presente (uno o più righe trovate, mi interessa solo l'ultima -
             // più recente)
-            if (results.size() > 0) {
-                Object[] result = (Object[]) results.get(0); // get first
+            if (!results.isEmpty()) {
+                Object[] result = results.get(0); // get first
                 // recupero aroUnitaDoc
                 AroUnitaDoc aroUnitaDoc = (AroUnitaDoc) (result)[0];
                 // recupero aroDoc (se esiste)
@@ -747,10 +682,171 @@ public class ControlliUpdVersamento {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliUpdVersamento.checkChiave: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
+    }
+
+    public RispostaControlli checkProfiloNormativo(UpdVersamentoExt versamento, CostantiDB.TipiEntitaSacer tiEntita,
+            long idTiEntita, String descrEntita, String descrTiEntita, long idEntita) {
+        //
+        final int IDX_DEC_MODELLO_XSD = 0;
+        final int IDX_DEC_USO_MODELLO_XSD = 1;
+        //
+        RispostaControlli rispostaControlli;
+        rispostaControlli = new RispostaControlli();
+        rispostaControlli.setrBoolean(false);
+
+        ProfiloNormativoType pfNormType = null;
+        JAXBElement<ProfiloNormativoType> pfNormTypeElement = versamento.getVersamento().getUnitaDocumentaria()
+                .getProfiloNormativo();
+        pfNormType = pfNormTypeElement.getValue();
+        try {
+            // verifico se esiste almeno un USO di modello sul tiEntita / idTiEntita
+            List<Long> idUsoModelloXsds = controlliProfiliUd.checkXsdProfileExistence(idTiEntita, tiEntita,
+                    DecModelloXsdUd.TiModelloXsdUd.PROFILO_NORMATIVO_UNITA_DOC);
+            if (!idUsoModelloXsds.isEmpty()) {
+                // esiste un modello XSD, devo vedere se è dichiarato nell'XML e se va bene
+                if (pfNormType == null) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_001);
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_001,
+                            tiEntita.descrivi(), descrEntita, descrTiEntita));
+                    return rispostaControlli;
+                } else if (pfNormType.getVersione() == null) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_005); // Eliminazione ProfiloNormativo
+                                                                                    // non consentita. Esiste
+                                                                                    // profilo normativo associato
+                                                                                    // al TipoUD attivo alla data di
+                                                                                    // versamento.
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_005,
+                            tiEntita.descrivi(), descrEntita, pfNormType.getVersione(), descrTiEntita));
+                    return rispostaControlli;
+                } else if (pfNormType.getVersione() != null && pfNormType.getAny() == null) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_003);
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_003,
+                            tiEntita.descrivi(), descrEntita, descrTiEntita,
+                            MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_007)));
+                    return rispostaControlli;
+                }
+                Object[] dmxud = controlliProfiliUd.getXsdProfileByVersion(idUsoModelloXsds, tiEntita,
+                        DecModelloXsdUd.TiModelloXsdUd.PROFILO_NORMATIVO_UNITA_DOC, pfNormType.getVersione());
+                if (dmxud == null) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_002);
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_002,
+                            tiEntita.descrivi(), descrEntita, pfNormType.getVersione(), descrTiEntita));
+                    return rispostaControlli;
+                }
+
+                // Object[] = 1 pk uso
+                long idRecUsoXsdProfiloNormativo = ((Long) (dmxud[IDX_DEC_USO_MODELLO_XSD]));
+                // Object[] = 0 DecModelloXsdUd
+                String paXsd = ((it.eng.parer.entity.DecModelloXsdUd) dmxud[IDX_DEC_MODELLO_XSD]).getBlXsd();
+                RispostaControlli rc = validateXmlProfileOnXsd(paXsd, pfNormType);
+                if (!rc.isrBoolean()) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_003);
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_003,
+                            tiEntita.descrivi(), descrEntita, descrTiEntita, rc.getDsErr()));
+                    return rispostaControlli;
+                }
+                // generate xml + canonicalize
+                String xml = generaXmlProfilo(pfNormType.getAny());
+                rispostaControlli.setrString(XmlUtils.doCanonicalizzazioneXml(xml, false));
+                rispostaControlli.setrLong(idRecUsoXsdProfiloNormativo);
+                rispostaControlli.setrBoolean(true);
+            } else {
+                if (pfNormType != null && pfNormType.getVersione() == null) {
+                    if (!existUpdProfiloNormativo(DecModelloXsdUd.TiModelloXsdUd.PROFILO_NORMATIVO_UNITA_DOC,
+                            idEntita)) {
+                        rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_006);
+                        rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_006,
+                                tiEntita.descrivi(), descrEntita, descrTiEntita));
+                        return rispostaControlli;
+                    }
+                    // Se l'elemento esite per l'UD e viene passato vuoto e privo di attributi allora l'elemento
+                    // ProfiloNormativo
+                    // presente nell'UD può essere eliminato solo se a livello di TipoUD non c'è una profilo
+                    // normativo attivo alla data di versamento
+                    rispostaControlli.setrLong(0);
+                    rispostaControlli.setrBoolean(true);
+                } else if (pfNormType != null) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.PROFNORM_001_004);
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.PROFNORM_001_004,
+                            tiEntita.descrivi(), descrEntita, descrTiEntita));
+                    return rispostaControlli;
+                }
+                // il modello non c'è e non è presente nell'XSD... la verifica è andata bene.
+                rispostaControlli.setrBoolean(true);
+            }
+        } catch (SacerWsException | TransformerException e) {
+            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliProfiliUd.checkProfiloNormativo: " + e.getMessage()));
+            log.error("Eccezione nella verifica profilo normativo ", e);
+        }
+
+        return rispostaControlli;
+    }
+
+    private RispostaControlli validateXmlProfileOnXsd(String xsd, ProfiloNormativoType pNormType) {
+        RispostaControlli rispostaControlli;
+        rispostaControlli = new RispostaControlli();
+        rispostaControlli.setrBoolean(false);
+
+        try {
+            Node xml = pNormType.getAny();
+            String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+            SchemaFactory factory = SchemaFactory.newInstance(language);
+            Schema schema = factory.newSchema(new StreamSource(new StringReader(xsd)));
+            Validator validator = schema.newValidator();
+            validator.validate(new DOMSource(xml));
+            rispostaControlli.setrBoolean(true);
+        } catch (IOException | SAXException e) {
+            rispostaControlli.setDsErr(e.getLocalizedMessage());
+        }
+
+        return rispostaControlli;
+    }
+
+    private String generaXmlProfilo(Node profilo) throws TransformerException {
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(profilo);
+        StreamResult result = new StreamResult(new StringWriter());
+        transformer.transform(source, result);
+        return result.getWriter().toString();
+    }
+
+    private boolean existUpdProfiloNormativo(DecModelloXsdUd.TiModelloXsdUd tiModelloXsdUd, long idUnitaDoc) {
+
+        List<VrsXmlModelloSessioneVers> lstXmlModelloSessioneVers = null;
+
+        try {
+
+            String queryStr = "select xms.idXmlModelloSessioneVers from VrsXmlModelloSessioneVers xms "
+                    + "join xms.decUsoModelloXsdUniDoc usomodelloxsdunidoc "
+                    + "join xms.decUsoModelloXsdUniDoc.decModelloXsdUd modello_xsd "
+                    + "join xms.vrsDatiSessioneVers dati_ses " + "join dati_ses.vrsSessioneVers ses "
+                    + "where modello_xsd.tiUsoModelloXsd = 'VERS' " + "and modello_xsd.tiModelloXsd = :tiModelloXsdUd "
+                    + "and dati_ses.tiDatiSessioneVers = 'XML_DOC' " + "and ses.aroUnitaDoc.idUnitaDoc = :idUnitaDoc "
+                    + "and ses.aroDoc is null " + "and ses.tiStatoSessioneVers = '" + CHIUSA_OK + "' "
+                    + "and ses.tiSessioneVers = 'VERSAMENTO' ";
+
+            TypedQuery<VrsXmlModelloSessioneVers> query = entityManager.createQuery(queryStr,
+                    VrsXmlModelloSessioneVers.class);
+            query.setParameter("tiModelloXsdUd", tiModelloXsdUd);
+            query.setParameter("idUnitaDoc", idUnitaDoc);
+
+            lstXmlModelloSessioneVers = query.getResultList();
+            if (lstXmlModelloSessioneVers != null && !lstXmlModelloSessioneVers.isEmpty()) {
+                return true;
+            }
+
+        } catch (Exception e) {
+            log.error("Eccezione durante il recupero del profilo normativo ud " + e.getMessage(), e);
+        }
+        return false;
     }
 
 }

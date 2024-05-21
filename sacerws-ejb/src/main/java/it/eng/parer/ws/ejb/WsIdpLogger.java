@@ -1,21 +1,31 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.ejb;
 
-import it.eng.parer.idpjaas.logutils.IdpConfigLog;
-import it.eng.parer.idpjaas.logutils.IdpLogger;
-import it.eng.parer.idpjaas.logutils.LogDto;
-import it.eng.parer.util.ejb.AppServerInstance;
-import it.eng.parer.ws.dto.RispostaControlli;
-import it.eng.parer.ws.utils.CostantiDB;
-import it.eng.parer.ws.utils.ParametroApplDB;
-
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.HashMap;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -23,13 +33,23 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.eng.parer.idpjaas.logutils.IdpConfigLog;
+import it.eng.parer.idpjaas.logutils.IdpLogger;
+import it.eng.parer.idpjaas.logutils.LogDto;
+import it.eng.parer.util.ejb.AppServerInstance;
+import it.eng.parer.ws.dto.RispostaControlli;
+import it.eng.parer.ws.utils.ParametroApplDB;
+import it.eng.spagoCore.util.JpaUtils;
 
 /**
  *
  * @author fioravanti_f
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "WsIdpLogger")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
@@ -67,6 +87,7 @@ public class WsIdpLogger {
                 && !iamDefaults.get(ParametroApplDB.IDP_MAX_GIORNI).isEmpty()
                 && iamDefaults.get(ParametroApplDB.IDP_MAX_TENTATIVI_FALLITI) != null
                 && !iamDefaults.get(ParametroApplDB.IDP_MAX_TENTATIVI_FALLITI).isEmpty()) {
+            java.sql.Connection connection = null;
             try {
                 IdpConfigLog icl = new IdpConfigLog();
                 icl.setQryRegistraEventoUtente(iamDefaults.get(ParametroApplDB.IDP_QRY_REGISTRA_EVENTO_UTENTE));
@@ -78,7 +99,7 @@ public class WsIdpLogger {
 
                 logDto.setServername(asi.getName());
 
-                java.sql.Connection connection = entityManager.unwrap(java.sql.Connection.class);
+                connection = JpaUtils.provideConnectionFrom(entityManager);
 
                 IdpLogger.EsitiLog risposta = (new IdpLogger(icl).scriviLog(logDto, connection));
 
@@ -107,6 +128,14 @@ public class WsIdpLogger {
                 throw new RuntimeException("WsIdpLogger: Errore nell'accesso ai dati di log: " + ex.getMessage());
             } catch (Exception ex) {
                 throw new RuntimeException("WsIdpLogger: Errore: " + ex.getMessage());
+            } finally {
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException("WsIdpLogger: Errore: " + ex.getMessage());
+                    }
+                }
             }
         }
 

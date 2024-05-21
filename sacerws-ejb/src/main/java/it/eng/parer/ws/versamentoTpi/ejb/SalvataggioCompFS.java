@@ -1,24 +1,41 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamentoTpi.ejb;
 
 import it.eng.parer.entity.LogLockElab;
 import it.eng.parer.entity.VrsDtVers;
 import it.eng.parer.entity.VrsPathDtVers;
-import it.eng.parer.exception.SacerWsException;
 import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsException;
+import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.utils.WsXAUtil;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
-import java.io.File;
-import java.math.BigDecimal;
-import java.text.MessageFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xadisk.connector.outbound.XADiskConnection;
+import org.xadisk.connector.outbound.XADiskConnectionFactory;
+
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -28,14 +45,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xadisk.connector.outbound.XADiskConnection;
-import org.xadisk.connector.outbound.XADiskConnectionFactory;
+import java.io.File;
+import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.*;
+
 import static it.eng.parer.util.DateUtilsConverter.convert;
 import static it.eng.parer.util.DateUtilsConverter.format;
+import java.time.ZoneId;
 
 /**
  *
@@ -63,6 +80,7 @@ public class SalvataggioCompFS {
     private static final String LOCKTYPE_LOCK_UNICO = "LOCK_UNICO";
     private static final String ARK_STATUS_REGISTRATA = "REGISTRATA";
 
+    @SuppressWarnings("unchecked")
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public RispostaControlli verificaDirTPIDataViaDb(StrutturaVersamento versamento,
             StatoCreaCartelle statoCreaCartelle, int numeroTentativi) {
@@ -170,11 +188,7 @@ public class SalvataggioCompFS {
                     Thread.sleep(ATTESA_RETRY_TEST_IN_MILLISECONDI);
                 }
             }
-            if (recordPresente) {
-                statoCreaCartelle.setCreaCartellaVersatore(false);
-            } else {
-                statoCreaCartelle.setCreaCartellaVersatore(true);
-            }
+            statoCreaCartelle.setCreaCartellaVersatore(!recordPresente);
             rispostaControlli.setrLong(1);
             rispostaControlli.setrBoolean(true);
         } catch (Exception e) {
@@ -257,9 +271,8 @@ public class SalvataggioCompFS {
         lockRecord = (LogLockElab) query.getSingleResult();
         //
         Map<String, Object> properties = new HashMap<>();
-        properties.put("javax.persistence.lock.timeout", LOCK_LOCK_TIMEOUT_IN_SECONDI);
-        LogLockElab tmpLockElab = entityManager.find(LogLockElab.class, lockRecord.getIdLockElab(),
-                LockModeType.PESSIMISTIC_WRITE, properties);
+        properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, LOCK_LOCK_TIMEOUT_IN_SECONDI * 1000);
+        entityManager.find(LogLockElab.class, lockRecord.getIdLockElab(), LockModeType.PESSIMISTIC_WRITE, properties);
         //
         try {
             RispostaControlli rc = this.verificaDirTPIDataViaDb(versamento, statoCreaCartelle, 1);
@@ -269,7 +282,10 @@ public class SalvataggioCompFS {
                     String testDir = MessageFormat.format("{0}/{1}", versamento.getTpiRootTpi(),
                             versamento.getTpiRootArkVers());
                     vrsDtVers = new VrsDtVers();
-                    vrsDtVers.setDtVers(convert(versamento.getDataVersamento()));
+                    // MAC#27269
+                    vrsDtVers.setDtVers(convert(versamento.getDataVersamento()).toInstant()
+                            .atZone(ZoneId.systemDefault()).toLocalDate());
+                    // end MAC#27269
                     vrsDtVers.setTiStatoDtVers(ARK_STATUS_REGISTRATA);
                     vrsDtVers.setFlMigraz("0");
                     vrsDtVers.setFlArk("0");
@@ -350,9 +366,8 @@ public class SalvataggioCompFS {
         lockRecord = (LogLockElab) query.getSingleResult();
         //
         Map<String, Object> properties = new HashMap<>();
-        properties.put("javax.persistence.lock.timeout", LOCK_LOCK_TIMEOUT_IN_SECONDI);
-        LogLockElab tmpLockElab = entityManager.find(LogLockElab.class, lockRecord.getIdLockElab(),
-                LockModeType.PESSIMISTIC_WRITE, properties);
+        properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, LOCK_LOCK_TIMEOUT_IN_SECONDI * 1000);
+        entityManager.find(LogLockElab.class, lockRecord.getIdLockElab(), LockModeType.PESSIMISTIC_WRITE, properties);
         //
         try {
             RispostaControlli rc = this.verificaDirTPIVersatoreViaDb(versamento, statoCreaCartelle, 1);

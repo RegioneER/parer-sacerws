@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -16,6 +33,9 @@ public class CostantiDB {
 
     //
     public class DatiCablati {
+        private DatiCablati() {
+            throw new IllegalStateException("DatiCablati Utility class");
+        }
 
         public static final String TPI_PATH_LISTA_FILE = "ListaFile";
         public static final String VERS_TIPO_CONSERVAZIONE_DEFAULT = "VERSAMENTO_ANTICIPATO";
@@ -23,6 +43,9 @@ public class CostantiDB {
 
     //
     public class TipoDocumento {
+        private TipoDocumento() {
+            throw new IllegalStateException("TipoDocumento Utility class");
+        }
 
         public static final String PRINCIPALE = "PRINCIPALE";
         public static final String ALLEGATO = "ALLEGATO";
@@ -33,6 +56,10 @@ public class CostantiDB {
     //
     public class TipiXmlDati {
 
+        private TipiXmlDati() {
+            throw new IllegalStateException("TipiXmlDati Utility class");
+        }
+
         public static final String INDICE_FILE = "INDICE_FILE";
         public static final String RICHIESTA = "RICHIESTA";
         public static final String RISPOSTA = "RISPOSTA";
@@ -41,6 +68,10 @@ public class CostantiDB {
 
     //
     public class TipoUsoComponente {
+
+        private TipoUsoComponente() {
+            throw new IllegalStateException("TipoUsoComponente Utility class");
+        }
 
         public static final String CONTENUTO = "CONTENUTO";
         public static final String CONVERTITORE = "CONVERTITORE";
@@ -52,6 +83,10 @@ public class CostantiDB {
     }
 
     public class SubStruttura {
+
+        private SubStruttura() {
+            throw new IllegalStateException("SubStruttura Utility class");
+        }
 
         public static final String DEFAULT_NAME = "DEFAULT";
         public static final String DEFAULT_DESC = "Sub struttura di default per la struttura ";
@@ -659,8 +694,8 @@ public class CostantiDB {
         DESCRIZIONE, RANGE_PROGRESSIVI
     }
 
-    public static final BigDecimal NUM_SERIE_36 = new BigDecimal(0.3);
-    public static final BigDecimal NUM_SERIE_24 = new BigDecimal(0.5);
+    public static final BigDecimal NUM_SERIE_36 = BigDecimal.valueOf(0.3);
+    public static final BigDecimal NUM_SERIE_24 = BigDecimal.valueOf(0.5);
     public static final BigDecimal NUM_SERIE_12 = new BigDecimal(1);
     public static final BigDecimal NUM_SERIE_6 = new BigDecimal(2);
     public static final BigDecimal NUM_SERIE_4 = new BigDecimal(3);
@@ -831,11 +866,9 @@ public class CostantiDB {
             // DA MODIFICARE IN CASO DI
             // AGGIUNTE
 
-            String[] stati = new String[] { CostantiDB.TipoErrRichAnnulVers.ITEM_IN_CORSO_DI_ANNUL.name(),
-                    CostantiDB.TipoErrRichAnnulVers.ITEM_RIFERITO.name(),
-                    CostantiDB.TipoErrRichAnnulVers.ITEM_VERSATA_IN_DATA_RICH.name(),
-                    CostantiDB.TipoErrRichAnnulVers.STATO_CONSERV_NON_AMMESSO.name() };
-            return stati;
+            return new String[] { TipoErrRichAnnulVers.ITEM_IN_CORSO_DI_ANNUL.name(),
+                    TipoErrRichAnnulVers.ITEM_RIFERITO.name(), TipoErrRichAnnulVers.ITEM_VERSATA_IN_DATA_RICH.name(),
+                    TipoErrRichAnnulVers.STATO_CONSERV_NON_AMMESSO.name() };
         }
     }
 
@@ -897,6 +930,10 @@ public class CostantiDB {
 
     public enum TiParte {
         ANNO, CLASSIF, PROGR_FASC, PROGR_SUB_FASC
+    }
+
+    public enum TiStatoSesioneVers {
+        CHIUSA_OK, CHIUSA_ERR
     }
 
     //

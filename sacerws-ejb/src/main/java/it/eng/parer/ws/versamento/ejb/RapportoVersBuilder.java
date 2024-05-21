@@ -1,9 +1,24 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 
@@ -13,16 +28,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.xml.bind.Marshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
-import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 import it.eng.parer.exception.SacerWsException;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.XmlVersCache;
@@ -165,7 +174,7 @@ public class RapportoVersBuilder {
         try {
             RispostaControlli tmpRisp = controlliRappVers.trovaVersSessUd(idElemento);
             if (tmpRisp.getrLong() > 0) {
-                tmpRisp = controlliRappVers.leggiXmlRappVers(tmpRisp.getrLong());
+                tmpRisp = controlliRappVers.leggiXmlRappVersFromUd(tmpRisp.getrLong(), idElemento);
                 String xml;
                 if (tmpRisp.getrString() != null) {
                     xml = tmpRisp.getrString();
@@ -207,7 +216,7 @@ public class RapportoVersBuilder {
             RispostaControlli tmpRisp = controlliRappVers.trovaVersSessDoc(idElemento,
                     versamento.getStrutturaComponenti().getIdUnitaDoc());
             if (tmpRisp.getrLong() > 0) {
-                tmpRisp = controlliRappVers.leggiXmlRappVers(tmpRisp.getrLong());
+                tmpRisp = controlliRappVers.leggiXmlRappVersFromDoc(tmpRisp.getrLong(), idElemento);
 
                 String xml;
                 if (tmpRisp.getrString() != null) {
@@ -305,10 +314,7 @@ public class RapportoVersBuilder {
             tmpMarshaller.marshal(tmpRappVers, tmpStringWriter);
 
             sessione.setDatiRapportoVersamento(tmpStringWriter.toString());
-            /*
-             * sessione.setHashRapportoVersamento( new HashCalculator()
-             * .calculateHash(sessione.getDatiRapportoVersamento()) .toHexBinary());
-             */
+
             sessione.setHashRapportoVersamento(new HashCalculator()
                     .calculateHashSHAX(sessione.getDatiRapportoVersamento(), TipiHash.SHA_256).toHexBinary());
             //
@@ -332,12 +338,6 @@ public class RapportoVersBuilder {
 
         try {
             // calcolo l'URN del documento
-            /*
-             * String tmpUrn = MessaggiWSFormat.formattaBaseUrnDoc(
-             * versamento.getStrutturaComponenti().getUrnPartVersatore(),
-             * versamento.getStrutturaComponenti().getUrnPartChiaveUd(),
-             * versamento.getStrutturaComponenti().getDocumentiAttesi().get(0).getUrnPartDocumento());
-             */
 
             String tmpUrn = MessaggiWSFormat
                     .formattaBaseUrnDoc(versamento.getStrutturaComponenti().getUrnPartVersatore(),
@@ -386,10 +386,7 @@ public class RapportoVersBuilder {
             tmpMarshaller.marshal(tmpRappVers, tmpStringWriter);
 
             sessione.setDatiRapportoVersamento(tmpStringWriter.toString());
-            /*
-             * sessione.setHashRapportoVersamento( new HashCalculator()
-             * .calculateHash(sessione.getDatiRapportoVersamento()) .toHexBinary());
-             */
+
             sessione.setHashRapportoVersamento(new HashCalculator()
                     .calculateHashSHAX(sessione.getDatiRapportoVersamento(), TipiHash.SHA_256).toHexBinary());
             //
@@ -444,13 +441,11 @@ public class RapportoVersBuilder {
         rapportoVersamento.setSIP(tmpSip);
         tmpSip.setURNIndiceSIP(sessione.getUrnIndiceSipXml());
         tmpSip.setHashIndiceSIP(sessione.getHashIndiceSipXml());
-        // tmpSip.setAlgoritmoHashIndiceSIP(CostantiDB.TipiHash.SHA_1.descrivi());
         tmpSip.setAlgoritmoHashIndiceSIP(CostantiDB.TipiHash.SHA_256.descrivi());
         tmpSip.setEncodingHashIndiceSIP(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
         if (sessione.getDatiPackInfoSipXml() != null) {
             tmpSip.setURNPISIP(sessione.getUrnPackInfoSipXml());
             tmpSip.setHashPISIP(sessione.getHashPackInfoSipXml());
-            // tmpSip.setAlgoritmoHashPISIP(CostantiDB.TipiHash.SHA_1.descrivi());
             tmpSip.setAlgoritmoHashPISIP(CostantiDB.TipiHash.SHA_256.descrivi());
             tmpSip.setEncodingHashPISIP(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
         }

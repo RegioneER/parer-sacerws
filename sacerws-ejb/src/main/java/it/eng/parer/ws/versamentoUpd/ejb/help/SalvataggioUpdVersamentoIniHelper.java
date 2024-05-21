@@ -1,45 +1,55 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.LockModeType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import it.eng.parer.entity.AroArchivSec;
-import it.eng.parer.entity.AroCompDoc;
-import it.eng.parer.entity.AroDoc;
-import it.eng.parer.entity.AroLinkUnitaDoc;
-import it.eng.parer.entity.AroUnitaDoc;
-import it.eng.parer.entity.AroUsoXsdDatiSpec;
-import it.eng.parer.entity.AroVersIniArchivSec;
-import it.eng.parer.entity.AroVersIniComp;
-import it.eng.parer.entity.AroVersIniDatiSpec;
-import it.eng.parer.entity.AroVersIniDoc;
-import it.eng.parer.entity.AroVersIniLinkUnitaDoc;
-import it.eng.parer.entity.AroVersIniUnitaDoc;
+import it.eng.parer.entity.*;
 import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiEntitaSacerAroVersIniDatiSpec;
 import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiUsoXsdAroVersIniDatiSpec;
+import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamentoUpd.dto.RispostaWSUpdVers;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
-import static it.eng.parer.util.DateUtilsConverter.convert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.LockModeType;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static it.eng.parer.util.DateUtilsConverter.convertLocal;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
+import it.eng.parer.ws.versamentoUpd.dto.DatiSpecLinkOsKeyMap;
 
 /**
  *
  * @author sinatti_s
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "SalvataggioUpdVersamentoIniHelper")
 @LocalBean
 public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoBaseHelper {
@@ -51,7 +61,7 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrLong(-1);
         rispostaControlli.setrBoolean(false);
-        List<AroVersIniUnitaDoc> aroVersIniUnitaDocs = null;
+        List<AroVersIniUnitaDoc> aroVersIniUnitaDocs;
 
         try {
 
@@ -280,24 +290,96 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviAroIniDatiSpecUd(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec,
-            StrutturaUpdVers svf) {
-        return scriviAroIniDatiSpec(rispostaWs, versamento, sessione, tmpAroVersIniUnitaDoc, null, null,
-                tmpAroUsoXsdDatiSpec, svf);
+    public RispostaControlli scriviAroIniDatiSpecUd(SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc,
+            AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec, BackendStorage backendMetadata,
+            Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob, StrutturaUpdVers svf) {
+
+        // MEV#29276
+        DatiSpecLinkOsKeyMap key = new DatiSpecLinkOsKeyMap(tmpAroVersIniUnitaDoc.getIdVersIniUnitaDoc(),
+                TiEntitaSacerAroVersIniDatiSpec.UNI_DOC.name());
+        Map<String, String> versIniDatiSpecUdBlob = (versIniDatiSpecBlob.containsKey(key))
+                ? versIniDatiSpecBlob.get(key) : new HashMap<>();
+        // end MEV#29276
+
+        RispostaControlli tmpRispostaControlli = scriviAroIniDatiSpec(sessione, tmpAroVersIniUnitaDoc, null, null,
+                tmpAroUsoXsdDatiSpec, backendMetadata, versIniDatiSpecUdBlob, svf);
+
+        // in caso di errore esecuzione query
+        if (!tmpRispostaControlli.isrBoolean()) {
+            return tmpRispostaControlli;
+        }
+
+        // MEV#29276
+        if (backendMetadata.isObjectStorage() && !versIniDatiSpecBlob.containsKey(key)) {
+            versIniDatiSpecBlob.put(key, versIniDatiSpecUdBlob);
+        }
+        // end MEV#29276
+
+        return tmpRispostaControlli;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviAroIniDatiSpecDoc(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc, AroVersIniDoc tmpAroVersIniDoc,
-            AroVersIniComp tmpAroVersIniComp, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec, StrutturaUpdVers svf) {
-        return scriviAroIniDatiSpec(rispostaWs, versamento, sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc,
-                tmpAroVersIniComp, tmpAroUsoXsdDatiSpec, svf);
+    public RispostaControlli scriviAroIniDatiSpecDoc(SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc,
+            AroVersIniDoc tmpAroVersIniDoc, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec, BackendStorage backendMetadata,
+            Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob, StrutturaUpdVers svf) {
+
+        // MEV#29276
+        DatiSpecLinkOsKeyMap key = new DatiSpecLinkOsKeyMap(tmpAroVersIniDoc.getIdVersIniDoc(),
+                TiEntitaSacerAroVersIniDatiSpec.DOC.name());
+        Map<String, String> versIniDatiSpecDocBlob = (versIniDatiSpecBlob.containsKey(key))
+                ? versIniDatiSpecBlob.get(key) : new HashMap<>();
+        // end MEV#29276
+
+        RispostaControlli tmpRispostaControlli = scriviAroIniDatiSpec(sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc,
+                null, tmpAroUsoXsdDatiSpec, backendMetadata, versIniDatiSpecDocBlob, svf);
+
+        // in caso di errore esecuzione query
+        if (!tmpRispostaControlli.isrBoolean()) {
+            return tmpRispostaControlli;
+        }
+
+        // MEV#29276
+        if (backendMetadata.isObjectStorage() && !versIniDatiSpecBlob.containsKey(key)) {
+            versIniDatiSpecBlob.put(key, versIniDatiSpecDocBlob);
+        }
+        // end MEV#29276
+
+        return tmpRispostaControlli;
     }
 
-    private RispostaControlli scriviAroIniDatiSpec(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc, AroVersIniDoc tmpAroVersIniDoc,
-            AroVersIniComp tmpAroVersIniComp, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec, StrutturaUpdVers svf) {
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public RispostaControlli scriviAroIniDatiSpecComp(SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc,
+            AroVersIniDoc tmpAroVersIniDoc, AroVersIniComp tmpAroVersIniComp, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec,
+            BackendStorage backendMetadata, Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob,
+            StrutturaUpdVers svf) {
+
+        // MEV#29276
+        DatiSpecLinkOsKeyMap key = new DatiSpecLinkOsKeyMap(tmpAroVersIniComp.getIdVersIniComp(),
+                TiEntitaSacerAroVersIniDatiSpec.COMP.name());
+        Map<String, String> versIniDatiSpecCompBlob = (versIniDatiSpecBlob.containsKey(key))
+                ? versIniDatiSpecBlob.get(key) : new HashMap<>();
+        // end MEV#29276
+
+        RispostaControlli tmpRispostaControlli = scriviAroIniDatiSpec(sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc,
+                tmpAroVersIniComp, tmpAroUsoXsdDatiSpec, backendMetadata, versIniDatiSpecCompBlob, svf);
+
+        // in caso di errore esecuzione query
+        if (!tmpRispostaControlli.isrBoolean()) {
+            return tmpRispostaControlli;
+        }
+
+        // MEV#29276
+        if (backendMetadata.isObjectStorage() && !versIniDatiSpecBlob.containsKey(key)) {
+            versIniDatiSpecBlob.put(key, versIniDatiSpecCompBlob);
+        }
+        // end MEV#29276
+
+        return tmpRispostaControlli;
+    }
+
+    private RispostaControlli scriviAroIniDatiSpec(SyncFakeSessn sessione, AroVersIniUnitaDoc tmpAroVersIniUnitaDoc,
+            AroVersIniDoc tmpAroVersIniDoc, AroVersIniComp tmpAroVersIniComp, AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec,
+            BackendStorage backendMetadata, Map<String, String> tmpVersIniDatiSpecBlob, StrutturaUpdVers svf) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
 
@@ -315,7 +397,10 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
             // FK
             tmpAroVersIniDatiSpec.setIdStrut(new BigDecimal(svf.getIdStruttura()));
 
-            tmpAroVersIniDatiSpec.setDtReg(convert(sessione.getTmApertura()));
+            final LocalDate dtReg = convertLocal(sessione.getTmApertura());
+            tmpAroVersIniDatiSpec.setDtReg(dtReg);
+            // MEV#30089
+            tmpAroVersIniDatiSpec.setAaDtReg(dtReg.getYear());
 
             // tipo di uso del xsd pari a VERS
             tmpAroVersIniDatiSpec.setTiUsoXsd(TiUsoXsdAroVersIniDatiSpec.valueOf(tmpAroUsoXsdDatiSpec.getTiUsoXsd()));
@@ -337,7 +422,15 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
                 return tmpRispostaControlli;
             }
 
-            tmpAroVersIniDatiSpec.setBlXmlDatiSpec(tmpRispostaControlli.getrString());
+            // MEV#29276
+            // Clob contenente il frammento XML contenuto nel tag “DatiSpecifici” del XML in
+            String blXmlDatiSpec = tmpRispostaControlli.getrString();
+            if (backendMetadata.isDataBase()) {
+                tmpAroVersIniDatiSpec.setBlXmlDatiSpec(blXmlDatiSpec);
+            } else {
+                tmpVersIniDatiSpecBlob.put(tmpAroUsoXsdDatiSpec.getTiUsoXsd(), blXmlDatiSpec);
+            }
+            // end MEV#29276
 
             // persist
             entityManager.persist(tmpAroVersIniDatiSpec);
@@ -381,7 +474,7 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
             // 0. si assume LOCK esclusivo su DOC da aggiornare
             // find AroDoc
             Map<String, Object> properties = new HashMap<>();
-            properties.put("javax.persistence.lock.timeout", 25);
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
             AroDoc aroDoc = entityManager.find(AroDoc.class, idDoc, LockModeType.PESSIMISTIC_WRITE, properties);
 
             // info su profilo documento definite dal versamento documento (dl_doc e
@@ -421,7 +514,7 @@ public class SalvataggioUpdVersamentoIniHelper extends SalvataggioUpdVersamentoB
             // si assume LOCK esclusivo su COMP da aggiornare
             // find AroCompDoc
             Map<String, Object> properties = new HashMap<>();
-            properties.put("javax.persistence.lock.timeout", 25);
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
             AroCompDoc aroCompDoc = entityManager.find(AroCompDoc.class, idCompDoc, LockModeType.PESSIMISTIC_WRITE,
                     properties);
 

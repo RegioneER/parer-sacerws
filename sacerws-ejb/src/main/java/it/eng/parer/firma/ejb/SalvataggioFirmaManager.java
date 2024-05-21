@@ -1,7 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
+
 package it.eng.parer.firma.ejb;
 
 import java.io.IOException;
@@ -11,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
@@ -18,17 +32,13 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.s3.model.PutObjectResult;
-
-import it.eng.parer.crypto.model.CryptoEnums.EsitoControllo;
-import it.eng.parer.crypto.model.CryptoEnums.TipoControlli;
-import it.eng.parer.crypto.model.CryptoEnums.TipoControlliMarca;
 import it.eng.parer.eidas.model.EidasWSReportsDTOTree;
 import it.eng.parer.entity.AroBustaCrittog;
 import it.eng.parer.entity.AroCompDoc;
@@ -40,7 +50,7 @@ import it.eng.parer.entity.AroFirmaComp;
 import it.eng.parer.entity.AroMarcaComp;
 import it.eng.parer.entity.AroUsoCertifCaContrComp;
 import it.eng.parer.entity.AroUsoCertifCaContrMarca;
-import it.eng.parer.entity.AroVerifFirmaDtVer;
+import it.eng.parer.entity.DecBackend;
 import it.eng.parer.entity.DecFormatoFileStandard;
 import it.eng.parer.entity.DecReportServizioVerificaCompDoc;
 import it.eng.parer.entity.DecServizioVerificaCompDoc;
@@ -48,7 +58,6 @@ import it.eng.parer.entity.FirCertifCa;
 import it.eng.parer.entity.FirCertifFirmatario;
 import it.eng.parer.entity.FirCertifOcsp;
 import it.eng.parer.entity.FirCrl;
-import it.eng.parer.entity.FirFilePerFirma;
 import it.eng.parer.entity.FirOcsp;
 import it.eng.parer.entity.FirReport;
 import it.eng.parer.entity.FirUrlDistribCrl;
@@ -59,7 +68,7 @@ import it.eng.parer.entity.constraint.DecReportServizioVerificaCompDoc.TiReportS
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
 import it.eng.parer.entity.constraint.FiUrnReport.TiUrnReport;
 import it.eng.parer.firma.exception.VerificaFirmaException;
-import it.eng.parer.firma.util.VerificaFirmaEnums;
+import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.firma.xml.VFCertifCaType;
 import it.eng.parer.firma.xml.VFCertifFirmatarioType;
 import it.eng.parer.firma.xml.VFContrFirmaCompType;
@@ -80,10 +89,14 @@ import it.eng.parer.ws.utils.Costanti.GenReportVerificaFirma;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.utils.XmlDateUtility;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.FileBinario;
+import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
 import it.eng.parer.ws.versamento.ejb.ControlliPerFirme;
+import it.eng.parer.ws.versamento.ejb.ObjectStorageService;
 import it.eng.parer.ws.versamento.ejb.oracleBlb.WriteCompBlbOracle;
+import it.eng.parer.ws.versamento.exceptions.ObjectStorageException;
 
 /**
  * Parser (base) per la gestione del result wrapper post verifica documento firmato
@@ -110,7 +123,7 @@ public class SalvataggioFirmaManager {
     private VerificaFirmaReportHelper verificaFirmaReportHelper;
 
     @EJB
-    private VerificaFirmaReportAwsClient verificaFirmaReportAwsClient;
+    private ObjectStorageService objectStorageService;
 
     @EJB
     private WriteCompBlbOracle writeCompBlbOracle;
@@ -147,19 +160,17 @@ public class SalvataggioFirmaManager {
                         || busta.getMarcaComps().stream().filter(m -> m.getId().equals(idCompVers)).count() != 0) {
 
                     // create AroBustaCrittog componente
-                    AroBustaCrittog tmpBustaCrittogComp = buildAroBustaCrittog(tmpTabCDComponente, busta.getPgBusta(),
-                            busta.getAdditionalInfo().getIdFormatoFileStandard());
+                    AroBustaCrittog tmpBustaCrittogComp = buildAroBustaCrittog(tmpTabCDComponente, busta);
 
                     // create AroBustaCrittog sotto componente
                     AroBustaCrittog tmpBustaCrittogSottoComp = null;
                     if (tmpTabCDSottoComp != null) {
                         // create empty list
                         if (tmpTabCDSottoComp.getAroBustaCrittogs() == null) {
-                            tmpTabCDSottoComp.setAroBustaCrittogs(new ArrayList<AroBustaCrittog>());
+                            tmpTabCDSottoComp.setAroBustaCrittogs(new ArrayList<>());
                         }
 
-                        tmpBustaCrittogSottoComp = buildAroBustaCrittog(tmpTabCDSottoComp, busta.getPgBusta(),
-                                busta.getAdditionalInfo().getIdFormatoFileStandard());
+                        tmpBustaCrittogSottoComp = buildAroBustaCrittog(tmpTabCDSottoComp, busta);
 
                     }
 
@@ -169,8 +180,8 @@ public class SalvataggioFirmaManager {
                     //
                     for (VFFirmaCompType firmaCompType : firmaCompById) {
                         // FIRMA
-                        AroFirmaComp tmpFirmaComp = this.buildAroFirmaComp(wrapper, busta, firmaCompType,
-                                tmpTabCDComponente, tmpBustaCrittogComp, tmpBustaCrittogSottoComp, null);
+                        AroFirmaComp tmpFirmaComp = buildAroFirmaComp(wrapper, busta, firmaCompType, tmpTabCDComponente,
+                                tmpBustaCrittogComp, tmpBustaCrittogSottoComp, null);
 
                         // MARCHE
                         buildAroMarcaCompFromFirma(idCompVers, wrapper, busta, firmaCompType, tmpTabCDComponente,
@@ -207,16 +218,17 @@ public class SalvataggioFirmaManager {
             // flush
             entityManager.flush();
         } catch (VerificaFirmaException ex) {
-            LOG.error("Errore durante il popolamento della busta");
+            LOG.error("Errore durante il popolamento della busta", ex);
             risposta.setrBoolean(false);
             risposta.setCodErr(ex.getCodiceErrore());
             risposta.setDsErr(ex.getDescrizioneErrore());
             result = false;
         } catch (Exception ex) {
-            LOG.error("Errore durante il popolamento della busta");
+            LOG.error("Errore generico durante il popolamento della busta", ex);
             risposta.setrBoolean(false);
             risposta.setCodErr(MessaggiWSBundle.ERR_666P);
-            risposta.setDsErr("Errore generico durante il popolamento della busta " + ExceptionUtils.getMessage(ex));
+            risposta.setDsErr(
+                    "Errore generico durante il popolamento della busta " + ExceptionUtils.getRootCauseMessage(ex));
             result = false;
         }
 
@@ -234,11 +246,13 @@ public class SalvataggioFirmaManager {
      *            oggetto standard con dati di versamento
      * @param tmpAroCompDoc
      *            componente
+     * @param nomeWs
+     *            nome del servizio che invoca il salvataggio del report
      *
      * @return true/false con risultato dell'operazione
      */
     public boolean salvaReportVerificaCompDoc(RispostaControlli risposta, VerificaFirmaWrapper wrapper,
-            StrutturaVersamento strutV, AroCompDoc tmpAroCompDoc) {
+            StrutturaVersamento strutV, AroCompDoc tmpAroCompDoc, String nomeWs) {
         boolean result = true;
 
         try {
@@ -256,7 +270,7 @@ public class SalvataggioFirmaManager {
             if (StringUtils.isNotBlank(strutV.getGenerazioneRerortVerificaFirma())
                     && !strutV.getGenerazioneRerortVerificaFirma().equalsIgnoreCase(GenReportVerificaFirma.OFF.name())
                     && wrapper.getAdditionalInfo().getReportContent() != null) {
-                buildFirReport(tmpAroCompDoc, wrapper, strutV);
+                buildFirReport(tmpAroCompDoc, wrapper, strutV, nomeWs);
             }
             // flush
             entityManager.flush();
@@ -308,31 +322,29 @@ public class SalvataggioFirmaManager {
         }
     }
 
-    private AroBustaCrittog buildAroBustaCrittog(AroCompDoc tmpAroCompDoc, BigDecimal pgBusta,
-            long idFormatoFileStandard) {
-        // FIXME FIXME FIXME PLEASE
-        if (tmpAroCompDoc.getAroBustaCrittogs() != null && !tmpAroCompDoc.getAroBustaCrittogs().isEmpty()) {
-            for (AroBustaCrittog aroBustaCrittog : tmpAroCompDoc.getAroBustaCrittogs()) {
-                if (aroBustaCrittog.getPgBustaCrittog().equals(pgBusta)) {
-                    return aroBustaCrittog;
-                }
-
+    private AroBustaCrittog buildAroBustaCrittog(AroCompDoc tmpAroCompDoc, VFBusta busta) {
+        // restituisci AroBustaCrittog se già presente
+        if (tmpAroCompDoc.getAroBustaCrittogs() != null) {
+            Optional<AroBustaCrittog> findedBustaCrittog = tmpAroCompDoc.getAroBustaCrittogs().stream()
+                    .filter(b -> b.getPgBustaCrittog().compareTo(busta.getPgBusta()) == 0).findFirst();
+            if (findedBustaCrittog.isPresent()) {
+                return findedBustaCrittog.get();
             }
         }
-
+        // create new entity
         AroBustaCrittog tmpBustaCrittog = new AroBustaCrittog();
         tmpBustaCrittog.setAroCompDoc(tmpAroCompDoc);
-        tmpBustaCrittog.setAroFirmaComps(new ArrayList<AroFirmaComp>());
-        tmpBustaCrittog.setAroMarcaComps(new ArrayList<AroMarcaComp>());
-        tmpBustaCrittog.setPgBustaCrittog(pgBusta);
+        tmpBustaCrittog.setAroFirmaComps(new ArrayList<>());
+        tmpBustaCrittog.setAroMarcaComps(new ArrayList<>());
+        tmpBustaCrittog.setPgBustaCrittog(busta.getPgBusta());
         tmpBustaCrittog.setIdStrut(tmpAroCompDoc.getIdStrut());
 
-        // FIXME: questo è brutto
-        if (idFormatoFileStandard > 0L) {
+        if (busta.getAdditionalInfo() != null && busta.getAdditionalInfo().getIdFormatoFileStandard() != null) {
             // additional info (ottenute in precedenza -> vedi check formati)
-            tmpBustaCrittog
-                    .setDecFormatoFileStandard(entityManager.find(DecFormatoFileStandard.class, idFormatoFileStandard));
+            tmpBustaCrittog.setDecFormatoFileStandard(entityManager.find(DecFormatoFileStandard.class,
+                    busta.getAdditionalInfo().getIdFormatoFileStandard().longValue()));
         }
+
         tmpAroCompDoc.getAroBustaCrittogs().add(tmpBustaCrittog);
 
         return tmpBustaCrittog;
@@ -388,146 +400,15 @@ public class SalvataggioFirmaManager {
 
         // FIRMA
         AroFirmaComp tmpFirmaComp = new AroFirmaComp();
-        tmpFirmaComp.setAroContrFirmaComps(new ArrayList<AroContrFirmaComp>());
-        tmpFirmaComp.setAroControfirmaFirmaFiglios(new ArrayList<AroControfirmaFirma>());
-        tmpFirmaComp.setAroControfirmaFirmaPadres(new ArrayList<AroControfirmaFirma>());
-        tmpFirmaComp.setAroVerifFirmaDtVers(new ArrayList<AroVerifFirmaDtVer>());
-
-        // Creo una mappa di CONTR_FIRMA_COMP identificati dalla costante enumerata in
-        // VFTipoControlloType
-        Map<VFTipoControlloType, VFContrFirmaCompType> controlliFirma = firmaCompType.getContrFirmaComps().stream()
-                .collect(Collectors.toMap(VFContrFirmaCompType::getTiContr, t -> t));
-
-        // CONTROLLI FIRMA - CRITTOGRAFICO
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRITTOGRAFICO);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - CRITTOGRAFICO ABILITATO
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRITTOGRAFICO_ABILITATO);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO_ABILITATO.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - CATENA TRUSTED
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CATENA_TRUSTED);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-
-            ArrayList<AroUsoCertifCaContrComp> usoCerifiCaContrComp = new ArrayList<>();
-
-            AroUsoCertifCaContrComp usoCertifCatena = new AroUsoCertifCaContrComp();
-            usoCertifCatena.setPgCertifCa(BigDecimal.ONE);
-            usoCertifCatena.setAroContrFirmaComp(controllo);
-
-            // CA
-            usoCertifCatena.setFirCertifCa(caUso);
-            // CRL (se presente)
-            usoCertifCatena.setFirCrl(crlUso);
-            // OCSP (se presente)
-            usoCertifCatena.setFirOcsp(ocspUso);
-            //
-            usoCerifiCaContrComp.add(usoCertifCatena);
-            entityManager.persist(usoCertifCatena);
-            controllo.setAroUsoCertifCaContrComps(usoCerifiCaContrComp);
-
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - CATENA TRUSTED ABILITATO
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CATENA_TRUSTED_ABILITATO);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED_ABILITATO.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - CRL
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRL);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CRL.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-            controllo.setFirCrl(crlContr);
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - OCSP
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.OCSP);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.OCSP.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-            controllo.setFirOcsp(ocspContr);
-
-            // USO CONTR
-            if (ocspContr != null) {
-                ArrayList<AroUsoCertifCaContrComp> usoCerifiCaContrComp = new ArrayList<>();
-
-                AroUsoCertifCaContrComp usoCertifOcsp = new AroUsoCertifCaContrComp();
-                usoCertifOcsp.setPgCertifCa(BigDecimal.ONE);
-                usoCertifOcsp.setAroContrFirmaComp(controllo);
-
-                // CA
-                usoCertifOcsp.setFirCertifCa(ocspContr.getFirCertifOcsp().getFirCertifCa());
-                usoCertifOcsp.setFirOcsp(ocspContr);
-
-                //
-                usoCerifiCaContrComp.add(usoCertifOcsp);
-                entityManager.persist(usoCertifOcsp);
-                //
-                controllo.setAroUsoCertifCaContrComps(usoCerifiCaContrComp);
-            }
-            //
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-        // CONTROLLI FIRMA - CERTIFICATO
-        {
-            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CERTIFICATO);
-            AroContrFirmaComp controllo = new AroContrFirmaComp();
-            controllo.setAroFirmaComp(tmpFirmaComp);
-            controllo.setTiContr(VFTipoControlloType.CERTIFICATO.name());
-            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
-            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
-
-            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
-            // persist
-            entityManager.persist(controllo);
-        }
-
-        //
+        tmpFirmaComp.setAroContrFirmaComps(new ArrayList<>());
+        tmpFirmaComp.setAroControfirmaFirmaFiglios(new ArrayList<>());
+        tmpFirmaComp.setAroControfirmaFirmaPadres(new ArrayList<>());
+        tmpFirmaComp.setAroVerifFirmaDtVers(new ArrayList<>());
+        // Aggiungo la firma al componente e viceversa
+        tmpFirmaComp.setAroCompDoc(tmpTabCDComponente);
+        // Setto id struttura
+        tmpFirmaComp.setIdStrut(tmpTabCDComponente.getIdStrut());
+        tmpTabCDComponente.getAroFirmaComps().add(tmpFirmaComp);
         tmpFirmaComp.setCdFirmatario(firmaCompType.getCdFirmatario());
         tmpFirmaComp.setNmCognomeFirmatario(firmaCompType.getNmCognomeFirmatario());
         tmpFirmaComp.setNmFirmatario(firmaCompType.getNmFirmatario());
@@ -566,16 +447,140 @@ public class SalvataggioFirmaManager {
             tmpBustaCrittogComp.getAroFirmaComps().add(tmpFirmaComp);
             tmpFirmaComp.setAroBustaCrittog(tmpBustaCrittogComp);
         }
-        // Aggiungo la firma al componente e viceversa
-        tmpFirmaComp.setAroCompDoc(tmpTabCDComponente);
-        // Setto id struttura
-        tmpFirmaComp.setIdStrut(tmpTabCDComponente.getIdStrut());
-        tmpTabCDComponente.getAroFirmaComps().add(tmpFirmaComp);
+
+        // Creo una mappa di CONTR_FIRMA_COMP identificati dalla costante enumerata in
+        // VFTipoControlloType
+        Map<VFTipoControlloType, VFContrFirmaCompType> controlliFirma = firmaCompType.getContrFirmaComps().stream()
+                .collect(Collectors.toMap(VFContrFirmaCompType::getTiContr, t -> t));
+
+        // CONTROLLI FIRMA - CRITTOGRAFICO
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRITTOGRAFICO);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            // persist
+            entityManager.persist(controllo);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+        // CONTROLLI FIRMA - CRITTOGRAFICO ABILITATO
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRITTOGRAFICO_ABILITATO);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO_ABILITATO.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            // persist
+            entityManager.persist(controllo);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+        // CONTROLLI FIRMA - CATENA TRUSTED
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CATENA_TRUSTED);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+
+            ArrayList<AroUsoCertifCaContrComp> usoCerifiCaContrComp = new ArrayList<>();
+
+            AroUsoCertifCaContrComp usoCertifCatena = new AroUsoCertifCaContrComp();
+            usoCertifCatena.setPgCertifCa(BigDecimal.ONE);
+            // CA
+            usoCertifCatena.setFirCertifCa(caUso);
+            // CRL (se presente)
+            usoCertifCatena.setFirCrl(crlUso);
+            // OCSP (se presente)
+            usoCertifCatena.setFirOcsp(ocspUso);
+            //
+            usoCerifiCaContrComp.add(usoCertifCatena);
+            // persist
+            entityManager.persist(controllo);
+            usoCertifCatena.setAroContrFirmaComp(controllo);
+            entityManager.persist(usoCertifCatena);
+            controllo.setAroUsoCertifCaContrComps(usoCerifiCaContrComp);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+        // CONTROLLI FIRMA - CATENA TRUSTED ABILITATO
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CATENA_TRUSTED_ABILITATO);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED_ABILITATO.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            // persist
+            entityManager.persist(controllo);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+        // CONTROLLI FIRMA - CRL
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CRL);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CRL.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            controllo.setFirCrl(crlContr);
+            // persist
+            entityManager.persist(controllo);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+        // CONTROLLI FIRMA - OCSP
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.OCSP);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.OCSP.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            controllo.setFirOcsp(ocspContr);
+
+            // USO CONTR
+            if (ocspContr != null) {
+                ArrayList<AroUsoCertifCaContrComp> usoCerifiCaContrComp = new ArrayList<>();
+
+                AroUsoCertifCaContrComp usoCertifOcsp = new AroUsoCertifCaContrComp();
+                usoCertifOcsp.setPgCertifCa(BigDecimal.ONE);
+                usoCertifOcsp.setAroContrFirmaComp(controllo);
+
+                // CA
+                usoCertifOcsp.setFirCertifCa(ocspContr.getFirCertifOcsp().getFirCertifCa());
+                usoCertifOcsp.setFirOcsp(ocspContr);
+
+                //
+                usoCerifiCaContrComp.add(usoCertifOcsp);
+                //
+                controllo.setAroUsoCertifCaContrComps(usoCerifiCaContrComp);
+            }
+            //
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+            // persist
+            entityManager.persist(controllo);
+        }
+        // CONTROLLI FIRMA - CERTIFICATO
+        {
+            VFContrFirmaCompType vfControllo = controlliFirma.get(VFTipoControlloType.CERTIFICATO);
+            AroContrFirmaComp controllo = new AroContrFirmaComp();
+            controllo.setAroFirmaComp(tmpFirmaComp);
+            controllo.setTiContr(VFTipoControlloType.CERTIFICATO.name());
+            controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
+            // persist
+            entityManager.persist(controllo);
+            tmpFirmaComp.getAroContrFirmaComps().add(controllo);
+        }
+
+        //
+
         /*
          * Esitono eccezioni gestibili per questi casi (quelle per cui RispostaControlli#rBoolean dovrebbe valore false?
          * Nel caso utilizzare VerificaFirmaException
          */
-
         //
         if (tmpFirmaCompPadre != null) {
             AroControfirmaFirma tmpControfirmaFirma = new AroControfirmaFirma();
@@ -587,7 +592,6 @@ public class SalvataggioFirmaManager {
             // persist
             entityManager.persist(tmpControfirmaFirma);
         }
-
         return tmpFirmaComp;
     }
 
@@ -610,7 +614,30 @@ public class SalvataggioFirmaManager {
             throws VerificaFirmaException {
         //
         AroMarcaComp tmpMarcaComp = new AroMarcaComp();
-        tmpMarcaComp.setAroContrMarcaComps(new ArrayList<AroContrMarcaComp>());
+        tmpMarcaComp.setAroContrMarcaComps(new ArrayList<>());
+
+        tmpMarcaComp.setDsMarcaBase64(marcaCompType.getDsMarcaBase64());
+        tmpMarcaComp.setDsAlgoMarca(marcaCompType.getDsAlgoMarca());
+        tmpMarcaComp.setTmMarcaTemp(XmlDateUtility.xmlGregorianCalendarToDate(marcaCompType.getTmMarcaTemp()));
+        tmpMarcaComp.setTiFormatoMarca(marcaCompType.getTiFormatoMarca());
+        tmpMarcaComp.setDtScadMarca(XmlDateUtility.xmlGregorianCalendarToDate(marcaCompType.getDtScadMarca()));
+
+        tmpMarcaComp.setTiEsitoVerifMarca(marcaCompType.getTiEsitoVerifMarca());
+        tmpMarcaComp.setDsMsgEsitoVerifMarca(marcaCompType.getDsMsgEsitoVerifMarca());
+
+        tmpMarcaComp.setTiEsitoContrConforme(marcaCompType.getTiEsitoContrConforme());
+        tmpMarcaComp.setDsMsgEsitoContrConforme(marcaCompType.getDsMsgEsitoContrConforme());
+
+        tmpMarcaComp.setPgBusta(busta.getPgBusta());
+        tmpMarcaComp.setPgMarca(marcaCompType.getPgMarca());
+
+        if (isDetached) {
+            tmpBustaCrittogSottoComp.getAroMarcaComps().add(tmpMarcaComp);
+            tmpMarcaComp.setAroBustaCrittog(tmpBustaCrittogSottoComp);
+        } else {
+            tmpBustaCrittogComp.getAroMarcaComps().add(tmpMarcaComp);
+            tmpMarcaComp.setAroBustaCrittog(tmpBustaCrittogComp);
+        }
 
         // Creo una mappa di CONTR_MARCA_COMP identificati dalla costante enumerata in
         // VFTipoControlloType
@@ -618,8 +645,7 @@ public class SalvataggioFirmaManager {
                 .collect(Collectors.toMap(VFContrMarcaCompType::getTiContr, t -> t));
 
         // TOFIX : corretto ?!
-        if (!marcaCompType.getTiEsitoContrConforme()
-                .equals(VerificaFirmaEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO.name())) {
+        if (!marcaCompType.getTiEsitoContrConforme().equals(SacerIndication.FORMATO_NON_CONOSCIUTO.name())) {
 
             VFCertifCaType certifTsaType = marcaCompType.getCertifTsa();
             // CERTIFICATO TSA + BLOB
@@ -646,7 +672,6 @@ public class SalvataggioFirmaManager {
                 controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO.name());
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
-                entityManager.persist(controllo);
             }
 
             // CONTROLLI MARCA - CATENA_TRUSTED CertificateAssociation &&
@@ -654,7 +679,7 @@ public class SalvataggioFirmaManager {
             {
                 VFContrMarcaCompType vfControllo = controlliMarca.get(VFTipoControlloType.CATENA_TRUSTED);
                 AroContrMarcaComp controllo = new AroContrMarcaComp();
-                controllo.setAroUsoCertifCaContrMarcas(new ArrayList<AroUsoCertifCaContrMarca>());
+                controllo.setAroUsoCertifCaContrMarcas(new ArrayList<>());
                 controllo.setAroMarcaComp(tmpMarcaComp);
                 tmpMarcaComp.getAroContrMarcaComps().add(controllo);
                 controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED.name());
@@ -675,13 +700,7 @@ public class SalvataggioFirmaManager {
                 usoCertifCatena.setFirOcsp(ocspTsa);
                 //
                 usoCerifiCaContrComp.add(usoCertifCatena);
-                // persist
-                entityManager.persist(usoCertifCatena);
                 controllo.getAroUsoCertifCaContrMarcas().add(usoCertifCatena);
-
-                // persist
-                entityManager.persist(controllo);
-
             }
 
             // CONTROLLI MARCA - CERTIFICATO CertificateExpiration
@@ -693,7 +712,6 @@ public class SalvataggioFirmaManager {
                 controllo.setTiContr(VFTipoControlloType.CERTIFICATO.name());
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
-                entityManager.persist(controllo);
             }
 
             // CONTROLLI MARCA - CRL CertificateRevocation
@@ -706,7 +724,6 @@ public class SalvataggioFirmaManager {
                 controllo.setFirCrl(crlTsa);
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
-                entityManager.persist(controllo);
             }
 
             // CONTROLLI MARCA - OCSP CertificateRevocation
@@ -714,7 +731,6 @@ public class SalvataggioFirmaManager {
                 VFContrMarcaCompType vfControllo = controlliMarca.get(VFTipoControlloType.OCSP);
                 AroContrMarcaComp controllo = new AroContrMarcaComp();
                 controllo.setAroMarcaComp(tmpMarcaComp);
-                tmpMarcaComp.getAroContrMarcaComps().add(controllo);
                 controllo.setTiContr(VFTipoControlloType.OCSP.name());
                 controllo.setFirOcsp(ocspTsa);
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
@@ -734,44 +750,17 @@ public class SalvataggioFirmaManager {
 
                     //
                     usoCerifiCaContrComp.add(usoCertifOcsp);
-                    entityManager.persist(usoCertifOcsp);
-                    //
+
                     controllo.setAroUsoCertifCaContrMarcas(usoCerifiCaContrComp);
                 }
                 //
                 tmpMarcaComp.getAroContrMarcaComps().add(controllo);
-                // persist
-                entityManager.persist(controllo);
             }
 
             tmpMarcaComp.setFirCertifCa(certificatoTsa);
 
             // } // crl
         }
-
-        tmpMarcaComp.setDsMarcaBase64(marcaCompType.getDsMarcaBase64());
-        tmpMarcaComp.setDsAlgoMarca(marcaCompType.getDsAlgoMarca());
-        tmpMarcaComp.setTmMarcaTemp(XmlDateUtility.xmlGregorianCalendarToDate(marcaCompType.getTmMarcaTemp()));
-        tmpMarcaComp.setTiFormatoMarca(marcaCompType.getTiFormatoMarca());
-        tmpMarcaComp.setDtScadMarca(XmlDateUtility.xmlGregorianCalendarToDate(marcaCompType.getDtScadMarca()));
-
-        tmpMarcaComp.setTiEsitoVerifMarca(marcaCompType.getTiEsitoVerifMarca());
-        tmpMarcaComp.setDsMsgEsitoVerifMarca(marcaCompType.getDsMsgEsitoVerifMarca());
-
-        tmpMarcaComp.setTiEsitoContrConforme(marcaCompType.getTiEsitoContrConforme());
-        tmpMarcaComp.setDsMsgEsitoContrConforme(marcaCompType.getDsMsgEsitoContrConforme());
-
-        tmpMarcaComp.setPgBusta(busta.getPgBusta());
-        tmpMarcaComp.setPgMarca(marcaCompType.getPgMarca());
-
-        if (isDetached) {
-            tmpBustaCrittogSottoComp.getAroMarcaComps().add(tmpMarcaComp);
-            tmpMarcaComp.setAroBustaCrittog(tmpBustaCrittogSottoComp);
-        } else {
-            tmpBustaCrittogComp.getAroMarcaComps().add(tmpMarcaComp);
-            tmpMarcaComp.setAroBustaCrittog(tmpBustaCrittogComp);
-        }
-        // Aggiungo la marca al componente e viceversa
 
         tmpMarcaComp.setAroCompDoc(tmpTabCDComponente);
 
@@ -803,18 +792,13 @@ public class SalvataggioFirmaManager {
                     certifCaType.getDlDnIssuerCertifCa());
         }
 
-        // FIX MAC 26836, compilo il subject mancante e correggo il subject keyId:
-        if (tmpCertificatoCa != null) {
-            correggiInformazioniCA(tmpCertificatoCa, certifCaType);
-        }
-
         // not found
         if (tmpCertificatoCa == null) {
             tmpCertificatoCa = new FirCertifCa();
-            tmpCertificatoCa.setFirUrlDistribCrls(new ArrayList<FirUrlDistribCrl>());
-            tmpCertificatoCa.setFirUrlDistribOcsps(new ArrayList<FirUrlDistribOcsp>());
-            tmpCertificatoCa.setFirCertifFirmatarios(new ArrayList<FirCertifFirmatario>());
-            tmpCertificatoCa.setFirCrls(new ArrayList<FirCrl>());
+            tmpCertificatoCa.setFirUrlDistribCrls(new ArrayList<>());
+            tmpCertificatoCa.setFirUrlDistribOcsps(new ArrayList<>());
+            tmpCertificatoCa.setFirCertifFirmatarios(new ArrayList<>());
+            tmpCertificatoCa.setFirCrls(new ArrayList<>());
 
             tmpCertificatoCa.setNiSerialCertifCa(certifCaType.getNiSerialCertifCa());
             tmpCertificatoCa.setDsSubjectKeyId(certifCaType.getDsSubjectKeyId());
@@ -845,24 +829,33 @@ public class SalvataggioFirmaManager {
                 tmpCertificatoCa.getFirUrlDistribOcsps().add(firUrl);
                 idx++;
             }
-
-            // se il file non presente -> non lo si persiste
-            if (certifCaType.getFilePerFirma() != null) {
-                FirFilePerFirma blobCertCa = new FirFilePerFirma();
-                blobCertCa.setTiFilePerFirma(certifCaType.getFilePerFirma().getTiFilePerFirma().name());
-                blobCertCa.setBlFilePerFirma(certifCaType.getFilePerFirma().getBlFilePerFirma());
-                blobCertCa.setFirCertifCa(tmpCertificatoCa);
-                tmpCertificatoCa.setFirFilePerFirma(blobCertCa);
-            } else {
-                LOG.warn("File per firma non presente per CA serial {} Issuer {} Subject {}",
-                        tmpCertificatoCa.getNiSerialCertifCa(), tmpCertificatoCa.getDlDnIssuerCertifCa(),
-                        tmpCertificatoCa.getDlDnSubjectCertifCa());
-            }
-
-            // persist
-            entityManager.persist(tmpCertificatoCa);
         } else {
-            // pregresso URL OCSP
+            /*
+             * assumo che la CA trovata sul DB non sia correttamente censita; se ci sono differenze aggiorno con le
+             * informazioni prevenienti dalla verifica delle firme.
+             *
+             */
+            if (tmpCertificatoCa.getDlDnSubjectCertifCa() == null
+                    || !tmpCertificatoCa.getDlDnSubjectCertifCa().equals(certifCaType.getDlDnSubjectCertifCa())) {
+                tmpCertificatoCa.setDlDnSubjectCertifCa(certifCaType.getDlDnSubjectCertifCa());
+            }
+            boolean isSubjectKeyIdEsistenteNullOrNonValorizzato = tmpCertificatoCa.getDsSubjectKeyId() == null
+                    || tmpCertificatoCa.getDsSubjectKeyId().equals("NON_VALORIZZATO");
+            boolean isSubjectKeyIdNuovoNotNullAndValorizzato = certifCaType.getDsSubjectKeyId() != null
+                    && !certifCaType.getDsSubjectKeyId().equals("NON_VALORIZZATO");
+            if (isSubjectKeyIdEsistenteNullOrNonValorizzato && isSubjectKeyIdNuovoNotNullAndValorizzato) {
+                tmpCertificatoCa.setDsSubjectKeyId(certifCaType.getDsSubjectKeyId());
+            }
+            /*
+             * aggiornamento di inizio e fine validità del certificato della CA con quelle recepite dalla verifica
+             */
+            tmpCertificatoCa
+                    .setDtIniValCertifCa(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtIniValCertifCa()));
+            tmpCertificatoCa
+                    .setDtFinValCertifCa(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtFinValCertifCa()));
+            /*
+             * gestione del pregresso URL OCSP (qualora non presenti per la CA presente in anagrafica)
+             */
             if (tmpCertificatoCa.getFirUrlDistribOcsps().isEmpty()) {
                 // urls ocsp
                 int idx = 1;
@@ -878,57 +871,13 @@ public class SalvataggioFirmaManager {
                 }
             }
         }
+        // persist
+        entityManager.persist(tmpCertificatoCa);
         /*
          * Esitono eccezioni gestibili per questi casi (quelle per cui RispostaControlli#rBoolean dovrebbe valore false?
          * Nel caso utilizzare VerificaFirmaException
          */
         return tmpCertificatoCa;
-    }
-
-    /**
-     * Assumo che la CA trovata sul DB non sia correttamente censita; se ci sono differenze aggiorno con le informazioni
-     * prevenienti dalla verifica delle firme.
-     *
-     * @param tmpCertificatoCa,
-     *            entity esistente
-     * @param certifCaType,
-     *            oggetto che identifica la CA proveniente dalla verifica firme
-     */
-    private void correggiInformazioniCA(FirCertifCa tmpCertificatoCa, VFCertifCaType certifCaType) {
-        boolean pleasePersist = false;
-        // Controllo su DL_DN_SUBJECT
-        if (tmpCertificatoCa.getDlDnSubjectCertifCa() == null
-                || !tmpCertificatoCa.getDlDnSubjectCertifCa().equals(certifCaType.getDlDnSubjectCertifCa())) {
-            tmpCertificatoCa.setDlDnSubjectCertifCa(certifCaType.getDlDnSubjectCertifCa());
-            pleasePersist = true;
-        }
-        boolean isSubjectKeyIdEsistenteNullOrNonValorizzato = tmpCertificatoCa.getDsSubjectKeyId() == null
-                || tmpCertificatoCa.getDsSubjectKeyId().equals("NON_VALORIZZATO");
-        boolean isSubjectKeyIdNuovoNotNullAndValorizzato = certifCaType.getDsSubjectKeyId() != null
-                && !certifCaType.getDsSubjectKeyId().equals("NON_VALORIZZATO");
-        // Controllo su SUBJECT_KEY_ID
-        if (isSubjectKeyIdEsistenteNullOrNonValorizzato && isSubjectKeyIdNuovoNotNullAndValorizzato) {
-            tmpCertificatoCa.setDsSubjectKeyId(certifCaType.getDsSubjectKeyId());
-            pleasePersist = true;
-        }
-        // controllo su DT_INI_VAL
-        if (!tmpCertificatoCa.getDtIniValCertifCa()
-                .equals(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtIniValCertifCa()))) {
-            tmpCertificatoCa
-                    .setDtIniValCertifCa(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtIniValCertifCa()));
-            pleasePersist = true;
-        }
-        // controllo su DT_FIN_VAL
-        if (!tmpCertificatoCa.getDtFinValCertifCa()
-                .equals(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtFinValCertifCa()))) {
-            tmpCertificatoCa
-                    .setDtFinValCertifCa(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtIniValCertifCa()));
-            pleasePersist = true;
-        }
-
-        if (pleasePersist) {
-            entityManager.persist(tmpCertificatoCa);
-        }
     }
 
     private FirCrl buildFirCrl(VFCrlType crl) throws VerificaFirmaException {
@@ -955,17 +904,6 @@ public class SalvataggioFirmaManager {
 
             // add on list parent
             tmpCertifCa.getFirCrls().add(tmpFirCrl);
-
-            // se il file non presente -> non lo si persiste
-            if (crl.getFilePerFirma() != null) {
-                FirFilePerFirma tmpFilePerFirma = new FirFilePerFirma();
-                tmpFilePerFirma.setTiFilePerFirma(crl.getFilePerFirma().getTiFilePerFirma().name());// TipoFileEnum.CRL.name()
-                tmpFilePerFirma.setBlFilePerFirma(crl.getFilePerFirma().getBlFilePerFirma());
-                tmpFilePerFirma.setFirCrl(tmpFirCrl);
-                tmpFirCrl.setFirFilePerFirma(tmpFilePerFirma);
-            } else {
-                LOG.warn("File per firma non presente per CRL serial {}", tmpFirCrl.getNiSerialCrl());
-            }
 
             // persist
             entityManager.persist(tmpFirCrl);
@@ -1008,18 +946,6 @@ public class SalvataggioFirmaManager {
             // add on list parent
             tmpCertifCa.getFirCertifOcsps().add(tmpFirCertifOcsp);
 
-            // se il file non presente -> non lo si persiste
-            if (ocsp.getCertifOcsp().getFilePerFirma() != null) {
-                FirFilePerFirma tmpFilePerFirma = new FirFilePerFirma();
-                tmpFilePerFirma.setTiFilePerFirma(ocsp.getCertifOcsp().getFilePerFirma().getTiFilePerFirma().name());// TipoFileEnum.CERTIF_OCSP.name()
-                tmpFilePerFirma.setBlFilePerFirma(ocsp.getCertifOcsp().getFilePerFirma().getBlFilePerFirma());
-                tmpFilePerFirma.setFirCertifOcsp(tmpFirCertifOcsp);
-                tmpFirCertifOcsp.setFirFilePerFirma(tmpFilePerFirma);
-            } else {
-                LOG.warn("File per firma non presente per OCSP serial {} issuer {}",
-                        tmpFirCertifOcsp.getNiSerialCertifOcsp(), tmpFirCertifOcsp.getDlDnSubjectCertifOcsp());
-            }
-
             // persist
             entityManager.persist(tmpFirCertifOcsp);
         }
@@ -1043,12 +969,6 @@ public class SalvataggioFirmaManager {
 
             // add parent
             tmpFirCertifOcsp.getFirOcsps().add(tmpFirOcsp);
-
-            FirFilePerFirma tmpFilePerFirma = new FirFilePerFirma();
-            tmpFilePerFirma.setTiFilePerFirma(ocsp.getFilePerFirma().getTiFilePerFirma().name());// TipoFileEnum.OCSP.name()
-            tmpFilePerFirma.setBlFilePerFirma(ocsp.getFilePerFirma().getBlFilePerFirma());
-            tmpFilePerFirma.setFirOcsp(tmpFirOcsp);
-            tmpFirOcsp.setFirFilePerFirma(tmpFilePerFirma);
 
             // persist
             entityManager.persist(tmpFirOcsp);
@@ -1099,22 +1019,8 @@ public class SalvataggioFirmaManager {
                 //
                 firCertifFirmatario.setFirCertifCa(tmpFirCertifCa);
 
-                tmpFirCertifCa.setFirCertifFirmatarios(new ArrayList<FirCertifFirmatario>());
+                tmpFirCertifCa.setFirCertifFirmatarios(new ArrayList<>());
                 tmpFirCertifCa.getFirCertifFirmatarios().add(firCertifFirmatario);
-
-                // se il file non presente -> non lo si persiste
-                if (certifFirmatarioType.getFilePerFirma() != null) {
-                    FirFilePerFirma blobCertFirmatario = new FirFilePerFirma();
-                    blobCertFirmatario
-                            .setTiFilePerFirma(certifFirmatarioType.getFilePerFirma().getTiFilePerFirma().name());// TipoFileEnum.CERTIF_FIRMATARIO.name()
-                    blobCertFirmatario.setBlFilePerFirma(certifFirmatarioType.getFilePerFirma().getBlFilePerFirma());
-                    blobCertFirmatario.setFirCertifFirmatario(firCertifFirmatario);
-                    //
-                    firCertifFirmatario.setFirFilePerFirma(blobCertFirmatario);
-                } else {
-                    LOG.warn("File per firma non presente per Firmatario serial {}",
-                            firCertifFirmatario.getNiSerialCertifFirmatario());
-                }
 
                 // persist
                 entityManager.persist(firCertifFirmatario);
@@ -1131,7 +1037,7 @@ public class SalvataggioFirmaManager {
     }
 
     private void buildFirReport(AroCompDoc tmpVerificaAroCompDoc, VerificaFirmaWrapper wrapper,
-            StrutturaVersamento strutV) throws VerificaFirmaException {
+            StrutturaVersamento strutV, String nomeWs) throws VerificaFirmaException {
 
         // servizio verifica firma determinato in precedenza
         DecServizioVerificaCompDoc servizioFirma = tmpVerificaAroCompDoc.getDecServizioVerificaCompDoc();
@@ -1203,37 +1109,34 @@ public class SalvataggioFirmaManager {
 
                 // URN
                 buildFirUrnReport(tmpFirReport, compUrnOrig, compUrnNorm);
-                // persist
-                entityManager.persist(tmpFirReport);
+                BackendStorage backendVerificaFirme = objectStorageService
+                        .lookupBackendByServiceName(strutV.getIdTipologiaUnitaDocumentaria(), nomeWs);
+                if (backendVerificaFirme.isObjectStorage()) {
 
-                // aws
-                Map<String, PutObjectResult> awsPutReportZipResult = verificaFirmaReportAwsClient
-                        .sendReportZipToObjStorage(tmpVerificaAroCompDoc.getIdCompDoc(), tmpFirReport.getIdFirReport(),
-                                strutV, servizioFirma, tmpFirReport.getFirUrnReports(), reportZip);
-                if (awsPutReportZipResult != null) {
-                    tmpFirReport.setNmBucket(verificaFirmaReportAwsClient.getBucketName());
-                    tmpFirReport.setCdKeyFile((String) awsPutReportZipResult.keySet().toArray()[0]);
-                } else {
-                    LOG.warn("SalvataggioFirmaManager.buildFirRepor persistenza report verifica firma su BLOB");
-                    // force insert before update
-                    entityManager.flush();
-                    // procedo alla memorizzazione del file sul blob, via JDBC
-                    WriteCompBlbOracle.DatiAccessori datiAccessori = new WriteCompBlbOracle().new DatiAccessori();
-                    datiAccessori.setTabellaBlob(WriteCompBlbOracle.TabellaBlob.FIR_REPORT);
-                    datiAccessori.setIdPadre(tmpFirReport.getIdFirReport());
-                    //
-                    FileBinario fileB = new FileBinario();
-                    fileB.setFileSuDisco(reportZip.toFile());
-                    RispostaControlli tmpControlli = writeCompBlbOracle.aggiornaStreamSuBlobComp(datiAccessori, fileB);
-                    if (!tmpControlli.isrBoolean()) {
-                        throw new VerificaFirmaException(tmpControlli.getCodErr(), tmpControlli.getDsErr());
+                    ObjectStorageResource savedReport = objectStorageService.createResourceInRerportvf(
+                            backendVerificaFirme.getBackendName(), tmpVerificaAroCompDoc.getIdCompDoc(),
+                            tmpFirReport.getIdFirReport(), strutV, servizioFirma, tmpFirReport.getFirUrnReports(),
+                            reportZip);
+                    if (savedReport == null) {
+                        // Caso 1: il salvataggio su object storage non è andato a buon fine
+                        saveReportFallback(tmpFirReport, reportZip);
+                    } else {
+                        tmpFirReport.setNmBucket(savedReport.getBucket());
+                        tmpFirReport.setCdKeyFile(savedReport.getKey());
+                        buildDecBackend(tmpFirReport, backendVerificaFirme.getBackendName());
+
+                        // persist
+                        entityManager.persist(tmpFirReport);
                     }
+                } else {
+                    // Caso 2: il backend è Database
+                    saveReportFallback(tmpFirReport, reportZip);
                 }
 
                 // flush
                 entityManager.flush();
             }
-        } /* try */ catch (IOException ex) {
+        } /* try */ catch (IOException | ObjectStorageException ex) {
             throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
                     MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                             "SalvataggioFirmaManager.buildFirReport errore generico durante elaborazione file report"
@@ -1248,6 +1151,40 @@ public class SalvataggioFirmaManager {
                             reportZip.toFile().getName());
                 }
             }
+        }
+    }
+
+    /**
+     * Effettua il salvataggio del report su DB. Questo può accadere in due casi:
+     * <ul>
+     * <li>C'è stato un errore sul salvataggio su Object Storage</li>
+     * <li>Il backend configurato per il salvataggio dei report è il Database</li>
+     * </ul>
+     *
+     * @param tmpFirReport
+     *            tabella FirReport
+     * @param reportZip
+     *            Path file zip
+     *
+     * @throws VerificaFirmaException
+     */
+    private void saveReportFallback(FirReport tmpFirReport, Path reportZip) throws VerificaFirmaException {
+        LOG.warn("SalvataggioFirmaManager.buildFirRepor persistenza report verifica firma su BLOB");
+
+        // Se ricadiamo in questo caso dobbiamo essere sicuri di rispettare il vincolo
+        // CK_BL_OR_BUCKET
+        tmpFirReport.setCdKeyFile(null);
+        tmpFirReport.setNmBucket(null);
+        entityManager.persist(tmpFirReport);
+        // force insert before update
+        entityManager.flush();
+        // procedo alla memorizzazione del file sul blob, via JDBC
+        FileBinario fileB = new FileBinario();
+        fileB.setFileSuDisco(reportZip.toFile());
+        RispostaControlli tmpControlli = writeCompBlbOracle.aggiornaStreamSuBlobComp(fileB,
+                tmpFirReport.getIdFirReport());
+        if (!tmpControlli.isrBoolean()) {
+            throw new VerificaFirmaException(tmpControlli.getCodErr(), tmpControlli.getDsErr());
         }
     }
 
@@ -1274,6 +1211,15 @@ public class SalvataggioFirmaManager {
         tmpUrnReport.setFirReport(tmpFirReport);
 
         tmpFirReport.getFirUrnReports().add(tmpUrnReport);
+    }
+
+    private void buildDecBackend(FirReport tmpFirReport, String nomeBackend) {
+        TypedQuery<DecBackend> query = entityManager
+                .createQuery("Select d from DecBackend d where d.nmBackend = :nomeBackend", DecBackend.class);
+        query.setParameter("nomeBackend", nomeBackend);
+        DecBackend backend = query.getSingleResult();
+        tmpFirReport.setDecBackend(backend);
+
     }
 
 }

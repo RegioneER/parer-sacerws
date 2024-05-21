@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -41,6 +58,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import it.eng.parer.entity.DecModelloXsdFascicolo;
+import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiModelloXsd;
+import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiUsoModelloXsd;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.CSChiaveSottFasc;
@@ -70,6 +89,7 @@ import it.eng.parer.ws.xml.versfascicoloresp.ECFascicoloType;
  *
  * @author fioravanti_f
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliProfiliFascicolo")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
@@ -81,12 +101,6 @@ public class ControlliProfiliFascicolo {
 
     @EJB
     protected ControlliSemantici controlliSemantici;
-
-    public static final String NOME_SEGNATURA_ARCHIVISTICA = "PROFILO_ARCHIVISTICO_FASCICOLO";
-    public static final String NOME_METADATI_PROFILO = "PROFILO_GENERALE_FASCICOLO";
-    public static final String NOME_METADATI_SPECIFICI = "PROFILO_SPECIFICO_FASCICOLO";
-    //
-    static final String NOME_USO_VERSAMENTO = "VERS";
 
     public RispostaControlli verificaProfiloArchivistico(VersFascicoloExt versamento) {
         RispostaControlli rispostaControlli;
@@ -108,10 +122,10 @@ public class ControlliProfiliFascicolo {
                     + "and t.decModelloXsdFascicolo.dtIstituz <= :dataDiOggiIn "
                     + "and t.decModelloXsdFascicolo.dtSoppres > :dataDiOggiIn "; // da notare STRETTAMENTE MAGGIORE ;
             javax.persistence.Query query = entityManager.createQuery(queryStr);
-            query.setParameter("idTipoFascicolo", new BigDecimal(svf.getIdTipoFascicolo()));
+            query.setParameter("idTipoFascicolo", svf.getIdTipoFascicolo());
             query.setParameter("annoIn", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
-            query.setParameter("segnatura", NOME_SEGNATURA_ARCHIVISTICA);
-            query.setParameter("usoversamento", NOME_USO_VERSAMENTO);
+            query.setParameter("segnatura", TiModelloXsd.PROFILO_ARCHIVISTICO_FASCICOLO);
+            query.setParameter("usoversamento", TiUsoModelloXsd.VERS);
             query.setParameter("dataDiOggiIn", new Date());
             conta = (Long) query.getSingleResult();
             //
@@ -138,10 +152,10 @@ public class ControlliProfiliFascicolo {
                             + "and uf.decAaTipoFascicolo.aaFinTipoFascicolo >= :annoIn ";
                     query = entityManager.createQuery(queryStr, DecModelloXsdFascicolo.class);
                     query.setParameter("cdXsd", versione);
-                    query.setParameter("idTipoFascicolo", new BigDecimal(svf.getIdTipoFascicolo()));
+                    query.setParameter("idTipoFascicolo", svf.getIdTipoFascicolo());
                     query.setParameter("annoIn", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
-                    query.setParameter("segnatura", NOME_SEGNATURA_ARCHIVISTICA);
-                    query.setParameter("usoversamento", NOME_USO_VERSAMENTO);
+                    query.setParameter("segnatura", TiModelloXsd.PROFILO_ARCHIVISTICO_FASCICOLO);
+                    query.setParameter("usoversamento", TiUsoModelloXsd.VERS);
                     query.setParameter("dataDiOggiIn", new Date());
                     //
                     dmxfs = query.getResultList();
@@ -162,10 +176,10 @@ public class ControlliProfiliFascicolo {
                             + "and uf.decAaTipoFascicolo.aaFinTipoFascicolo >= :annoIn ";
                     query = entityManager.createQuery(queryStr, DecModelloXsdFascicolo.class);
                     query.setParameter("flDefault", "1");
-                    query.setParameter("idTipoFascicolo", new BigDecimal(svf.getIdTipoFascicolo()));
+                    query.setParameter("idTipoFascicolo", svf.getIdTipoFascicolo());
                     query.setParameter("annoIn", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
-                    query.setParameter("segnatura", NOME_SEGNATURA_ARCHIVISTICA);
-                    query.setParameter("usoversamento", NOME_USO_VERSAMENTO);
+                    query.setParameter("segnatura", TiModelloXsd.PROFILO_ARCHIVISTICO_FASCICOLO);
+                    query.setParameter("usoversamento", TiUsoModelloXsd.VERS);
                     query.setParameter("dataDiOggiIn", new Date());
                     //
                     dmxfs = query.getResultList();
@@ -370,10 +384,10 @@ public class ControlliProfiliFascicolo {
                         + "and uf.decAaTipoFascicolo.aaFinTipoFascicolo >= :annoIn ";
                 javax.persistence.Query query = entityManager.createQuery(queryStr, DecModelloXsdFascicolo.class);
                 query.setParameter("cdXsd", versione);
-                query.setParameter("idTipoFascicolo", new BigDecimal(svf.getIdTipoFascicolo()));
+                query.setParameter("idTipoFascicolo", svf.getIdTipoFascicolo());
                 query.setParameter("annoIn", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
-                query.setParameter("segnatura", NOME_METADATI_PROFILO);
-                query.setParameter("usoversamento", NOME_USO_VERSAMENTO);
+                query.setParameter("segnatura", TiModelloXsd.PROFILO_GENERALE_FASCICOLO);
+                query.setParameter("usoversamento", TiUsoModelloXsd.VERS);
                 query.setParameter("dataDiOggiIn", new Date());
                 //
                 dmxfs = query.getResultList();
@@ -393,10 +407,10 @@ public class ControlliProfiliFascicolo {
                         + "and uf.decAaTipoFascicolo.aaFinTipoFascicolo >= :annoIn ";
                 javax.persistence.Query query = entityManager.createQuery(queryStr, DecModelloXsdFascicolo.class);
                 query.setParameter("flDefault", "1");
-                query.setParameter("idTipoFascicolo", new BigDecimal(svf.getIdTipoFascicolo()));
+                query.setParameter("idTipoFascicolo", svf.getIdTipoFascicolo());
                 query.setParameter("annoIn", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
-                query.setParameter("segnatura", NOME_METADATI_PROFILO);
-                query.setParameter("usoversamento", NOME_USO_VERSAMENTO);
+                query.setParameter("segnatura", TiModelloXsd.PROFILO_GENERALE_FASCICOLO);
+                query.setParameter("usoversamento", TiUsoModelloXsd.VERS);
                 query.setParameter("dataDiOggiIn", new Date());
                 //
                 dmxfs = query.getResultList();

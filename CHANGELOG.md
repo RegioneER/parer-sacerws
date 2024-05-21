@@ -1,4 +1,162 @@
 
+## 5.2.0 (06-05-2024)
+
+### Bugfix: 3
+- [#32027](https://parermine.regione.emilia-romagna.it/issues/32027) Aggiornamento metadati: errore 666 se si tenta di aggiornare i Dati Specifici dei componenti
+- [#31821](https://parermine.regione.emilia-romagna.it/issues/31821) Correzione gestione data scadenza in caso di "certificato scaduto" (verifica firma eidas)
+- [#31285](https://parermine.regione.emilia-romagna.it/issues/31285) Correzione messaggio di errore di aggiornamento metadati
+
+### Novità: 2
+- [#31672](https://parermine.regione.emilia-romagna.it/issues/31672) Introduzione TAG "temporany" su bucket staging (con lifecycle)
+- [#29276](https://parermine.regione.emilia-romagna.it/issues/29276) Salvataggio diretto su OS di Aggiornamento metadati UD
+
+## 5.1.0 (04-04-2024)
+
+### Bugfix: 3
+- [#31300](https://parermine.regione.emilia-romagna.it/issues/31300) Aggiornamento metadati: errore 666 se si tenta di aggiornare i componenti
+- [#31297](https://parermine.regione.emilia-romagna.it/issues/31297) Risoluzione errore 666 per AggiuntaAllegatiSync in caso di mancanza tag opzionale Configurazione
+- [#29906](https://parermine.regione.emilia-romagna.it/issues/29906) Correzione della mancata gestione dell'errore per dati specifici che non coincidono con l'XSD
+
+## 5.0.0 (12-02-2024)
+
+### Novità: 1
+- [#30800](https://parermine.regione.emilia-romagna.it/issues/30800) Aggiornamento a Spring 5 
+
+## 4.14.0 (29-01-2024)
+
+### Novità: 1
+- [#31011](https://parermine.regione.emilia-romagna.it/issues/31011) Aggiornamento libreria DSS 5.13
+
+## 4.13.0 (05-12-2023)
+
+### Bugfix: 1
+- [#30753](https://parermine.regione.emilia-romagna.it/issues/30753) Correzione su aggiornamento informazioni certification authority
+
+### Novità: 2
+- [#30849](https://parermine.regione.emilia-romagna.it/issues/30849) Creazione endpoint con informazioni sulla versione
+- [#30718](https://parermine.regione.emilia-romagna.it/issues/30718) Eliminazione gestione persistenza di oggetti "raw" (base64) presenti su report EIDAS/CRYPTO
+
+## 4.12.0 (22-11-2023)
+
+### Bugfix: 1
+- [#30887](https://parermine.regione.emilia-romagna.it/issues/30887) Correzione bug mancato salvataggio sessioni di versamento aggiunta documenti 
+
+### Novità: 4
+- [#30155](https://parermine.regione.emilia-romagna.it/issues/30155) Miglioramento della rappresentazione degli esiti dei controlli di revoca del certificato
+- [#30037](https://parermine.regione.emilia-romagna.it/issues/30037) Gestione dell'errore: Rapporto versamento non disponibile
+- [#29958](https://parermine.regione.emilia-romagna.it/issues/29958) Utilizzo degli EJB nella parte di aggiornamento metadati
+- [#29613](https://parermine.regione.emilia-romagna.it/issues/29613) Rimozione della libreria esterna sacer-jpa
+
+## 4.11.1 (05-10-2023)
+
+### Bugfix: 1
+- [#30617](https://parermine.regione.emilia-romagna.it/issues/30617) Correzione configurazione per ripristino della versione 1.11.1 di Eidas
+
+## 4.11.0 (03-10-2023)
+
+### Novità: 4
+- [#30236](https://parermine.regione.emilia-romagna.it/issues/30236) Ripristino della versione 1.11.1 di Eidas
+- [#30089](https://parermine.regione.emilia-romagna.it/issues/30089) Revisione partizionamenti aggiornamento metadati: aggiunta gestione campi per partizionamento
+- [#29834](https://parermine.regione.emilia-romagna.it/issues/29834) Attività per la realizzazione della separazione delle sessioni: parte scrittura 
+- [#28309](https://parermine.regione.emilia-romagna.it/issues/28309) Servizio aggiornamento metadati: possibilità di eliminare l'elemento DatiSpecifici
+
+## 4.10.1 (13-09-2023)
+
+### Bugfix: 1
+- [#30211](https://parermine.regione.emilia-romagna.it/issues/30211) Downgrade alla versione 1.10.0 di Eidas
+
+## 4.10.0 (16-08-2023)
+
+### Bugfix: 1
+- [#30052](https://parermine.regione.emilia-romagna.it/issues/30052) Correzione su regressione parsing del report di verifica firma EIDAS-DSS 5.12
+
+### Novità: 2
+- [#29881](https://parermine.regione.emilia-romagna.it/issues/29881) Aggiornamento alle versione 5.12 della libreria DSS
+- [#29827](https://parermine.regione.emilia-romagna.it/issues/29827) Introduzione di tag sui versamenti non andati a buon fine per la definizione di politiche di retention
+
+## 4.9.0 (03-08-2023)
+
+### Novità: 1
+- [#29661](https://parermine.regione.emilia-romagna.it/issues/29661) Aggiornamento librerie obsolete 2023
+
+## 4.8.0 (13-07-2023)
+
+### Bugfix: 1
+- [#29615](https://parermine.regione.emilia-romagna.it/issues/29615) Correzione errata valorizzazione del TipoRiferimentoTemporaleUsato in caso di verifica Crypto effettuata alla data di firma se il documento è privo di data di firma
+
+### Novità: 1
+- [#26423](https://parermine.regione.emilia-romagna.it/issues/26423) Servizio di Aggiornamento UD: aggiungere profilo normativo
+
+## 4.7.1 (15-06-2023)
+
+### Bugfix: 3
+- [#29761](https://parermine.regione.emilia-romagna.it/issues/29761) Correzione salvataggio evidenze di conservazione su versamento fascicolo 1.1 e 1.0
+- [#29645](https://parermine.regione.emilia-romagna.it/issues/29645) Correzione di un bug in fase di versamento
+- [#29457](https://parermine.regione.emilia-romagna.it/issues/29457) Correzione errore nella verifica delle autorizzazioni
+
+### Novità: 1
+- [#29091](https://parermine.regione.emilia-romagna.it/issues/29091) Verifica di conformità sull'attributo "Signature acceptance validation"
+
+## 4.7.0 (19-05-2023)
+
+### Novità: 3
+- [#29084](https://parermine.regione.emilia-romagna.it/issues/29084) Separazione su Object Storage le evidenze di conservazione andate a buon fine dalle altre
+- [#28970](https://parermine.regione.emilia-romagna.it/issues/28970) Gestione risposta Verifica Eidas se impostato a true UtilizzoDataFirmaPerRifTemp
+- [#28489](https://parermine.regione.emilia-romagna.it/issues/28489) Eliminazione del salvataggio dei certificati della CA e delle CRL in fase di verifica
+
+## 4.6.0 (08-05-2023)
+
+### Novità: 1
+- [#28542](https://parermine.regione.emilia-romagna.it/issues/28542) Creazione pacchetto unico per sacerws
+
+## 4.5.1.1 (04-05-2023)
+
+### Bugfix: 1
+- [#29500](https://parermine.regione.emilia-romagna.it/issues/29500) Correzione gestione upload multipart large data object con RestTemplate (invocazione microservizio di verifica firma) 
+## 4.5.1 (05-04-2023)
+
+### Bugfix: 6
+- [#28747](https://parermine.regione.emilia-romagna.it/issues/28747) Gestione upload multipart large data object con RestTemplate (invocazione microservizio di verifica firma) 
+- [#28571](https://parermine.regione.emilia-romagna.it/issues/28571)  Correzione verifica-controllo hash componente versato
+- [#28565](https://parermine.regione.emilia-romagna.it/issues/28565) Correzione log errore in caso di problemi al salvataggio della sessione di versamento
+- [#28449](https://parermine.regione.emilia-romagna.it/issues/28449) Correzione JPQL su viste in fase di persistenza URN unità documentaria
+- [#28032](https://parermine.regione.emilia-romagna.it/issues/28032) Risoluzione errore 666 in caso di mancanza tag opzionale Configurazione
+- [#27471](https://parermine.regione.emilia-romagna.it/issues/27471) Mancato funzionamento parametro FL_OBBL_DATA
+
+## 4.5.0 (28-02-2023)
+
+### Novità: 1
+- [#25924](https://parermine.regione.emilia-romagna.it/issues/25924) Salvataggio diretto su object storage
+
+### Bugfix: 3
+- [#28094](https://parermine.regione.emilia-romagna.it/issues/28094) Correzione di conversione nel passaggio dei parametri per il salvataggio sincrono
+- [#28036](https://parermine.regione.emilia-romagna.it/issues/28036)  Correzione su gestione caratteri non validi nelle risposte alle chiamate dei servizi
+- [#27463](https://parermine.regione.emilia-romagna.it/issues/27463) gestione caso in cui TSA non contenga un certificato corretto
+
+### Novità: 1
+- [#28005](https://parermine.regione.emilia-romagna.it/issues/28005)  Implementazione versamento diretto su Object storage
+
+## 4.4.0 (23-11-2022)
+
+### Novità: 1
+- [#27534](https://parermine.regione.emilia-romagna.it/issues/27534) aggiornamento libreria dss 5.10
+
+## 4.2.1.2 (15-09-2022)
+
+### Bugfix: 2
+- [#27681](https://parermine.regione.emilia-romagna.it/issues/27681) Correzione persistenza date e timestamp con Hibernate e JPA 2.2
+- [#27629](https://parermine.regione.emilia-romagna.it/issues/27629) correzione dell'ERRORE FILESYS-003-00 su versamento DPI
+
+## 4.2.1.1 (09-09-2022)
+
+### Bugfix: 1
+- [#27617](https://parermine.regione.emilia-romagna.it/issues/27617) Correzione dell'errore Hibernate nel salvataggio di un documento
+
+## 3.2.1 (02-08-2022)
+
+### Bugfix: 1
+- [#27513](https://parermine.regione.emilia-romagna.it/issues/27513) Correzione problema di concorrenza nella creazione degli elenchi
+
 ## 3.2.0 (31-05-2022)
 
 ### Novità: 2
@@ -25,10 +183,41 @@
 ### Novità: 1
 - [#26508](https://parermine.regione.emilia-romagna.it/issues/26508) Gestione nuove codifiche profili per versamento fascicolo
 
+## 4.1.4.1 (11-04-2022)
+
+### Bugfix: 1
+- [#27093](https://parermine.regione.emilia-romagna.it/issues/27093) Correzione problema di chiusura connessione
+## 4.1.4 (28-03-2022)
+
+### Bugfix: 3
+- [#26930](https://parermine.regione.emilia-romagna.it/issues/26930) Risoluzione del problema della mancata chiusura di connessioni al DB
+- [#26850](https://parermine.regione.emilia-romagna.it/issues/26850) Errore mancata gestione nel versamento di un fascicolo
+- [#26846](https://parermine.regione.emilia-romagna.it/issues/26846) Errore in caso di aggiornamento metadati con USERID errato
+
+### Novità: 1
+- [#26982](https://parermine.regione.emilia-romagna.it/issues/26982) aggiornamento versione hibernate con versione SACER WS 3.1.4
+
 ## 3.1.4 (24-03-2022)
 
 ### Bugfix: 1
 - [#26746](https://parermine.regione.emilia-romagna.it/issues/26746) Errore nell'xsd di validazione della response
+
+## 4.1.3.2 (23-02-2022)
+
+### Bugfix: 2
+- [#26819](https://parermine.regione.emilia-romagna.it/issues/26819) Errore 666 in SACER WS TEST
+- [#26493](https://parermine.regione.emilia-romagna.it/issues/26493) Correzione errore 666P per disallineamento tra XSD e DB
+
+## 4.1.3.1 (18-02-2022)
+
+### Bugfix: 1
+- [#26804](https://parermine.regione.emilia-romagna.it/issues/26804) Errore 666p in SACER WS TEST
+
+## 4.1.3 (09-02-2022)
+
+### Novità: 2
+- [#26262](https://parermine.regione.emilia-romagna.it/issues/26262) Allineamento alla versione 3.1.3 (eclipselink)
+- [#21190](https://parermine.regione.emilia-romagna.it/issues/21190) Migrazione Hibernate
 
 ## 3.1.3 (31-01-2022)
 

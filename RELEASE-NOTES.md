@@ -1,5 +1,10 @@
-## 3.2.0 (31-05-2022)
+## 5.2.0 (06-05-2024)
+
+### Bugfix: 3
+- [#32027](https://parermine.regione.emilia-romagna.it/issues/32027) Aggiornamento metadati: errore 666 se si tenta di aggiornare i Dati Specifici dei componenti
+- [#31821](https://parermine.regione.emilia-romagna.it/issues/31821) Correzione gestione data scadenza in caso di "certificato scaduto" (verifica firma eidas)
+- [#31285](https://parermine.regione.emilia-romagna.it/issues/31285) Correzione messaggio di errore di aggiornamento metadati
 
 ### Novità: 2
-- [#27249](https://parermine.regione.emilia-romagna.it/issues/27249) Aggiornamento libreria DSS 5.9
-- [#27048](https://parermine.regione.emilia-romagna.it/issues/27048) Ottimizzazione job di Creazione elenchi di versamento - Producer coda IN_ATTESA_SCHED
+- [#31672](https://parermine.regione.emilia-romagna.it/issues/31672) Introduzione TAG "temporany" su bucket staging (con lifecycle)
+- [#29276](https://parermine.regione.emilia-romagna.it/issues/29276) Salvataggio diretto su OS di Aggiornamento metadati UD

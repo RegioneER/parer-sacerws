@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="ParerJPA" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jboss/datasources/SacerVersDs</jta-data-source>
+        <mapping-file>META-INF/xmldbNativeQueries/xmlQueries.xml</mapping-file>
+        <!-- Classi del modulo di logging applicativo -->
+        <class>it.eng.parer.sacerlog.entity.LogOggettoEvento</class>
+        <class>it.eng.parer.sacerlog.entity.LogFotoOggettoEvento</class>
+        <class>it.eng.parer.sacerlog.entity.LogEvento</class>
+        <class>it.eng.parer.sacerlog.entity.LogDeltaFoto</class>
+        <class>it.eng.parer.sacerlog.entity.LogChiaveAccessoEvento</class>
+        <class>it.eng.parer.sacerlog.entity.LogAgenteEvento</class>
+        <class>it.eng.parer.sacerlog.entity.LogEventoByScript</class>
+        <class>it.eng.parer.sacerlog.entity.LogEventoLoginUser</class>
+        <!-- Classi per le view del logging applicativo -->
+        <class>it.eng.parer.sacerlog.viewEntity.AplVParamApplic</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVLogAgente</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogChiaveTiOgg</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogFotoTiEvnOgg</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogTiEvn</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogTiEvnConOrigine</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogTiOgg</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogTrigTiEvnOgg</class>
+        <class>it.eng.parer.sacerlog.viewEntity.AplVLogInit</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVDeltaAsserzioni</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVLisEventoOggetto</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVVisEventoOggetto</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVLisAsserzioniDati</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVVisOggetto</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVLisEventoByScript</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVRicEventi</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVRicEventiOrganiz</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVVisEventoPrincTx</class>
+        <class>it.eng.parer.sacerlog.viewEntity.LogVUsrAbilOrganiz</class>
+
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <properties>
+            <!-- Hibernate properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.show_sql" value="${hibernate.show_sql}"/>
+            <property name="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}"/>
+            <property name="hibernate.generate_statistics" value="true"/>
+            <property name="hibernate.id.new_generator_mappings" value="true"/>
+            <property name="hibernate.session.events.log" value="false"/>
+            <property name="hibernate.session_factory.session_scoped_interceptor" value="it.eng.paginator.hibernate.OracleSqlInterceptor"/>
+
+        </properties>
+
+
+
+    </persistence-unit>
+</persistence>

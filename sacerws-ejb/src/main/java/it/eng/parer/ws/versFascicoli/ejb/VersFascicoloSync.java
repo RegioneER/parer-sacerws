@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -32,7 +49,6 @@ import it.eng.parer.ws.utils.XmlDateUtility;
 import it.eng.parer.ws.versFascicoli.dto.CompRapportoVersFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.RispostaWSFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
-import it.eng.parer.ws.versFascicoli.utils.VersFascicoloExtPrsr;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.xml.versfascicoloresp.CodiceEsitoType;
 import it.eng.parer.ws.xml.versfascicoloresp.ECEsitoChiamataWSType;
@@ -44,23 +60,26 @@ import it.eng.spagoLite.security.User;
  *
  * @author fioravanti_f
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "VersamentoSync")
 @LocalBean
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class VersFascicoloSync {
 
     //
-    protected static final Logger logger = LoggerFactory.getLogger(VersFascicoloSync.class);
+    private static final Logger logger = LoggerFactory.getLogger(VersFascicoloSync.class);
     @EJB
-    protected ControlliWS myControlliWs;
+    private ControlliWS myControlliWs;
     @EJB
-    protected SalvataggioFascicoli mySalvataggioFascicoli;
+    private SalvataggioFascicoli mySalvataggioFascicoli;
     @EJB
-    protected LogSessioneFascicoli myLogSessioneFascicoli;
+    private LogSessioneFascicoli myLogSessioneFascicoli;
     @EJB
-    protected RecupSessDubbieFasc myRecupSessDubbieFasc;
+    private RecupSessDubbieFasc myRecupSessDubbieFasc;
     @EJB
-    protected ControlliSemantici myControlliSemantici;
+    private ControlliSemantici myControlliSemantici;
+    @EJB
+    private VersFascicoloExtPrsr tmpPrsr;
 
     public void init(RispostaWSFascicolo rispostaWs, AvanzamentoWs avanzamento, VersFascicoloExt versamento) {
         logger.debug("sono nel metodo init");
@@ -171,8 +190,7 @@ public class VersFascicoloSync {
         }
 
         try {
-            VersFascicoloExtPrsr tmpPrsr = new VersFascicoloExtPrsr(versamento, rispostaWs);
-            tmpPrsr.parseXML(sessione);
+            tmpPrsr.parseXML(sessione, rispostaWs, versamento);
         } catch (Exception e) {
             rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
             if (ExceptionUtils.getRootCause(e) instanceof ParamApplicNotFoundException) {

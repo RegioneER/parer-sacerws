@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -13,12 +30,12 @@ import it.eng.parer.ws.versamento.dto.RispostaWS;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.ejb.VersamentoSyncBase;
 import it.eng.parer.ws.versamentoMM.dto.VersamentoMMExt;
-import it.eng.parer.ws.versamentoMM.utils.AllineaFileComponenti;
-import it.eng.parer.ws.versamentoMM.utils.IndiceMMPrsr;
 import it.eng.parer.ws.versamentoTpi.utils.FileServUtils;
 import it.eng.parer.ws.xml.versResp.EsitoVersamento;
 import java.io.File;
 import java.io.IOException;
+
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
@@ -39,6 +56,12 @@ public class VersamentoSyncMM extends VersamentoSyncBase {
     private static final Logger log = LoggerFactory.getLogger(VersamentoSyncMM.class);
     //
 
+    @EJB
+    IndiceMMPrsr tmpPrsr;
+
+    @EJB
+    AllineaFileComponenti allineaFileComponenti;
+
     public void parseXMLIndiceMM(SyncFakeSessn sessione, RispostaWS rispostaWs, VersamentoMMExt versamento) {
         log.debug("sono nel metodo parseXMLIndiceMM");
         EsitoVersamento myEsito = rispostaWs.getIstanzaEsito();
@@ -51,8 +74,7 @@ public class VersamentoSyncMM extends VersamentoSyncBase {
         }
 
         try {
-            IndiceMMPrsr tmpPrsr = new IndiceMMPrsr(versamento, rispostaWs);
-            tmpPrsr.parseXML(sessione);
+            tmpPrsr.parseXML(sessione, versamento, rispostaWs);
             tmpAvanzamentoWs.resetFase();
         } catch (Exception e) {
             rispostaWs.setSeverity(SeverityEnum.ERROR);
@@ -79,8 +101,7 @@ public class VersamentoSyncMM extends VersamentoSyncBase {
         }
 
         try {
-            AllineaFileComponenti tmpAllinea = new AllineaFileComponenti(versamento, rispostaWs, sessione);
-            tmpAllinea.verificaCoerenza(path);
+            allineaFileComponenti.verificaCoerenza(path, versamento, rispostaWs, sessione);
             tmpAvanzamentoWs.resetFase();
         } catch (Exception e) {
             rispostaWs.setSeverity(SeverityEnum.ERROR);

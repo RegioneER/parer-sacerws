@@ -1,48 +1,23 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import it.eng.parer.entity.AroUpdUnitaDoc;
-import it.eng.parer.entity.AroXmlUpdUnitaDoc;
-import it.eng.parer.entity.DecControlloWs;
-import it.eng.parer.entity.DecErrSacer;
-import it.eng.parer.entity.DecRegistroUnitaDoc;
-import it.eng.parer.entity.DecTipoDoc;
-import it.eng.parer.entity.DecTipoUnitaDoc;
-import it.eng.parer.entity.IamUser;
-import it.eng.parer.entity.MonContaSesUpdUdKo;
-import it.eng.parer.entity.MonKeyTotalUd;
-import it.eng.parer.entity.MonKeyTotalUdKo;
-import it.eng.parer.entity.OrgStrut;
-import it.eng.parer.entity.VrsErrSesUpdUnitaDocErr;
-import it.eng.parer.entity.VrsErrSesUpdUnitaDocKo;
-import it.eng.parer.entity.VrsSesUpdUnitaDocErr;
-import it.eng.parer.entity.VrsSesUpdUnitaDocKo;
-import it.eng.parer.entity.VrsUpdUnitaDocKo;
-import it.eng.parer.entity.VrsXmlSesUpdUnitaDocErr;
-import it.eng.parer.entity.VrsXmlSesUpdUnitaDocKo;
+import it.eng.parer.entity.*;
 import it.eng.parer.entity.constraint.MonContaSesUpdUdKo.TiStatoUdpUdKoMonContaSesUpdUdKo;
 import it.eng.parer.entity.constraint.VrsErrSesUpdUnitaDocErr.TiErrVrsErrSesUpdUnitaDocErr;
 import it.eng.parer.entity.constraint.VrsErrUpdUnitaDocKo.TiErrVrsErrUpdUnitaDocKo;
@@ -51,9 +26,10 @@ import it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo;
 import it.eng.parer.entity.constraint.VrsUpdUnitaDocKo.TiStatoUdpUdKo;
 import it.eng.parer.entity.constraint.VrsXmlSesUpdUnitaDocErr.TiXmlVrsXmlSesUpdUnitaDocErr;
 import it.eng.parer.entity.constraint.VrsXmlSesUpdUnitaDocKo.TiXmlVrsXmlSesUpdUnitaDocKo;
+import it.eng.parer.util.Constants;
 import it.eng.parer.util.ejb.AppServerInstance;
-import it.eng.parer.viewEntity.LogVVisLastSched;
-import it.eng.parer.viewEntity.VrsVModifUpdUdKo;
+import it.eng.parer.view_entity.LogVVisLastSched;
+import it.eng.parer.view_entity.VrsVModifUpdUdKo;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.IRispostaWS.StatiSessioneVersEnum;
@@ -65,20 +41,33 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSHelper;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VoceDiErrore;
-import it.eng.parer.ws.versamentoUpd.dto.CompRapportoUpdVers;
-import it.eng.parer.ws.versamentoUpd.dto.ControlloEseguito;
-import it.eng.parer.ws.versamentoUpd.dto.RispostaWSUpdVers;
-import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
-import it.eng.parer.ws.versamentoUpd.dto.UpdComponenteVers;
-import it.eng.parer.ws.versamentoUpd.dto.UpdDocumentoVers;
-import it.eng.parer.ws.versamentoUpd.dto.UpdUnitaDocColl;
+import it.eng.parer.ws.versamentoUpd.dto.*;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.*;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.*;
+
 import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.DateUtilsConverter.convertLocal;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
 
 /**
  *
  * @author sinatti_s
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "LogSessioneUpdVersamentoHelper")
 @LocalBean
 public class LogSessioneUpdVersamentoHelper {
@@ -101,101 +90,10 @@ public class LogSessioneUpdVersamentoHelper {
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
-    private final static String CD_DS_ERR_DIVERSI = "Diversi";
+    private static final String CD_DS_ERR_DIVERSI = "Diversi";
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli verificaPartizioneUpdErr() {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-        long conta = 0;
-        try {
-            String queryStr = "select count(t) from OrgVChkPartitionUpdErr t "
-                    + "where t.flPartSesupderrOk = :flPartSesupderrOk ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr);
-            query.setParameter("flPartSesupderrOk", "1");
-            conta = (Long) query.getSingleResult();
-
-            if (conta == 0) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
-                        "La tabella delle sessioni errate non è correttamente partizionata. "
-                                + "Impossibile salvare aggiornamento di versamento in errore"));
-                return rispostaControlli;
-            }
-            rispostaControlli.setrBoolean(true);
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "UpdLogSessioneHelper.verificaPartizioneUpdErr: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
-        }
-
-        return rispostaControlli;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli verificaPartizioneUpdByAaStrutKo(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-        StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
-        long conta = 0;
-        try {
-            String queryStr = "select count(t) from OrgVChkPartitionUpdByAa t "
-                    + "where t.idStrut = :idStrut and t.anno = :anno "
-                    + "and t.flPartSesupdkoAaOk = :flPartSesupdkoAaOk " + "and t.flPartSesupdkoOk = :flPartSesupdkoOk "
-                    + "and t.flPartUpddatispecAaOk = :flPartUpddatispecAaOk "
-                    + "and t.flPartUpddatispecOk = :flPartUpddatispecOk " + "and t.flPartUpdkoAaOk = :flPartUpdkoAaOk "
-                    + "and t.flPartUpdkoOk = :flPartUpdkoOk "
-                    + "and t.flPartVersinidatispecAaOk = :flPartVersinidatispecAaOk "
-                    + "and t.flPartVersinidatispecOk = :flPartVersinidatispecOk "
-                    + "and t.flPartXmlsesupdkoOk = :flPartXmlsesupdkoOk "
-                    + "and t.flPartXmlsesupdkpAaOk = :flPartXmlsesupdkpAaOk "
-                    + "and t.flPartXmlupdAaOk = :flPartXmlupdAaOk " + "and t.flPartXmlupdOk = :flPartXmlupdOk ";
-
-            javax.persistence.Query query = entityManager.createQuery(queryStr);
-
-            query.setParameter("idStrut", strutturaUpdVers.getIdStruttura());
-            query.setParameter("anno", strutturaUpdVers.getChiaveNonVerificata().getAnno());
-
-            query.setParameter("flPartSesupdkoAaOk", "1");
-            query.setParameter("flPartSesupdkoOk", "1");
-            query.setParameter("flPartUpddatispecAaOk", "1");
-            query.setParameter("flPartUpddatispecOk", "1");
-            query.setParameter("flPartUpdkoAaOk", "1");
-            query.setParameter("flPartUpdkoOk", "1");
-            query.setParameter("flPartVersinidatispecAaOk", "1");
-            query.setParameter("flPartVersinidatispecOk", "1");
-            query.setParameter("flPartXmlsesupdkoOk", "1");
-            query.setParameter("flPartXmlsesupdkpAaOk", "1");
-            query.setParameter("flPartXmlupdAaOk", "1");
-            query.setParameter("flPartXmlupdOk", "1");
-
-            conta = (Long) query.getSingleResult();
-
-            if (conta == 0) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
-                        "La tabella delle sessioni fallite non è correttamente partizionata. "
-                                + "Impossibile salvare l'aggiornamento fallito"));
-                return rispostaControlli;
-            }
-            rispostaControlli.setrBoolean(true);
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "UpdLogSessioneHelper.verificaPartizioneUpdByAaStrutKo: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
-        }
-
-        return rispostaControlli;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli recuperoUpdUnitaDocOk(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione) {
+    public RispostaControlli recuperoUpdUnitaDocOk(UpdVersamentoExt versamento, SyncFakeSessn sessione) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
@@ -216,7 +114,7 @@ public class LogSessioneUpdVersamentoHelper {
 
             aroUpdUnitaDocs = query.getResultList();
 
-            if (aroUpdUnitaDocs.size() >= 1) {
+            if (!aroUpdUnitaDocs.isEmpty()) {
                 // se trovato, recupero il risultato che interessa per la verifica
                 rispostaControlli.setrLong(0);
 
@@ -248,12 +146,6 @@ public class LogSessioneUpdVersamentoHelper {
             tmpUpdUnitaDocErr.setTsIniSes(convert(sessione.getTmApertura()));
             tmpUpdUnitaDocErr.setTsFineSes(convert(sessione.getTmChiusura()));
             tmpUpdUnitaDocErr.setNmUseridWs(sessione.getLoginName());
-            // salvo il nome del server/istanza nel cluster che sta salvando i dati e ha
-            // gestito il versamento
-            // tmpUpdUnitaDocErr.setCdIndServer(appServerInstance.getName());
-            // salvo l'indirizzo IP del sistema che ha effettuato la richiesta di
-            // versamento/aggiunta
-            // tmpUpdUnitaDocErr.setCdIndIpClient(sessione.getIpChiamante());
             tmpUpdUnitaDocErr.setTiStatoSes(TiStatoSesVrsSesUpdUnitaDocErr.NON_VERIFICATA);
             if (strutturaUpdVers.getVersatoreNonverificato() != null) {
                 if (StringUtils.isNotBlank(strutturaUpdVers.getVersatoreNonverificato().getAmbiente())) {
@@ -330,9 +222,6 @@ public class LogSessioneUpdVersamentoHelper {
                         entityManager.find(DecRegistroUnitaDoc.class, strutturaUpdVers.getIdTipoREGUnknown()));
             }
 
-            //
-            // CompRapportoAggiornamentoVers esito =
-            // rispostaWs.getCompRapportoAggiornamentoVers();
             if (rispostaWs.getSeverity() == IRispostaWS.SeverityEnum.ERROR) {
                 // al momento si raccoglie, del controllo, il primo errore collezionato !
                 tmpUpdUnitaDocErr.setDecErrSacerPrinc(messaggiWSHelper.caricaDecErrore(rispostaWs.getErrorCode()));
@@ -358,11 +247,12 @@ public class LogSessioneUpdVersamentoHelper {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public RispostaControlli scriviXmlSesUpdUnitaDocErr(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, VrsSesUpdUnitaDocErr vrsSesUpdUnitaDocErr) {
+            SyncFakeSessn sessione, VrsSesUpdUnitaDocErr vrsSesUpdUnitaDocErr, BackendStorage backendMetadata,
+            Map<String, String> sipBlob) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // salvo xml di request e response sessione errata
         tmpRispostaControlli.setrBoolean(false);
-        CompRapportoUpdVers esito = rispostaWs.getCompRapportoUpdVers();
+        rispostaWs.getCompRapportoUpdVers();
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         try {
             VrsXmlSesUpdUnitaDocErr tmpXmlSesUpdUnitaDocErr = new VrsXmlSesUpdUnitaDocErr();
@@ -372,8 +262,14 @@ public class LogSessioneUpdVersamentoHelper {
                 tmpXmlSesUpdUnitaDocErr.setVrsSesUpdUnitaDocErr(vrsSesUpdUnitaDocErr);
                 tmpXmlSesUpdUnitaDocErr.setTiXml(TiXmlVrsXmlSesUpdUnitaDocErr.RICHIESTA);
                 tmpXmlSesUpdUnitaDocErr.setCdVersioneXml(strutturaUpdVers.getVersioneIndiceSipNonVerificata());
-                tmpXmlSesUpdUnitaDocErr
-                        .setBlXml(versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml());
+                // MEV#29276
+                String blXml = versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml();
+                if (backendMetadata.isDataBase()) {
+                    tmpXmlSesUpdUnitaDocErr.setBlXml(blXml);
+                } else {
+                    sipBlob.put(TiXmlVrsXmlSesUpdUnitaDocErr.RICHIESTA.name(), blXml);
+                }
+                // end MEV#29276
                 entityManager.persist(tmpXmlSesUpdUnitaDocErr);
             }
             String xmlesito = this.generaRapportoVersamento(rispostaWs);
@@ -382,7 +278,13 @@ public class LogSessioneUpdVersamentoHelper {
             tmpXmlSesUpdUnitaDocErr.setVrsSesUpdUnitaDocErr(vrsSesUpdUnitaDocErr);
             tmpXmlSesUpdUnitaDocErr.setTiXml(TiXmlVrsXmlSesUpdUnitaDocErr.RISPOSTA);
             tmpXmlSesUpdUnitaDocErr.setCdVersioneXml(strutturaUpdVers.getVersioneIndiceSipNonVerificata());
-            tmpXmlSesUpdUnitaDocErr.setBlXml(xmlesito);
+            // MEV#29276
+            if (backendMetadata.isDataBase()) {
+                tmpXmlSesUpdUnitaDocErr.setBlXml(xmlesito);
+            } else {
+                sipBlob.put(TiXmlVrsXmlSesUpdUnitaDocErr.RISPOSTA.name(), xmlesito);
+            }
+            // end MEV#29276
             entityManager.persist(tmpXmlSesUpdUnitaDocErr);
             tmpRispostaControlli.setrBoolean(true);
         } catch (Exception e) {
@@ -397,8 +299,7 @@ public class LogSessioneUpdVersamentoHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli cercaAggiornamentoKo(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione) {
+    public RispostaControlli cercaAggiornamentoKo(UpdVersamentoExt versamento) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // cerco e recupero il fascicolo fallito
         tmpRispostaControlli.setrBoolean(false);
@@ -422,11 +323,11 @@ public class LogSessioneUpdVersamentoHelper {
             // errore per l'aggiornamento. in questo caso dovrò creare la riga in tabella
             // nel caso di scrittura di sessione fallita.
             tmpRispostaControlli.setrBoolean(true);
-            if (updUnitaDocKo.size() > 0) {
+            if (!updUnitaDocKo.isEmpty()) {
                 // se poi ho anche trovato qualcosa di utile, lo restituisco al
                 // chiamante dopo averlo bloccato in modo esclusivo
-                Map<String, Object> properties = new HashMap();
-                properties.put("javax.persistence.lock.timeout", 25);
+                Map<String, Object> properties = new HashMap<>();
+                properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
                 VrsUpdUnitaDocKo tmpVrsUpdUnitaDocKo = entityManager.find(VrsUpdUnitaDocKo.class,
                         updUnitaDocKo.get(0).getIdUpdUnitaDocKo(), LockModeType.PESSIMISTIC_WRITE, properties);
 
@@ -465,7 +366,7 @@ public class LogSessioneUpdVersamentoHelper {
         // scrive una nuova istanza di Fascicolo KO per il versamento
         tmpRispostaControlli.setrBoolean(false);
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
-        CompRapportoUpdVers esito = rispostaWs.getCompRapportoUpdVers();
+        rispostaWs.getCompRapportoUpdVers();
 
         try {
             VrsUpdUnitaDocKo tmpUpdUnitaDocKo = new VrsUpdUnitaDocKo();
@@ -480,7 +381,6 @@ public class LogSessioneUpdVersamentoHelper {
             tmpUpdUnitaDocKo.setDecControlloWsPrinc(
                     controlliWSHelper.caricaCdControlloWs(rispostaWs.getControlloWs().getCdControllo()));
             tmpUpdUnitaDocKo.setTiStatoUdpUdKo(TiStatoUdpUdKo.NON_VERIFICATO);
-            // TODO da verificare
             if (strutturaUpdVers.getIdRegistro() > 0) {
                 tmpUpdUnitaDocKo.setDecRegistroUnitaDocLast(
                         entityManager.find(DecRegistroUnitaDoc.class, strutturaUpdVers.getIdRegistro()));
@@ -504,7 +404,6 @@ public class LogSessioneUpdVersamentoHelper {
                     tmpUpdUnitaDocKo.setDecTipoUnitaDocLast(decTipoUnitaDoc);
                 }
             }
-            // TODO da verificare
             DecTipoDoc decTipoDocPrinc = null;
             long idDecTipoDoc = 0;
             if (strutturaUpdVers.getIdTipoDocPrincipale() > 0) {
@@ -519,7 +418,6 @@ public class LogSessioneUpdVersamentoHelper {
                 }
             }
 
-            // TODO: necessaria una logica di gestione recupero della prima e dell'ultima
             // sessione in KO
             tmpUpdUnitaDocKo.setVrsSesUpdUnitaDocKoFirst(null);
             tmpUpdUnitaDocKo.setVrsSesUpdUnitaDocKoLast(null);
@@ -549,7 +447,7 @@ public class LogSessioneUpdVersamentoHelper {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
-        CompRapportoUpdVers esito = rispostaWs.getCompRapportoUpdVers();
+        rispostaWs.getCompRapportoUpdVers();
 
         try {
             TiStatoSesUpdKo tmpStatoSessione = null;
@@ -682,7 +580,6 @@ public class LogSessioneUpdVersamentoHelper {
                                 updModifUpdKo.getIdTipoDocPrincLast().longValue()));
                     }
                 } else {
-                    // TODO : da verificare
                     vrsUpdUnitaDocKo.setDecTipoUnitaDocLast(tmpSesUpdUnitaDocKo.getDecTipoUnitaDoc());
 
                     vrsUpdUnitaDocKo.setDecRegistroUnitaDocLast(tmpSesUpdUnitaDocKo.getDecRegistroUnitaDoc());
@@ -696,11 +593,6 @@ public class LogSessioneUpdVersamentoHelper {
                 // aggiungo la sessione appena creata all'aggiornamento KO
                 vrsUpdUnitaDocKo.getVrsSesUpdUnitaDocKos().add(tmpSesUpdUnitaDocKo);
             }
-            /*
-             * else { // TODO nel caso dei fascicoli KO veniva settato un flag per segnalare la presenza di una sessione
-             * fallita ! // altrimenti aggiorno il flag di errore del fascicolo OK, // che forse è già alzato, ma male
-             * non fa... fascicoloOk.setFlSesFascicoloKo("1"); }
-             */
             tmpRispostaControlli.setrObject(tmpSesUpdUnitaDocKo);
             entityManager.flush();
             tmpRispostaControlli.setrBoolean(true);
@@ -762,13 +654,13 @@ public class LogSessioneUpdVersamentoHelper {
         query.setParameter("decTipoUnitaDoc", updUnitaDocKo.getDecTipoUnitaDocLast());
 
         mcfks = query.getResultList();
-        if (mcfks.size() > 0) {
+        if (!mcfks.isEmpty()) {
             MonKeyTotalUdKo tmpMonKeyTotalUdKo = mcfks.get(0);
             tmpRispostaControlli.setrObject(tmpMonKeyTotalUdKo);
             // lock each one
             for (MonContaSesUpdUdKo tmpMonContaSesUpdUdKo : tmpMonKeyTotalUdKo.getMonContaSesUpdUdKos()) {
-                Map<String, Object> properties = new HashMap();
-                properties.put("javax.persistence.lock.timeout", 25);
+                Map<String, Object> properties = new HashMap<>();
+                properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
                 entityManager.find(MonContaSesUpdUdKo.class, tmpMonContaSesUpdUdKo.getIdContaSesUpdUdKo(),
                         LockModeType.PESSIMISTIC_WRITE, properties);
             }
@@ -796,7 +688,7 @@ public class LogSessioneUpdVersamentoHelper {
                 TiStatoUdpUdKoMonContaSesUpdUdKo.valueOf(vrsSesUpdUnitaDocKo.getTiStatoSesUpdKo().name()));
 
         mcfks = query.getResultList();
-        if (mcfks.size() > 0) {
+        if (!mcfks.isEmpty()) {
             if (addOrCreate) {
                 mcfks.get(0).setNiSesUpdUdKo(mcfks.get(0).getNiSesUpdUdKo().add(BigDecimal.ONE));
             } else {
@@ -834,11 +726,11 @@ public class LogSessioneUpdVersamentoHelper {
             String queryStr = "select u " + " from LogVVisLastSched u "
                     + " where u.nmJob = 'CALCOLO_CONTENUTO_AGGIORNAMENTI' " + " order by u.dtRegLogJobIni desc ";
 
-            javax.persistence.Query query = entityManager.createQuery(queryStr, AroXmlUpdUnitaDoc.class);
+            javax.persistence.Query query = entityManager.createQuery(queryStr, LogVVisLastSched.class);
 
             logVVisLastScheds = query.getResultList();
 
-            if (logVVisLastScheds.size() >= 1) {
+            if (!logVVisLastScheds.isEmpty()) {
                 // se trovato, recupero il risultato che interessa per la verifica
                 rispostaControlli.setrLong(0);
 
@@ -858,7 +750,8 @@ public class LogSessioneUpdVersamentoHelper {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public RispostaControlli scriviXmlUpdUnitaDocKo(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, VrsSesUpdUnitaDocKo sesUpdUnitaDocKo) {
+            SyncFakeSessn sessione, VrsSesUpdUnitaDocKo sesUpdUnitaDocKo, BackendStorage backendMetadata,
+            Map<String, String> sipBlob) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // salvo xml di request e response sessione fallita
         tmpRispostaControlli.setrBoolean(false);
@@ -866,14 +759,25 @@ public class LogSessioneUpdVersamentoHelper {
         CompRapportoUpdVers esito = rispostaWs.getCompRapportoUpdVers();
 
         try {
+            final LocalDate dtRegXml = convertLocal(sessione.getTmApertura());
             VrsXmlSesUpdUnitaDocKo tmpXmlSesUpdUnitaDocKo = new VrsXmlSesUpdUnitaDocKo();
 
             tmpXmlSesUpdUnitaDocKo.setVrsSesUpdUnitaDocKo(sesUpdUnitaDocKo);
             tmpXmlSesUpdUnitaDocKo.setTiXml(TiXmlVrsXmlSesUpdUnitaDocKo.RICHIESTA);
             tmpXmlSesUpdUnitaDocKo.setCdVersioneXml(strutturaUpdVers.getVersioneIndiceSipNonVerificata());
-            tmpXmlSesUpdUnitaDocKo.setBlXml(versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml());
+            // MEV#29276
+            String blXml = versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml();
+            if (backendMetadata.isDataBase()) {
+                tmpXmlSesUpdUnitaDocKo.setBlXml(blXml);
+            } else {
+                sipBlob.put(TiXmlVrsXmlSesUpdUnitaDocKo.RICHIESTA.name(), blXml);
+            }
+            // end MEV#29276
             tmpXmlSesUpdUnitaDocKo.setOrgStrut(sesUpdUnitaDocKo.getOrgStrut()); // da VRS_UPD_UNITA_DOC_KO
-            tmpXmlSesUpdUnitaDocKo.setDtRegXml(convert(sessione.getTmApertura()));
+            // TransactionAttribute
+            tmpXmlSesUpdUnitaDocKo.setDtRegXml(dtRegXml);
+            // MEV#30089
+            tmpXmlSesUpdUnitaDocKo.setAaRegXml(dtRegXml.getYear());
 
             entityManager.persist(tmpXmlSesUpdUnitaDocKo);
             sesUpdUnitaDocKo.getVrsXmlSesUpdUnitaDocKos().add(tmpXmlSesUpdUnitaDocKo);
@@ -884,9 +788,17 @@ public class LogSessioneUpdVersamentoHelper {
             tmpXmlSesUpdUnitaDocKo.setVrsSesUpdUnitaDocKo(sesUpdUnitaDocKo);
             tmpXmlSesUpdUnitaDocKo.setTiXml(TiXmlVrsXmlSesUpdUnitaDocKo.RISPOSTA);
             tmpXmlSesUpdUnitaDocKo.setCdVersioneXml(esito.getVersioneRapportoVersamento());
-            tmpXmlSesUpdUnitaDocKo.setBlXml(xmlesito);
+            // MEV#29276
+            if (backendMetadata.isDataBase()) {
+                tmpXmlSesUpdUnitaDocKo.setBlXml(xmlesito);
+            } else {
+                sipBlob.put(TiXmlVrsXmlSesUpdUnitaDocKo.RISPOSTA.name(), xmlesito);
+            }
+            // end MEV#29276
             tmpXmlSesUpdUnitaDocKo.setOrgStrut(sesUpdUnitaDocKo.getOrgStrut());
-            tmpXmlSesUpdUnitaDocKo.setDtRegXml(convert(sessione.getTmApertura()));
+            tmpXmlSesUpdUnitaDocKo.setDtRegXml(dtRegXml);
+            // MEV#30089
+            tmpXmlSesUpdUnitaDocKo.setAaRegXml(dtRegXml.getYear());
 
             entityManager.persist(tmpXmlSesUpdUnitaDocKo);
             sesUpdUnitaDocKo.getVrsXmlSesUpdUnitaDocKos().add(tmpXmlSesUpdUnitaDocKo);
@@ -925,7 +837,7 @@ public class LogSessioneUpdVersamentoHelper {
             // per ogni controllo su collegamento
             for (UpdUnitaDocColl link : strutturaUpdVers.getUnitaDocCollegate()) {
                 CSChiave key = new CSChiave();
-                key.setAnno(new Long(link.getAggChiave().getAnno()));
+                key.setAnno(Long.valueOf(link.getAggChiave().getAnno()));
                 key.setNumero(link.getAggChiave().getNumero());
                 key.setTipoRegistro(link.getAggChiave().getTipoRegistro());
 
@@ -957,6 +869,9 @@ public class LogSessioneUpdVersamentoHelper {
                             versamento.getControlliAnnotazione(documento.getRifUpdDocumento().getIDDocumento()),
                             rispostaWs, versamento, sesUpdUnitaDocKo, progErrore);
                     break;
+                default:
+                    // niente da fare negli altri casi
+                    break;
                 }
 
                 // per ogni componente
@@ -977,6 +892,9 @@ public class LogSessioneUpdVersamentoHelper {
                     case Annotazione:
                         progErrore = buildKo(versamento.getControlliComponenteAnnotazioni(componente.getKeyCtrl()),
                                 rispostaWs, versamento, sesUpdUnitaDocKo, progErrore);
+                        break;
+                    default:
+                        // niente da fare negli altri casi
                         break;
                     }
                 }
@@ -1015,6 +933,9 @@ public class LogSessioneUpdVersamentoHelper {
                         .setDecControlloWs(controlliWSHelper.caricaCdControlloWs(controlloEseguito.getCdControllo()));
                 tmpErrSesUpdUnitaDocKo.setDecErrSacer(messaggiWSHelper.caricaDecErrore(tmpVoceDiErrore.getErrorCode()));
                 tmpErrSesUpdUnitaDocKo.setDsErr(LogSessioneUtils.getDsErrAtMaxLen(tmpVoceDiErrore.getErrorMessage()));
+                // MEV#30089
+                tmpErrSesUpdUnitaDocKo.setOrgStrut(sesUpdUnitaDocKo.getOrgStrut());
+                tmpErrSesUpdUnitaDocKo.setAaKeyUnitaDoc(sesUpdUnitaDocKo.getAaKeyUnitaDoc().intValue());
 
                 // gestione errore principale
                 if (versamento.verificaErrorePrinc(rispostaWs, controlloEseguito, tmpVoceDiErrore)) {
@@ -1026,8 +947,6 @@ public class LogSessioneUpdVersamentoHelper {
                 //
                 entityManager.persist(tmpErrSesUpdUnitaDocKo);
                 sesUpdUnitaDocKo.getVrsErrSesUpdUnitaDocKos().add(tmpErrSesUpdUnitaDocKo);
-                // TODO: inutile settarlo è già stata impostato il legame con la sessione !
-                // sesUpdUnitaDocErr.getVrsXmlSesUpdUnitaDocErrs().add(null);
                 progErrore++;
             }
         }
@@ -1062,7 +981,7 @@ public class LogSessioneUpdVersamentoHelper {
             // per ogni controllo su collegamento
             for (UpdUnitaDocColl link : strutturaUpdVers.getUnitaDocCollegate()) {
                 CSChiave key = new CSChiave();
-                key.setAnno(new Long(link.getAggChiave().getAnno()));
+                key.setAnno(Long.valueOf(link.getAggChiave().getAnno()));
                 key.setNumero(link.getAggChiave().getNumero());
                 key.setTipoRegistro(link.getAggChiave().getTipoRegistro());
 
@@ -1094,6 +1013,9 @@ public class LogSessioneUpdVersamentoHelper {
                             versamento.getControlliAnnotazione(documento.getRifUpdDocumento().getIDDocumento()),
                             rispostaWs, versamento, sesUpdUnitaDocErr, progErrore);
                     break;
+                default:
+                    // niente da fare negli altri casi
+                    break;
                 }
 
                 // per ogni componente
@@ -1114,6 +1036,9 @@ public class LogSessioneUpdVersamentoHelper {
                     case Annotazione:
                         progErrore = buildError(versamento.getControlliComponenteAnnotazioni(componente.getKeyCtrl()),
                                 rispostaWs, versamento, sesUpdUnitaDocErr, progErrore);
+                        break;
+                    default:
+                        // niente da fare negli altri casi
                         break;
                     }
                 }
@@ -1164,8 +1089,6 @@ public class LogSessioneUpdVersamentoHelper {
                 //
                 entityManager.persist(tmpErrSesUpdUnitaDocErr);
                 sesUpdUnitaDocErr.getVrsErrSesUpdUnitaDocErrs().add(tmpErrSesUpdUnitaDocErr);
-                // TODO: inutile settarlo è già stata impostato il legame con la sessione !
-                // sesUpdUnitaDocErr.getVrsXmlSesUpdUnitaDocErrs().add(null);
                 progErrore++;
             }
         }
@@ -1206,11 +1129,11 @@ public class LogSessioneUpdVersamentoHelper {
         query.setParameter("decTipoDocPrinc", updUnitaDocKo.getDecTipoDocPrincLast());
 
         mktudkos = query.getResultList();
-        if (mktudkos.size() > 0) {
+        if (!mktudkos.isEmpty()) {
             // TODO: probabilmente lock inutile dato che le condizioni non porteranno mai a
             // casi di concorrenza tra client nella stessa sottostruttura ....
-            Map<String, Object> properties = new HashMap();
-            properties.put("javax.persistence.lock.timeout", 25);
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
             entityManager.find(MonKeyTotalUd.class, mktudkos.get(0).getIdKeyTotalUdKo(), LockModeType.PESSIMISTIC_WRITE,
                     properties);
 

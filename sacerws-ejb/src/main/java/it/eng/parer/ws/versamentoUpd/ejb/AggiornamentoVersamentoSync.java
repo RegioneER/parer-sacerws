@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -40,8 +57,8 @@ import it.eng.parer.ws.versamentoUpd.dto.CompRapportoUpdVers;
 import it.eng.parer.ws.versamentoUpd.dto.ControlloEseguito;
 import it.eng.parer.ws.versamentoUpd.dto.ControlloWSResp;
 import it.eng.parer.ws.versamentoUpd.dto.RispostaWSUpdVers;
+import it.eng.parer.ws.versamentoUpd.ejb.prs.UpdVersamentoPrsr;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
-import it.eng.parer.ws.versamentoUpd.prsr.UpdVersamentoPrsr;
 import it.eng.parer.ws.versamentoUpd.utils.UpdDocumentiUtils;
 import it.eng.parer.ws.xml.versUpdResp.CodiceEsitoType;
 import it.eng.parer.ws.xml.versUpdResp.ComponenteType;
@@ -65,24 +82,27 @@ import it.eng.spagoLite.security.User;
 public class AggiornamentoVersamentoSync {
 
     //
-    protected static final Logger logger = LoggerFactory.getLogger(AggiornamentoVersamentoSync.class);
+    private static final Logger logger = LoggerFactory.getLogger(AggiornamentoVersamentoSync.class);
     @EJB
-    protected ControlliWS myControlliWs;
+    private ControlliWS myControlliWs;
 
     @EJB
-    protected ControlliWSHelper controlliWSHelper;
+    private ControlliWSHelper controlliWSHelper;
 
     @EJB
-    protected ControlliSemantici controlliSemantici;
+    private ControlliSemantici controlliSemantici;
 
     @EJB
-    protected SalvataggioUpdVersamento salvataggioUpdVersamento;
+    private SalvataggioUpdVersamento salvataggioUpdVersamento;
 
     @EJB
-    protected RecupSessDubbieUpdVersamento updRecupSessDubbie;
+    private RecupSessDubbieUpdVersamento updRecupSessDubbie;
 
     @EJB
-    protected LogSessioneUpdVersamento updLogSessione;
+    private LogSessioneUpdVersamento updLogSessione;
+
+    @EJB
+    private UpdVersamentoPrsr updVersamentoPrsr;
 
     public void init(RispostaWSUpdVers rispostaWs, AvanzamentoWs avanzamento, UpdVersamentoExt versamento) {
         logger.debug("sono nel metodo init");
@@ -150,6 +170,7 @@ public class AggiornamentoVersamentoSync {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected RispostaControlli caricaXmlDefault(UpdVersamentoExt versamento) {
         RispostaControlli rispostaControlli = controlliSemantici
                 .caricaDefaultDaDB(ParametroApplDB.TipoParametroAppl.VERSAMENTO_DEFAULT);
@@ -159,6 +180,7 @@ public class AggiornamentoVersamentoSync {
         return rispostaControlli;
     }
 
+    @SuppressWarnings("unchecked")
     protected RispostaControlli loadWsVersions(UpdVersamentoExt versamento) {
         RispostaControlli rs = myControlliWs.loadWsVersions(versamento.getDescrizione());
         // if positive ...
@@ -194,7 +216,7 @@ public class AggiornamentoVersamentoSync {
             rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.DUBBIA);
         } else {
             // imposto la versione dell'xml di versamento in via provvisioria al valore del
-            // ws;
+            // ws
             // se riuscirò a leggere l'XML imposterò il valore effettivo
             versamento.getStrutturaUpdVers().setVersioneIndiceSipNonVerificata(versione);
             versamento.checkVersioneRequest(versione);
@@ -209,7 +231,7 @@ public class AggiornamentoVersamentoSync {
     public void verificaCredenziali(String loginName, String password, String indirizzoIp, RispostaWSUpdVers rispostaWs,
             UpdVersamentoExt versamento) {
         logger.debug("sono nel metodo verificaCredenziali");
-        CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
+        rispostaWs.getCompRapportoUpdVers();
         User tmpUser = null;
         RispostaControlli tmpRispostaControlli = myControlliWs.checkCredenziali(loginName, password, indirizzoIp,
                 TipiWSPerControlli.AGGIORNAMENTO_VERSAMENTO);
@@ -242,7 +264,7 @@ public class AggiornamentoVersamentoSync {
 
     public void parseXML(SyncFakeSessn sessione, RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento) {
         logger.debug("sono nel metodo parseXML");
-        CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
+        rispostaWs.getCompRapportoUpdVers();
         AvanzamentoWs tmpAvanzamentoWs = rispostaWs.getAvanzamento();
 
         if (versamento.getUtente() == null) {
@@ -252,8 +274,7 @@ public class AggiornamentoVersamentoSync {
         }
 
         try {
-            UpdVersamentoPrsr tmpPrsr = new UpdVersamentoPrsr(versamento, rispostaWs);
-            tmpPrsr.parseXML(sessione);
+            updVersamentoPrsr.parseXML(sessione, versamento, rispostaWs);
             tmpAvanzamentoWs.resetFase();
         } catch (Exception e) {
             rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);

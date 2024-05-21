@@ -1,23 +1,43 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versFascicoli.dto;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.IDatiSpecEntity;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  *
  * @author fioravanti_f
  */
 public class StrutturaVersFascicolo implements java.io.Serializable, IDatiSpecEntity {
+
+    private static final long serialVersionUID = 1L;
 
     private Date dataVersamento;
 
@@ -42,22 +62,22 @@ public class StrutturaVersFascicolo implements java.io.Serializable, IDatiSpecEn
 
     private long idRecXsdProfiloArchivistico;
     private long idRecxsdProfiloGenerale;
-    private DatiXmlProfiloGenerale datiXmlProfiloGenerale;
-    private DatiXmlProfiloArchivistico datiXmlProfiloArchivistico;
+    private transient DatiXmlProfiloGenerale datiXmlProfiloGenerale;
+    private transient DatiXmlProfiloArchivistico datiXmlProfiloArchivistico;
 
     private long idRecXsdDatiSpec;
     private long idRecXsdDatiSpecMigrazione;
 
-    private HashMap<String, DatoSpecifico> datiSpecifici;
-    private HashMap<String, DatoSpecifico> datiSpecificiMigrazione;
+    private Map<String, DatoSpecifico> datiSpecifici;
+    private Map<String, DatoSpecifico> datiSpecificiMigrazione;
 
-    private FlControlliFasc flControlliFasc;
-    private ConfigNumFasc configNumFasc;
+    private transient FlControlliFasc flControlliFasc;
+    private transient ConfigNumFasc configNumFasc;
     private String keyOrdCalcolata;
     private Long progressivoCalcolato;
     private boolean warningFormatoNumero;
 
-    private List<FascicoloLink> fascicoliLinked;
+    private transient List<FascicoloLink> fascicoliLinked;
 
     private Long idVoceTitol;
 
@@ -198,24 +218,22 @@ public class StrutturaVersFascicolo implements java.io.Serializable, IDatiSpecEn
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
-
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         return datiSpecifici;
     }
 
     @Override
-    public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
+    public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
         this.datiSpecifici = datiSpecifici;
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
-
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         return datiSpecificiMigrazione;
     }
 
     @Override
-    public void setDatiSpecificiMigrazione(HashMap<String, DatoSpecifico> datiSpecificiMigrazione) {
+    public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
         this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 

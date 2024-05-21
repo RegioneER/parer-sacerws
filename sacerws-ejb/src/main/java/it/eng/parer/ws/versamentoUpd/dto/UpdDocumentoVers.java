@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -6,16 +23,16 @@ package it.eng.parer.ws.versamentoUpd.dto;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.DocumentoVers;
-import it.eng.parer.ws.versamento.dto.IDatiSpecEntity;
 
 /**
  *
  * @author sinatti_s
  */
-public class UpdDocumentoVers extends DocumentoVers implements java.io.Serializable, IDatiSpecEntity {
+public class UpdDocumentoVers extends DocumentoVers {
 
     /**
      * 
@@ -98,7 +115,7 @@ public class UpdDocumentoVers extends DocumentoVers implements java.io.Serializa
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         if (super.getDatiSpecifici() == null) {
             super.datiSpecifici = new HashMap<String, DatoSpecifico>();
         }
@@ -106,7 +123,7 @@ public class UpdDocumentoVers extends DocumentoVers implements java.io.Serializa
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         if (super.getDatiSpecificiMigrazione() == null) {
             super.datiSpecificiMigrazione = new HashMap<String, DatoSpecifico>();
         }

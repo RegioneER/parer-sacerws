@@ -250,28 +250,6 @@
 
 
         </style>
-        <script type="text/javascript" src='<c:url value="/js/jQuery/jquery-1.8.3.min.js" />'></script>
-        <script type="text/javascript" src='<c:url value="/js/jQuery/jquery-ui-1.9.2.custom.min.js" />'></script>
-        <script type="text/javascript" src='<c:url value="/js/jQuery/snowfall.min.jquery.js" />'></script>
-        <script type='text/javascript' src='<c:url value="/dwr/engine.js" />'></script>
-        <script type='text/javascript' src='<c:url value="/dwr/interface/SignerProxy.js" />'></script>
-        <script type='text/javascript' src='<c:url value="/dwr/util.js" />'></script>
-
-        <script>
-            $.ajax({
-                url: "http://ibc3908:8080/saceriam/RestituzioneNewsApplicazione",
-                data: "nmApplic=sacer", //ur data to be sent to server
-                contentType: "application/xml; charset=utf-8",
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                },
-                error: function (x, y, z) {
-                    alert(x.responseText + "  " + x.status);
-                }
-            });
-
-        </script>
 
     </head>
     <body>

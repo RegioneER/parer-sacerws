@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -16,6 +33,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
@@ -33,15 +52,23 @@ import it.eng.parer.entity.MonKeyTotalUdKo;
 import it.eng.parer.entity.VrsUpdUnitaDocKo;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiEntitaAroUpdDatiSpecUnitaDoc;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiUsoXsdAroUpdDatiSpecUnitaDoc;
+import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiEntitaSacerAroVersIniDatiSpec;
+import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.ControlliWSBundle;
+import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
+import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.utils.PayLoad;
 import it.eng.parer.ws.utils.ejb.JmsProducerUtilEjb;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
+import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
+import it.eng.parer.ws.versamento.ejb.ObjectStorageService;
 import it.eng.parer.ws.versamentoUpd.dto.CompRapportoUpdVers;
+import it.eng.parer.ws.versamentoUpd.dto.DatiSpecLinkOsKeyMap;
 import it.eng.parer.ws.versamentoUpd.dto.RispostaWSUpdVers;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
 import it.eng.parer.ws.versamentoUpd.dto.UpdComponenteVers;
@@ -52,8 +79,7 @@ import it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoAroHelper;
 import it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoIniHelper;
 import it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoUpdHelper;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
+import java.math.BigDecimal;
 
 /**
  *
@@ -68,7 +94,7 @@ public class SalvataggioUpdVersamento {
     // MEV#27048
     @Resource(mappedName = "jms/ProducerConnectionFactory")
     private ConnectionFactory connectionFactory;
-    @Resource(mappedName = "jms/ElenchiDaElabInAttesaSchedQueue")
+    @Resource(mappedName = "jms/queue/ElenchiDaElabQueue")
     private Queue queue;
     // end MEV#27048
     //
@@ -93,6 +119,11 @@ public class SalvataggioUpdVersamento {
     private JmsProducerUtilEjb jmsProducerUtilEjb;
     // end MEV#27048
 
+    // MEV#29276
+    @EJB
+    ObjectStorageService objectStorageService;
+    // end MEV#29276
+
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
@@ -110,13 +141,24 @@ public class SalvataggioUpdVersamento {
         tmpRispostaControlli.setrBoolean(false);
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
-
+        // MEV#29276
+        BackendStorage backendMetadata = null;
+        Map<String, String> sipBlob = new HashMap<>();
+        Map<DatiSpecLinkOsKeyMap, Map<String, String>> updDatiSpecBlob = new HashMap();
+        Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob = new HashMap();
+        // end MEV#29276
         try {
+            // MEV#29276
+            backendMetadata = objectStorageService.lookupBackendByServiceName(
+                    versamento.getStrutturaUpdVers().getIdTipologiaUnitaDocumentaria(),
+                    Costanti.WS_AGGIORNAMENTO_VERS_NOME);
+            // end MEV#29276
+
             // 0. si assume LOCK esclusivo su UD da aggiornare (in modo tale che altri
             // dovranno aspettare il rilascio del LOCK che avverrà al termine di tutte le
             // operazioni di aggiornamento)
-            Map<String, Object> properties = new HashMap();
-            properties.put("javax.persistence.lock.timeout", 25);
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
             AroUnitaDoc tmpAroUnitaDoc = entityManager.find(AroUnitaDoc.class, strutturaUpdVers.getIdUd(),
                     LockModeType.PESSIMISTIC_WRITE, properties);
 
@@ -127,7 +169,7 @@ public class SalvataggioUpdVersamento {
                 tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
                 tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
                         "Errore interno nella lettura dell'unità documentaria da aggiornare"));
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -143,21 +185,21 @@ public class SalvataggioUpdVersamento {
              */
             // 1. se il numero normalizzato sull’unità doc nel DB è nullo ->
             // il sistema aggiorna ARO_UNITA_DOC
-            tmpRispostaControlli = salvataggioPregVersamentoAroHelper.salvaCdKeyNormUnitaDocumentaria(rispostaWs,
-                    versamento, sessione, tmpAroUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioPregVersamentoAroHelper.salvaCdKeyNormUnitaDocumentaria(tmpAroUnitaDoc,
+                    strutturaUpdVers);
             // errore query
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 2. verifica pregresso
-            tmpRispostaControlli = salvataggioPregVersamentoAroHelper.aggiornaPregCompDocUrnSip(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioPregVersamentoAroHelper.aggiornaPregCompDocUrnSip(tmpAroUnitaDoc,
+                    strutturaUpdVers);
             // errore query
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -184,7 +226,7 @@ public class SalvataggioUpdVersamento {
             // in caso di errore esecuzione query
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -195,7 +237,7 @@ public class SalvataggioUpdVersamento {
                         sessione, tmpAroUnitaDoc, strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -206,7 +248,7 @@ public class SalvataggioUpdVersamento {
                         sessione, tmpAroUnitaDoc, tmpAroVersIniUnitaDoc, strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -215,7 +257,7 @@ public class SalvataggioUpdVersamento {
                         versamento, sessione, tmpAroUnitaDoc, tmpAroVersIniUnitaDoc, strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -228,7 +270,7 @@ public class SalvataggioUpdVersamento {
                 // errore query
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -237,11 +279,12 @@ public class SalvataggioUpdVersamento {
                     AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                     // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                    tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecUd(rispostaWs,
-                            versamento, sessione, tmpAroVersIniUnitaDoc, tmpUsoXsdDatiSpec, strutturaUpdVers);
+                    tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecUd(sessione,
+                            tmpAroVersIniUnitaDoc, tmpUsoXsdDatiSpec, backendMetadata, versIniDatiSpecBlob,
+                            strutturaUpdVers);
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
 
@@ -256,7 +299,7 @@ public class SalvataggioUpdVersamento {
                 // errore query
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -265,11 +308,12 @@ public class SalvataggioUpdVersamento {
                     AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                     // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                    tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecUd(rispostaWs,
-                            versamento, sessione, tmpAroVersIniUnitaDoc, tmpUsoXsdDatiSpec, strutturaUpdVers);
+                    tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecUd(sessione,
+                            tmpAroVersIniUnitaDoc, tmpUsoXsdDatiSpec, backendMetadata, versIniDatiSpecBlob,
+                            strutturaUpdVers);
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
                 } // AroUsoXsdDatiSpec
@@ -291,7 +335,7 @@ public class SalvataggioUpdVersamento {
                 // errore esecuzione query
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
 
@@ -303,7 +347,7 @@ public class SalvataggioUpdVersamento {
                             sessione, tmpAroVersIniUnitaDoc, updDocumentoVers.getIdRecDocumentoDB(), strutturaUpdVers);
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
 
@@ -316,7 +360,7 @@ public class SalvataggioUpdVersamento {
                     // errore query
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
 
@@ -325,12 +369,12 @@ public class SalvataggioUpdVersamento {
                         AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                         // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                        tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(rispostaWs,
-                                versamento, sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, null, tmpUsoXsdDatiSpec,
-                                strutturaUpdVers);
+                        tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(sessione,
+                                tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpUsoXsdDatiSpec, backendMetadata,
+                                versIniDatiSpecBlob, strutturaUpdVers);
                         if (!tmpRispostaControlli.isrBoolean()) {
                             context.setRollbackOnly();
-                            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                            this.impostaErrore(rispostaWs, tmpRispostaControlli);
                             return false;
                         }
                     } // AroUsoXsdDatiSpec
@@ -341,7 +385,7 @@ public class SalvataggioUpdVersamento {
 
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
 
@@ -350,12 +394,12 @@ public class SalvataggioUpdVersamento {
                         AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                         // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                        tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(rispostaWs,
-                                versamento, sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, null, tmpUsoXsdDatiSpec,
-                                strutturaUpdVers);
+                        tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(sessione,
+                                tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpUsoXsdDatiSpec, backendMetadata,
+                                versIniDatiSpecBlob, strutturaUpdVers);
                         if (!tmpRispostaControlli.isrBoolean()) {
                             context.setRollbackOnly();
-                            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                            this.impostaErrore(rispostaWs, tmpRispostaControlli);
                             return false;
                         }
                     } // AroUsoXsdDatiSpec
@@ -376,7 +420,7 @@ public class SalvataggioUpdVersamento {
                     // errore esecuzione query
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
 
@@ -388,7 +432,7 @@ public class SalvataggioUpdVersamento {
                                 strutturaUpdVers);
                         if (!tmpRispostaControlli.isrBoolean()) {
                             context.setRollbackOnly();
-                            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                            this.impostaErrore(rispostaWs, tmpRispostaControlli);
                             return false;
                         }
 
@@ -402,7 +446,7 @@ public class SalvataggioUpdVersamento {
                         // errore query
                         if (!tmpRispostaControlli.isrBoolean()) {
                             context.setRollbackOnly();
-                            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                            this.impostaErrore(rispostaWs, tmpRispostaControlli);
                             return false;
                         }
 
@@ -412,12 +456,12 @@ public class SalvataggioUpdVersamento {
                             AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                             // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                            tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(rispostaWs,
-                                    versamento, sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpAroVersIniComp,
-                                    tmpUsoXsdDatiSpec, strutturaUpdVers);
+                            tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecComp(sessione,
+                                    tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpAroVersIniComp, tmpUsoXsdDatiSpec,
+                                    backendMetadata, versIniDatiSpecBlob, strutturaUpdVers);
                             if (!tmpRispostaControlli.isrBoolean()) {
                                 context.setRollbackOnly();
-                                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                                 return false;
                             }
                         } // AroUsoXsdDatiSpec
@@ -429,7 +473,7 @@ public class SalvataggioUpdVersamento {
                         // errore query
                         if (!tmpRispostaControlli.isrBoolean()) {
                             context.setRollbackOnly();
-                            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                            this.impostaErrore(rispostaWs, tmpRispostaControlli);
                             return false;
                         }
 
@@ -439,12 +483,12 @@ public class SalvataggioUpdVersamento {
                             AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
 
                             // per ogni record in ARO_VALORE_ATTRIB_DATI_SPEC relativo al xsd usato
-                            tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecDoc(rispostaWs,
-                                    versamento, sessione, tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpAroVersIniComp,
-                                    tmpUsoXsdDatiSpec, strutturaUpdVers);
+                            tmpRispostaControlli = salvataggioUpdIniVersamentoHelper.scriviAroIniDatiSpecComp(sessione,
+                                    tmpAroVersIniUnitaDoc, tmpAroVersIniDoc, tmpAroVersIniComp, tmpUsoXsdDatiSpec,
+                                    backendMetadata, versIniDatiSpecBlob, strutturaUpdVers);
                             if (!tmpRispostaControlli.isrBoolean()) {
                                 context.setRollbackOnly();
-                                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                                 return false;
                             }
                         } // AroUsoXsdDatiSpec
@@ -459,10 +503,10 @@ public class SalvataggioUpdVersamento {
             // l'aggiornamento dell'unità documentaria, lo blocco in modo esclusivo: lo devo
             // rimuovere
             // e devo riallocare tutte le sue sessioni all'aggiornamento che sto creando
-            tmpRispostaControlli = updLogSessioneHelper.cercaAggiornamentoKo(rispostaWs, versamento, sessione);
+            tmpRispostaControlli = updLogSessioneHelper.cercaAggiornamentoKo(versamento);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -486,7 +530,7 @@ public class SalvataggioUpdVersamento {
                     .getNextPgAroUpdUnitaDoc(tmpAroUnitaDoc.getIdUnitaDoc());
             if (!tmpRispostaControlli.isrBoolean() && tmpRispostaControlli.getrLong() != -1) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             } else {
                 pgAroUpdUnitaDoc = tmpRispostaControlli.getrLong();
@@ -495,48 +539,48 @@ public class SalvataggioUpdVersamento {
             }
 
             // 1. inserisci record in ARO_UPD_UNITA_DOC, ...:
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdUnitaDoc(rispostaWs, versamento, sessione,
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdUnitaDoc(versamento, sessione,
                     tmpAroUnitaDoc, pgAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
             // 2. inserisci record in ARO_XML_UPD_UNITA_DOC, ...:
             AroUpdUnitaDoc tmpAroUpdUnitaDoc = (AroUpdUnitaDoc) tmpRispostaControlli.getrObject();
             tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroXmlUpdUnitaDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, backendMetadata, sipBlob, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
             // 3. per ogni controllo svolto sull’unità doc da aggiornare con esito = WARNING
             // (in ordine di numero d’ordine del controllo)
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForUD(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForUD(versamento,
+                    tmpAroUpdUnitaDoc);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 4. fine per ogni controllo svolto sull’unità doc
             // 5. per ogni documento da aggiornare
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForDoc(versamento,
+                    tmpAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 5.3. per ogni componente da aggiornare
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForComp(rispostaWs,
-                    versamento, sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroWarnUpdUnitaDocForComp(versamento,
+                    tmpAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 5.4. fine per ogni componente da aggiornare
@@ -546,62 +590,62 @@ public class SalvataggioUpdVersamento {
                     sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 8. fine per ogni ogni tag “FascicoloSecondario “
             // 9. per ogni documento collegato definito su unita doc da aggiornare
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdLinkUnitaDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdLinkUnitaDoc(versamento, tmpAroUnitaDoc,
+                    tmpAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 11. se nel XML in input il tag “DatiSpecifici” e’ definito
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDatiSpecUnitaDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS,
-                    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDatiSpecUnitaDoc(versamento, sessione,
+                    tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS,
+                    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC, backendMetadata, updDatiSpecBlob, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 12. fine se
             // 13. se nel XML in input il tag “DatiSpecificiMigrazione” e’ definito
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDatiSpecUnitaDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.MIGRAZ,
-                    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDatiSpecUnitaDoc(versamento, sessione,
+                    tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.MIGRAZ,
+                    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC, backendMetadata, updDatiSpecBlob, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 14. fine se
             // 15. inserisci record in ELV_UPD_UD_DA_ELAB_ELENCO
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviElvUpdUdDaElabElenco(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviElvUpdUdDaElabElenco(sessione, tmpAroUnitaDoc,
+                    tmpAroUpdUnitaDoc, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 16. fine se
             // 17. inserisci record in MON_KEY_TOTAL_UD
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviMonKeyTotalUd(rispostaWs, versamento, sessione,
-                    tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviMonKeyTotalUd(tmpAroUnitaDoc, tmpAroUpdUnitaDoc,
+                    strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
             // 17. per ogni documento da aggiornare contenuto in unita doc da aggiornare
             // 17.1. inserisci record in ARO_UPD_DOC_UNITA_DOC
-            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDocUnitaDoc(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdVersamentoHelper.scriviAroUpdDocUnitaDoc(versamento, sessione,
+                    tmpAroUpdUnitaDoc, backendMetadata, updDatiSpecBlob, strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -617,87 +661,103 @@ public class SalvataggioUpdVersamento {
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              */
 
-            // 1. se stato di conservazione per unita doc = AIP_GENERATO o AIP_FIRMATO o AIP_IN_ARCHIVIO o
+            // 1. se stato di conservazione per unita doc = AIP_GENERATO o AIP_FIRMATO o
+            // AIP_IN_ARCHIVIO o
             // AIP_IN_CUSTODIA
-            tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaStatoConservazione(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaStatoConservazione(tmpAroUnitaDoc,
+                    strutturaUpdVers);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
             // 2. se su unità doc da aggiornare il tag “ProfiloArchivistico” e’ da
             // aggiornare
             if (versamento.hasProfiloArchivisticoToUpd()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaProfiloArchivistico(rispostaWs,
-                        versamento, sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaProfiloArchivistico(versamento,
+                        tmpAroUnitaDoc, tmpAroUpdUnitaDoc);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
-            // 3. se su unità doc da aggiornare il tag “ProfiloUnitaDocumentaria” e’ da aggiornare
+            // 3. se su unità doc da aggiornare il tag “ProfiloUnitaDocumentaria” e’ da
+            // aggiornare
             if (versamento.hasProfiloUnitaDocumentariaToUpd()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaProfiloUnitaDocumentaria(rispostaWs,
-                        versamento, sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper
+                        .aggiornaProfiloUnitaDocumentaria(tmpAroUnitaDoc, tmpAroUpdUnitaDoc);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
+                    return false;
+                }
+            }
+            // 3.1 se su unità doc da aggiornare è presente il tag “ProfiloNormativo” e’ da
+            // aggiornare
+            if (versamento.hasProfiloNormativoToUpd()) {
+
+                // se presente il profilo normativo su unità documentaria
+                if (strutturaUpdVers.getIdRecUsoXsdProfiloNormativo() != null) {
+                    tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaProfiloNormativo(tmpAroUnitaDoc,
+                            strutturaUpdVers);
+                }
+
+                if (!tmpRispostaControlli.isrBoolean()) {
+                    context.setRollbackOnly();
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
             // 4. se su unità doc da aggiornare il tag “DocumentiCollegati” e’ da aggiornare
             if (versamento.hasDocumentiCollegatiToUpd()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDocumentiCollegati(rispostaWs,
-                        versamento, sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDocumentiCollegati(tmpAroUnitaDoc,
+                        tmpAroUpdUnitaDoc);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
             // 5. se su unità doc da aggiornare il tag “DatiSpecifici” e’ da aggiornare
             if (versamento.hasDatiSpecificiToBeUpdated()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDatiSpecificiUd(rispostaWs, versamento,
-                        sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS,
-                        strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDatiSpecificiUd(tmpAroUnitaDoc,
+                        tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS, strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
-            // 6. se su unità doc da aggiornare il tag “DatiSpecificiMigrazione” e’ da aggiornare
+            // 6. se su unità doc da aggiornare il tag “DatiSpecificiMigrazione” e’ da
+            // aggiornare
             if (versamento.hasDatiSpecificiMigrazioneToUpd()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDatiSpecificiUd(rispostaWs, versamento,
-                        sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.MIGRAZ,
-                        strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDatiSpecificiUd(tmpAroUnitaDoc,
+                        tmpAroUpdUnitaDoc, TiUsoXsdAroUpdDatiSpecUnitaDoc.MIGRAZ, strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
 
             // 7. per ogni aggiornamento documento contenuto in un aggiornamento unita doc
             if (versamento.hasDocumentiToUpd()) {
-                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDocumento(rispostaWs, versamento,
-                        sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+                tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaDocumento(tmpAroUpdUnitaDoc,
+                        strutturaUpdVers);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
             }
 
             // 8. aggiorna aggregazioni
-            tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaAggregazioni(rispostaWs, versamento,
-                    sessione, tmpAroUnitaDoc, tmpAroUpdUnitaDoc, strutturaUpdVers);
+            tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaAggregazioni(tmpAroUnitaDoc);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
-                this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                this.impostaErrore(rispostaWs, tmpRispostaControlli);
                 return false;
             }
 
@@ -711,7 +771,7 @@ public class SalvataggioUpdVersamento {
                 if (!tmpRispostaControlli.isrBoolean()) {
                     // errore su db
                     context.setRollbackOnly();
-                    this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                    this.impostaErrore(rispostaWs, tmpRispostaControlli);
                     return false;
                 }
                 if (tmpRispostaControlli.getrObject() != null) {
@@ -719,15 +779,58 @@ public class SalvataggioUpdVersamento {
                 }
 
                 if (tmpMonKeyTotalUdKo != null) {
-                    tmpRispostaControlli = salvataggioUpdVersamentoHelper.ereditaVrsSesUpdUnitaDocKoRisolte(rispostaWs,
-                            versamento, sessione, tmpAroUpdUnitaDoc, tmpUpdUnitaDocKo, tmpMonKeyTotalUdKo);
+                    tmpRispostaControlli = salvataggioUpdVersamentoHelper
+                            .ereditaVrsSesUpdUnitaDocKoRisolte(tmpAroUpdUnitaDoc, tmpUpdUnitaDocKo, tmpMonKeyTotalUdKo);
                     if (!tmpRispostaControlli.isrBoolean()) {
                         context.setRollbackOnly();
-                        this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+                        this.impostaErrore(rispostaWs, tmpRispostaControlli);
                         return false;
                     }
                 }
             }
+
+            // MEV#29276
+            /*
+             * Se backendMetadata di tipo O.S. si effettua il salvataggio (con link su apposita entity)
+             */
+            if (backendMetadata.isObjectStorage()) {
+                // calculate normalized URN
+                final String urn = MessaggiWSFormat.formattaBaseUrnUpdUnitaDoc(
+                        MessaggiWSFormat.formattaUrnPartVersatore(
+                                versamento.getStrutturaUpdVers().getVersatoreNonverificato(), true,
+                                Costanti.UrnFormatter.VERS_FMT_STRING),
+                        MessaggiWSFormat.formattaUrnPartUnitaDoc(
+                                versamento.getStrutturaUpdVers().getChiaveNonVerificata(), true,
+                                Costanti.UrnFormatter.UD_FMT_STRING),
+                        tmpAroUpdUnitaDoc.getPgUpdUnitaDoc().longValue(), true, Costanti.UrnFormatter.UPD_FMT_STRING_V3,
+                        Costanti.UrnFormatter.PAD5DIGITS_FMT);
+                ObjectStorageResource res = objectStorageService.createResourcesInSipAggMd(urn,
+                        backendMetadata.getBackendName(), sipBlob, tmpAroUpdUnitaDoc.getIdUpdUnitaDoc(),
+                        getIdStrut(versamento));
+                log.debug("Salvati i SIP nel bucket {} con chiave {} ", res.getBucket(), res.getKey());
+                // Salvataggio Dati Specifici realtivi ai metadati iniziali
+                for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlobEntry : versIniDatiSpecBlob
+                        .entrySet()) {
+                    res = objectStorageService.createResourcesInVersIniDatiSpecAggMd(urn,
+                            backendMetadata.getBackendName(), versIniDatiSpecBlobEntry.getValue(),
+                            versIniDatiSpecBlobEntry.getKey().getIdEntitySacer(), TiEntitaSacerAroVersIniDatiSpec
+                                    .valueOf(versIniDatiSpecBlobEntry.getKey().getTipiEntitaSacer()),
+                            getIdStrut(versamento));
+                    log.debug("Salvati i Dati Specifici relativi ai metadati iniziali nel bucket {} con chiave {} ",
+                            res.getBucket(), res.getKey());
+                }
+                // Salvataggio Dati Specifici
+                for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> updDatiSpecBlobEntry : updDatiSpecBlob
+                        .entrySet()) {
+                    res = objectStorageService.createResourcesInUpdDatiSpecAggMd(urn, backendMetadata.getBackendName(),
+                            updDatiSpecBlobEntry.getValue(), updDatiSpecBlobEntry.getKey().getIdEntitySacer(),
+                            TiEntitaAroUpdDatiSpecUnitaDoc.valueOf(updDatiSpecBlobEntry.getKey().getTipiEntitaSacer()),
+                            getIdStrut(versamento));
+                    log.debug("Salvati i Dati Specifici dell'aggiornamento metadati nel bucket {} con chiave {} ",
+                            res.getBucket(), res.getKey());
+                }
+            }
+            // end MEV#29276
 
             // MEV#27048
             if (CostantiDB.TipiStatoElementoVersato.IN_ATTESA_SCHED.name()
@@ -741,14 +844,14 @@ public class SalvataggioUpdVersamento {
                         versamento.getVersamento().getUnitaDocumentaria().getIntestazione().getChiave().getAnno());
                 pl.setDtCreazione(versamento.getStrutturaUpdVers().getDataVersamento().getTime());
 
-                tmpRispostaControlli = jmsProducerUtilEjb.inviaMessaggioInFormatoJson(connectionFactory, queue, pl,
-                        "CodaElenchiDaElabInAttesaSched");
+                tmpRispostaControlli = jmsProducerUtilEjb.manageMessageGroupingInFormatoJson(connectionFactory, queue,
+                        pl, "CodaElenchiDaElab", String.valueOf(pl.getIdStrut()));
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
                     rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, tmpRispostaControlli.getDsErr());
-                    log.error(
-                            "Eccezione nella fase di Invio messaggio alla coda JMS " + tmpRispostaControlli.getDsErr());
+                    log.error("Eccezione nella fase di Invio messaggio alla coda JMS {}",
+                            tmpRispostaControlli.getDsErr());
                     return false;
                 }
             }
@@ -766,18 +869,24 @@ public class SalvataggioUpdVersamento {
             tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
             tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
                     "Errore interno nella fase di salvataggio aggiornamento: " + e.getMessage()));
-            this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
+            this.impostaErrore(rispostaWs, tmpRispostaControlli);
             log.error("Errore interno nella fase di salvataggio aggiornamento.", e);
             return false;
         }
         return true;
     }
 
-    private void impostaErrore(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            RispostaControlli tmpRispostaControlli) {
+    private void impostaErrore(RispostaWSUpdVers rispostaWs, RispostaControlli tmpRispostaControlli) {
         rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
         rispostaWs.setEsitoWsError(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_ERRORIDB),
                 tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
+    }
+
+    private BigDecimal getIdStrut(UpdVersamentoExt versamento) {
+        if (versamento.getStrutturaUpdVers() != null && versamento.getStrutturaUpdVers().getIdStruttura() != 0) {
+            return BigDecimal.valueOf(versamento.getStrutturaUpdVers().getIdStruttura());
+        }
+        return null;
     }
 
 }

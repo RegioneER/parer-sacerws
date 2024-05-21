@@ -1,10 +1,41 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
 
-import it.eng.parer.ws.dto.IRispostaWS.ErrorTypeEnum;
-import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
+import java.math.BigInteger;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.eng.parer.exception.ParamApplicNotFoundException;
 import it.eng.parer.util.DateUtilsConverter;
 import it.eng.parer.ws.dto.IRispostaWS;
+import it.eng.parer.ws.dto.IRispostaWS.ErrorTypeEnum;
+import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.AvanzamentoWs;
 import it.eng.parer.ws.utils.Costanti.TipiWSPerControlli;
@@ -18,28 +49,15 @@ import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.RispostaWSAggAll;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VersamentoExtAggAll;
-import static it.eng.parer.ws.versamento.ejb.VersamentoSyncBase.logger;
-import it.eng.parer.ws.versamento.utils.VerificaFirmeHashAggAll;
-import it.eng.parer.ws.versamento.utils.VersamentoExtAggAllPrsr;
+import it.eng.parer.ws.versamento.ejb.prs.VersamentoExtAggAllPrsr;
 import it.eng.parer.ws.versamentoTpi.utils.FileServUtils;
 import it.eng.parer.ws.xml.versResp.ECEsitoChiamataWSType;
-import it.eng.parer.ws.xml.versResp.EsitoVersAggAllegati;
 import it.eng.parer.ws.xml.versResp.ECEsitoExtType;
 import it.eng.parer.ws.xml.versResp.ECEsitoGeneraleType;
 import it.eng.parer.ws.xml.versResp.ECEsitoPosNegType;
 import it.eng.parer.ws.xml.versResp.ECEsitoXSDAggAllType;
+import it.eng.parer.ws.xml.versResp.EsitoVersAggAllegati;
 import it.eng.spagoLite.security.User;
-import java.math.BigInteger;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -56,6 +74,10 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
     //
     private static final Logger log = LoggerFactory.getLogger(AggiuntaAllSync.class);
     //
+    @EJB
+    VersamentoExtAggAllPrsr tmpPrsr;
+    @EJB
+    VerificaFirmeHashAggAll veriFirme;
 
     public void init(RispostaWSAggAll rispostaWs, AvanzamentoWs avanzamento, VersamentoExtAggAll versamento,
             EsitoVersAggAllegati myEsito) {
@@ -149,8 +171,7 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
         }
 
         try {
-            VersamentoExtAggAllPrsr tmpPrsr = new VersamentoExtAggAllPrsr(versamento, rispostaWs);
-            tmpPrsr.parseXML(sessione);
+            tmpPrsr.parseXML(sessione, versamento, rispostaWs);
             tmpAvanzamentoWs.resetFase();
         } catch (Exception e) {
             rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
@@ -172,8 +193,8 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                 if (tmpRispostaControlli.getCodErr() != null) {
                     rispostaWs.setSeverity(SeverityEnum.ERROR);
                     rispostaWs.setEsitoWsErrBundle(tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
-                    logger.error("Eccezione nella fase di produzione Rapporto di versamento Documento doppio "
-                            + tmpRispostaControlli.getDsErr());
+                    logger.error("Eccezione nella fase di produzione Rapporto di versamento Documento doppio {}",
+                            tmpRispostaControlli.getDsErr());
                 }
             } else {
                 myEsito.setXMLVersamento(sessione.getDatiIndiceSipXml());
@@ -186,10 +207,12 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
 
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             try {
-                // verifica se il file doveva essere inserito, cercandolo nella lista dei componenti
+                // verifica se il file doveva essere inserito, cercandolo nella lista dei
+                // componenti
                 // se c'è lo imposta nel componente trovato
                 // setta a true il flag di dati letti
-                // imposta il valore della dimensione del file nel frammento di xml di risposta già pronto
+                // imposta il valore della dimensione del file nel frammento di xml di risposta
+                // già pronto
                 ComponenteVers tmpComponenteVers;
                 tmpComponenteVers = versamento.getStrutturaComponenti().getFileAttesi().get(fileIn.getId());
                 if (tmpComponenteVers != null) {
@@ -197,9 +220,11 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                     if (tmpComponenteVers.getTipoSupporto() == ComponenteVers.TipiSupporto.FILE) {
                         tmpComponenteVers.setRifFileBinario(fileIn);
                         tmpComponenteVers.setDatiLetti(true);
-                        // imposta la dimensione file nell'XML di risposta associato al componente trovato
+                        // imposta la dimensione file nell'XML di risposta associato al componente
+                        // trovato
                         // NOTA BENE: solo uno tra componente e sottocomponente è valorizzato,
-                        // perciò il doppio IF che segue comporta la scrittura della dimensione su un solo elemento
+                        // perciò il doppio IF che segue comporta la scrittura della dimensione su un
+                        // solo elemento
                         if (tmpComponenteVers.getRifComponenteResp() != null) {
                             tmpComponenteVers.getRifComponenteResp()
                                     .setDimensioneFile(BigInteger.valueOf(fileIn.getDimensione()));
@@ -252,7 +277,8 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
         }
 
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            // verifica che il payload del versamento possa essere contenuto nel filesystem di destinazione
+            // verifica che il payload del versamento possa essere contenuto nel filesystem
+            // di destinazione
             if (versamento.getStrutturaComponenti().getTipoSalvataggioFile() == CostantiDB.TipoSalvataggioFile.FILE) {
                 try {
                     FileServUtils fileServUtils = new FileServUtils();
@@ -280,8 +306,7 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
 
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             try {
-                VerificaFirmeHashAggAll veriFirme = new VerificaFirmeHashAggAll(versamento, rispostaWs);
-                veriFirme.controlloFirmeMarcheHash();
+                veriFirme.controlloFirmeMarcheHash(versamento, rispostaWs);
             } catch (Exception e) {
                 rispostaWs.setSeverity(SeverityEnum.ERROR);
                 rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
@@ -292,8 +317,6 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
 
         if (rispostaWs.getSeverity() == SeverityEnum.ERROR) {
             myEsito.setXMLVersamento(versamento.getDatiXml());
-        } else {
-            // myEsito.getUnitaDocumentariaAggAll().setStatoConservazione(ECStatoConsType.IN_ATTESA_SCHED);
         }
     }
 
@@ -304,7 +327,8 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
         AvanzamentoWs tmpAvanzamentoWs = rispostaWs.getAvanzamento();
         boolean prosegui = true;
 
-        // patch di dubbio gusto per includere la riga di errore eventualmente individuata nei controlli precedenti
+        // patch di dubbio gusto per includere la riga di errore eventualmente
+        // individuata nei controlli precedenti
         // nella lista di messaggi
         if (myEsito.getEsitoGenerale().getCodiceEsito() == ECEsitoExtType.NEGATIVO && !versamento.isTrovatiErrori()) {
             versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
@@ -315,7 +339,7 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
         myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
         //
         if (versamento.getXmlDefaults().get(ParametroApplDB.VERIFICA_PARTIZIONI) != null && versamento.getXmlDefaults()
-                .get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().toUpperCase().equals("TRUE")) {
+                .get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().equalsIgnoreCase("TRUE")) {
             String tmpDescStrut;
             if (versamento.getStrutturaComponenti() != null
                     && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
@@ -330,7 +354,8 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                 rispostaWs.setEsitoWsError(tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
                 versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
                         myEsito.getEsitoGenerale().getMessaggioErrore());
-                // rigenera la lista errori e warning secondari - forse cambiata in caso di errore
+                // rigenera la lista errori e warning secondari - forse cambiata in caso di
+                // errore
                 myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
                 myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
                 prosegui = false;
@@ -349,7 +374,8 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                     this.beginTrans(rispostaWs);
                     versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
                             myEsito.getEsitoGenerale().getMessaggioErrore());
-                    // rigenera la lista errori e warning secondari - forse cambiata in caso di errore di persistenza
+                    // rigenera la lista errori e warning secondari - forse cambiata in caso di
+                    // errore di persistenza
                     myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
                     myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
                 }
@@ -365,13 +391,14 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                 if (tmpRispostaControlli.getCodErr() != null) {
                     rispostaWs.setSeverity(SeverityEnum.ERROR);
                     rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, tmpRispostaControlli.getDsErr());
-                    logger.error("Eccezione nella fase di produzione Rapporto di versamento  "
-                            + tmpRispostaControlli.getDsErr());
+                    logger.error("Eccezione nella fase di produzione Rapporto di versamento {}",
+                            tmpRispostaControlli.getDsErr());
                     this.rollback(rispostaWs);
                     this.beginTrans(rispostaWs);
                     versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
                             myEsito.getEsitoGenerale().getMessaggioErrore());
-                    // rigenera la lista errori e warning secondari - forse cambiata in caso di errore
+                    // rigenera la lista errori e warning secondari - forse cambiata in caso di
+                    // errore
                     myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
                     myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
                 }
@@ -384,12 +411,13 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                 if (tmpRispostaControlli.getCodErr() != null) {
                     // nota l'errore critico di persistenza viene contrassegnato con la lettera P
                     // per dare la possibilità all'eventuale chiamante di ripetere il tentativo
-                    // quando possibile (non è infatti un errore "definitivo" dato dall'input, ma bensì
+                    // quando possibile (non è infatti un errore "definitivo" dato dall'input, ma
+                    // bensì
                     // un errore interno provocato da problemi al database)
                     rispostaWs.setSeverity(SeverityEnum.ERROR);
                     rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, tmpRispostaControlli.getDsErr());
-                    log.error("Eccezione nella fase di Salvataggio dei dati di sessione "
-                            + tmpRispostaControlli.getDsErr());
+                    log.error("Eccezione nella fase di Salvataggio dei dati di sessione {}",
+                            tmpRispostaControlli.getDsErr());
                     this.rollback(rispostaWs);
                     prosegui = false;
                 }
@@ -411,13 +439,13 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
                     pl.setDtCreazione(DateUtilsConverter
                             .convert(versamento.getStrutturaComponenti().getDataVersamento()).getTime());
 
-                    tmpRispostaControlli = jmsProducerUtilEjb.inviaMessaggioInFormatoJson(connectionFactory, queue, pl,
-                            "CodaElenchiDaElabInAttesaSched");
+                    tmpRispostaControlli = jmsProducerUtilEjb.manageMessageGroupingInFormatoJson(connectionFactory,
+                            queue, pl, "CodaElenchiDaElab", String.valueOf(pl.getIdStrut()));
                     if (tmpRispostaControlli.getCodErr() != null) {
                         rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                         rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, tmpRispostaControlli.getDsErr());
-                        logger.error("Eccezione nella fase di Invio messaggio alla coda JMS "
-                                + tmpRispostaControlli.getDsErr());
+                        logger.error("Eccezione nella fase di Invio messaggio alla coda JMS {}",
+                                tmpRispostaControlli.getDsErr());
                         this.rollback(rispostaWs);
                         prosegui = false;
                     }

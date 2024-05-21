@@ -1,9 +1,39 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versFascicoli.ejb;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.EJBContext;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.FasFascicolo;
 import it.eng.parer.entity.VrsFascicoloKo;
@@ -15,17 +45,6 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.versFascicoli.dto.RispostaWSFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.EJBContext;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -132,7 +151,7 @@ public class LogSessioneFascicoli {
             } else {
                 // altrimenti -> cerco se esiste una precedente registrazione fallita dello
                 // stesso fascicolo e se esiste, lo blocco in modo esclusivo: lo devo modificare
-                tmpRispostaControlli = logSessioneFascicoliHelper.cercaFascicoloKo(rispostaWs, versamento, sessione);
+                tmpRispostaControlli = logSessioneFascicoliHelper.cercaFascicoloKo(versamento);
                 if (!tmpRispostaControlli.isrBoolean()) {
                     context.setRollbackOnly();
                     this.impostaErrore(rispostaWs, versamento, tmpRispostaControlli);
@@ -142,8 +161,8 @@ public class LogSessioneFascicoli {
                     tmpFascicoloKo = (VrsFascicoloKo) tmpRispostaControlli.getrObject();
                 } else {
                     // verifica se posso salvare la sessione fallita
-                    tmpRispostaControlli = logSessioneFascicoliHelper.verificaPartizioneFascicoloByAaStrutKo(rispostaWs,
-                            versamento, sessione);
+                    tmpRispostaControlli = logSessioneFascicoliHelper
+                            .verificaPartizioneFascicoloByAaStrutKo(versamento);
                     if (!tmpRispostaControlli.isrBoolean()) {
                         // c'è un problema del partizionamento. Si tratta di un'evenienza rara ma
                         // possibile. In questo caso non posso salvare la sessione fallita.
@@ -183,7 +202,7 @@ public class LogSessioneFascicoli {
             }
 
             // salvo i warning e gli errori ulteriori
-            tmpRispostaControlli = logSessioneFascicoliHelper.scriviErroriFascicoloKo(rispostaWs, versamento, sessione,
+            tmpRispostaControlli = logSessioneFascicoliHelper.scriviErroriFascicoloKo(rispostaWs, versamento,
                     tmpSesFascicoloKo);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();

@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -11,9 +28,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.versamentoUpd.dto.ControlloWSResp;
 
 /**
@@ -22,8 +39,6 @@ import it.eng.parer.ws.versamentoUpd.dto.ControlloWSResp;
  */
 
 public class ControlliWSBundle {
-
-    private static Logger log = LoggerFactory.getLogger(ControlliWSBundle.class);
 
     public static final String DEFAULT_LOCALE = "it";
 
@@ -61,9 +76,9 @@ public class ControlliWSBundle {
         try {
             return (ControlliWSCache) new InitialContext().lookup("java:app/sacerws-ejb/ControlliWSCache");
         } catch (NamingException ex) {
-            log.error("Errore lookup dei messaggi " + ExceptionUtils.getRootCauseMessage(ex), ex);
-            throw new RuntimeException(
-                    "Errore lookup singleton dei messaggi " + ExceptionUtils.getRootCauseMessage(ex));
+            throw new SacerWsRuntimeException(
+                    "Errore lookup singleton dei messaggi " + ExceptionUtils.getRootCauseMessage(ex),
+                    SacerWsErrorCategory.INTERNAL_ERROR);
         }
     }
 
@@ -126,6 +141,8 @@ public class ControlliWSBundle {
     public static final String CTRL_UD_COLLEGAMENTI = "controlloCollegamenti";
 
     public static final String CTRL_UD_PROFILOUD = "controlloProfiloUnitaDoc";
+
+    public static final String CTRL_UD_PROFILONORMATIVO = "controlloProfiloNormativo";
 
     public static final String CTRL_UD_DATISPECIFICI = "controlloDatiSpecUnitaDoc";
 

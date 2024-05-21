@@ -1,6 +1,24 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -16,18 +34,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import it.eng.parer.exception.SacerWsException;
-import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
-
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsException;
 
 /**
  *
@@ -63,7 +78,7 @@ public class XmlUtils {
     public static String doCanonicalizzazioneXml(final String xml, final boolean unPrettyPrint)
             throws SacerWsException {
         String xmlOut = null;
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             org.apache.xml.security.Init.init();
             //
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -91,8 +106,8 @@ public class XmlUtils {
 
             org.apache.xml.security.c14n.Canonicalizer canonicalizer = Canonicalizer
                     .getInstance(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-            byte[] res = canonicalizer.canonicalizeSubtree(doc);
-            xmlOut = new String(res, StandardCharsets.UTF_8);
+            canonicalizer.canonicalizeSubtree(doc, baos);
+            xmlOut = new String(baos.toByteArray(), StandardCharsets.UTF_8);
             if (unPrettyPrint) {
                 xmlOut = XmlUtils.unPrettyPrint(xmlOut);
             }

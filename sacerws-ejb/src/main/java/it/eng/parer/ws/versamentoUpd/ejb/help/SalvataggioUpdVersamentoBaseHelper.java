@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -37,7 +54,9 @@ import it.eng.parer.ws.utils.CostantiDB.TipiEntitaSacer;
 import it.eng.parer.ws.utils.CostantiDB.TipiUsoDatiSpec;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSHelper;
+import java.math.BigDecimal;
 
+@SuppressWarnings("unchecked")
 public abstract class SalvataggioUpdVersamentoBaseHelper {
 
     @EJB
@@ -71,7 +90,7 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
         rispostaControlli.setrLong(-1);
         rispostaControlli.setrBoolean(false);
 
-        List<AroUsoXsdDatiSpec> usoXsdDatiSpecs = null;
+        List<AroUsoXsdDatiSpec> usoXsdDatiSpecs;
 
         try {
             String queryStr = "select ud from AroUsoXsdDatiSpec ud " + "where ud.tiUsoXsd = :tiUsoXsd  "
@@ -147,12 +166,12 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
             javax.persistence.Query query = entityManager.createQuery(queryStr, AroValoreAttribDatiSpec.class);
             query.setParameter("idUsoXsdDatiSpec", idUsoXsdDatiSpec);
             query.setParameter("idAttribDatiSpec", idAttribDatiSpec);
-            query.setParameter("idStrut", idStrut);
+            query.setParameter("idStrut", new BigDecimal(idStrut));
 
             aroValoreAttribDatiSpec = query.getResultList();
 
             // se esiste ...
-            if (aroValoreAttribDatiSpec.size() >= 1) {
+            if (!aroValoreAttribDatiSpec.isEmpty()) {
                 // livello attuale
                 rispostaControlli.setrObject(aroValoreAttribDatiSpec);
                 rispostaControlli.setrLong(0);
@@ -185,14 +204,6 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
         // build object
         datiSpec.setVersioneDatiSpecifici(versione);
 
-        /*
-         * // per ogni attributo dei dati specifici costruiscta <tag>value</tag> // ordinando per getNiOrdAttrib
-         * List<DecXsdAttribDatiSpec> sorted = new ArrayList<>(attrDs); sorted.sort(new
-         * Comparator<DecXsdAttribDatiSpec>() {
-         * 
-         * @Override public int compare(DecXsdAttribDatiSpec d1, DecXsdAttribDatiSpec d2) { return
-         * d1.getNiOrdAttrib().compareTo(d2.getNiOrdAttrib()); } });
-         */
         for (DecXsdAttribDatiSpec ds : attrDs) {
             String attr = ds.getDecAttribDatiSpec().getNmAttribDatiSpec();
 
@@ -209,12 +220,6 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
             if (tmpRispostaControlli.getrLong() != -1) {
                 aroValoreAttribDatiSpecs = (List<AroValoreAttribDatiSpec>) tmpRispostaControlli.getrObject();
             }
-
-            /*
-             * List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs = new ArrayList<>(ds.getDecAttribDatiSpec()
-             * .getAroValoreAttribDatiSpecs()).stream() .filter(d -> d.getAroUsoXsdDatiSpec().getIdUsoXsdDatiSpec() ==
-             * idAroUsoXsdDatiSpec).collect(Collectors.toList());
-             */
 
             for (AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec : aroValoreAttribDatiSpecs) {
                 // create the element
@@ -242,8 +247,6 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
         Marshaller tmpMarshaller = xmlVersCache.getVersReqCtxforUD().createMarshaller();
         StringWriter sw = new StringWriter();
         tmpMarshaller.marshal(root, sw);
-        //
-        // return sw.toString();
 
         tmpRispostaControlli.setrString(sw.toString());
 

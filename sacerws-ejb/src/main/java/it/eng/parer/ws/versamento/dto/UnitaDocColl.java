@@ -1,14 +1,33 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versamento.dto;
 
-import it.eng.parer.ws.xml.versReq.ChiaveType;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
+
+import it.eng.parer.ws.xml.versReq.ChiaveType;
 
 /**
  *
@@ -16,7 +35,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class UnitaDocColl implements Serializable {
 
-    public final static int MAX_LEN_DESCRIZIONE = 254;
+    private static final long serialVersionUID = 1L;
+
+    public static final int MAX_LEN_DESCRIZIONE = 254;
 
     private ChiaveType chiave;
     private long idUnitaDocLink;

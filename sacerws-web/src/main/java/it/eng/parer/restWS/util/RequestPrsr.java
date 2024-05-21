@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -11,7 +28,12 @@ import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import java.util.Iterator;
 import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.file.Files;
+import java.io.File;
+import java.io.IOException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -24,12 +46,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fioravanti_F
  */
-public class RequestPrsr extends AbsRequestPrsr {
+// @Stateless(mappedName = "RequestPrsr")
+@Stateless
+@LocalBean
+public class RequestPrsr {
 
-    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(RequestPrsr.class);
 
-    public class ReqPrsrConfig {
+    public static class ReqPrsrConfig {
 
         private boolean leggiFile;
         private boolean leggindiceMM;
@@ -37,6 +61,10 @@ public class RequestPrsr extends AbsRequestPrsr {
         private SyncFakeSessn sessioneFinta;
         private HttpServletRequest request;
         ServletFileUpload uploadHandler;
+
+        private ReqPrsrConfig() {
+            super();
+        }
 
         public boolean isLeggiFile() {
             return leggiFile;
@@ -87,6 +115,10 @@ public class RequestPrsr extends AbsRequestPrsr {
         }
     }
 
+    public static ReqPrsrConfig createConfig() {
+        return new ReqPrsrConfig();
+    }
+
     /**
      * Nota bene: è fondamentale che questo metodo renda la collection di FileItem, e che il chiamante ne tenga una
      * copia: la deallocazione del DiskFileItem a causa della GC e la conseguente chiamata del metodo finalize()
@@ -94,21 +126,21 @@ public class RequestPrsr extends AbsRequestPrsr {
      * effetto di avere un File handler che non punta a nulla; il fenomeno è difficile da replicare ma estremamente
      * insidioso. Si manifesta con errori apparentemente casuali in cui le procedure di lettura del file (verifica firma
      * e persistenza) vanno in eccezione per mancanza di file. (File not found exception)
-     * 
+     *
      * @param rispostaWs
      *            interfaccia con definizione della risposta {@link IRispostaWS}
      * @param configurazione
      *            dto configurazione {@link ReqPrsrConfig}
-     * 
+     *
      * @return lista parti multipart/form-data di tipo {@link FileItem}
-     * 
+     *
      * @throws FileUploadException
      *             errore generico
      */
     public List<FileItem> parse(IRispostaWS rispostaWs, ReqPrsrConfig configurazione) throws FileUploadException {
-        Iterator tmpIterator = null;
+        Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
-        List fileItems = null;
+        List<FileItem> fileItems = null;
         FileBinario tmpFileBinario;
 
         // lettura configurazione;
@@ -135,7 +167,6 @@ public class RequestPrsr extends AbsRequestPrsr {
         tmpFileItem = (DiskFileItem) tmpIterator.next();
         if (tmpFileItem.isFormField()) {
             if (tmpFileItem.getFieldName().equals("VERSIONE")) {
-                // log.info("VERSIONE " + tmpFileItem.getString());
                 sessioneFinta.setVersioneWS(tmpFileItem.getString());
             } else {
                 rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
@@ -157,7 +188,7 @@ public class RequestPrsr extends AbsRequestPrsr {
             tmpFileItem = (DiskFileItem) tmpIterator.next();
             if (tmpFileItem.isFormField()) {
                 if (tmpFileItem.getFieldName().equals("LOGINNAME")) {
-                    log.info("LOGINNAME " + tmpFileItem.getString());
+                    log.info("LOGINNAME {}", tmpFileItem.getString());
                     sessioneFinta.setLoginName(tmpFileItem.getString());
                     tmpAvanzamento.setVrsUser(tmpFileItem.getString()).logAvanzamento();
                 } else {
@@ -181,7 +212,6 @@ public class RequestPrsr extends AbsRequestPrsr {
             tmpFileItem = (DiskFileItem) tmpIterator.next();
             if (tmpFileItem.isFormField()) {
                 if (tmpFileItem.getFieldName().equals("PASSWORD")) {
-                    // log.info("PASSWORD " + tmpFileItem.getString());
                     sessioneFinta.setPassword(tmpFileItem.getString());
                 } else {
                     rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
@@ -205,7 +235,6 @@ public class RequestPrsr extends AbsRequestPrsr {
                 tmpFileItem = (DiskFileItem) tmpIterator.next();
                 if (tmpFileItem.isFormField()) {
                     if (tmpFileItem.getFieldName().equals("XMLINDICE")) {
-                        // log.info("XMLINDICE trovato");
                         //
                         sessioneFinta.setDatiPackInfoSipXml(tmpFileItem.getString());
                         //
@@ -231,7 +260,6 @@ public class RequestPrsr extends AbsRequestPrsr {
             tmpFileItem = (DiskFileItem) tmpIterator.next();
             if (tmpFileItem.isFormField()) {
                 if (tmpFileItem.getFieldName().equals("XMLSIP")) {
-                    // log.info("XMLSIP trovato");
                     sessioneFinta.setDatiIndiceSipXml(tmpFileItem.getString());
                     sessioneFinta.setDatiDaSalvareIndiceSip(tmpFileItem.getString());
                 } else {
@@ -261,14 +289,11 @@ public class RequestPrsr extends AbsRequestPrsr {
                         tmpFileBinario = new FileBinario();
                         tmpFileBinario.setId(tmpFileItem.getFieldName());
                         tmpFileBinario.setFileName(fileName);
+                        tmpFileBinario.setDimensione(sizeInBytes);
                         if (tmpFileItem.isInMemory()) {
-                            tmpFileBinario.setInMemoria(true);
-                            tmpFileBinario.setDati(tmpFileItem.get());
-                            tmpFileBinario.setDimensione(sizeInBytes);
+                            tmpFileBinario.setFileSuDisco(createFile(tmpFileItem.get()));
                         } else {
-                            tmpFileBinario.setInMemoria(false);
                             tmpFileBinario.setFileSuDisco(tmpFileItem.getStoreLocation());
-                            tmpFileBinario.setDimensione(sizeInBytes);
                         }
                         sessioneFinta.getFileBinari().add(tmpFileBinario);
                     }
@@ -283,4 +308,45 @@ public class RequestPrsr extends AbsRequestPrsr {
         }
         return fileItems;
     }
+
+    private static File createFile(byte[] content) throws FileUploadException {
+        try {
+            File createTempFile = File.createTempFile("service", ".inmemory");
+            Files.write(createTempFile.toPath(), content);
+            return createTempFile;
+
+        } catch (IOException ex) {
+            throw new FileUploadException("Impossibile creare un file a partire dai dati in memoria", ex);
+        }
+    }
+
+    /**
+     * lettura dell'indirizzo IP del chiamante. Si presuppone che il load balancer o il reverse proxy impostino la
+     * variabile RERFwFor tra gli header HTTP della request. Questo è un tag custom messo a punto dalla RER per
+     * compensare ai possibili rischi legati all'uso dell'header X-FORWARDED-FOR di uso più comune. Da notare che
+     * qualora l'header RERFwFor non fosse valorizzato, il codice ripiegherà cercando X-FORWARDED-FOR tra gli header
+     * HTTP della request. Questo è l'unico sistema per recepire l'IP nel caso in cui l'application server non sia
+     * esposto direttamente. NOTA: è ovvio che l'application server è esposto direttamente solo sui PC di sviluppo.
+     *
+     * @param request
+     *            standard {@link HttpServletRequest}
+     *
+     * @return ip client letto ottenuto da request
+     */
+    public String leggiIpVersante(HttpServletRequest request) {
+        String ipVers = request.getHeader("RERFwFor");
+        // cerco l'header custom della RER
+        if (ipVers == null || ipVers.isEmpty()) {
+            ipVers = request.getHeader("X-FORWARDED-FOR");
+            // se non c'e`, uso l'header standard
+        }
+        if (ipVers == null || ipVers.isEmpty()) {
+            ipVers = request.getRemoteAddr();
+            // se non c'e` perche' la macchina e' esposta direttamente,
+            // leggo l'IP fisico del chiamante
+        }
+        log.info("Request, indirizzo di provenienza - IP: {}", ipVers);
+        return ipVers;
+    }
+
 }

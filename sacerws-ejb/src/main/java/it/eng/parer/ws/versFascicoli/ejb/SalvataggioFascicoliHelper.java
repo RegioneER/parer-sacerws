@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,11 +23,11 @@
 package it.eng.parer.ws.versFascicoli.ejb;
 
 import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -19,7 +36,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -28,7 +44,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.DecAaTipoFascicolo;
@@ -50,6 +65,7 @@ import it.eng.parer.entity.IamUser;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.VrsFascicoloKo;
 import it.eng.parer.entity.VrsSesFascicoloKo;
+import it.eng.parer.entity.constraint.FasXmlFascicolo.TiModXsdFasXmlFascicolo;
 import it.eng.parer.util.ejb.AppServerInstance;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.XmlFascCache;
@@ -83,8 +99,6 @@ import it.eng.parer.ws.versamento.dto.VoceDiErrore;
 @LocalBean
 public class SalvataggioFascicoliHelper {
 
-    //
-
     @EJB
     MessaggiWSHelper messaggiWSHelper;
 
@@ -105,14 +119,14 @@ public class SalvataggioFascicoliHelper {
     private static final int DS_OGGETTO_FASC_MAX_LEN = 4000;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, VrsFascicoloKo fascicoloKo) {
+    public RispostaControlli scriviFascicolo(VersFascicoloExt versamento, SyncFakeSessn sessione,
+            VrsFascicoloKo fascicoloKo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo il fascicolo quando il versamento è andato bene
         tmpRispostaControlli.setrBoolean(false);
         try {
-            Calendar tmpCal = GregorianCalendar.getInstance();
+            Calendar tmpCal = Calendar.getInstance();
             tmpCal.set(2444, 11, 31, 0, 0, 0); // 31 dicembre 2444, data di annullo fittizia
 
             FasFascicolo tmpFascicolo = new FasFascicolo();
@@ -135,9 +149,9 @@ public class SalvataggioFascicoliHelper {
                     .valueOf(versamento.getVersamento().getParametri().getTipoConservazione().name()));
             // TODO IL sistema di migraziobe va gestito
             //
-            tmpFascicolo.setFlForzaContrClassif(svf.getFlControlliFasc().isFlForzaContrFlassif() ? "1" : "0");
-            tmpFascicolo.setFlForzaContrColleg(svf.getFlControlliFasc().isFlForzaContrColleg() ? "1" : "0");
-            tmpFascicolo.setFlForzaContrNumero(svf.getFlControlliFasc().isFlForzaContrNumero() ? "1" : "0");
+            tmpFascicolo.setFlForzaContrClassif(booleanToFlag(svf.getFlControlliFasc().isFlForzaContrFlassif()));
+            tmpFascicolo.setFlForzaContrColleg(booleanToFlag(svf.getFlControlliFasc().isFlForzaContrColleg()));
+            tmpFascicolo.setFlForzaContrNumero(booleanToFlag(svf.getFlControlliFasc().isFlForzaContrNumero()));
             tmpFascicolo.setFlUpdAnnulUnitaDoc("0"); // fixed
             //
             if (svf.getDatiXmlProfiloArchivistico() != null) {
@@ -150,7 +164,7 @@ public class SalvataggioFascicoliHelper {
             }
 
             if (svf.getIdVoceTitol() != null) {
-                tmpFascicolo.setDecVoceTitol(entityManager.find(DecVoceTitol.class, svf.getIdVoceTitol().longValue()));
+                tmpFascicolo.setDecVoceTitol(entityManager.find(DecVoceTitol.class, svf.getIdVoceTitol()));
             }
 
             if (svf.getDatiXmlProfiloGenerale() != null) {
@@ -174,10 +188,6 @@ public class SalvataggioFascicoliHelper {
                 } else {
                     tmpFascicolo.setNiAaConservazione(new BigDecimal(9999));
                 }
-                /*
-                 * if(!dxpg.getAmmPartecipanti().isEmpty()) {
-                 * tmpFascicolo.setFasAmminPartecs(dxpg.getAmmPartecipanti()); }
-                 */
                 if (StringUtils.isNotBlank(dxpg.getNoteFascicolo())) {
                     tmpFascicolo
                             .setDsNota(LogSessioneUtils.getStringAtMaxLen(dxpg.getNoteFascicolo(), DS_NOTA_MAX_LEN));
@@ -233,15 +243,14 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviAmmPartecipanti(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviAmmPartecipanti(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo amm. partecipanti del fascicolo
         tmpRispostaControlli.setrBoolean(false);
         try {
             if (svf.getDatiXmlProfiloGenerale() != null
-                    && svf.getDatiXmlProfiloGenerale().getAmmPartecipanti().size() > 0) {
+                    && !svf.getDatiXmlProfiloGenerale().getAmmPartecipanti().isEmpty()) {
                 DatiXmlProfiloGenerale dxpg = svf.getDatiXmlProfiloGenerale();
                 for (DXPGAmminPartecipante ammPart : dxpg.getAmmPartecipanti()) {
                     FasAmminPartec fasAmminPartec = new FasAmminPartec();
@@ -267,15 +276,14 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviSoggCoinvolti(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviSoggCoinvolti(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo amm. partecipanti del fascicolo
         tmpRispostaControlli.setrBoolean(false);
         try {
             if (svf.getDatiXmlProfiloGenerale() != null
-                    && svf.getDatiXmlProfiloGenerale().getSoggettiCoinvolti().size() > 0) {
+                    && !svf.getDatiXmlProfiloGenerale().getSoggettiCoinvolti().isEmpty()) {
                 DatiXmlProfiloGenerale dxpg = svf.getDatiXmlProfiloGenerale();
                 for (DXPGSoggettoCoinvolto sogg : dxpg.getSoggettiCoinvolti()) {
                     FasSogFascicolo fasSogFascicolo = new FasSogFascicolo();
@@ -309,15 +317,14 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviResponsabili(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviResponsabili(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo amm. partecipanti del fascicolo
         tmpRispostaControlli.setrBoolean(false);
         try {
             if (svf.getDatiXmlProfiloGenerale() != null
-                    && svf.getDatiXmlProfiloGenerale().getResponsabili().size() > 0) {
+                    && !svf.getDatiXmlProfiloGenerale().getResponsabili().isEmpty()) {
                 DatiXmlProfiloGenerale dxpg = svf.getDatiXmlProfiloGenerale();
                 for (DXPGRespFascicolo resp : dxpg.getResponsabili()) {
                     FasRespFascicolo fasRespFascicolo = new FasRespFascicolo();
@@ -350,15 +357,14 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviUoOrgResponsabili(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviUoOrgResponsabili(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo amm. partecipanti del fascicolo
         tmpRispostaControlli.setrBoolean(false);
         try {
             if (svf.getDatiXmlProfiloGenerale() != null
-                    && svf.getDatiXmlProfiloGenerale().getUoOrgResponsabili().size() > 0) {
+                    && !svf.getDatiXmlProfiloGenerale().getUoOrgResponsabili().isEmpty()) {
                 DatiXmlProfiloGenerale dxpg = svf.getDatiXmlProfiloGenerale();
                 for (String uo : dxpg.getUoOrgResponsabili()) {
                     FasUniOrgRespFascicolo fasUniOrgRespFascicolo = new FasUniOrgRespFascicolo();
@@ -395,10 +401,10 @@ public class SalvataggioFascicoliHelper {
             tmpXmlVersFascicolo.setFasFascicolo(fascicolo);
             tmpXmlVersFascicolo.setTiXmlVers(CostantiDB.TipiXmlDati.RICHIESTA);
             tmpXmlVersFascicolo.setCdVersioneXml(svf.getVersioneIndiceSipNonVerificata());
+            tmpXmlVersFascicolo.setFlCanonicalized(CostantiDB.Flag.TRUE);
             tmpXmlVersFascicolo.setBlXmlVers(
                     sessione.getDatiDaSalvareIndiceSip().length() == 0 ? "--" : sessione.getDatiDaSalvareIndiceSip());
             tmpXmlVersFascicolo.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-            // tmpXmlVersFascicolo.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
             tmpXmlVersFascicolo.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
             tmpXmlVersFascicolo.setDsUrnXmlVers(MessaggiWSFormat.formattaUrnIndiceSipFasc(
                     versamento.getStrutturaComponenti().getUrnPartChiaveFascicolo(),
@@ -420,9 +426,9 @@ public class SalvataggioFascicoliHelper {
             tmpXmlVersFascicolo.setFasFascicolo(fascicolo);
             tmpXmlVersFascicolo.setTiXmlVers(CostantiDB.TipiXmlDati.RISPOSTA);
             tmpXmlVersFascicolo.setCdVersioneXml(esito.getVersioneRapportoVersamento());
+            tmpXmlVersFascicolo.setFlCanonicalized(CostantiDB.Flag.TRUE);
             tmpXmlVersFascicolo.setBlXmlVers(xmlesito);
             tmpXmlVersFascicolo.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-            // tmpXmlVersFascicolo.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
             tmpXmlVersFascicolo.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
             tmpXmlVersFascicolo.setDsUrnXmlVers(MessaggiWSFormat.formattaUrnRappVersFasc(
                     versamento.getStrutturaComponenti().getUrnPartChiaveFascicolo(),
@@ -431,7 +437,6 @@ public class SalvataggioFascicoliHelper {
             tmpXmlVersFascicolo.setDsUrnNormalizXmlVers(MessaggiWSFormat.formattaUrnRappVersFasc(
                     versamento.getStrutturaComponenti().getUrnPartChiaveFascicoloNormalized(),
                     Costanti.UrnFormatter.URN_RAPP_VERS_V2));
-            // tmpXmlVersFascicolo.setDsHashXmlVers(new HashCalculator().calculateHash(xmlesito).toHexBinary());
             tmpXmlVersFascicolo
                     .setDsHashXmlVers(new HashCalculator().calculateHashSHAX(xmlesito, TipiHash.SHA_256).toHexBinary());
             tmpXmlVersFascicolo.setIdStrut(new BigDecimal(svf.getIdStruttura()));
@@ -452,8 +457,8 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviProfiliXMLFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviProfiliXMLFascicolo(VersFascicoloExt versamento, SyncFakeSessn sessione,
+            FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo gli XML relativi al profilo Archivistico ed al profilo Generale
@@ -462,7 +467,7 @@ public class SalvataggioFascicoliHelper {
         try {
             FasXmlFascicolo fasXmlFascicolo = new FasXmlFascicolo();
             fasXmlFascicolo.setFasFascicolo(fascicolo);
-            fasXmlFascicolo.setTiModelloXsd(ControlliProfiliFascicolo.NOME_METADATI_PROFILO);
+            fasXmlFascicolo.setTiModelloXsd(TiModXsdFasXmlFascicolo.PROFILO_GENERALE_FASCICOLO);
             fasXmlFascicolo.setDecModelloXsdFascicolo(
                     entityManager.find(DecModelloXsdFascicolo.class, svf.getIdRecxsdProfiloGenerale()));
             String xmlProfilo = this.generaXmlProfilo(versamento.getVersamento().getProfiloGenerale().getAny());
@@ -476,7 +481,7 @@ public class SalvataggioFascicoliHelper {
             if (svf.getIdRecXsdProfiloArchivistico() > 0) {
                 fasXmlFascicolo = new FasXmlFascicolo();
                 fasXmlFascicolo.setFasFascicolo(fascicolo);
-                fasXmlFascicolo.setTiModelloXsd(ControlliProfiliFascicolo.NOME_SEGNATURA_ARCHIVISTICA);
+                fasXmlFascicolo.setTiModelloXsd(TiModXsdFasXmlFascicolo.PROFILO_ARCHIVISTICO_FASCICOLO);
                 fasXmlFascicolo.setDecModelloXsdFascicolo(
                         entityManager.find(DecModelloXsdFascicolo.class, svf.getIdRecXsdProfiloArchivistico()));
                 xmlProfilo = this
@@ -500,8 +505,7 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviUnitaDocFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviUnitaDocFascicolo(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo i riferimenti alle unità documentarie del fascicolo
@@ -530,8 +534,7 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviLinkFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo tmpFasFascicolo) {
+    public RispostaControlli scriviLinkFascicolo(VersFascicoloExt versamento, FasFascicolo tmpFasFascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
         // salvo i riferimenti alle unità documentarie del fascicolo
@@ -545,8 +548,8 @@ public class SalvataggioFascicoliHelper {
                     fasLinkFascicolo.setDsLink(link.getDescCollegamento());
                     fasLinkFascicolo.setFasFascicolo(tmpFasFascicolo);
                     if (link.getIdLinkFasc() != null) {
-                        fasLinkFascicolo.setFasFascicoloLink(
-                                entityManager.find(FasFascicolo.class, link.getIdLinkFasc().longValue()));
+                        fasLinkFascicolo
+                                .setFasFascicoloLink(entityManager.find(FasFascicolo.class, link.getIdLinkFasc()));
                     }
 
                     entityManager.persist(fasLinkFascicolo);
@@ -566,8 +569,7 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli scriviWarningFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo fascicolo) {
+    public RispostaControlli scriviWarningFascicolo(VersFascicoloExt versamento, FasFascicolo fascicolo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // salvo i warning della sessione di versamento
         // Nota: al momento della stesura di questo codice il web service
@@ -601,8 +603,7 @@ public class SalvataggioFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli salvaWarningAATipoFascicolo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, FasFascicolo tmpFasFascicolo) {
+    public RispostaControlli salvaWarningAATipoFascicolo(VersFascicoloExt versamento) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
         try {
@@ -673,7 +674,7 @@ public class SalvataggioFascicoliHelper {
         return tmpRispostaControlli;
     }
 
-    private String generaXmlProfilo(Node profilo) throws JAXBException, SAXException, TransformerException {
+    private String generaXmlProfilo(Node profilo) throws TransformerException {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();

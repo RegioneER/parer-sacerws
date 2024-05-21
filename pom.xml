@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>it.eng.parer</groupId>
     <artifactId>sacerws</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>5.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
-
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>parer-pom</artifactId>
-        <version>3.0.17</version>
+        <version>5.2.0</version>
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Questa è la versione del modulo sacer-jpa-el che dovrà essere inclusa nel progetto -->
-        <sacer.jpamodule.version>1.5.1</sacer.jpamodule.version>
+        <!-- custom libraries -->
         <!-- Questa è la versione del modulo sacer-xml che dovrà essere inclusa nel progetto -->
-        <sacer.xmlmodule.version>2.2.17</sacer.xmlmodule.version>
+        <sacer.xmlmodule.version>2.8.0</sacer.xmlmodule.version>
         <!-- spagofat bom -->
-        <spagofat.version>4.1.26</spagofat.version>
-        <verificafirma-eidas-beans.version>1.2.0</verificafirma-eidas-beans.version>
-        <verificafirma-crypto-beans.version>1.0.1</verificafirma-crypto-beans.version>
-        <parer-retry.version>2.0.3</parer-retry.version>
+        <spagofat.version>5.12.0</spagofat.version>
+        <verificafirma-eidas-beans.version>1.9.0</verificafirma-eidas-beans.version>
+        <verificafirma-crypto-beans.version>1.3.0</verificafirma-crypto-beans.version>
+        <parer-retry.version>2.1.0</parer-retry.version>
+        <idp-jaas-rdbms.version>0.0.9</idp-jaas-rdbms.version>
+        <!-- third party lib -->
+        <software.amazon.awssdk.version>2.20.87</software.amazon.awssdk.version>
+        <xadisk.version>1.2.2.5</xadisk.version>                      
     </properties>
-    
+
     <distributionManagement>
         <repository>
           <id>github</id>
@@ -44,18 +45,6 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sacer-jpa-el</artifactId>
-                <version>${sacer.jpamodule.version}</version>
-                <classifier>weaved</classifier>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sacer-jpa-el</artifactId>
-                <version>${sacer.jpamodule.version}</version>
-                <classifier>sacer-vers</classifier>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>sacerws-ejb</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
@@ -67,43 +56,24 @@
                 <type>war</type>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sacerws-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>sacer-xml</artifactId>
                 <version>${sacer.xmlmodule.version}</version>
             </dependency>
-	
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>verificafirma-crypto-beans</artifactId>
                 <version>${verificafirma-crypto-beans.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>verificafirma-eidas-beans</artifactId>
                 <version>${verificafirma-eidas-beans.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>${commons-text.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -111,44 +81,9 @@
                 <version>${commons-compress.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons-fileupload.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.main.persistence</groupId>
-                <artifactId>eclipselink-wrapper</artifactId>
-                <version>${eclipselink-wrapper.version}</version>
-                <type>pom</type>
-            </dependency>
-            <!-- JBOSS EE -->
-            <dependency>
-                <groupId>org.jboss.bom.eap</groupId>
-                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                <version>6.4.0.GA</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <type>pom</type>
-                <version>${jboss-javaee-6.0.version}</version>
             </dependency>
             <!-- Imposto le versioni per Xerces & Xalan -->
             <dependency>
@@ -160,12 +95,7 @@
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <version>${xalan.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
-            </dependency>
+            </dependency>           
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>parer-retry</artifactId>
@@ -176,13 +106,13 @@
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>idp-jaas-rdbms</artifactId>
-                <version>0.0.9</version>
+                <version>${idp-jaas-rdbms.version}</version>
             </dependency>
             <!-- AWS -->
-             <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-bom</artifactId>
-                <version>${aws-java-sdk-bom.version}</version>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${software.amazon.awssdk.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -195,60 +125,58 @@
                 <scope>import</scope>
             </dependency>
             <!-- Provided by runtime -->
-			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-core</artifactId>
-                <version>2.3.0</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-impl</artifactId>
-                <version>2.3.0</version>
-				<scope>provided</scope>				
-			</dependency>
-			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-                <version>2.3.0</version>
-				<scope>provided</scope>				
-			</dependency>
-			<dependency>
-				<groupId>javax.xml.soap</groupId>
-				<artifactId>javax.xml.soap-api</artifactId>
-                <version>1.4.0</version>
-				<scope>provided</scope>				
-			</dependency>
-			<dependency>
-				<groupId>com.sun.activation</groupId>
-				<artifactId>javax.activation</artifactId>
-                <version>1.2.0</version>
-				<scope>provided</scope>				
-			</dependency>
-			<dependency>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-                <version>1.3.2</version>
-				<scope>provided</scope>				
-			</dependency>
-			<dependency>
-				<groupId>javax.activation</groupId>
-				<artifactId>javax.activation-api</artifactId>
-                <version>1.2.0</version>
-				<scope>provided</scope>
-			</dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${jaxb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.soap</groupId>
+                <artifactId>javax.xml.soap-api</artifactId>
+                <version>${javax.xml.soap-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>javax.activation</artifactId>
+                <version>${javax.activation.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>javax.activation-api</artifactId>
+                <version>${javax.activation.version}</version>
+                <scope>provided</scope>
+            </dependency>            
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+  			<!-- Fork di Xadisk del parer -->
+            <dependency>
+                <groupId>net.java.xadisk</groupId>
+                <artifactId>xadisk</artifactId>
+                <version>${xadisk.version}</version>
+            </dependency>            
         </dependencies>
     </dependencyManagement>
     <build>
         <plugins>
-            <!-- artifact disponibile attraverso compilazione del singolo TAG pubblicato -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -283,11 +211,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
     <modules>
         <module>sacerws-ejb</module>
         <module>sacerws-web</module>
+        <module>sacerws-jpa</module>
         <module>sacerws-ear</module>
     </modules>
     <scm>

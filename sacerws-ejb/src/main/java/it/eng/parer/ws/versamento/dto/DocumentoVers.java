@@ -1,16 +1,32 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versamento.dto;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 
 import it.eng.parer.ws.utils.Costanti.CategoriaDocumento;
-import it.eng.parer.ws.utils.CostantiDB.TipiEntitaSacer;
 import it.eng.parer.ws.xml.versReq.DocumentoType;
 
 /**
@@ -27,9 +43,9 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
     private int progressivo;
     private CategoriaDocumento categoriaDoc;
     private String urnPartDocumento = "";
-    private DocumentoType rifDocumento;
-    protected HashMap<String, DatoSpecifico> datiSpecifici;
-    protected HashMap<String, DatoSpecifico> datiSpecificiMigrazione;
+    private transient DocumentoType rifDocumento;
+    protected transient Map<String, DatoSpecifico> datiSpecifici;
+    protected transient Map<String, DatoSpecifico> datiSpecificiMigrazione;
     private long idRecXsdDatiSpec;
     private long idRecXsdDatiSpecMigrazione;
     private List<ComponenteVers> fileAttesi;
@@ -138,7 +154,7 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
      * @return the datiSpecDocumento
      */
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         return datiSpecifici;
     }
 
@@ -147,17 +163,17 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
      *            the datiSpecDocumento to set
      */
     @Override
-    public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
+    public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
         this.datiSpecifici = datiSpecifici;
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         return datiSpecificiMigrazione;
     }
 
     @Override
-    public void setDatiSpecificiMigrazione(HashMap<String, DatoSpecifico> datiSpecificiMigrazione) {
+    public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
         this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 

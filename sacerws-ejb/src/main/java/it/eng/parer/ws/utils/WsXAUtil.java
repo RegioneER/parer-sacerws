@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.utils;
 
 import java.io.File;
@@ -69,7 +86,6 @@ public class WsXAUtil {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
 
         } catch (InterruptedException e) {
-            log.warn("Interrupted createFileIS!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -103,7 +119,6 @@ public class WsXAUtil {
                 | InsufficientPermissionOnFileException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted listFiles!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -117,7 +132,6 @@ public class WsXAUtil {
                 | InsufficientPermissionOnFileException | FileAlreadyExistsException | FileUnderUseException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted moveFile!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -131,7 +145,6 @@ public class WsXAUtil {
                 | LockingFailedException | NoTransactionAssociatedException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -146,7 +159,6 @@ public class WsXAUtil {
                 | InsufficientPermissionOnFileException | LockingFailedException | NoTransactionAssociatedException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted deleteFile!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -160,7 +172,6 @@ public class WsXAUtil {
         } catch (InsufficientPermissionOnFileException | LockingFailedException | NoTransactionAssociatedException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted fileExistsAndIsDirectory!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -175,7 +186,6 @@ public class WsXAUtil {
         } catch (InsufficientPermissionOnFileException | LockingFailedException | NoTransactionAssociatedException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
@@ -189,7 +199,6 @@ public class WsXAUtil {
         } catch (InsufficientPermissionOnFileException | LockingFailedException | NoTransactionAssociatedException e) {
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);
         } catch (InterruptedException e) {
-            log.warn("Interrupted fileExists!", e);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new SacerWsException(e, SacerWsErrorCategory.INTERNAL_ERROR);

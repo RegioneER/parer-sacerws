@@ -1,4 +1,48 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versFascicoli.ejb;
+
+import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.DateUtilsConverter.convertLocal;
+import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
+
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecErrSacer;
 import it.eng.parer.entity.DecTipoFascicolo;
@@ -12,8 +56,9 @@ import it.eng.parer.entity.VrsSesFascicoloErr;
 import it.eng.parer.entity.VrsSesFascicoloKo;
 import it.eng.parer.entity.VrsXmlSesFascicoloErr;
 import it.eng.parer.entity.VrsXmlSesFascicoloKo;
+import it.eng.parer.util.Constants;
 import it.eng.parer.util.ejb.AppServerInstance;
-import it.eng.parer.viewEntity.VrsVUpdFascicoloKo;
+import it.eng.parer.view_entity.VrsVUpdFascicoloKo;
 import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.XmlFascCache;
@@ -27,31 +72,12 @@ import it.eng.parer.ws.versFascicoli.dto.StrutturaVersFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VoceDiErrore;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import static it.eng.parer.util.DateUtilsConverter.convert;
 
 /**
  *
  * @author fioravanti_f
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "LogSessioneFascicoliHelper")
 @LocalBean
 public class LogSessioneFascicoliHelper {
@@ -72,12 +98,10 @@ public class LogSessioneFascicoliHelper {
     private EntityManager entityManager;
 
     // costanti per la tabella VrsSesFascicoloErr
-    private final static String SESSIONE_NON_VERIFICATA = "NON_VERIFICATO";
+    private static final String SESSIONE_NON_VERIFICATA = "NON_VERIFICATO";
 
     // costanti per la tabella VrsFascicoloKo
     public static final String FAS_NON_VERIFICATO = "NON_VERIFICATO";
-    public static final String FAS_VERIFICATO = "VERIFICATO";
-    public static final String FAS_NON_RISOLUBILE = "NON_RISOLUBILE";
     public static final String FAS_RISOLTO = "RISOLTO";
     //
     private static final String TIPO_ERR_FATALE = "FATALE";
@@ -109,15 +133,14 @@ public class LogSessioneFascicoliHelper {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "LogSessioneFascicoliHelper.verificaPartizioneFascicoloErr: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli verificaPartizioneFascicoloByAaStrutKo(RispostaWSFascicolo rispostaWs,
-            VersFascicoloExt versamento, SyncFakeSessn sessione) {
+    public RispostaControlli verificaPartizioneFascicoloByAaStrutKo(VersFascicoloExt versamento) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
@@ -133,8 +156,8 @@ public class LogSessioneFascicoliHelper {
                     + "and t.flPartXmlsesfasckoDataOk = :flPartXmlsesfasckoDataOk ";
             javax.persistence.Query query = entityManager.createQuery(queryStr);
 
-            query.setParameter("idStrut", svf.getIdStruttura());
-            query.setParameter("anno", svf.getChiaveNonVerificata().getAnno());
+            query.setParameter("idStrut", new BigDecimal(svf.getIdStruttura()));
+            query.setParameter("anno", new BigDecimal(svf.getChiaveNonVerificata().getAnno()));
 
             query.setParameter("flPartFasckoOk", "1");
             query.setParameter("flPartFasckoAnnoOk", "1");
@@ -158,7 +181,7 @@ public class LogSessioneFascicoliHelper {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "LogSessioneFascicoliHelper.verificaPartizioneFascicoloKo: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -235,12 +258,6 @@ public class LogSessioneFascicoliHelper {
             tmpXmlSesFascicoloErr.setTiXml(CostantiDB.TipiXmlDati.RICHIESTA);
             tmpXmlSesFascicoloErr.setCdVersioneXml(svf.getVersioneIndiceSipNonVerificata());
             tmpXmlSesFascicoloErr.setBlXml(versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml());
-            // tmpXmlSesFascicoloErr.setCdEncodingHashXml(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-            // tmpXmlSesFascicoloErr.setDsAlgoHashXml(CostantiDB.TipiHash.SHA_1.descrivi());
-            // tmpXmlSesFascicoloErr.setDsUrnXml(MessaggiWSFormat
-            // .formattaUrnIndiceSipFasc(Long.toString(fascicoloErr.getIdSesFascicoloErr())));
-            // tmpXmlSesFascicoloErr.setDsHashXml(new
-            // HashCalculator().calculateHash(versamento.getDatiXml()).toHexBinary());
             entityManager.persist(tmpXmlSesFascicoloErr);
 
             String xmlesito = this.generaRapportoVersamento(rispostaWs);
@@ -250,11 +267,6 @@ public class LogSessioneFascicoliHelper {
             tmpXmlSesFascicoloErr.setTiXml(CostantiDB.TipiXmlDati.RISPOSTA);
             tmpXmlSesFascicoloErr.setCdVersioneXml(esito.getVersioneRapportoVersamento());
             tmpXmlSesFascicoloErr.setBlXml(xmlesito);
-            // tmpXmlSesFascicoloErr.setCdEncodingHashXml(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-            // tmpXmlSesFascicoloErr.setDsAlgoHashXml(CostantiDB.TipiHash.SHA_1.descrivi());
-            // tmpXmlSesFascicoloErr.setDsUrnXml(MessaggiWSFormat
-            // .formattaUrnRappNegFasc(Long.toString(fascicoloErr.getIdSesFascicoloErr())));
-            // tmpXmlSesFascicoloErr.setDsHashXml(new HashCalculator().calculateHash(xmlesito).toHexBinary());
             entityManager.persist(tmpXmlSesFascicoloErr);
 
             tmpRispostaControlli.setrBoolean(true);
@@ -269,8 +281,7 @@ public class LogSessioneFascicoliHelper {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli cercaFascicoloKo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione) {
+    public RispostaControlli cercaFascicoloKo(VersFascicoloExt versamento) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // cerco e recupero il fascicolo fallito
         tmpRispostaControlli.setrBoolean(false);
@@ -290,11 +301,11 @@ public class LogSessioneFascicoliHelper {
             // errore per il fascicolo. in questo caso dovrò creare la riga in tabella
             // nel caso di scrittura di sessione fallita.
             tmpRispostaControlli.setrBoolean(true);
-            if (fasFascicolos.size() > 0) {
+            if (!fasFascicolos.isEmpty()) {
                 // se poi ho anche trovato qualcosa di utile, lo restituisco al
                 // chiamante dopo averlo bloccato in modo esclusivo
-                Map<String, Object> properties = new HashMap();
-                properties.put("javax.persistence.lock.timeout", 25);
+                Map<String, Object> properties = new HashMap<>();
+                properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
                 VrsFascicoloKo tmpFascicoloKo = entityManager.find(VrsFascicoloKo.class,
                         fasFascicolos.get(0).getIdFascicoloKo(), LockModeType.PESSIMISTIC_WRITE, properties);
 
@@ -467,7 +478,7 @@ public class LogSessioneFascicoliHelper {
         return tmpRispostaControlli;
     }
 
-    private void aggiornaConteggioMonContaFasKo(VrsFascicoloKo fascicoloKo) {
+    public void aggiornaConteggioMonContaFasKo(VrsFascicoloKo fascicoloKo) {
         List<MonContaFascicoliKo> mcfks;
 
         String queryStr = "select ud " + "from MonContaFascicoliKo ud " + "where ud.orgStrut.idStrut = :idStrutIn "
@@ -482,7 +493,7 @@ public class LogSessioneFascicoliHelper {
         query.setParameter("idTipoFascicolo", fascicoloKo.getDecTipoFascicolo().getIdTipoFascicolo());
 
         mcfks = query.getResultList();
-        if (mcfks.size() > 0) {
+        if (!mcfks.isEmpty()) {
             mcfks.get(0).setNiFascicoliKo(mcfks.get(0).getNiFascicoliKo().subtract(BigDecimal.ONE));
             entityManager.flush();
         }
@@ -506,9 +517,12 @@ public class LogSessioneFascicoliHelper {
             tmpXmlSesFascicoloErr.setBlXml(versamento.getDatiXml().length() == 0 ? "--" : versamento.getDatiXml());
 
             tmpXmlSesFascicoloErr.setIdStrut(new BigDecimal(svf.getIdStruttura()));
-            tmpXmlSesFascicoloErr.setDtRegXmlSesKo(convert(sessione.getTmApertura()));
+            tmpXmlSesFascicoloErr.setDtRegXmlSesKo(convertLocal(sessione.getTmApertura()));
 
             entityManager.persist(tmpXmlSesFascicoloErr);
+            if (sessFascicoloKo.getVrsXmlSesFascicoloKos() == null) {
+                sessFascicoloKo.setVrsXmlSesFascicoloKos(new ArrayList<>());
+            }
             sessFascicoloKo.getVrsXmlSesFascicoloKos().add(tmpXmlSesFascicoloErr);
 
             String xmlesito = this.generaRapportoVersamento(rispostaWs);
@@ -519,7 +533,7 @@ public class LogSessioneFascicoliHelper {
             tmpXmlSesFascicoloErr.setCdVersioneXml(esito.getVersioneRapportoVersamento());
             tmpXmlSesFascicoloErr.setBlXml(xmlesito);
             tmpXmlSesFascicoloErr.setIdStrut(new BigDecimal(svf.getIdStruttura()));
-            tmpXmlSesFascicoloErr.setDtRegXmlSesKo(convert(sessione.getTmApertura()));
+            tmpXmlSesFascicoloErr.setDtRegXmlSesKo(convertLocal(sessione.getTmApertura()));
 
             entityManager.persist(tmpXmlSesFascicoloErr);
             sessFascicoloKo.getVrsXmlSesFascicoloKos().add(tmpXmlSesFascicoloErr);
@@ -538,7 +552,7 @@ public class LogSessioneFascicoliHelper {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public RispostaControlli scriviErroriFascicoloKo(RispostaWSFascicolo rispostaWs, VersFascicoloExt versamento,
-            SyncFakeSessn sessione, VrsSesFascicoloKo sessFascicoloKo) {
+            VrsSesFascicoloKo sessFascicoloKo) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         // salvo gli errori ed i warning sessione fallita
         tmpRispostaControlli.setrBoolean(false);
@@ -559,7 +573,7 @@ public class LogSessioneFascicoliHelper {
 
                 tmpErrSessioneVers.setDecErrSacer(messaggiWSHelper.caricaDecErrore(tmpVoceDiErrore.getErrorCode()));
                 tmpErrSessioneVers.setDsErr(LogSessioneUtils.getDsErrAtMaxLen(tmpVoceDiErrore.getErrorMessage()));
-                tmpErrSessioneVers.setFlErrPrinc(tmpVoceDiErrore.isElementoPrincipale() ? "1" : "0");
+                tmpErrSessioneVers.setFlErrPrinc(booleanToFlag(tmpVoceDiErrore.isElementoPrincipale()));
                 //
                 entityManager.persist(tmpErrSessioneVers);
                 sessFascicoloKo.getVrsErrSesFascicoloKos().add(tmpErrSessioneVers);

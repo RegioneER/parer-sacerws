@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.sacer.ejb.retry;
 
 import java.io.File;
@@ -168,14 +185,14 @@ public class RetryTest {
      * </ul>
      *
      * Il motivo di questo comportamento sta nel fatto che la seconda POST atterra su una risorsa <em>che risponde</em>
-     * un codice 404.
+     * un codice 403 (forbidden).
      *
      * Per questa ragione la valutazione finale viene effettuata non sulla nullità dell'oggetto ma sul fatto che
      * l'oggetto sia vuoto.
      *
      * @throws FileNotFoundException
      */
-    @Test
+    @Test(expected = RestClientException.class)
     public void testVerificaCryptoEnpointNonValido() throws FileNotFoundException {
 
         File fileFirmato = ResourceUtils.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
@@ -201,7 +218,7 @@ public class RetryTest {
         CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v0/report-verifica", entity,
                 CryptoAroCompDoc.class);
 
-        Assert.assertNull(componente.getIdComponente());
+        Assert.assertNull(componente);
     }
 
     /**

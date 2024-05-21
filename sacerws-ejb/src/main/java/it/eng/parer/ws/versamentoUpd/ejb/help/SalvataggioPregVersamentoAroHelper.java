@@ -1,52 +1,51 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-
-import it.eng.parer.entity.AroCompDoc;
-import it.eng.parer.entity.AroCompUrnCalc;
-import it.eng.parer.entity.AroDoc;
-import it.eng.parer.entity.AroStrutDoc;
-import it.eng.parer.entity.AroUnitaDoc;
-import it.eng.parer.entity.AroUpdUnitaDoc;
-import it.eng.parer.entity.AroXmlUpdUnitaDoc;
-import it.eng.parer.entity.VrsUrnXmlSessioneVers;
-import it.eng.parer.entity.VrsXmlDatiSessioneVers;
+import it.eng.parer.entity.*;
 import it.eng.parer.entity.constraint.AroCompUrnCalc.TiUrn;
 import it.eng.parer.entity.constraint.VrsUrnXmlSessioneVers.TiUrnXmlSessioneVers;
-import it.eng.parer.viewEntity.VrsVLisXmlDocUrnDaCalc;
-import it.eng.parer.viewEntity.VrsVLisXmlUdUrnDaCalc;
-import it.eng.parer.viewEntity.VrsVLisXmlUpdUrnDaCalc;
+import it.eng.parer.view_entity.VrsVLisXmlDocUrnDaCalc;
+import it.eng.parer.view_entity.VrsVLisXmlUdUrnDaCalc;
+import it.eng.parer.view_entity.VrsVLisXmlUpdUrnDaCalc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.Costanti.CategoriaDocumento;
 import it.eng.parer.ws.utils.CostantiDB.TipiXmlDati;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
-import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
-import it.eng.parer.ws.versamentoUpd.dto.RispostaWSUpdVers;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
-import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  *
@@ -55,13 +54,13 @@ import org.slf4j.LoggerFactory;
  *         Gestione salvataggio del pregresso su entity Aro
  * 
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "SalvataggioPregVersamentoAroHelper")
 @LocalBean
 public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamentoBaseHelper {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli salvaCdKeyNormUnitaDocumentaria(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
+    public RispostaControlli salvaCdKeyNormUnitaDocumentaria(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(true); // default true solo se effettua effettivamente l'update può fallire
 
@@ -83,8 +82,7 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli aggiornaPregCompDocUrnSip(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento,
-            SyncFakeSessn sessione, AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
+    public RispostaControlli aggiornaPregCompDocUrnSip(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(true); // default true solo se effettua effettivamente l'update può fallire
 
@@ -147,7 +145,7 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
         if (listaDoc != null) {
 
             AroDoc aroDocPrinc = null;
-            ArrayList<AroDoc> alNew = new ArrayList();
+            ArrayList<AroDoc> alNew = new ArrayList<>();
             for (AroDoc aroDoc : listaDoc) {
                 if (aroDoc.getTiDoc().equals(CategoriaDocumento.Principale.getValoreDb())) {
                     aroDocPrinc = aroDoc; // memorizza per dopo il doc PRINCIPALE
@@ -156,24 +154,21 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                 }
             }
             // Ordina gli elementi tranne il PRINCIPALE...
-            Collections.sort(alNew, new Comparator<AroDoc>() {
-                @Override
-                public int compare(AroDoc doc1, AroDoc doc2) {
-                    int comparazionePerData = doc1.getDtCreazione().compareTo(doc2.getDtCreazione());
-                    if (comparazionePerData == 0) {
-                        int comparazionePerTipo = doc1.getTiDoc().compareTo(doc2.getTiDoc());
-                        if (comparazionePerTipo == 0) {
-                            return doc1.getPgDoc().compareTo(doc2.getPgDoc());
-                        } else {
-                            return comparazionePerTipo;
-                        }
+            Collections.sort(alNew, (doc1, doc2) -> {
+                int comparazionePerData = doc1.getDtCreazione().compareTo(doc2.getDtCreazione());
+                if (comparazionePerData == 0) {
+                    int comparazionePerTipo = doc1.getTiDoc().compareTo(doc2.getTiDoc());
+                    if (comparazionePerTipo == 0) {
+                        return doc1.getPgDoc().compareTo(doc2.getPgDoc());
                     } else {
-                        return comparazionePerData;
+                        return comparazionePerTipo;
                     }
+                } else {
+                    return comparazionePerData;
                 }
             });
             // PRINCIPALE FIRST
-            alDef = new ArrayList();
+            alDef = new ArrayList<>();
             if (aroDocPrinc != null) {
                 alDef.add(aroDocPrinc);
             }
@@ -344,9 +339,8 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
     private List<VrsVLisXmlUdUrnDaCalc> retrieveVrsVLisXmlUdUrnDaCalcByUd(long idUnitaDoc) {
         Query query = entityManager
                 .createQuery("SELECT vrs FROM VrsVLisXmlUdUrnDaCalc vrs WHERE vrs.idUnitaDoc = :idUnitaDoc ");
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<VrsVLisXmlUdUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idUnitaDoc", new BigDecimal(idUnitaDoc));
+        return query.getResultList();
     }
 
     private void scriviUrnSipDocAggPreg(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
@@ -422,11 +416,10 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
         }
     }
 
-    private List<VrsVLisXmlDocUrnDaCalc> retrieveVrsVLisXmlDocUrnDaCalcByDoc(long idDoc) {
+    public List<VrsVLisXmlDocUrnDaCalc> retrieveVrsVLisXmlDocUrnDaCalcByDoc(long idDoc) {
         Query query = entityManager.createQuery("SELECT vrs FROM VrsVLisXmlDocUrnDaCalc vrs WHERE vrs.idDoc = :idDoc ");
-        query.setParameter("idDoc", idDoc);
-        List<VrsVLisXmlDocUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idDoc", new BigDecimal(idDoc));
+        return query.getResultList();
     }
 
     private void scriviUrnSipUpdPreg(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers svf) {
@@ -484,22 +477,20 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
         Query query = entityManager
                 .createQuery("SELECT upd FROM AroUpdUnitaDoc upd WHERE upd.aroUnitaDoc.idUnitaDoc = :idUnitaDoc ");
         query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<AroUpdUnitaDoc> upds = query.getResultList();
-        return upds;
+        return query.getResultList();
     }
 
     private List<VrsVLisXmlUpdUrnDaCalc> retrieveVrsVLisXmlUpdUrnDaCalcByUpd(long idUpdUnitaDoc) {
         Query query = entityManager
                 .createQuery("SELECT vrs FROM VrsVLisXmlUpdUrnDaCalc vrs WHERE vrs.idUpdUnitaDoc = :idUpdUnitaDoc ");
-        query.setParameter("idUpdUnitaDoc", idUpdUnitaDoc);
-        List<VrsVLisXmlUpdUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idUpdUnitaDoc", new BigDecimal(idUpdUnitaDoc));
+        return query.getResultList();
     }
 
     private void salvaUrnXmlSessioneVers(VrsXmlDatiSessioneVers xmlDatiSessioneVers, String tmpUrn,
             TiUrnXmlSessioneVers tiUrn) {
 
-        VrsUrnXmlSessioneVers tmpVrsUrnXmlSessioneVers = null;
+        VrsUrnXmlSessioneVers tmpVrsUrnXmlSessioneVers;
 
         tmpVrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
         tmpVrsUrnXmlSessioneVers.setDsUrn(tmpUrn);

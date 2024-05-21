@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -39,6 +56,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import it.eng.parer.entity.AroUnitaDoc;
+import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.dto.IRispostaWS;
@@ -106,15 +124,15 @@ public class RecupSessDubbieUpdVersamento {
             // verifico se sono fallito per un errore del parser
             if (versamento.getUtente() == null || versamento.getVersamento() == null) {
                 // recupero dati
-                this.recuperaDatiDaXml(versamento, rispostaWs);
+                this.recuperaDatiDaXml(versamento);
                 // recupero struttura
-                if (!this.recuperaStrutturaDaVersatore(versamento, rispostaWs)) {
+                if (!this.recuperaStrutturaDaVersatore(versamento)) {
                     return;
                 }
                 // recupero tipo ud, registro e tipo doc princ
                 this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
                 // verifica partizione
-                if (!this.verificaPartizionamentoStruttura(versamento, rispostaWs)) {
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
                     return;
                 }
                 // verifica esistenza unita doc
@@ -126,11 +144,11 @@ public class RecupSessDubbieUpdVersamento {
             // verifico se ho effettuato il marshall ma non ho un id struttura
             // avviene se versatore e/o versione xml non coincidono con la chiamata ws
             if (versamento.getVersamento() != null && versamento.getStrutturaUpdVers().getIdStruttura() < 1) {
-                if (!this.recuperaStrutturaDaVersatore(versamento, rispostaWs)) {
+                if (!this.recuperaStrutturaDaVersatore(versamento)) {
                     return;
                 }
                 // verifica partizione
-                if (!this.verificaPartizionamentoStruttura(versamento, rispostaWs)) {
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
                     return;
                 }
                 // recupero tipo ud, registro e tipo doc princ
@@ -148,7 +166,7 @@ public class RecupSessDubbieUpdVersamento {
                 // recupero tipo ud, registro e tipo doc princ
                 this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
                 // verifica partizione
-                if (!this.verificaPartizionamentoStruttura(versamento, rispostaWs)) {
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
                     return;
                 }
                 // verifica esistenza unita doc
@@ -164,7 +182,7 @@ public class RecupSessDubbieUpdVersamento {
         }
     }
 
-    private void recuperaDatiDaXml(UpdVersamentoExt versamento, RispostaWSUpdVers rispostaWs) {
+    private void recuperaDatiDaXml(UpdVersamentoExt versamento) {
         if (versamento.getDatiXml() != null) {
             CSVersatore tmpVersatore = new CSVersatore();
             // init
@@ -205,7 +223,6 @@ public class RecupSessDubbieUpdVersamento {
                 for (int i = 0; i < nodes.getLength(); i++) {
                     tmpVersatore.setStruttura(nodes.item(i).getNodeValue());
                 }
-                // cercaStruttura = nodes.getLength() != 0 && cercaStruttura;
                 // cerca la chiave (o almeno le parti da cui è definita)
                 expr = xpath.compile("//Intestazione/Chiave/Anno/text()");
                 nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
@@ -264,7 +281,7 @@ public class RecupSessDubbieUpdVersamento {
         }
     }
 
-    private boolean recuperaStrutturaDaVersatore(UpdVersamentoExt versamento, RispostaWSUpdVers rispostaWs) {
+    private boolean recuperaStrutturaDaVersatore(UpdVersamentoExt versamento) {
         boolean prosegui = false; // i dati successivi senza struttura non potranno essere recuperati
         long idStruttura;
         CSVersatore tmpVersatore = versamento.getStrutturaUpdVers().getVersatoreNonverificato();
@@ -306,18 +323,6 @@ public class RecupSessDubbieUpdVersamento {
 
                 break;
             case MessaggiWSBundle.UD_001_003:
-                // struttura
-                // aggiunta su controlli generali
-                versamento.addEsitoControlloOnGenerali(
-                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA), SeverityEnum.ERROR,
-                        TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-                // check su ambiente/ente superato
-                // aggiunta su controlli generali
-                versamento
-                        .addControlloOkOnGenerali(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
-                versamento.addControlloOkOnGenerali(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
-
-                break;
             case MessaggiWSBundle.UD_001_015:
                 // struttura
                 // aggiunta su controlli generali
@@ -332,33 +337,23 @@ public class RecupSessDubbieUpdVersamento {
                 versamento.addControlloOkOnGenerali(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
 
                 break;
+            default:
+                // niente da fare negli altri casi
+                break;
             }
         }
 
         return prosegui;
     }
 
-    private boolean verificaPartizionamentoStruttura(UpdVersamentoExt versamento, RispostaWSUpdVers rispostaWs) {
+    private boolean verificaPartizionamentoStruttura(UpdVersamentoExt versamento) {
         boolean trovato = false;
         CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
         if (verificaCSChiave(tagCSChiave) && versamento.getStrutturaUpdVers().getIdStruttura() > 0) {
-            RispostaControlli rispostaControlli = updVersamentoControlli.checkPartizioniStruttuaByAA("dummy",
-                    versamento.getStrutturaUpdVers().getIdStruttura(), tagCSChiave.getAnno());
-            if (!rispostaControlli.isrBoolean()) {
-                // se il partizionamento è scorretto, la sessione di versamento è errata senza
-                // possibilità di recupero (anche le sessioni fallite sono partizionate sul db)
-                // esito negativo
-                versamento.addEsitoControlloOnGenerali(
-                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_PARTIZIONI), SeverityEnum.ERROR,
-                        TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-            } else {
-                trovato = true;
-                // esito positivo
-                versamento.addControlloOkOnGenerali(
-                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_PARTIZIONI));
-            }
+            trovato = true;
+            /* MEV 30089 - non faccio più controlli sulle partizioni, ci sono partizionamenti automatici */
+            versamento.addControlloOkOnGenerali(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_PARTIZIONI));
         }
-
         return trovato;
     }
 
@@ -466,7 +461,6 @@ public class RecupSessDubbieUpdVersamento {
     private void recuperaUnitaDoc(UpdVersamentoExt versamento, RispostaWSUpdVers rispostaWs) {
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
-        CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
 
         // controlla prensa chiave UD
         RispostaControlli rispostaControlli = updVersamentoControlli.checkChiaveAndTipoDocPrinc(
@@ -476,10 +470,10 @@ public class RecupSessDubbieUpdVersamento {
         if (!rispostaControlli.isrBoolean()) {
 
             // si assume il LOCK ESCLUSIVO su UNITA_DOC determinata
-            Map<String, Object> properties = new HashMap();
-            properties.put("javax.persistence.lock.timeout", 25);
-            AroUnitaDoc tmpAroUnitaDoc = entityManager.find(AroUnitaDoc.class, rispostaControlli.getrLong(),
-                    LockModeType.PESSIMISTIC_WRITE, properties);
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
+            entityManager.find(AroUnitaDoc.class, rispostaControlli.getrLong(), LockModeType.PESSIMISTIC_WRITE,
+                    properties);
 
             // set esito positivo
             versamento.addControlloOkOnGenerali(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_CHIAVEUD));
@@ -544,8 +538,7 @@ public class RecupSessDubbieUpdVersamento {
         DocumentBuilder builder;
         try {
             builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
-            return doc;
+            return builder.parse(new InputSource(new StringReader(xmlStr)));
         } catch (IOException | ParserConfigurationException | SAXException e) {
             // in caso di eccezione non faccio nulla:
             // è perfettamente accettabile che questa stringa, che ha già fallito una

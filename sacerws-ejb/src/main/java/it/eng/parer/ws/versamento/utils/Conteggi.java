@@ -1,24 +1,39 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import it.eng.parer.ws.utils.Costanti.CategoriaDocumento;
 import it.eng.parer.ws.utils.ParametroApplDB;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.dto.DocumentoVers;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
-import it.eng.parer.ws.versamento.dto.UnitaDocColl;
 import it.eng.parer.ws.xml.versReq.ComponenteType;
 import it.eng.parer.ws.xml.versReq.DocumentoType;
 import it.eng.parer.ws.xml.versReq.SottoComponenteType;
+import it.eng.parer.ws.xml.versReq.TipoSupportoType;
 import it.eng.parer.ws.xml.versReq.UnitaDocAggAllegati;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
-import it.eng.parer.ws.xml.versReq.TipoSupportoType;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -34,7 +49,7 @@ public class Conteggi {
     private String trovataDataNullaIn;
     private StrutturaVersamento strutturaVersamentoAtteso;
     //
-    HashMap<String, String> xmlDefaults;
+    Map<String, String> xmlDefaults;
 
     /**
      * @return dto strutturaVersamentoAtteso
@@ -63,7 +78,7 @@ public class Conteggi {
         trovatiIdDocDuplicati = false;
         trovataDataNullaIn = null;
         strutturaVersamentoAtteso = new StrutturaVersamento();
-        strutturaVersamentoAtteso.setUnitaDocCollegate(new ArrayList<UnitaDocColl>());
+        strutturaVersamentoAtteso.setUnitaDocCollegate(new ArrayList<>());
     }
 
     /**
@@ -75,7 +90,7 @@ public class Conteggi {
      * @param defaults
      *            parametri di default
      */
-    public void verifica(UnitaDocumentaria versamento, HashMap<String, String> defaults) {
+    public void verifica(UnitaDocumentaria versamento, Map<String, String> defaults) {
         int progressivo = 0;
         //
         int progressivoDoc = 0;
@@ -101,7 +116,7 @@ public class Conteggi {
         if (versamento.getAllegati() != null) {
             Iterator<? extends DocumentoType> tmpEnumDoc = versamento.getAllegati().getAllegato().iterator();
             while (tmpEnumDoc.hasNext()) {
-                DocumentoType tmpDocumentoType = (DocumentoType) tmpEnumDoc.next();
+                DocumentoType tmpDocumentoType = tmpEnumDoc.next();
                 progressivo += 1;
                 progressivoDoc += 1; // globale
                 contaAllegati += 1;
@@ -114,7 +129,7 @@ public class Conteggi {
         if (versamento.getAnnessi() != null) {
             Iterator<? extends DocumentoType> tmpEnumDoc = versamento.getAnnessi().getAnnesso().iterator();
             while (tmpEnumDoc.hasNext()) {
-                DocumentoType tmpDocumentoType = (DocumentoType) tmpEnumDoc.next();
+                DocumentoType tmpDocumentoType = tmpEnumDoc.next();
                 progressivo += 1;
                 progressivoDoc += 1; // globale
                 contaAnnessi += 1;
@@ -127,7 +142,7 @@ public class Conteggi {
         if (versamento.getAnnotazioni() != null) {
             Iterator<? extends DocumentoType> tmpEnumDoc = versamento.getAnnotazioni().getAnnotazione().iterator();
             while (tmpEnumDoc.hasNext()) {
-                DocumentoType tmpDocumentoType = (DocumentoType) tmpEnumDoc.next();
+                DocumentoType tmpDocumentoType = tmpEnumDoc.next();
                 progressivo += 1;
                 progressivoDoc += 1; // globale
                 contaAnnotazioni += 1;
@@ -147,19 +162,6 @@ public class Conteggi {
         if ((versamento.getNumeroAnnotazioni() != null) && (versamento.getNumeroAnnotazioni() != contaAnnotazioni)
                 || ((versamento.getNumeroAnnotazioni() == null && contaAnnotazioni != 0))/* MAC#13460 */) {
             corrAnnotazioniDichiarati = false;
-        }
-
-        if (versamento.getProfiloUnitaDocumentaria() != null) {
-            if (versamento.getProfiloUnitaDocumentaria().getData() == null) {
-                trovataDataNullaIn = "ProfiloUnitaDocumentaria.Data";
-            } else {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                try {
-                    java.util.Date d = format.parse(versamento.getProfiloUnitaDocumentaria().getData());
-                } catch (ParseException ex) {
-                    trovataDataNullaIn = "ProfiloUnitaDocumentaria.Data";
-                }
-            }
         }
 
         strutturaVersamentoAtteso.setDocumentiAttesi(documentiAttesi);
@@ -182,7 +184,7 @@ public class Conteggi {
      * @param defaults
      *            parametri di default
      */
-    public void verifica(UnitaDocAggAllegati versamento, HashMap<String, String> defaults) {
+    public void verifica(UnitaDocAggAllegati versamento, Map<String, String> defaults) {
         boolean corrispondenzaAllegati = false;
 
         this.xmlDefaults = defaults;
@@ -218,7 +220,7 @@ public class Conteggi {
         tmpDocumentoVers.setNiOrdDoc(progressivoDoc);
         tmpDocumentoVers.setCategoriaDoc(categoria);
         tmpDocumentoVers.setRifDocumento(doc);
-        tmpDocumentoVers.setFileAttesi(new ArrayList<ComponenteVers>());
+        tmpDocumentoVers.setFileAttesi(new ArrayList<>());
 
         // impostazione del valore di default per il tipo struttura documento
         if (doc.getStrutturaOriginale().getTipoStruttura() == null) {
@@ -231,15 +233,11 @@ public class Conteggi {
          * completamente sballato e in un dato salvato sul database con valori altrettanto sballati.
          */
         if (doc.getDatiFiscali() != null) {
-            if (doc.getDatiFiscali().getDataEmissione() != null) {
-                if (doc.getDatiFiscali().getDataEmissione() == null) {
-                    trovataDataNullaIn = "DatiFiscali.DataEmissione del documento <ID> " + doc.getIDDocumento();
-                }
+            if (doc.getDatiFiscali().getDataEmissione() == null) {
+                trovataDataNullaIn = "DatiFiscali.DataEmissione del documento <ID> " + doc.getIDDocumento();
             }
-            if (doc.getDatiFiscali().getDataTermineEmissione() != null) {
-                if (doc.getDatiFiscali().getDataTermineEmissione() == null) {
-                    trovataDataNullaIn = "DatiFiscali.DataTermineEmissione del documento <ID> " + doc.getIDDocumento();
-                }
+            if (doc.getDatiFiscali().getDataTermineEmissione() == null) {
+                trovataDataNullaIn = "DatiFiscali.DataTermineEmissione del documento <ID> " + doc.getIDDocumento();
             }
         }
 
@@ -264,7 +262,7 @@ public class Conteggi {
         Iterator<? extends ComponenteType> tmpEnumCompo = documento.getStrutturaOriginale().getComponenti()
                 .getComponente().iterator();
         while (tmpEnumCompo.hasNext()) {
-            ComponenteType tmpComponente = (ComponenteType) tmpEnumCompo.next();
+            ComponenteType tmpComponente = tmpEnumCompo.next();
 
             // impostazione valori di default per il componente
             if (tmpComponente.getTipoComponente() == null) {
@@ -300,7 +298,7 @@ public class Conteggi {
                 Iterator<? extends SottoComponenteType> tmpEnumSottoCompo = tmpComponente.getSottoComponenti()
                         .getSottoComponente().iterator();
                 while (tmpEnumSottoCompo.hasNext()) {
-                    SottoComponenteType tmpSottoComponente = (SottoComponenteType) tmpEnumSottoCompo.next();
+                    SottoComponenteType tmpSottoComponente = tmpEnumSottoCompo.next();
 
                     // impostazione valori di default per il sottocomponente
                     if (tmpSottoComponente.getTipoSupportoComponente() == null) {

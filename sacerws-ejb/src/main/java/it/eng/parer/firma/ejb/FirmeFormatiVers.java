@@ -1,6 +1,24 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.firma.ejb;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +63,8 @@ import it.eng.parer.ws.utils.ParametroApplDB.ParametroApplFl;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.ejb.ControlliPerFirme;
-import it.eng.parer.ws.versamento.utils.DocumentoVersVFirmeHash;
+import it.eng.parer.ws.versamento.ejb.DocumentoVersVFirmeHash;
+
 import java.time.ZonedDateTime;
 
 /**
@@ -107,33 +126,43 @@ public class FirmeFormatiVers {
         // default
         InvokeVerificaRule rule = InvokeVerificaRule.defaultRule();
 
-        String flAbilitaContrCrittogVers = configurationHelper.getParamApplicValueAsFl(
+        String flAbilitaContrCrittogVers = configurationHelper.getValoreParamApplicByTipoUdAsFl(
                 ParametroApplFl.FL_ABILITA_CONTR_CRITTOG_VERS, struttura.getIdStrut(),
                 struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
         final boolean abilitatoControlloCrittografico = flAbilitaContrCrittogVers == null
                 || !flAbilitaContrCrittogVers.equals("0");
         rule.getAbilitazioni().put(ParametroApplFl.FL_ABILITA_CONTR_CRITTOG_VERS, abilitatoControlloCrittografico);
 
-        String flAbilitaContrTrustVers = configurationHelper.getParamApplicValueAsFl(
+        String flAbilitaContrTrustVers = configurationHelper.getValoreParamApplicByTipoUdAsFl(
                 ParametroApplFl.FL_ABILITA_CONTR_TRUST_VERS, struttura.getIdStrut(),
                 struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
         final boolean abilitatoControlloCatenaTrust = flAbilitaContrTrustVers == null
                 || !flAbilitaContrTrustVers.equals("0");
         rule.getAbilitazioni().put(ParametroApplFl.FL_ABILITA_CONTR_TRUST_VERS, abilitatoControlloCatenaTrust);
 
-        String flAbilitaContrCertifVers = configurationHelper.getParamApplicValueAsFl(
+        String flAbilitaContrCertifVers = configurationHelper.getValoreParamApplicByTipoUdAsFl(
                 ParametroApplFl.FL_ABILITA_CONTR_CERTIF_VERS, struttura.getIdStrut(),
                 struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
         final boolean abilitatoControlloCertificato = flAbilitaContrCertifVers == null
                 || !flAbilitaContrCertifVers.equals("0");
         rule.getAbilitazioni().put(ParametroApplFl.FL_ABILITA_CONTR_CERTIF_VERS, abilitatoControlloCertificato);
 
-        String flAbilitaContrRevocaVers = configurationHelper.getParamApplicValueAsFl(
+        String flAbilitaContrRevocaVers = configurationHelper.getValoreParamApplicByTipoUdAsFl(
                 ParametroApplFl.FL_ABILITA_CONTR_REVOCA_VERS, struttura.getIdStrut(),
                 struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
         final boolean abilitatoControlloRevoca = flAbilitaContrRevocaVers == null
                 || !flAbilitaContrRevocaVers.equals("0");
         rule.getAbilitazioni().put(ParametroApplFl.FL_ABILITA_CONTR_REVOCA_VERS, abilitatoControlloRevoca);
+
+        String flEidasIncludiBase64 = configurationHelper
+                .getValoreParamApplicByApplicAsFl(ParametroApplFl.FL_EIDAS_INCLUDI_FILEBASE64);
+        final boolean eidasIncludiBase64 = flEidasIncludiBase64 == null || !flEidasIncludiBase64.equals("0");
+        rule.getAbilitazioni().put(ParametroApplFl.FL_EIDAS_INCLUDI_FILEBASE64, eidasIncludiBase64);
+
+        String flCryptoIncludiBase64 = configurationHelper
+                .getValoreParamApplicByApplicAsFl(ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64);
+        final boolean cryptoIncludiBase64 = flCryptoIncludiBase64 == null || !flCryptoIncludiBase64.equals("0");
+        rule.getAbilitazioni().put(ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64, cryptoIncludiBase64);
 
         // regole per chiamata
         rule.withEseguiVerificaFirmaOnlyCrypto(
@@ -355,7 +384,8 @@ public class FirmeFormatiVers {
             String nomeFormato = this.buildMessage(dffs);
             DecFormatoFileStandard formatoStd = this.getFormatoStdDaVersato(dffs, formatoVersato.getNmFormatoFileDoc());
             if (formatoStd != null) {
-                busta.getAdditionalInfo().setIdFormatoFileStandard(formatoStd.getIdFormatoFileStandard());
+                busta.getAdditionalInfo()
+                        .setIdFormatoFileStandard(BigInteger.valueOf(formatoStd.getIdFormatoFileStandard()));
                 mock.setIdDecFormatoFileStandard(BigDecimal.valueOf(formatoStd.getIdFormatoFileStandard()));
             }
 
@@ -505,8 +535,9 @@ public class FirmeFormatiVers {
 
         // se per la struttura fl_abilita_contr_fmt = false
         if (struttura != null) {
-            String flAbilitaContrFmt = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_ABILITA_CONTR_FMT,
-                    struttura.getIdStrut(), struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
+            String flAbilitaContrFmt = configurationHelper.getValoreParamApplicByTipoUdAsFl(
+                    ParametroApplFl.FL_ABILITA_CONTR_FMT, struttura.getIdStrut(),
+                    struttura.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idTipoUd);
             if (flAbilitaContrFmt.equals("0")) {
                 mock.setTiEsitoContrFormatoFile(EsitoControlloFormato.DISABILITATO.name());
                 mock.setDsMsgEsitoContrFormato(EsitoControlloFormato.DISABILITATO.message());

@@ -1,10 +1,34 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
+
+import it.eng.parer.entity.*;
+import it.eng.parer.entity.builder.*;
+import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -14,6 +38,7 @@ import javax.persistence.PersistenceContext;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,16 +49,14 @@ import it.eng.parer.entity.IamUser;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.VrsDatiSessioneVers;
 import it.eng.parer.entity.VrsDocNonVer;
-import it.eng.parer.entity.VrsErrSessioneVers;
-import it.eng.parer.entity.VrsFileSessione;
 import it.eng.parer.entity.VrsSessioneVers;
 import it.eng.parer.entity.VrsUnitaDocNonVer;
-import it.eng.parer.entity.VrsUrnXmlSessioneVers;
 import it.eng.parer.entity.VrsXmlDatiSessioneVers;
 import it.eng.parer.entity.VrsXmlModelloSessioneVers;
 import it.eng.parer.entity.constraint.VrsUrnXmlSessioneVers.TiUrnXmlSessioneVers;
 import it.eng.parer.util.ejb.AppServerInstance;
 import it.eng.parer.ws.dto.CSChiave;
+import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.ControlliSemantici;
 import it.eng.parer.ws.ejb.XmlVersCache;
@@ -44,9 +67,11 @@ import it.eng.parer.ws.utils.CostantiDB.TipiXmlDati;
 import it.eng.parer.ws.utils.HashCalculator;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.DocumentoVers;
 import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.IRispostaVersWS;
+import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.RispostaWS;
 import it.eng.parer.ws.versamento.dto.RispostaWSAggAll;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
@@ -57,36 +82,28 @@ import it.eng.parer.ws.versamento.ejb.oracleBlb.WriteCompBlbOracle;
 import it.eng.parer.ws.xml.versReq.ChiaveType;
 import it.eng.parer.ws.xml.versReq.VersatoreType;
 import it.eng.parer.ws.xml.versResp.ECEsitoGeneraleType;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.xml.bind.Marshaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-import static it.eng.parer.util.DateUtilsConverter.convert;
+import org.springframework.util.Assert;
+import java.util.Optional;
 
 /**
  *
  * @author Fioravanti_F
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "LogSessioneSync")
 @LocalBean
 public class LogSessioneSync {
 
+    private static final String ECCEZIONE_SALVATAGGIO_SESSIONE = "Eccezione nella persistenza dati di sessione richiesta";
     @EJB
     private XmlVersCache xmlVersCache;
     //
     @EJB
     private WriteCompBlbOracle writeCompBlbOracle;
-    //
+
+    @EJB
+    private ObjectStorageService objectStorageService;
+
     @EJB
     private ControlliSemantici controlliSemantici;
     @EJB
@@ -97,12 +114,10 @@ public class LogSessioneSync {
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
     //
-    private final static int DS_ERR_MAX_LEN = 1024;
-    private final static String SESSIONE_CHIUSA_OK = "CHIUSA_OK";
-    private final static String SESSIONE_CHIUSA_ERR = "CHIUSA_ERR";
-    private final static String TIPO_ERR_FATALE = "FATALE";
-    private final static String TIPO_ERR_WARNING = "WARNING";
-    private final static String CD_DS_ERR_DIVERSI = "Diversi";
+    private static final int DS_ERR_MAX_LEN = 1024;
+    private static final String TIPO_ERR_FATALE = "FATALE";
+    private static final String TIPO_ERR_WARNING = "WARNING";
+    private static final String CD_DS_ERR_DIVERSI = "Diversi";
 
     public RispostaControlli salvaSessioneVersamento(VersamentoExt versamento, RispostaWS rispostaWS,
             SyncFakeSessn sessione) {
@@ -112,8 +127,6 @@ public class LogSessioneSync {
         ChiaveType tmpChiave = null;
         RispostaControlli tmpControlli = new RispostaControlli();
         String tmpXmlEsito = null;
-        String tmpVersioneXmlVers = null;
-        String tmpVersioneXmlEsito = null;
 
         if (versamento.getVersamento() != null) {
             tmpVersatore = versamento.getVersamento().getIntestazione().getVersatore();
@@ -127,25 +140,29 @@ public class LogSessioneSync {
             tmpXmlEsito = tmpStringWriter.toString();
         } catch (Exception ex) {
             tmpControlli.setCodErr("ERR");
-            tmpControlli.setDsErr("Errore interno nella fase salvataggio sessione: " + ex.getMessage());
-            log.error("Errore interno nella fase salvataggio sessione: ", ex);
+            tmpControlli.setDsErr("Errore interno nella fase salvataggio sessione (marshalling esito versamento): "
+                    + ExceptionUtils.getRootCause(ex));
+            log.error("Errore interno nella fase salvataggio sessione (marshalling esito versamento): ", ex);
             tmpReturn = false;
         }
 
         if (tmpReturn) {
             try {
-                tmpVersioneXmlVers = rispostaWS.getIstanzaEsito().getVersioneXMLChiamata();
-                tmpVersioneXmlEsito = rispostaWS.getIstanzaEsito().getVersione();
-                if (!salvaSessione(versamento, rispostaWS, sessione, rispostaWS.getIstanzaEsito().getEsitoGenerale(),
-                        tmpVersatore, tmpChiave, tmpXmlEsito, tmpVersioneXmlVers, tmpVersioneXmlEsito, null)) {
+                String tmpVersioneXmlVers = rispostaWS.getIstanzaEsito().getVersioneXMLChiamata();
+                String tmpVersioneXmlEsito = rispostaWS.getIstanzaEsito().getVersione();
+                if (!salvaVrsSessioneVers(versamento, rispostaWS, sessione,
+                        rispostaWS.getIstanzaEsito().getEsitoGenerale(), tmpVersatore, tmpChiave, tmpXmlEsito,
+                        tmpVersioneXmlVers, tmpVersioneXmlEsito, null)) {
                     tmpControlli.setCodErr("ERR");
-                    tmpControlli.setDsErr("Eccezione nella persistenza della sessione ");
+                    tmpControlli.setDsErr("Eccezione generica nella persistenza della sessione");
                 }
             } catch (Exception e) {
                 tmpControlli.setCodErr("ERR");
-                tmpControlli.setDsErr("Errore interno nella fase salvataggio sessione: " + e.getMessage());
-                log.error("Errore interno nella fase salvataggio sessione: ", e);
+                tmpControlli
+                        .setDsErr("Errore generico nella fase salvataggio sessione: " + ExceptionUtils.getRootCause(e));
+                log.error("Errore generico nella fase salvataggio sessione: ", e);
             } finally {
+                entityManager.flush();
                 entityManager.clear();
             }
         }
@@ -161,8 +178,6 @@ public class LogSessioneSync {
         ChiaveType tmpChiave = null;
         RispostaControlli tmpControlli = new RispostaControlli();
         String tmpXmlEsito = null;
-        String tmpVersioneXmlVers = null;
-        String tmpVersioneXmlEsito = null;
         DocumentoVers tmpDocumentoVers = null;
 
         if (versamento.getVersamento() != null) {
@@ -175,7 +190,7 @@ public class LogSessioneSync {
          * ricostruito abbastanza informazioni da recuperare i metadati del doc da versare...
          */
         if (versamento.getStrutturaComponenti() != null
-                && versamento.getStrutturaComponenti().getDocumentiAttesi().size() > 0) {
+                && !versamento.getStrutturaComponenti().getDocumentiAttesi().isEmpty()) {
             tmpDocumentoVers = versamento.getStrutturaComponenti().getDocumentiAttesi().get(0);
         }
 
@@ -185,26 +200,32 @@ public class LogSessioneSync {
             tmpXmlEsito = tmpStringWriter.toString();
         } catch (Exception ex) {
             tmpControlli.setCodErr("ERR");
-            tmpControlli.setDsErr("Errore interno nella fase salvataggio sessione: " + ex.getMessage());
-            log.error("Errore interno nella fase salvataggio sessione: ", ex);
+            tmpControlli.setDsErr(
+                    "Errore interno nella fase salvataggio sessione (marshalling esito versamento aggiunta documento): "
+                            + ex.getMessage());
+            log.error(
+                    "Errore interno nella fase salvataggio sessione (marshalling esito versamento aggiunta documento): ",
+                    ex);
             tmpReturn = false;
         }
 
         if (tmpReturn) {
             try {
-                tmpVersioneXmlVers = rispostaWS.getIstanzaEsito().getVersioneXMLChiamata();
-                tmpVersioneXmlEsito = rispostaWS.getIstanzaEsito().getVersione();
-                if (!salvaSessione(versamento, rispostaWS, sessione, rispostaWS.getIstanzaEsito().getEsitoGenerale(),
-                        tmpVersatore, tmpChiave, tmpXmlEsito, tmpVersioneXmlVers, tmpVersioneXmlEsito,
-                        tmpDocumentoVers)) {
+                String tmpVersioneXmlVers = rispostaWS.getIstanzaEsito().getVersioneXMLChiamata();
+                String tmpVersioneXmlEsito = rispostaWS.getIstanzaEsito().getVersione();
+                if (!salvaVrsSessioneVers(versamento, rispostaWS, sessione,
+                        rispostaWS.getIstanzaEsito().getEsitoGenerale(), tmpVersatore, tmpChiave, tmpXmlEsito,
+                        tmpVersioneXmlVers, tmpVersioneXmlEsito, tmpDocumentoVers)) {
                     tmpControlli.setCodErr("ERR");
-                    tmpControlli.setDsErr("Eccezione nella persistenza della sessione ");
+                    tmpControlli.setDsErr("Eccezione generica nella persistenza della sessione ");
                 }
             } catch (Exception e) {
                 tmpControlli.setCodErr("ERR");
-                tmpControlli.setDsErr("Errore interno nella fase salvataggio sessione: " + e.getMessage());
-                log.error("Errore interno nella fase salvataggio sessione: ", e);
+                tmpControlli.setDsErr("Errore generico interno nella fase salvataggio sessione: "
+                        + ExceptionUtils.getRootCauseMessage(e));
+                log.error("Errore generico interno nella fase salvataggio sessione: ", e);
             } finally {
+                entityManager.flush();
                 entityManager.clear();
             }
         }
@@ -212,17 +233,14 @@ public class LogSessioneSync {
         return tmpControlli;
     }
 
-    private boolean salvaSessione(AbsVersamentoExt versamento, IRispostaVersWS rispostaWS, SyncFakeSessn sessione,
-            ECEsitoGeneraleType esitoGen, VersatoreType versatore, ChiaveType chiave, String xmlEsito,
-            String versioneXmlChiamata, String versioneXmlEsito, DocumentoVers documentoVersIn)
+    private boolean salvaVrsSessioneVers(AbsVersamentoExt versamento, IRispostaVersWS rispostaWS,
+            SyncFakeSessn sessione, ECEsitoGeneraleType esitoGen, VersatoreType versatore, ChiaveType chiave,
+            String xmlEsito, String versioneXmlChiamata, String versioneXmlEsito, DocumentoVers documentoVersIn)
             throws NoSuchAlgorithmException, IOException {
         boolean tmpReturn = true;
-        VrsSessioneVers tmpSessioneVer = new VrsSessioneVers();
-        VrsDatiSessioneVers tmpDatiSessioneVers = new VrsDatiSessioneVers();
-        VrsXmlDatiSessioneVers tmpXmlDatiSessioneVers = null;
-
-        VrsErrSessioneVers tmpErrSessioneVers;
-        VrsFileSessione tmpFileSessione;
+        Map<String, String> sipBlob = new HashMap<>();
+        Optional<VrsSessioneVersKo> vrsSessioneVersKo = Optional.empty();
+        Optional<VrsSessioneVers> vrsSessioneVers = Optional.empty();
 
         // calcola l'hash dell'esito del versamento.
         // lo calcolo in questo punto perchè non può più cambiare e in caso di errori da
@@ -234,32 +252,31 @@ public class LogSessioneSync {
          * salvo sessione
          */
         // questi dati li scrivo sempre
-        tmpSessioneVer.setCdVersioneWs(sessione.getVersioneWS());
-        tmpSessioneVer.setDtApertura(convert(sessione.getTmApertura()));
-        tmpSessioneVer.setDtChiusura(convert(sessione.getTmChiusura()));
-        tmpSessioneVer.setTsApertura(convert(sessione.getTmApertura()));
-        tmpSessioneVer.setTsChiusura(convert(sessione.getTmChiusura()));
-        tmpSessioneVer.setTiSessioneVers(sessione.getTipoSessioneVers().name()); // VERSAMENTO o AGGIUNTA
-        tmpSessioneVer.setNmUseridWs(sessione.getLoginName());
-        // salvo il nome del server/istanza nel cluster che sta salvando i dati e ha
-        // gestito il versamento
-        tmpSessioneVer.setCdIndServer(appServerInstance.getName());
-        // salvo l'indirizzo IP del sistema che ha effettuato la richiesta di
-        // versamento/aggiunta
-        tmpSessioneVer.setCdIndIpClient(sessione.getIpChiamante());
-
+        VrsSessioneVersBuilder vrsSessioneVersBuilder = VrsSessioneVersBuilder.builder()
+                .cdVersioneWs(sessione.getVersioneWS()).dtApertura(convert(sessione.getTmApertura()))
+                .dtChiusura(convert(sessione.getTmChiusura())).tsApertura(convert(sessione.getTmApertura()))
+                .tsChiusura(convert(sessione.getTmChiusura())).tiSessioneVers(sessione.getTipoSessioneVers().name()) // VERSAMENTO
+                                                                                                                     // o
+                                                                                                                     // AGGIUNTA
+                .nmUseridWs(sessione.getLoginName())
+                // salvo il nome del server/istanza nel cluster che sta salvando i dati e ha
+                // gestito il versamento
+                .cdIndServer(appServerInstance.getName())
+                // salvo l'indirizzo IP del sistema che ha effettuato la richiesta di
+                // versamento/aggiunta
+                .cdIndIpClient(sessione.getIpChiamante());
         // questi dati li scrivo se l'XML ha superato il controllo formale e quindi sono
         // definiti i tag Versatore e
         // Chiave
         if (versatore != null && chiave != null) {
-            tmpSessioneVer.setAaKeyUnitaDoc(new BigDecimal(chiave.getAnno()));
-            tmpSessioneVer.setCdKeyUnitaDoc(chiave.getNumero());
-            tmpSessioneVer.setCdRegistroKeyUnitaDoc(chiave.getTipoRegistro());
-            tmpSessioneVer.setNmAmbiente(versatore.getAmbiente());
-            tmpSessioneVer.setNmEnte(versatore.getEnte());
-            tmpSessioneVer.setNmStrut(versatore.getStruttura());
-            tmpSessioneVer.setNmUserid(versatore.getUserID()); // questo è l'utente definito nell'xml
-            tmpSessioneVer.setNmUtente(versatore.getUtente()); // questo è l'utente definito nell'xml
+            vrsSessioneVersBuilder.aaKeyUnitaDoc(new BigDecimal(chiave.getAnno())).cdKeyUnitaDoc(chiave.getNumero())
+                    .cdRegistroKeyUnitaDoc(chiave.getTipoRegistro()).nmAmbiente(versatore.getAmbiente())
+                    .nmEnte(versatore.getEnte()).nmStrut(versatore.getStruttura()).nmUserid(versatore.getUserID()) // questo
+                                                                                                                   // è
+                                                                                                                   // l'utente
+                                                                                                                   // definito
+                                                                                                                   // nell'xml
+                    .nmUtente(versatore.getUtente()); // questo è l'utente definito nell'xml
         }
 
         /*
@@ -267,71 +284,70 @@ public class LogSessioneSync {
          * ricostruito abbastanza informazioni da recuperare i metadati del doc da versare...
          */
         if (documentoVersIn != null) {
-            tmpSessioneVer.setCdKeyDocVers(documentoVersIn.getRifDocumento().getIDDocumento());
+            vrsSessioneVersBuilder.cdKeyDocVers(documentoVersIn.getRifDocumento().getIDDocumento());
             /*
              * ...inoltre se è definito l'id del record versato e non ci sono errori precedenti, vuol dire che sono
              * riuscito ad effettuare il versamento e che devo salvare il riferimento al doc versato nella sessione
              */
-            if (rispostaWS.getSeverity() != RispostaWS.SeverityEnum.ERROR) {
-                tmpSessioneVer.setAroDoc(entityManager.find(AroDoc.class, documentoVersIn.getIdRecDocumentoDB()));
+            if (isOkOrWarningResponse(rispostaWS)) {
+                vrsSessioneVersBuilder.aroDoc(entityManager.find(AroDoc.class, documentoVersIn.getIdRecDocumentoDB()));
             }
         }
 
         // se ho trovato il codice dell'utente definito nell'XML, lo scrivo
         if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdUser() != 0) {
-            tmpSessioneVer
-                    .setIamUser(entityManager.find(IamUser.class, versamento.getStrutturaComponenti().getIdUser()));
+            vrsSessioneVersBuilder
+                    .iamUser(entityManager.find(IamUser.class, versamento.getStrutturaComponenti().getIdUser()));
         }
 
         // se ho trovato il codice della struttura versante, lo scrivo
         if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-            tmpSessioneVer.setOrgStrut(
-                    entityManager.find(OrgStrut.class, versamento.getStrutturaComponenti().getIdStruttura()));
+            vrsSessioneVersBuilder
+                    .orgStrut(entityManager.find(OrgStrut.class, versamento.getStrutturaComponenti().getIdStruttura()));
         }
 
         // se c'è un ID per l'unità documentaria creata o aggiornata, lo scrivo
         if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdUnitaDoc() != 0) {
-            tmpSessioneVer.setAroUnitaDoc(
+            vrsSessioneVersBuilder.aroUnitaDoc(
                     entityManager.find(AroUnitaDoc.class, versamento.getStrutturaComponenti().getIdUnitaDoc()));
         }
 
-        // questi dati li scrivo se il WS è andato, nel complesso, bene.
-        if (rispostaWS.getSeverity() != RispostaWS.SeverityEnum.ERROR) {
-            tmpSessioneVer.setTiStatoSessioneVers(SESSIONE_CHIUSA_OK);
-        } else {
-            tmpSessioneVer.setTiStatoSessioneVers(SESSIONE_CHIUSA_ERR);
-            tmpSessioneVer.setFlSessioneErrVerif("0"); // se è andata in errore, pongo a FALSE il flag di sessione
-            // verificata dall'operatore
-            // integro i dati relativi all'errore principale
-            String tmpErrMess;
-            if (esitoGen.getMessaggioErrore().isEmpty()) {
-                tmpErrMess = "(vuoto)";
-            } else {
-                tmpErrMess = esitoGen.getMessaggioErrore();
-                if (tmpErrMess.length() > DS_ERR_MAX_LEN) {
-                    tmpErrMess = tmpErrMess.substring(0, DS_ERR_MAX_LEN);
-                }
-            }
-            tmpSessioneVer.setDsErrPrinc(tmpErrMess);
-            tmpSessioneVer.setCdErrPrinc(esitoGen.getCodiceErrore());
-        }
-
         try {
-            entityManager.persist(tmpSessioneVer);
-            entityManager.flush();
+            if (isOkOrWarningResponse(rispostaWS)) {
+                // CHIUSA_OK
+                vrsSessioneVers = Optional.of(vrsSessioneVersBuilder.buildVrsSessioneVers());
+                entityManager.persist(vrsSessioneVers.get());
+            } else {
+                // CHIUSA_ERR
+                vrsSessioneVersBuilder.flSessioneErrVerif("0"); // se è andata in errore, pongo a FALSE il flag di
+                                                                // sessione
+                // verificata dall'operatore
+                // integro i dati relativi all'errore principale
+                String tmpErrMess;
+                if (esitoGen.getMessaggioErrore().isEmpty()) {
+                    tmpErrMess = "(vuoto)";
+                } else {
+                    tmpErrMess = esitoGen.getMessaggioErrore();
+                    if (tmpErrMess.length() > DS_ERR_MAX_LEN) {
+                        tmpErrMess = tmpErrMess.substring(0, DS_ERR_MAX_LEN);
+                    }
+                }
+                vrsSessioneVersBuilder.dsErrPrinc(tmpErrMess).cdErrPrinc(esitoGen.getCodiceErrore());
+                vrsSessioneVersKo = Optional.of(vrsSessioneVersBuilder.buildVrsSessioneVersKo());
+                entityManager.persist(vrsSessioneVersKo.get());
+            }
         } catch (RuntimeException re) {
-            /// logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza della sessione ", re);
+            log.error("Eccezione in fase di salvataggio della sessione di versamento", re);
             tmpReturn = false;
         }
 
         /*
-         * Salvo i dati relativi all'Unità documentaria o al documento non versato, nel caso il versamento sia andato
-         * male, ma siano comunque identificabili gli estremi di ciò che si voleva scrivere. In caso di errore per
-         * elemento duplicato, non deve essere scritto nulla.
+         * IN CASO DI ERRORE Salvo i dati relativi all'Unità documentaria o al documento non versato, nel caso il
+         * versamento sia andato male, ma siano comunque identificabili gli estremi di ciò che si voleva scrivere. In
+         * caso di errore per elemento duplicato, non deve essere scritto nulla.
          */
-        if (tmpReturn && rispostaWS.getSeverity() == RispostaWS.SeverityEnum.ERROR
-                && (!rispostaWS.isErroreElementoDoppio()) && versamento.getStrutturaComponenti() != null
+        if (tmpReturn && isErrorResponse(rispostaWS) && !rispostaWS.isErroreElementoDoppio()
+                && versamento.getStrutturaComponenti() != null
                 && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
 
             CSChiave tmpCSChiave = new CSChiave();
@@ -339,21 +355,12 @@ public class LogSessioneSync {
             tmpCSChiave.setNumero(chiave.getNumero());
             tmpCSChiave.setTipoRegistro(chiave.getTipoRegistro());
 
-            String queryStr;
-            javax.persistence.Query query;
-
             if (sessione.getTipoSessioneVers() == SyncFakeSessn.TipiSessioneVersamento.VERSAMENTO && this
                     .udNonVersataNonPresente(tmpCSChiave, versamento.getStrutturaComponenti().getIdStruttura())) {
-                queryStr = "select al from  VrsUnitaDocNonVer al " + "where al.orgStrut.idStrut = :idStrutIn "
-                        + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
-                        + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn ";
-                query = entityManager.createQuery(queryStr);
-                query.setParameter("idStrutIn", new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-                query.setParameter("cdRegistroKeyUnitaDocIn", tmpCSChiave.getTipoRegistro());
-                query.setParameter("aaKeyUnitaDocIn", new BigDecimal(tmpCSChiave.getAnno()));
-                query.setParameter("cdKeyUnitaDocIn", tmpCSChiave.getNumero());
+                List<VrsUnitaDocNonVer> udnvs = getVrsUnitaDocNonVers(
+                        versamento.getStrutturaComponenti().getIdStruttura(), tmpCSChiave.getTipoRegistro(),
+                        new BigDecimal(tmpCSChiave.getAnno()), tmpCSChiave.getNumero());
                 try {
-                    List<VrsUnitaDocNonVer> udnvs = (List<VrsUnitaDocNonVer>) query.getResultList();
                     if (udnvs.isEmpty()) {
                         VrsUnitaDocNonVer tmpUnitaDocNonVer = new VrsUnitaDocNonVer();
                         tmpUnitaDocNonVer.setAaKeyUnitaDoc(new BigDecimal(tmpCSChiave.getAnno()));
@@ -366,7 +373,6 @@ public class LogSessioneSync {
                         tmpUnitaDocNonVer.setOrgStrut(entityManager.find(OrgStrut.class,
                                 versamento.getStrutturaComponenti().getIdStruttura()));
                         entityManager.persist(tmpUnitaDocNonVer);
-                        entityManager.flush();
                     } else {
                         VrsUnitaDocNonVer tmpUnitaDocNonVer = udnvs.get(0);
                         tmpUnitaDocNonVer.setDtLastSesErr(convert(sessione.getTmApertura()));
@@ -376,29 +382,19 @@ public class LogSessioneSync {
                         if (!tmpUnitaDocNonVer.getCdErrPrinc().equals(esitoGen.getCodiceErrore())) {
                             tmpUnitaDocNonVer.setCdErrPrinc(CD_DS_ERR_DIVERSI);
                         }
-                        entityManager.flush();
                     }
                 } catch (RuntimeException re) {
-                    /// logga l'errore e blocca tutto
                     log.error("Eccezione nella persistenza dell'unità documentaria NON versata ", re);
                     tmpReturn = false;
                 }
-            } else if (sessione.getTipoSessioneVers() == SyncFakeSessn.TipiSessioneVersamento.AGGIUNGI_DOCUMENTO
+            } else if (SyncFakeSessn.TipiSessioneVersamento.AGGIUNGI_DOCUMENTO.equals(sessione.getTipoSessioneVers())
                     && documentoVersIn != null
                     && this.docNonVersatoNonPresente(tmpCSChiave, versamento.getStrutturaComponenti().getIdStruttura(),
                             documentoVersIn.getRifDocumento().getIDDocumento())) {
-                queryStr = "select al from VrsDocNonVer al " + "where al.orgStrut.idStrut = :idStrutIn "
-                        + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
-                        + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn "
-                        + "and al.cdKeyDocVers = :cdKeyDocVersIn";
-                query = entityManager.createQuery(queryStr);
-                query.setParameter("idStrutIn", new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-                query.setParameter("cdRegistroKeyUnitaDocIn", tmpCSChiave.getTipoRegistro());
-                query.setParameter("aaKeyUnitaDocIn", new BigDecimal(tmpCSChiave.getAnno()));
-                query.setParameter("cdKeyUnitaDocIn", tmpCSChiave.getNumero());
-                query.setParameter("cdKeyDocVersIn", documentoVersIn.getRifDocumento().getIDDocumento());
+                List<VrsDocNonVer> udnvs = getVrsDocNonVers(versamento.getStrutturaComponenti().getIdStruttura(),
+                        tmpCSChiave.getTipoRegistro(), new BigDecimal(tmpCSChiave.getAnno()), tmpCSChiave.getNumero(),
+                        documentoVersIn.getRifDocumento().getIDDocumento());
                 try {
-                    List<VrsDocNonVer> udnvs = (List<VrsDocNonVer>) query.getResultList();
                     if (udnvs.isEmpty()) {
                         VrsDocNonVer tmpDocNonVer = new VrsDocNonVer();
                         tmpDocNonVer.setAaKeyUnitaDoc(new BigDecimal(tmpCSChiave.getAnno()));
@@ -412,7 +408,6 @@ public class LogSessioneSync {
                         tmpDocNonVer.setOrgStrut(entityManager.find(OrgStrut.class,
                                 versamento.getStrutturaComponenti().getIdStruttura()));
                         entityManager.persist(tmpDocNonVer);
-                        entityManager.flush();
                     } else {
                         VrsDocNonVer tmpDocNonVer = udnvs.get(0);
                         tmpDocNonVer.setDtLastSesErr(convert(sessione.getTmApertura()));
@@ -422,43 +417,66 @@ public class LogSessioneSync {
                         if (!tmpDocNonVer.getCdErrPrinc().equals(esitoGen.getCodiceErrore())) {
                             tmpDocNonVer.setCdErrPrinc(CD_DS_ERR_DIVERSI);
                         }
-                        entityManager.flush();
                     }
                 } catch (RuntimeException re) {
-                    /// logga l'errore e blocca tutto
                     log.error("Eccezione nella persistenza del documento NON versato ", re);
                     tmpReturn = false;
                 }
             }
-        }
+        } // fine gestione documenti non versati / non aggiunti
 
         /*
          * salva i dati di sessione
          */
+        Optional<VrsDatiSessioneVers> vrsDatiSessioneVers = Optional.empty();
+        Optional<VrsDatiSessioneVersKo> vrsDatiSessioneVersKo = Optional.empty();
         if (tmpReturn) {
-            tmpDatiSessioneVers.setVrsSessioneVers(tmpSessioneVer);
-            tmpDatiSessioneVers.setTiDatiSessioneVers(sessione.getTipoDatiSessioneVers());
-            tmpDatiSessioneVers.setPgDatiSessioneVers(new BigDecimal(1));
-
-            /*
-             * scrivo il numero di file arrivati in ogni caso, non è necessaria la compatibilità con la versione
-             * asincrona dal momento che il versamento asincrono è gestito con un applicativo esterno. Inoltre è stato
-             * espressamente richiesto che i file delle sessioni errate siano sempre salvati
-             */
-            tmpDatiSessioneVers.setNiFile(new BigDecimal(sessione.getFileBinari().size()));
+            VrsDatiSessioneVersBuilder vrsDatiSessioneVersBuilder = VrsDatiSessioneVersBuilder.builder()
+                    .vrsSessioneVers(vrsSessioneVers).vrsSessioneVersKo(vrsSessioneVersKo)
+                    .tiDatiSessioneVers(sessione.getTipoDatiSessioneVers()).pgDatiSessioneVers(BigDecimal.ONE)
+                    /*
+                     * scrivo il numero di file arrivati in ogni caso, non è necessaria la compatibilità con la versione
+                     * asincrona dal momento che il versamento asincrono è gestito con un applicativo esterno. Inoltre è
+                     * stato espressamente richiesto che i file delle sessioni errate siano sempre salvati
+                     */
+                    .niFile(new BigDecimal(sessione.getFileBinari().size()));
 
             // se ho trovato il codice della struttura versante, lo scrivo
             if (versamento.getStrutturaComponenti() != null
                     && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpDatiSessioneVers.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+                vrsDatiSessioneVersBuilder
+                        .idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
             }
+
             try {
-                entityManager.persist(tmpDatiSessioneVers);
-                entityManager.flush();
+                if (isOkOrWarningResponse(rispostaWS)) {
+                    vrsDatiSessioneVers = Optional.of(vrsDatiSessioneVersBuilder.buildVrsDatiSessioneVers());
+                    entityManager.persist(vrsDatiSessioneVers.get());
+                } else {
+                    vrsDatiSessioneVersKo = Optional.of(vrsDatiSessioneVersBuilder.buildVrsDatiSessioneVersKo());
+                    entityManager.persist(vrsDatiSessioneVersKo.get());
+                }
             } catch (RuntimeException re) {
-                /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza della sessione ", re);
+                log.error("Eccezione nella persistenza di VrsDatiSessioneVers*", re);
                 tmpReturn = false;
+            }
+        }
+
+        /*
+         * BACKEND_SIP: se OS effettua salvataggio su bucket (TipiXmlDati.RICHIESTA + TipiXmlDati.RISPOSTA +
+         * TipiXmlDati.INDICE_FILE + TipiXmlDati.RAPP_VERS)
+         * 
+         * Nota: in caso di sessione fallita tutti i dati utilizzeranno il backend di tipo "staging"
+         */
+        BackendStorage backendMetadata = null;
+        if (tmpReturn) {
+            /* sessione OK */
+            if (isOkOrWarningResponse(rispostaWS)) {
+                backendMetadata = objectStorageService.lookupBackendByServiceName(
+                        versamento.getStrutturaComponenti().getIdTipologiaUnitaDocumentaria(),
+                        versamento.getDescrizione().getNomeWs());
+            } else /* sessione KO */ {
+                backendMetadata = objectStorageService.lookupBackendVrsStaging();
             }
         }
 
@@ -466,35 +484,529 @@ public class LogSessioneSync {
          * salva i dati xml di versamento
          */
         if (tmpReturn) {
-            tmpXmlDatiSessioneVers = new VrsXmlDatiSessioneVers();
-            tmpXmlDatiSessioneVers.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-            tmpXmlDatiSessioneVers.setTiXmlDati(TipiXmlDati.RICHIESTA);
-            // se ho trovato il codice della struttura versante, lo scrivo
-            if (versamento.getStrutturaComponenti() != null
-                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpXmlDatiSessioneVers.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+            final String blobRichiesta = sessione.getDatiDaSalvareIndiceSip().length() == 0 ? "--"
+                    : sessione.getDatiDaSalvareIndiceSip();
+            sipBlob.put(TipiXmlDati.RICHIESTA, blobRichiesta);
+            tmpReturn = salvaXmlRichiesta(versamento, sessione, versioneXmlChiamata, documentoVersIn, backendMetadata,
+                    vrsDatiSessioneVers, vrsDatiSessioneVersKo, rispostaWS);
+        }
+
+        /*
+         * salva i dati xml di esito
+         */
+        if (tmpReturn) {
+            final String xmlRisposta = xmlEsito.length() == 0 ? "--" : xmlEsito;
+            sipBlob.put(TipiXmlDati.RISPOSTA, xmlRisposta);
+            tmpReturn = salvaXmlRisposta(versamento, sessione, hashXmlEsito, versioneXmlEsito, xmlEsito,
+                    documentoVersIn, backendMetadata, vrsDatiSessioneVers, vrsDatiSessioneVersKo, rispostaWS);
+        }
+
+        /*
+         * se sono presenti, salva i dati xml dell'indice MM (solo per VersamentoMM)
+         */
+        if (tmpReturn && sessione.getDatiPackInfoSipXml() != null) {
+            final String xmlIndice = sessione.getDatiPackInfoSipXml().length() == 0 ? "--"
+                    : sessione.getDatiPackInfoSipXml();
+            sipBlob.put(TipiXmlDati.INDICE_FILE, xmlIndice);
+            tmpReturn = salvaXmlIndiceMMVersamento(versamento, sessione, versioneXmlChiamata, documentoVersIn,
+                    backendMetadata, vrsDatiSessioneVers, vrsDatiSessioneVersKo, rispostaWS);
+        }
+
+        /*
+         * se sono presenti, salva i dati xml del Rapporto di versamento
+         */
+        // questi dati li scrivo se il WS è andato, nel complesso, bene.
+        if (isOkOrWarningResponse(rispostaWS) && tmpReturn && sessione.getDatiRapportoVersamento() != null) {
+            final String xmlRappVers = sessione.getDatiRapportoVersamento().length() == 0 ? "--"
+                    : sessione.getDatiRapportoVersamento();
+            sipBlob.put(TipiXmlDati.RAPP_VERS, xmlRappVers);
+            tmpReturn = salvaXmlRapportoVersamento(versamento, sessione, documentoVersIn, backendMetadata,
+                    vrsDatiSessioneVers, vrsDatiSessioneVersKo, rispostaWS);
+        }
+
+        /*
+         * Se backendMetadata di tipo O.S. si effettua il salvataggio (con link su appasita entity)
+         */
+        if (tmpReturn && backendMetadata.isObjectStorage()) {
+            ObjectStorageResource res = null;
+            if (isOkOrWarningResponse(rispostaWS)) /* sessione OK */ {
+                if (documentoVersIn != null) {
+                    res = objectStorageService.createResourcesInSipDocumento(backendMetadata.getBackendName(), sipBlob,
+                            documentoVersIn.getIdRecDocumentoDB());
+                } else {
+                    res = objectStorageService.createResourcesInSipUnitaDoc(backendMetadata.getBackendName(), sipBlob,
+                            versamento.getStrutturaComponenti().getIdUnitaDoc());
+                }
+            } else /* sessione KO */ {
+                res = objectStorageService.createSipInStaging(backendMetadata.getBackendName(), sipBlob,
+                        vrsDatiSessioneVersKo.get().getIdDatiSessioneVersKo(), getIdStrut(versamento));
             }
-            tmpXmlDatiSessioneVers.setFlCanonicalized(CostantiDB.Flag.TRUE);
-            tmpXmlDatiSessioneVers.setBlXml(
-                    sessione.getDatiDaSalvareIndiceSip().length() == 0 ? "--" : sessione.getDatiDaSalvareIndiceSip());
-            tmpXmlDatiSessioneVers.setCdVersioneXml(versioneXmlChiamata);
-            if (sessione.getUrnIndiceSipXml() != null) {
-                tmpXmlDatiSessioneVers.setDsUrnXmlVers(sessione.getUrnIndiceSipXml());
-                tmpXmlDatiSessioneVers.setDsHashXmlVers(sessione.getHashIndiceSipXml());
-                tmpXmlDatiSessioneVers.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-                // tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
-                tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
+            log.debug("Salvati i SIP nel bucket {} con chiave {} ", res.getBucket(), res.getKey());
+        }
+
+        /*
+         * se sono presenti, salva i dati xml dei Profili UD/Comp
+         */
+        if (isOkOrWarningResponse(rispostaWS) && versamento.getStrutturaComponenti() != null
+                && versamento.getStrutturaComponenti().hasXsdProfile()) {
+            Assert.isTrue(vrsDatiSessioneVers.isPresent(),
+                    "VrsDatiSessioneVers deve essere presente in questo caso perché la sessione è andata a buon fine");
+            // se presente il profilo normativo su unità documentaria
+            if (versamento.getStrutturaComponenti().getIdRecUsoXsdProfiloNormativo() != null) {
+                tmpReturn = salvaXmlModelloProfiloNormativoUniDoc(versamento.getStrutturaComponenti().getIdStruttura(),
+                        versamento.getStrutturaComponenti().getIdRecUsoXsdProfiloNormativo().longValue(),
+                        versamento.getStrutturaComponenti().getDatiC14NProfNormXml(), vrsDatiSessioneVers.get());
             }
-            try {
-                entityManager.persist(tmpXmlDatiSessioneVers);
-                entityManager.flush();
-            } catch (RuntimeException re) {
-                /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza della sessione ", re);
-                tmpReturn = false;
+            /*
+             * Possibili future estensioni per nuovi profili su unidoc.....
+             */
+        }
+        /*
+         * salva i dati relativi agli errori
+         */
+        if (tmpReturn && !isOkResponse(rispostaWS)) {
+            // CHIUSA_OK con warning o CHIUSA_ERR
+            int progErrore = 1;
+            String tmpErrMess;
+            VrsErrSessioneVersBuilder vrsErrSessioneVersBuilder = VrsErrSessioneVersBuilder.builder();
+            for (VoceDiErrore tmpVoceDiErrore : versamento.getErroriTrovati()) {
+                vrsErrSessioneVersBuilder.vrsDatiSessioneVersKo(vrsDatiSessioneVersKo.orElse(null));
+                vrsErrSessioneVersBuilder.vrsDatiSessioneVers(vrsDatiSessioneVers.orElse(null));
+                // se ho trovato il codice della struttura versante, lo scrivo
+                if (versamento.getStrutturaComponenti() != null
+                        && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+                    vrsErrSessioneVersBuilder
+                            .idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+                }
+
+                if (tmpVoceDiErrore.getErrorMessage().isEmpty()) {
+                    tmpErrMess = "(vuoto)";
+                } else {
+                    tmpErrMess = tmpVoceDiErrore.getErrorMessage();
+                    if (tmpErrMess.length() > DS_ERR_MAX_LEN) {
+                        tmpErrMess = tmpErrMess.substring(0, DS_ERR_MAX_LEN);
+                    }
+                }
+                vrsErrSessioneVersBuilder.dsErr(tmpErrMess).cdErr(tmpVoceDiErrore.getErrorCode())
+                        .flErrPrinc(booleanToFlag(tmpVoceDiErrore.isElementoPrincipale()))
+                        .pgErrSessioneVers(new BigDecimal(progErrore));
+                progErrore++;
+                try {
+                    if (isErrorResponse(rispostaWS)) {
+                        vrsErrSessioneVersBuilder.tiErr(TIPO_ERR_FATALE);
+                        entityManager.persist(vrsErrSessioneVersBuilder.buildVrsErrSessioneVersKo());
+                    } else {
+                        vrsErrSessioneVersBuilder.tiErr(TIPO_ERR_WARNING);
+                        entityManager.persist(vrsErrSessioneVersBuilder.buildVrsErrSessioneVers());
+                    }
+                } catch (RuntimeException re) {
+                    /// logga l'errore e blocca tutto
+                    log.error("Eccezione nella persistenza degli errori su sessione ", re);
+                    tmpReturn = false;
+                    break;
+                }
             }
         }
 
+        /*
+         * se sono ancora in grado di scrivere, salvo i file. --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+         * --- --- --- --- NOTA: il salvataggio dei file andati in errore avviene solo nel caso di persistenza degli
+         * stessi su BLOB oppure il tipo salvataggio non sia stato determinato. Nel caso i file siano da versare sul
+         * filesystem (e successivamente su nastro, via Tivoli), i file vengono perduti. Vogliamo evitare di salvare su
+         * blob file potenzialmente enormi. MEV29384 - Scrivo i file solo per i versamenti CHIUSA_ERR perché per quelli
+         * andati a buon fine i file sono già salvati su DB
+         */
+        long contaFileScritti = 0;
+        if (tmpReturn && isErrorResponse(rispostaWS)
+                && (versamento.getStrutturaComponenti() == null
+                        || (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti()
+                                .getTipoSalvataggioFile() != CostantiDB.TipoSalvataggioFile.FILE)))
+
+        {
+            Assert.isTrue(vrsDatiSessioneVersKo.isPresent(),
+                    "VrsFileSessioneKo deve essere presente per sessionie errate/fallite");
+            long progressivoFile = 0;
+            for (FileBinario tmpFb : sessione.getFileBinari()) {
+                progressivoFile++;
+                VrsFileSessioneKo vrsFileSessioneKo = new VrsFileSessioneKo();
+                vrsFileSessioneKo.setVrsDatiSessioneVersKo(vrsDatiSessioneVersKo.get());
+                if (versamento.getStrutturaComponenti() != null
+                        && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+                    vrsFileSessioneKo.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+                }
+                vrsFileSessioneKo.setNmFileSessione(tmpFb.getId());
+                vrsFileSessioneKo.setPgFileSessione(new BigDecimal(progressivoFile));
+                vrsFileSessioneKo.setTiStatoFileSessione("CONTR_FATTI"); // nota, questo campo è del tutto inutile.
+                try {
+                    if (tmpReturn) {
+                        entityManager.persist(vrsFileSessioneKo);
+                    }
+                } catch (RuntimeException re) {
+                    /// logga l'errore e blocca tutto
+                    log.error("Eccezione nella persistenza dei file di sessione ", re);
+                    tmpReturn = false;
+                }
+
+                /*
+                 * i file li memorizzo in questa tabella, ma solo se si è verificato un errore diverso da
+                 * "l'elemento corrisponde ad uno già presente nel sistema". dal momento che non ci interessa tenere due
+                 * copie di un file che abbiamo già
+                 */
+                if (tmpReturn && isErrorResponse(rispostaWS) && (!rispostaWS.isErroreElementoDoppio())) {
+                    // procedo alla memorizzazione del file sul blob, via JDBC
+                    WriteCompBlbOracle.DatiAccessori datiAccessori = new WriteCompBlbOracle().new DatiAccessori();
+                    datiAccessori.setTabellaBlob(WriteCompBlbOracle.TabellaBlob.VRS_CONTENUTO_FILE_KO);
+                    datiAccessori.setIdPadre(vrsFileSessioneKo.getIdFileSessioneKo());
+                    if (versamento.getStrutturaComponenti() != null
+                            && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+                        datiAccessori.setIdStruttura(versamento.getStrutturaComponenti().getIdStruttura());
+                    }
+                    datiAccessori.setDtVersamento(sessione.getTmApertura());
+
+                    try {
+
+                        BackendStorage backendStaging = objectStorageService.lookupBackendVrsStaging();
+                        RispostaControlli tmpControlli = null;
+                        if (backendStaging.isDataBase()) {
+                            tmpControlli = writeCompBlbOracle.salvaStreamSuBlobComp(datiAccessori, tmpFb);
+                        } else {
+                            // tagging object
+                            objectStorageService.tagComponenteInStaging(tmpFb.getObjectStorageResource(),
+                                    backendStaging.getBackendName());
+                            // saving on db
+                            objectStorageService.saveLinkFileSessFromObjectStorage(tmpFb.getObjectStorageResource(),
+                                    backendStaging.getBackendName(), vrsFileSessioneKo.getIdFileSessioneKo(),
+                                    getIdStrut(versamento));
+                            // ho già detto che odio l'oggetto RispostaControlli?
+                            tmpControlli = new RispostaControlli();
+                            tmpControlli.setrBoolean(true);
+                        }
+
+                        if (tmpControlli.isrBoolean()) {
+                            contaFileScritti++;
+                        } else {
+                            tmpReturn = false;
+                        }
+
+                    } catch (Exception re) {
+                        /// logga l'errore e blocca tutto
+                        log.error("Eccezione nella persistenza del blob ", re);
+                        tmpReturn = false;
+                    }
+                }
+            }
+        }
+
+        // aggiorno nella tabella principale della Sessione di Versamento
+        // il numero effettivo di file/blob salvati sul DB
+        if (tmpReturn && isErrorResponse(rispostaWS)) {
+            Assert.isTrue(vrsSessioneVersKo.isPresent(),
+                    "VrsSessioneVersKo deve essere presente per le sessioni errate/fallite");
+            vrsSessioneVersKo.get().setNiFileErr(new BigDecimal(contaFileScritti));
+        }
+
+        return tmpReturn;
+    }
+
+    private BigDecimal getIdStrut(AbsVersamentoExt versamento) {
+        if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+            return BigDecimal.valueOf(versamento.getStrutturaComponenti().getIdStruttura());
+        }
+        return null;
+    }
+
+    private static boolean isErrorResponse(IRispostaVersWS rispostaWS) {
+        return IRispostaWS.SeverityEnum.ERROR.equals(rispostaWS.getSeverity());
+    }
+
+    private static boolean isOkOrWarningResponse(IRispostaVersWS rispostaWS) {
+        return !isErrorResponse(rispostaWS);
+    }
+
+    private static boolean isOkResponse(IRispostaVersWS rispostaWS) {
+        return IRispostaWS.SeverityEnum.OK.equals(rispostaWS.getSeverity());
+    }
+
+    // salva i dati xml di versamento
+    private boolean salvaXmlRichiesta(AbsVersamentoExt versamento, SyncFakeSessn sessione, String versioneXmlChiamata,
+            DocumentoVers documentoVersIn, BackendStorage backendMetadata,
+            Optional<VrsDatiSessioneVers> vrsDatiSessioneVers, Optional<VrsDatiSessioneVersKo> vrsDatiSessioneVersKo,
+            IRispostaVersWS rispostaWS) {
+        boolean tmpReturn = true;
+        VrsXmlDatiSessioneVersBuilder vrsXmlDatiSessioneVersBuilder = VrsXmlDatiSessioneVersBuilder.builder()
+                .vrsDatiSessioneVers(vrsDatiSessioneVers).vrsDatiSessioneVersKo(vrsDatiSessioneVersKo)
+                .tiXmlDati(TipiXmlDati.RICHIESTA);
+        // se ho trovato il codice della struttura versante, lo scrivo
+        if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+            vrsXmlDatiSessioneVersBuilder.idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+        }
+        vrsXmlDatiSessioneVersBuilder.flCanonicalized(CostantiDB.Flag.TRUE);
+        if (backendMetadata.isDataBase()) {
+            vrsXmlDatiSessioneVersBuilder.blXml(
+                    sessione.getDatiDaSalvareIndiceSip().length() == 0 ? "--" : sessione.getDatiDaSalvareIndiceSip());
+        }
+
+        vrsXmlDatiSessioneVersBuilder.cdVersioneXml(versioneXmlChiamata);
+        if (sessione.getUrnIndiceSipXml() != null) {
+            vrsXmlDatiSessioneVersBuilder.dsUrnXmlVers(sessione.getUrnIndiceSipXml())
+                    .dsHashXmlVers(sessione.getHashIndiceSipXml())
+                    .cdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi())
+                    .dsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
+        }
+        Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers = Optional.empty();
+        Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo = Optional.empty();
+        try {
+            if (isOkOrWarningResponse(rispostaWS)) {
+                vrsXmlDatiSessioneVers = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVers());
+                entityManager.persist(vrsXmlDatiSessioneVers.get());
+            } else {
+                vrsXmlDatiSessioneVersKo = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
+                entityManager.persist(vrsXmlDatiSessioneVersKo.get());
+            }
+        } catch (RuntimeException re) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+            tmpReturn = false;
+        }
+
+        /*
+         * salva i dati dei nuovi URN su VrsUrnXmlSessioneVers
+         */
+        if (tmpReturn) {
+            final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+            if (urns.getUrn() != null) {
+                // salvo ORIGINALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnIndiceSip(urns.getUrn(), Costanti.UrnFormatter.URN_INDICE_SIP_V2),
+                        TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (urns.getUrnNormalizzato() != null) {
+                // salvo NORMALIZZATO
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnIndiceSip(urns.getUrnNormalizzato(),
+                                Costanti.UrnFormatter.URN_INDICE_SIP_V2),
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
+                // salvo INIZIALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
+                        TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+        }
+
+        return tmpReturn;
+    }
+
+    // salva i dati xml di esito
+    private boolean salvaXmlRisposta(AbsVersamentoExt versamento, SyncFakeSessn sessione, String hashXmlEsito,
+            String versioneXmlEsito, String xmlEsito, DocumentoVers documentoVersIn, BackendStorage backendMetadata,
+            Optional<VrsDatiSessioneVers> vrsDatiSessioneVers, Optional<VrsDatiSessioneVersKo> vrsDatiSessioneVersKo,
+            IRispostaVersWS rispostaWS) {
+        boolean tmpReturn = true;
+        VrsXmlDatiSessioneVersBuilder vrsXmlDatiSessioneVersBuilder = VrsXmlDatiSessioneVersBuilder.builder()
+                .tiXmlDati(TipiXmlDati.RISPOSTA).vrsDatiSessioneVers(vrsDatiSessioneVers)
+                .vrsDatiSessioneVersKo(vrsDatiSessioneVersKo);
+        // se ho trovato il codice della struttura versante, lo scrivo
+        if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+            vrsXmlDatiSessioneVersBuilder.idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+        }
+        vrsXmlDatiSessioneVersBuilder.flCanonicalized(CostantiDB.Flag.FALSE);
+        if (backendMetadata.isDataBase()) {
+            vrsXmlDatiSessioneVersBuilder.blXml(xmlEsito.length() == 0 ? "--" : xmlEsito);
+        }
+        vrsXmlDatiSessioneVersBuilder.cdVersioneXml(versioneXmlEsito);
+        if (sessione.getUrnEsitoVersamento() != null) {
+            vrsXmlDatiSessioneVersBuilder.dsUrnXmlVers(sessione.getUrnEsitoVersamento());
+            vrsXmlDatiSessioneVersBuilder.dsHashXmlVers(hashXmlEsito);
+            vrsXmlDatiSessioneVersBuilder.cdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
+            vrsXmlDatiSessioneVersBuilder.dsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
+        }
+
+        Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers = Optional.empty();
+        Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo = Optional.empty();
+        try {
+            if (isOkOrWarningResponse(rispostaWS)) {
+                vrsXmlDatiSessioneVers = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVers());
+                entityManager.persist(vrsXmlDatiSessioneVers.get());
+            } else {
+                vrsXmlDatiSessioneVersKo = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
+                entityManager.persist(vrsXmlDatiSessioneVersKo.get());
+            }
+        } catch (RuntimeException re) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+            tmpReturn = false;
+        }
+
+        if (tmpReturn) {
+            final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+            if (urns.getUrn() != null) {
+                // salvo ORIGINALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(), Costanti.UrnFormatter.URN_ESITO_VERS_V2),
+                        TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (urns.getUrnNormalizzato() != null) {
+                // salvo NORMALIZZATO
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
+                                Costanti.UrnFormatter.URN_ESITO_VERS_V2),
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
+                // salvo INIZIALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
+                        TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+        }
+        return tmpReturn;
+    }
+
+    // se sono presenti, salva i dati xml dell'indice MM (solo per VersamentoMM)
+    private boolean salvaXmlIndiceMMVersamento(AbsVersamentoExt versamento, SyncFakeSessn sessione,
+            String versioneXmlChiamata, DocumentoVers documentoVersIn, BackendStorage backendMetadata,
+            Optional<VrsDatiSessioneVers> vrsDatiSessioneVers, Optional<VrsDatiSessioneVersKo> vrsDatiSessioneVersKo,
+            IRispostaVersWS rispostaWS) {
+        boolean tmpReturn = true;
+        VrsXmlDatiSessioneVersBuilder vrsXmlDatiSessioneVersBuilder = VrsXmlDatiSessioneVersBuilder.builder()
+                .vrsDatiSessioneVers(vrsDatiSessioneVers).vrsDatiSessioneVersKo(vrsDatiSessioneVersKo)
+                .tiXmlDati(TipiXmlDati.INDICE_FILE);
+        // se ho trovato il codice della struttura versante, lo scrivo
+        if (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+            vrsXmlDatiSessioneVersBuilder.idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+        }
+        vrsXmlDatiSessioneVersBuilder.flCanonicalized(CostantiDB.Flag.FALSE);
+        if (backendMetadata.isDataBase()) {
+            vrsXmlDatiSessioneVersBuilder
+                    .blXml(sessione.getDatiPackInfoSipXml().length() == 0 ? "--" : sessione.getDatiPackInfoSipXml());
+        }
+        vrsXmlDatiSessioneVersBuilder.cdVersioneXml(versioneXmlChiamata);
+        if (sessione.getUrnPackInfoSipXml() != null) {
+            vrsXmlDatiSessioneVersBuilder.dsUrnXmlVers(sessione.getUrnPackInfoSipXml())
+                    .dsHashXmlVers(sessione.getHashPackInfoSipXml())
+                    .cdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi())
+                    .dsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
+        }
+        Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers = Optional.empty();
+        Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo = Optional.empty();
+        try {
+            if (isOkOrWarningResponse(rispostaWS)) {
+                vrsXmlDatiSessioneVers = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVers());
+                entityManager.persist(vrsXmlDatiSessioneVers.get());
+            } else {
+                vrsXmlDatiSessioneVersKo = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
+                entityManager.persist(vrsXmlDatiSessioneVersKo.get());
+            }
+        } catch (RuntimeException re) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+            tmpReturn = false;
+        }
+
+        if (tmpReturn) {
+            final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+            if (urns.getUrn() != null) {
+                // salvo ORIGINALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(), Costanti.UrnFormatter.URN_PI_SIP_V2),
+                        TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (urns.getUrnNormalizzato() != null) {
+                // salvo NORMALIZZATO
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                        MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
+                                Costanti.UrnFormatter.URN_PI_SIP_V2),
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+            if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
+                // salvo INIZIALE
+                tmpReturn = this.salvaVrsUrnXmlSessioneVers(vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
+                        TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                        getIdStrut(versamento));
+            }
+        }
+        return tmpReturn;
+    }
+
+    // se sono presenti, salva i dati xml del Rapporto di versamento
+    private boolean salvaXmlRapportoVersamento(AbsVersamentoExt versamento, SyncFakeSessn sessione,
+            DocumentoVers documentoVersIn, BackendStorage backendMetadata,
+            Optional<VrsDatiSessioneVers> vrsDatiSessioneVers, Optional<VrsDatiSessioneVersKo> vrsDatiSessioneVersKo,
+            IRispostaVersWS rispostaWS) {
+        boolean tmpReturn = true;
+        VrsXmlDatiSessioneVersBuilder vrsXmlDatiSessioneVersBuilder = VrsXmlDatiSessioneVersBuilder.builder();
+        if (sessione.getDatiRapportoVersamento() != null) {
+            vrsXmlDatiSessioneVersBuilder.vrsDatiSessioneVers(vrsDatiSessioneVers)
+                    .vrsDatiSessioneVersKo(vrsDatiSessioneVersKo).tiXmlDati(TipiXmlDati.RAPP_VERS);
+            // se ho trovato il codice della struttura versante, lo scrivo
+            if (versamento.getStrutturaComponenti() != null
+                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
+                vrsXmlDatiSessioneVersBuilder
+                        .idStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
+            }
+            vrsXmlDatiSessioneVersBuilder.flCanonicalized(CostantiDB.Flag.FALSE);
+            if (backendMetadata.isDataBase()) {
+                vrsXmlDatiSessioneVersBuilder.blXml(sessione.getDatiRapportoVersamento().length() == 0 ? "--"
+                        : sessione.getDatiRapportoVersamento());
+            }
+            vrsXmlDatiSessioneVersBuilder.cdVersioneXml(Costanti.XML_RAPPORTO_VERS_VRSN);
+            if (sessione.getUrnRapportoVersamento() != null) {
+                vrsXmlDatiSessioneVersBuilder.dsUrnXmlVers(sessione.getUrnRapportoVersamento())
+                        .dsHashXmlVers(sessione.getHashRapportoVersamento())
+                        .cdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi())
+                        .dsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
+            }
+            Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers = Optional.empty();
+            Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo = Optional.empty();
+            try {
+                if (isOkOrWarningResponse(rispostaWS)) {
+                    vrsXmlDatiSessioneVers = Optional.of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVers());
+                    entityManager.persist(vrsXmlDatiSessioneVers.get());
+                } else {
+                    vrsXmlDatiSessioneVersKo = Optional
+                            .of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
+                    entityManager.persist(vrsXmlDatiSessioneVersKo.get());
+                }
+            } catch (RuntimeException re) {
+                log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+                tmpReturn = false;
+            }
+            if (tmpReturn) {
+                final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+                if (urns.getUrn() != null) {
+                    // salvo ORIGINALE
+                    tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                            MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(),
+                                    Costanti.UrnFormatter.URN_RAPP_VERS_V2),
+                            TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo,
+                            rispostaWS, getIdStrut(versamento));
+                }
+                if (urns.getUrnNormalizzato() != null) {
+                    // salvo NORMALIZZATO
+                    tmpReturn = this.salvaVrsUrnXmlSessioneVers(
+                            MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
+                                    Costanti.UrnFormatter.URN_RAPP_VERS_V2),
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo,
+                            rispostaWS, getIdStrut(versamento));
+                }
+                if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
+                    // salvo INIZIALE
+                    tmpReturn = this.salvaVrsUrnXmlSessioneVers(vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
+                            TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers, vrsXmlDatiSessioneVersKo, rispostaWS,
+                            getIdStrut(versamento));
+                }
+            }
+        }
+        return tmpReturn;
+    }
+
+    private static URNVersamento calcolaUrn(AbsVersamentoExt versamento, DocumentoVers documentoVersIn,
+            SyncFakeSessn sessione) {
         /*
          * calcolo URN
          */
@@ -550,335 +1062,60 @@ public class LogSessioneSync {
                         Costanti.UrnFormatter.URN_DOC_FMT_STRING_V2);
             }
         }
+        final String urn = tmpUrn;
+        final String urnNormalizzato = tmpUrnNorm;
+
         // end EVO#16486
-
-        /*
-         * salva i dati dei nuovi URN su VrsUrnXmlSessioneVers
-         */
-        if (tmpReturn) {
-            if (tmpUrn != null) {
-                // salvo ORIGINALE
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        MessaggiWSFormat.formattaUrnIndiceSip(tmpUrn, Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
-            }
-            if (tmpUrnNorm != null) {
-                // salvo NORMALIZZATO
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        MessaggiWSFormat.formattaUrnIndiceSip(tmpUrnNorm, Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
-            }
-            if (tmpXmlDatiSessioneVers.getDsUrnXmlVers() != null) {
-                // salvo INIZIALE
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        tmpXmlDatiSessioneVers.getDsUrnXmlVers(), TiUrnXmlSessioneVers.INIZIALE);
-            }
-        }
-
-        /*
-         * salva i dati xml di esito
-         */
-        if (tmpReturn) {
-            tmpXmlDatiSessioneVers = new VrsXmlDatiSessioneVers();
-            tmpXmlDatiSessioneVers.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-            tmpXmlDatiSessioneVers.setTiXmlDati(TipiXmlDati.RISPOSTA);
-            // se ho trovato il codice della struttura versante, lo scrivo
-            if (versamento.getStrutturaComponenti() != null
-                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpXmlDatiSessioneVers.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-            }
-            tmpXmlDatiSessioneVers.setFlCanonicalized(CostantiDB.Flag.FALSE);
-            tmpXmlDatiSessioneVers.setBlXml(xmlEsito.length() == 0 ? "--" : xmlEsito);
-            tmpXmlDatiSessioneVers.setCdVersioneXml(versioneXmlEsito);
-            if (sessione.getUrnEsitoVersamento() != null) {
-                tmpXmlDatiSessioneVers.setDsUrnXmlVers(sessione.getUrnEsitoVersamento());
-                tmpXmlDatiSessioneVers.setDsHashXmlVers(hashXmlEsito);
-                tmpXmlDatiSessioneVers.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-                // tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
-                tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
-            }
-            try {
-                entityManager.persist(tmpXmlDatiSessioneVers);
-                entityManager.flush();
-            } catch (RuntimeException re) {
-                /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza della sessione ", re);
-                tmpReturn = false;
-            }
-        }
-
-        if (tmpReturn) {
-            if (tmpUrn != null) {
-                // salvo ORIGINALE
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn, Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
-            }
-            if (tmpUrnNorm != null) {
-                // salvo NORMALIZZATO
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm, Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
-            }
-            if (tmpXmlDatiSessioneVers.getDsUrnXmlVers() != null) {
-                // salvo INIZIALE
-                tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                        tmpXmlDatiSessioneVers.getDsUrnXmlVers(), TiUrnXmlSessioneVers.INIZIALE);
-            }
-        }
-
-        /*
-         * se sono presenti, salva i dati xml dell'indice MM (solo per VersamentoMM)
-         */
-        if (tmpReturn && sessione.getDatiPackInfoSipXml() != null) {
-            tmpXmlDatiSessioneVers = new VrsXmlDatiSessioneVers();
-            tmpXmlDatiSessioneVers.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-            tmpXmlDatiSessioneVers.setTiXmlDati(TipiXmlDati.INDICE_FILE);
-            // se ho trovato il codice della struttura versante, lo scrivo
-            if (versamento.getStrutturaComponenti() != null
-                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpXmlDatiSessioneVers.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-            }
-            tmpXmlDatiSessioneVers.setFlCanonicalized(CostantiDB.Flag.FALSE);
-            tmpXmlDatiSessioneVers
-                    .setBlXml(sessione.getDatiPackInfoSipXml().length() == 0 ? "--" : sessione.getDatiPackInfoSipXml());
-            tmpXmlDatiSessioneVers.setCdVersioneXml(versioneXmlChiamata);
-            if (sessione.getUrnPackInfoSipXml() != null) {
-                tmpXmlDatiSessioneVers.setDsUrnXmlVers(sessione.getUrnPackInfoSipXml());
-                tmpXmlDatiSessioneVers.setDsHashXmlVers(sessione.getHashPackInfoSipXml());
-                tmpXmlDatiSessioneVers.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-                // tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
-                tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
-            }
-            try {
-                entityManager.persist(tmpXmlDatiSessioneVers);
-                entityManager.flush();
-            } catch (RuntimeException re) {
-                /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza della sessione ", re);
-                tmpReturn = false;
+        return new URNVersamento() {
+            @Override
+            public String getUrn() {
+                return urn;
             }
 
-            if (tmpReturn) {
-                if (tmpUrn != null) {
-                    // salvo ORIGINALE
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn, Costanti.UrnFormatter.URN_PI_SIP_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
-                }
-                if (tmpUrnNorm != null) {
-                    // salvo NORMALIZZATO
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm, Costanti.UrnFormatter.URN_PI_SIP_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
-                }
-                if (tmpXmlDatiSessioneVers.getDsUrnXmlVers() != null) {
-                    // salvo INIZIALE
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            tmpXmlDatiSessioneVers.getDsUrnXmlVers(), TiUrnXmlSessioneVers.INIZIALE);
-                }
+            @Override
+            public String getUrnNormalizzato() {
+                return urnNormalizzato;
             }
-        }
+        };
 
-        /*
-         * se sono presenti, salva i dati xml del Rapporto di versamento
-         */
-        // questi dati li scrivo se il WS è andato, nel complesso, bene.
-        if (rispostaWS.getSeverity() != RispostaWS.SeverityEnum.ERROR) {
-            if (tmpReturn && sessione.getDatiRapportoVersamento() != null) {
-                tmpXmlDatiSessioneVers = new VrsXmlDatiSessioneVers();
-                tmpXmlDatiSessioneVers.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-                tmpXmlDatiSessioneVers.setTiXmlDati(TipiXmlDati.RAPP_VERS);
-                // se ho trovato il codice della struttura versante, lo scrivo
-                if (versamento.getStrutturaComponenti() != null
-                        && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                    tmpXmlDatiSessioneVers
-                            .setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-                }
-                tmpXmlDatiSessioneVers.setFlCanonicalized(CostantiDB.Flag.FALSE);
-                tmpXmlDatiSessioneVers.setBlXml(sessione.getDatiRapportoVersamento().length() == 0 ? "--"
-                        : sessione.getDatiRapportoVersamento());
-                tmpXmlDatiSessioneVers.setCdVersioneXml(Costanti.XML_RAPPORTO_VERS_VRSN);
-                if (sessione.getUrnRapportoVersamento() != null) {
-                    tmpXmlDatiSessioneVers.setDsUrnXmlVers(sessione.getUrnRapportoVersamento());
-                    tmpXmlDatiSessioneVers.setDsHashXmlVers(sessione.getHashRapportoVersamento());
-                    tmpXmlDatiSessioneVers.setCdEncodingHashXmlVers(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
-                    // tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_1.descrivi());
-                    tmpXmlDatiSessioneVers.setDsAlgoHashXmlVers(CostantiDB.TipiHash.SHA_256.descrivi());
-                }
-                try {
-                    entityManager.persist(tmpXmlDatiSessioneVers);
-                    entityManager.flush();
-                } catch (RuntimeException re) {
-                    /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza della sessione ", re);
-                    tmpReturn = false;
-                }
-            }
+    }
 
-            if (tmpReturn) {
-                if (tmpUrn != null) {
-                    // salvo ORIGINALE
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn, Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
-                }
-                if (tmpUrnNorm != null) {
-                    // salvo NORMALIZZATO
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm, Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
-                }
-                if (tmpXmlDatiSessioneVers.getDsUrnXmlVers() != null) {
-                    // salvo INIZIALE
-                    tmpReturn = this.salvaUrnXmlSessioneVers(tmpXmlDatiSessioneVers,
-                            tmpXmlDatiSessioneVers.getDsUrnXmlVers(), TiUrnXmlSessioneVers.INIZIALE);
-                }
-            }
-        }
+    private interface URNVersamento {
 
-        /*
-         * se sono presenti, salva i dati xml dei Profili UD/Comp
-         */
-        if (rispostaWS.getSeverity() != RispostaWS.SeverityEnum.ERROR && versamento.getStrutturaComponenti() != null
-                && versamento.getStrutturaComponenti().hasXsdProfile()) {
-            // se presente il profilo normativo su unità documentaria
-            if (versamento.getStrutturaComponenti().getIdRecUsoXsdProfiloNormativo() != null) {
-                tmpReturn = salvaXmlModelloProfiloNormativoUniDoc(versamento.getStrutturaComponenti().getIdStruttura(),
-                        versamento.getStrutturaComponenti().getIdRecUsoXsdProfiloNormativo().longValue(),
-                        versamento.getStrutturaComponenti().getDatiC14NProfNormXml(), tmpDatiSessioneVers);
-            }
-            /*
-             * Possibili future estensioni per nuovi profili su unidoc.....
-             */
-        }
-        /*
-         * salva i dati relativi agli errori
-         */
-        if (tmpReturn) {
-            if (rispostaWS.getSeverity() != RispostaWS.SeverityEnum.OK) {
-                int progErrore = 1;
-                String tmpErrMess;
-                for (VoceDiErrore tmpVoceDiErrore : versamento.getErroriTrovati()) {
-                    tmpErrSessioneVers = new VrsErrSessioneVers();
-                    tmpErrSessioneVers.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-                    // se ho trovato il codice della struttura versante, lo scrivo
-                    if (versamento.getStrutturaComponenti() != null
-                            && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                        tmpErrSessioneVers
-                                .setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-                    }
+        String getUrn();
 
-                    if (tmpVoceDiErrore.getErrorMessage().isEmpty()) {
-                        tmpErrMess = "(vuoto)";
-                    } else {
-                        tmpErrMess = tmpVoceDiErrore.getErrorMessage();
-                        if (tmpErrMess.length() > DS_ERR_MAX_LEN) {
-                            tmpErrMess = tmpErrMess.substring(0, DS_ERR_MAX_LEN);
-                        }
-                    }
-                    tmpErrSessioneVers.setDsErr(tmpErrMess);
+        String getUrnNormalizzato();
+    }
 
-                    if (tmpVoceDiErrore.getSeverity() == RispostaWS.SeverityEnum.ERROR) {
-                        tmpErrSessioneVers.setTiErr(TIPO_ERR_FATALE);
-                    } else {
-                        tmpErrSessioneVers.setTiErr(TIPO_ERR_WARNING);
-                    }
+    public List<VrsDocNonVer> getVrsDocNonVers(long idStruttura, String tipoRegistro, BigDecimal value, String numero,
+            String idDocumento) {
+        String queryStr;
+        javax.persistence.Query query;
+        queryStr = "select al from VrsDocNonVer al " + "where al.orgStrut.idStrut = :idStrutIn "
+                + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
+                + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn " + "and al.cdKeyDocVers = :cdKeyDocVersIn";
+        query = entityManager.createQuery(queryStr);
+        query.setParameter("idStrutIn", idStruttura);
+        query.setParameter("cdRegistroKeyUnitaDocIn", tipoRegistro);
+        query.setParameter("aaKeyUnitaDocIn", value);
+        query.setParameter("cdKeyUnitaDocIn", numero);
+        query.setParameter("cdKeyDocVersIn", idDocumento);
+        return query.getResultList();
+    }
 
-                    tmpErrSessioneVers.setPgErrSessioneVers(new BigDecimal(progErrore));
-                    progErrore++;
-
-                    tmpErrSessioneVers.setCdErr(tmpVoceDiErrore.getErrorCode());
-                    tmpErrSessioneVers.setFlErrPrinc(tmpVoceDiErrore.isElementoPrincipale() ? "1" : "0");
-                    try {
-                        entityManager.persist(tmpErrSessioneVers);
-                        entityManager.flush();
-                    } catch (RuntimeException re) {
-                        /// logga l'errore e blocca tutto
-                        log.error("Eccezione nella persistenza della sessione ", re);
-                        tmpReturn = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        /*
-         * se sono ancora in grado di scrivere, salvo i file. --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-         * --- --- --- --- NOTA: il salvataggio dei file andati in errore avviene solo nel caso di persistenza degli
-         * stessi su BLOB oppure il tipo salvataggio non sia stato determinato. Nel caso i file siano da versare sul
-         * filesystem (e successivamente su nastro, via Tivoli), i file vengono perduti. Vogliamo evitare di salvare su
-         * blob file potenzialmente enormi.
-         */
-        long contaFileScritti = 0;
-        if (tmpReturn && (versamento.getStrutturaComponenti() == null)
-                || (versamento.getStrutturaComponenti() != null && versamento.getStrutturaComponenti()
-                        .getTipoSalvataggioFile() != CostantiDB.TipoSalvataggioFile.FILE)) {
-            long progressivoFile = 0;
-            for (FileBinario tmpFb : sessione.getFileBinari()) {
-                progressivoFile++;
-                tmpFileSessione = new VrsFileSessione();
-                tmpFileSessione.setVrsDatiSessioneVers(tmpDatiSessioneVers);
-                if (versamento.getStrutturaComponenti() != null
-                        && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                    tmpFileSessione.setIdStrut(new BigDecimal(versamento.getStrutturaComponenti().getIdStruttura()));
-                }
-                tmpFileSessione.setNmFileSessione(tmpFb.getId());
-                tmpFileSessione.setPgFileSessione(new BigDecimal(progressivoFile));
-                tmpFileSessione.setTiStatoFileSessione("CONTR_FATTI"); // nota, questo campo è del tutto inutile.
-                try {
-                    if (tmpReturn) {
-                        entityManager.persist(tmpFileSessione);
-                        entityManager.flush();
-                    }
-                } catch (RuntimeException re) {
-                    /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza della sessione ", re);
-                    tmpReturn = false;
-                }
-
-                /*
-                 * i file li memorizzo in questa tabella, ma solo se si è verificato un errore diverso da
-                 * "l'elemento corrisponde ad uno già presente nel sistema". dal momento che non ci interessa tenere due
-                 * copie di un file che abbiamo già
-                 */
-                if (tmpReturn && rispostaWS.getSeverity() == RispostaWS.SeverityEnum.ERROR
-                        && (!rispostaWS.isErroreElementoDoppio())) {
-                    // procedo alla memorizzazione del file sul blob, via JDBC
-                    WriteCompBlbOracle.DatiAccessori datiAccessori = new WriteCompBlbOracle().new DatiAccessori();
-                    datiAccessori.setTabellaBlob(WriteCompBlbOracle.TabellaBlob.VRS_CONTENUTO_FILE);
-                    datiAccessori.setIdPadre(tmpFileSessione.getIdFileSessione());
-                    if (versamento.getStrutturaComponenti() != null
-                            && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                        datiAccessori.setIdStruttura(versamento.getStrutturaComponenti().getIdStruttura());
-                    }
-                    datiAccessori.setDtVersamento(sessione.getTmApertura());
-
-                    try {
-                        RispostaControlli tmpControlli = writeCompBlbOracle.salvaStreamSuBlobComp(datiAccessori, tmpFb);
-                        if (tmpControlli.isrBoolean()) {
-                            contaFileScritti++;
-                        } else {
-                            tmpReturn = false;
-                        }
-                    } catch (Exception re) {
-                        /// logga l'errore e blocca tutto
-                        log.error("Eccezione nella persistenza del blob ", re);
-                        tmpReturn = false;
-                    }
-                }
-            }
-        }
-
-        // aggiorno nella tabella principale della Sessione di Versamento
-        // il numero effettivo di file/blob salvati sul DB
-        if (tmpReturn && rispostaWS.getSeverity() == RispostaWS.SeverityEnum.ERROR) {
-            tmpSessioneVer = entityManager.find(VrsSessioneVers.class, tmpSessioneVer.getIdSessioneVers());
-            tmpSessioneVer.setNiFileErr(new BigDecimal(contaFileScritti));
-            entityManager.flush();
-        }
-
-        return tmpReturn;
+    public List<VrsUnitaDocNonVer> getVrsUnitaDocNonVers(long idStruttura, String tipoRegistro,
+            BigDecimal aaKeyUnitaDoc, String numero) {
+        String queryStr;
+        javax.persistence.Query query;
+        queryStr = "select al from  VrsUnitaDocNonVer al " + "where al.orgStrut.idStrut = :idStrutIn "
+                + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
+                + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn ";
+        query = entityManager.createQuery(queryStr);
+        query.setParameter("idStrutIn", idStruttura);
+        query.setParameter("cdRegistroKeyUnitaDocIn", tipoRegistro);
+        query.setParameter("aaKeyUnitaDocIn", aaKeyUnitaDoc);
+        query.setParameter("cdKeyUnitaDocIn", numero);
+        return query.getResultList();
     }
 
     /*
@@ -912,10 +1149,7 @@ public class LogSessioneSync {
 
         RispostaControlli rc = controlliSemantici.checkChiave(chiave, idStruttura,
                 ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE);
-        if (rc.getrLong() == -1) {
-            return true;
-        }
-        return false;
+        return rc.getrLong() == -1;
     }
 
     private boolean docNonVersatoNonPresente(CSChiave chiave, long idStruttura, String idDocumento) {
@@ -927,33 +1161,24 @@ public class LogSessioneSync {
         }
         long idUd = rc.getrLong();
         rc = controlliSemantici.checkDocumentoInUd(idUd, idDocumento, "DUMMY");
-        if (rc.isrBoolean() == true) {
-            return true;
-        }
-        return false;
+        return rc.isrBoolean();
     }
 
-    private boolean salvaUrnXmlSessioneVers(VrsXmlDatiSessioneVers xmlDatiSessioneVers, String tmpUrn,
-            TiUrnXmlSessioneVers tiUrn) {
+    private boolean salvaVrsUrnXmlSessioneVers(String tmpUrn, TiUrnXmlSessioneVers tiUrn,
+            Optional<VrsXmlDatiSessioneVers> xmlDatiSessioneVers,
+            Optional<VrsXmlDatiSessioneVersKo> xmlDatiSessioneVersKo, IRispostaVersWS rispostaWS, BigDecimal idStrut) {
         boolean tmpReturn = true;
-
-        VrsUrnXmlSessioneVers tmpVrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
-        tmpVrsUrnXmlSessioneVers.setDsUrn(tmpUrn);
-        tmpVrsUrnXmlSessioneVers.setTiUrn(tiUrn);
-        tmpVrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(xmlDatiSessioneVers);
-
+        VrsUrnXmlSessioneVersBuilder builder = VrsUrnXmlSessioneVersBuilder.builder().dsUrn(tmpUrn).tiUrn(tiUrn)
+                .idStrut(idStrut).vrsXmlDatiSessioneVers(xmlDatiSessioneVers)
+                .vrsXmlDatiSessioneVersKo(xmlDatiSessioneVersKo);
         try {
-            // persist
-            entityManager.persist(tmpVrsUrnXmlSessioneVers);
-            entityManager.flush();
+            entityManager.persist(isOkOrWarningResponse(rispostaWS) ? builder.buildVrsUrnXmlSessioneVers()
+                    : builder.buildVrsUrnXmlSessioneVersKo());
         } catch (RuntimeException re) {
-            // logga l'errore e blocca tutto
             log.error("Eccezione nella persistenza della sessione urn xml ", re);
             tmpReturn = false;
         }
-
-        xmlDatiSessioneVers.getVrsUrnXmlSessioneVers().add(tmpVrsUrnXmlSessioneVers);
-
+        // TODO#29834 serve? viene usato ? xmlDatiSessioneVers.getVrsUrnXmlSessioneVers().add(tmpVrsUrnXmlSessioneVers)
         return tmpReturn;
     }
 

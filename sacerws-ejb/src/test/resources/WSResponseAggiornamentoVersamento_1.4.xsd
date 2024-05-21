@@ -1,0 +1,315 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:element name="EsitoAggiornamento">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="VersioneEsitoAggiornamento" type="StringNVMax100Type" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="VersioneIndiceSIPAggiornamento" type="StringNVMax100Type" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="URNSIP" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="DataEsitoAggiornamento" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+                <xs:choice>
+                    <xs:element name="RapportoVersamento" type="RapportoVersamentoType" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="EsitoNegativoAggiornamento" type="EsitoNegativoAggiornamentoType" minOccurs="1" maxOccurs="1"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="RapportoVersamentoType">
+        <xs:sequence>
+			<xs:element name="VersioneRapportoVersamento" type="StringNVMax100Type" minOccurs="1" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il tag ha stesso valore del tag VersioneEsitoAggiornamento
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IdentificativoRapportoVersamento" type="xs:string" minOccurs="1" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il tag contiene urn:RapportoVersamento:ambiente:ente:struttura:registro-anno-numero:progressivo aggiornamento
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="DataRapportoVersamento" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="SIP" type="SIPType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="EsitoGenerale" type="EsitoGeneralePositivoType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="ControlliGenerali" type="ControlliType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ParametriAggiornamento" type="ParametriAggiornamentoType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="UnitaDocumentaria" type="UnitaDocumentariaType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+	  
+	 <!--  -->
+    <xs:complexType name="EsitoNegativoAggiornamentoType">
+        <xs:sequence>
+            <xs:element name="EsitoGenerale" type="EsitoGeneraleNegativoType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ControlliFallitiUlteriori" type="ControlliFallitiUlterioriType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ControlliGenerali" type="ControlliType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="ParametriAggiornamento" type="ParametriAggiornamentoType" minOccurs="0" maxOccurs="1"/>        
+			<xs:element name="UnitaDocumentaria" type="UnitaDocumentariaType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="IndiceSIP" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="SIPType">
+        <xs:sequence>
+                        <xs:element name="URNSIP" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="URNIndiceSIP" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>contiene urn:IndiceSIP:ambiente:ente:struttura:registro-anno-numero:progressivo aggiornamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="DataVersamento" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+  
+  <!--  -->
+    <xs:complexType name="EsitoGeneralePositivoType">
+        <xs:sequence>
+            <xs:element name="CodiceEsito" type="CodiceEsitoType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Warnings" type="WarningsType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="WarningsType">
+        <xs:sequence>
+            <xs:element name="Warning" type="WarningType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="WarningType">
+        <xs:sequence>
+            <xs:element name="TipoControllo" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Errore" type="ErroreType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ErroreType">
+        <xs:sequence>
+			<xs:element name="Codice" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Messaggio" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	
+  <!--  -->
+    <xs:complexType name="EsitoGeneraleNegativoType">
+        <xs:sequence>
+            <xs:element name="CodiceEsito" type="CodiceEsitoType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ControlloFallito" type="ControlloFallitoType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ControlloFallitoType">
+        <xs:sequence>
+            <xs:element name="TipoControllo" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Errore" type="ErroreType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+  <!--  -->
+    <xs:complexType name="ControlliFallitiUlterioriType">
+        <xs:sequence>
+            <xs:element name="ControlloFallito" type="ControlloFallitoType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	
+  <!--  -->
+    <xs:complexType name="ControlliType">
+        <xs:sequence>
+            <xs:element name="Controllo" type="ControlloType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ControlloType">
+        <xs:sequence>
+            <xs:element name="TipoControllo" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Esito" type="CodiceEsitoType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Errore" type="ErroreType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+  <!--  -->
+    <xs:complexType name="ParametriAggiornamentoType">
+        <xs:sequence>
+            <xs:element name="AbilitaAggiornamento" type="xs:boolean" minOccurs="0" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il valore e' definito dal tipo ud o dalla struttura
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			 <xs:element name="TipoAggiornamento" type="xs:NMTOKEN" minOccurs="0" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il valore e' definito dal XML in input
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ForzaAggiornamento" type="xs:boolean" minOccurs="0" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il valore e' definito dal XML in input o dal tipo ud o dalla struttura
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccettaAggiornamentoInArchivio" type="xs:boolean" minOccurs="0" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il valore e' definito dal tipo ud o dalla struttura
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="ForzaCollegamento" type="xs:boolean" minOccurs="0" maxOccurs="1">
+		        <xs:annotation>
+					<xs:documentation>
+							il valore e' dalla unita doc in aggiornamento
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+  <!--  -->
+    <xs:complexType name="UnitaDocumentariaType">
+        <xs:sequence>
+            <xs:element name="Versatore" type="VersatoreType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Chiave" type="ChiaveType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="TipologiaUnitaDocumentaria" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="ProgressivoAggiornamento" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			
+			<xs:element name="AggiornamentiEffettuati" type="AggiornamentiEffettuatiType" minOccurs="0" maxOccurs="1"/>
+			
+            <xs:element name="ControlliUnitaDocumentaria" type="ControlliType" minOccurs="1"  maxOccurs="1"/>
+			<xs:element name="DocumentiCollegati" type="DocumentoCollegatoType" minOccurs="0"  maxOccurs="1"/>
+
+			<xs:element name="DocumentoPrincipale" type="DocumentoType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Allegati" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Allegato" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Annessi" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Annesso" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Annotazioni" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Annotazione" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="VersatoreType">
+        <xs:sequence>
+            <xs:element name="Ambiente" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Ente" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Struttura" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="UserID" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+	
+  <!--  -->
+    <xs:complexType name="ChiaveType">
+        <xs:sequence>
+            <xs:element name="Registro" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Anno" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Numero" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+  <!--  -->
+    <xs:complexType name="AggiornamentiEffettuatiType">
+        <xs:sequence>
+            <xs:element name="Aggiornamento" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+	
+  <!--  -->
+	<xs:complexType name="DocumentoCollegatoType">
+		<xs:sequence>
+			<xs:element name="DocumentoCollegato"  minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ChiaveCollegamento" type="ChiaveType" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="ControlliCollegamento" type="ControlliType" minOccurs="1" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+  <!--  -->
+	<xs:complexType name="DocumentoType">
+		<xs:sequence>
+			<xs:element name="IDDocumento" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="TipoDocumento" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            
+			<xs:element name="AggiornamentiEffettuati" type="AggiornamentiEffettuatiType" minOccurs="0" maxOccurs="1"/>
+			
+			<xs:element name="ControlliDocumento" type="ControlliType" minOccurs="1"  maxOccurs="1"/>
+			<xs:element name="StrutturaOriginale" type="StrutturaType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+  <!--  -->
+	<xs:complexType name="StrutturaType">
+		<xs:sequence>
+			<xs:element name="TipoStruttura" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Componenti" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Componente" type="ComponenteType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+  <!--  -->
+	<xs:complexType name="ComponenteType">
+		<xs:sequence>
+			<xs:element name="OrdinePresentazione" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="TipoComponente" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			
+			<xs:element name="AggiornamentiEffettuati" type="AggiornamentiEffettuatiType" minOccurs="0" maxOccurs="1"/>
+			
+			<xs:element name="ControlliComponente" type="ControlliType" minOccurs="1"  maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+  <!--  -->
+    <xs:simpleType name="CodiceEsitoType">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="POSITIVO"/>
+            <xs:enumeration value="NEGATIVO"/>
+            <xs:enumeration value="WARNING"/>
+			<xs:enumeration value="NON_ATTIVATO"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+  
+ <!-- ************************************************************************** -->
+ <!-- TIPI DATO GENERICI -->
+  <!--  -->
+    <xs:simpleType name="StringNVMax100Type">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,28 +1,47 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.versamentoUpd.dto;
 
-import it.eng.parer.entity.constraint.AroUpdUnitaDoc.AroUpdUDTiStatoUpdElencoVers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import it.eng.parer.entity.constraint.AroUpdUnitaDoc.AroUpdUDTiStatoUpdElencoVers;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.CostantiDB.TipoSalvataggioFile;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.IDatiSpecEntity;
+import it.eng.parer.ws.versamento.dto.IProfiloEntity;
 
 /**
  *
  * @author sinatti_s
  */
-public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
+public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, IProfiloEntity {
 
     /**
      * 
@@ -37,7 +56,7 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
     private String descTipologiaUnitaDocumentariaNonVerificata;
     private String descTipoDocPrincipaleNonVerificato;
     private String descTipologiaUnitaDocumentaria;
-    private String descTipologiaUnitaDocumentariaUnknown;;
+    private String descTipologiaUnitaDocumentariaUnknown;
     private String urnPartChiaveUd;
     private String urnPartVersatore;
     private String cdKeyNormalized;
@@ -64,20 +83,21 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
     private long idTipologiaUnitaDocumentaria;
     private long idTipoDocPrincipale;
     private long idRecXsdDatiSpec;
+    private Long idRecUsoXsdProfiloNormativo;
+    private String datiC14NProfNormXml;
     private long idRecXsdDatiSpecMigrazione;
     private long idRecAggiornamentoDB;
 
-    private HashMap<String, DatoSpecifico> datiSpecifici;
-    private HashMap<String, DatoSpecifico> datiSpecificiMigrazione;
-    private HashMap<String, UpdComponenteVers> componentiAttesi;
-    private HashMap<String, UpdComponenteVers> sottoComponentiAttesi;
+    private Map<String, DatoSpecifico> datiSpecifici;
+    private Map<String, DatoSpecifico> datiSpecificiMigrazione;
+    private Map<String, UpdComponenteVers> componentiAttesi = new HashMap<>(0);
+    private Map<String, UpdComponenteVers> sottoComponentiAttesi;
     //
     private List<UpdDocumentoVers> documentiAttesi;
     private List<UpdUnitaDocColl> unitaDocCollegate;
 
     private boolean versatoreVerificato = false;
     //
-    // private boolean trovatiIdCompDuplicati;
     private boolean trovatiIdDocDuplicati;
 
     // Nota : solo in presenza di documento e quindi del tag mi aspetto di
@@ -113,12 +133,12 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         return this.datiSpecifici;
     }
 
     @Override
-    public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
+    public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
         this.datiSpecifici = datiSpecifici;
     }
 
@@ -141,12 +161,12 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         return this.datiSpecificiMigrazione;
     }
 
     @Override
-    public void setDatiSpecificiMigrazione(HashMap<String, DatoSpecifico> datiSpecificiMigrazione) {
+    public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
         this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 
@@ -240,7 +260,7 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
 
     public List<UpdUnitaDocColl> getUnitaDocCollegate() {
         if (unitaDocCollegate == null) {
-            unitaDocCollegate = new ArrayList<UpdUnitaDocColl>(0);
+            unitaDocCollegate = new ArrayList<>(0);
         }
         return unitaDocCollegate;
     }
@@ -251,7 +271,7 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
 
     public List<UpdDocumentoVers> getDocumentiAttesi() {
         if (documentiAttesi == null) {
-            documentiAttesi = new ArrayList<UpdDocumentoVers>(0);
+            documentiAttesi = new ArrayList<>(0);
         }
         return documentiAttesi;
     }
@@ -260,33 +280,28 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
         this.documentiAttesi = documentiAttesi;
     }
 
-    public HashMap<String, UpdComponenteVers> getComponentiAttesi() {
+    public Map<String, UpdComponenteVers> getComponentiAttesi() {
         if (componentiAttesi == null) {
-            componentiAttesi = new HashMap<String, UpdComponenteVers>(0);
+            componentiAttesi = new HashMap<>(0);
         }
         return componentiAttesi;
     }
 
-    public void setComponentiAttesi(HashMap<String, UpdComponenteVers> sottoComponentiAttesi) {
+    public void setComponentiAttesi(Map<String, UpdComponenteVers> sottoComponentiAttesi) {
         this.componentiAttesi = sottoComponentiAttesi;
     }
 
-    public HashMap<String, UpdComponenteVers> getSottoComponentiAttesi() {
+    public Map<String, UpdComponenteVers> getSottoComponentiAttesi() {
         if (sottoComponentiAttesi == null) {
-            sottoComponentiAttesi = new HashMap<String, UpdComponenteVers>(0);
+            sottoComponentiAttesi = new HashMap<>(0);
         }
         return componentiAttesi;
     }
 
-    public void setSottoComponentiAttesi(HashMap<String, UpdComponenteVers> sottoComponentiAttesi) {
+    public void setSottoComponentiAttesi(Map<String, UpdComponenteVers> sottoComponentiAttesi) {
         this.sottoComponentiAttesi = sottoComponentiAttesi;
     }
 
-    /*
-     * public boolean isTrovatiIdCompDuplicati() { return trovatiIdCompDuplicati; } public void
-     * setTrovatiIdCompDuplicati(boolean trovatiIdCompDuplicati) { this.trovatiIdCompDuplicati = trovatiIdCompDuplicati;
-     * }
-     */
     public boolean isTrovatiIdDocDuplicati() {
         return trovatiIdDocDuplicati;
     }
@@ -533,5 +548,25 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity {
 
     public void setDtInizioCalcoloNewUrn(Date dtInizioCalcoloNewUrn) {
         this.dtInizioCalcoloNewUrn = dtInizioCalcoloNewUrn;
+    }
+
+    @Override
+    public String getDatiC14NProfNormXml() {
+        return datiC14NProfNormXml;
+    }
+
+    @Override
+    public void setDatiC14NProfNormXml(String datiC14NProfNormXml) {
+        this.datiC14NProfNormXml = datiC14NProfNormXml;
+    }
+
+    @Override
+    public Long getIdRecUsoXsdProfiloNormativo() {
+        return idRecUsoXsdProfiloNormativo;
+    }
+
+    @Override
+    public void setIdRecUsoXsdProfiloNormativo(Long idRecUsoXsdProfiloNormativo) {
+        this.idRecUsoXsdProfiloNormativo = idRecUsoXsdProfiloNormativo;
     }
 }

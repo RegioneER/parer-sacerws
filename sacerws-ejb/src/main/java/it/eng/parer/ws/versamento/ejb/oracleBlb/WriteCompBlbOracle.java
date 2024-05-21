@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  Attenzione
  Il codice di questo modulo software è legato:
  * al DBMS Oracle
@@ -16,27 +33,30 @@
  */
 package it.eng.parer.ws.versamento.ejb.oracleBlb;
 
+import it.eng.parer.exception.ConnectionException;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.FileBinario;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.ZonedDateTime;
+import it.eng.spagoCore.util.JpaUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.ZonedDateTime;
 
 /**
  *
@@ -62,13 +82,13 @@ public class WriteCompBlbOracle {
             + "VALUES (?, ?, ?, ?, ?, ?)";
     //
     private static final String QRY_SVRS_CONTENUTO_FILE = "SELECT SVRS_CONTENUTO_FILE.NEXTVAL FROM DUAL";
-    private static final String QRY_VRS_CONTENUTO_FILE = "INSERT INTO VRS_CONTENUTO_FILE "
-            + "(ID_CONTENUTO_FILE, ID_FILE_SESSIONE, BL_CONTENUTO_FILE_SESSIONE, ID_STRUT, MM_VERS) "
-            + "VALUES (?, ?, ?, ?, ?)";
+    private static final String QRY_VRS_CONTENUTO_FILE = "INSERT INTO VRS_CONTENUTO_FILE_KO "
+            + "(ID_CONTENUTO_FILE_KO, ID_FILE_SESSIONE_KO, BL_CONTENUTO_FILE_SESSIONE, ID_STRUT, MM_VERS, AA_VERS) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
     //
-    private final static String QRY_FIR_CONTENUTO_REPORT = "UPDATE FIR_REPORT " + "SET BL_CONTENUTO_REPORT = ? "
+    private static final String QRY_FIR_CONTENUTO_REPORT = "UPDATE FIR_REPORT " + "SET BL_CONTENUTO_REPORT = ? "
             + "WHERE ID_FIR_REPORT = ?";
-    private final static int BUFFERSIZE = 10 * 1024 * 1024;
+    private static final int BUFFERSIZE = 10 * 1024 * 1024;
 
     public RispostaControlli salvaStreamSuBlobComp(WriteCompBlbOracle.DatiAccessori datiAccessori, FileBinario fb) {
         RispostaControlli rispostaControlli;
@@ -77,10 +97,7 @@ public class WriteCompBlbOracle {
         //
         ISequenceGen sequenceGen = new NonMonotonicSequenceGen();
         //
-        InputStream inputStream = null;
-        BufferedInputStream bufFis = null;
-        ResultSet rs = null;
-        PreparedStatement pstmt = null;
+
         String queryStrSeq = null;
         String queryStrInsrt = null;
         long sequenceVal = 0;
@@ -94,33 +111,33 @@ public class WriteCompBlbOracle {
             queryStrSeq = QRY_SARO_FILE_COMP;
             queryStrInsrt = QRY_ARO_FILE_COMP;
             break;
-        case VRS_CONTENUTO_FILE:
+        case VRS_CONTENUTO_FILE_KO:
             queryStrSeq = QRY_SVRS_CONTENUTO_FILE;
             queryStrInsrt = QRY_VRS_CONTENUTO_FILE;
             break;
         }
 
+        java.sql.Connection connection;
         try {
-            java.sql.Connection connection = entityManager.unwrap(java.sql.Connection.class);
-            //
-            try { // ottengo il nuovo valore per la sequence
-                log.debug(queryStrSeq);
-                pstmt = (PreparedStatement) connection.prepareStatement(queryStrSeq);
-                rs = (ResultSet) pstmt.executeQuery();
+            connection = JpaUtils.provideConnectionFrom(entityManager);
+        } catch (SQLException e) {
+            throw new ConnectionException("Impossibile ottenere una connessione", e);
+        }
+        try {
+            log.debug(queryStrSeq);
+            try (PreparedStatement pstmt = connection.prepareStatement(queryStrSeq);
+                    ResultSet rs = pstmt.executeQuery()) { // ottengo il nuovo valore per la sequence
                 while (rs.next()) {
                     sequenceVal = rs.getLong(1);
                 }
-            } finally {
-                rs.close();
-                pstmt.close();
             }
             //
-            try { // scrivo il blob ed i dati accessori sulla tabella
-                inputStream = new FileInputStream(fb.getFileSuDisco());
-                bufFis = new BufferedInputStream(inputStream, BUFFERSIZE);
+            try (PreparedStatement pstmt = connection.prepareStatement(queryStrInsrt);
+                    InputStream inputStream = new FileInputStream(fb.getFileSuDisco());
+                    BufferedInputStream bufFis = new BufferedInputStream(inputStream, BUFFERSIZE)) {
+                // scrivo il blob e i dati accessori sulla tabella
                 log.debug("Aperto il BufferedInputStream.");
                 log.debug("Query: {}", queryStrInsrt);
-                pstmt = (PreparedStatement) connection.prepareStatement(queryStrInsrt);
                 pstmt.setLong(1, sequenceGen.newSequenceNum(sequenceVal));
                 pstmt.setLong(2, datiAccessori.getIdPadre());
                 log.debug("Prima di setBlob");
@@ -132,17 +149,18 @@ public class WriteCompBlbOracle {
                     pstmt.setNull(4, java.sql.Types.INTEGER);
                 }
                 pstmt.setLong(5, datiAccessori.calcolaProgAnnoMeseVers());
-                if (datiAccessori.getTabellaBlob() == WriteCompBlbOracle.TabellaBlob.ARO_CONTENUTO_COMP
-                        || datiAccessori.getTabellaBlob() == WriteCompBlbOracle.TabellaBlob.ARO_FILE_COMP) {
+                switch (datiAccessori.getTabellaBlob()) {
+                case ARO_CONTENUTO_COMP:
+                case ARO_FILE_COMP:
                     pstmt.setLong(6, datiAccessori.getAaKeyUnitaDoc());
+                    break;
+                case VRS_CONTENUTO_FILE_KO:
+                    pstmt.setInt(6, datiAccessori.calcolaAnnoVers());
+                    break;
                 }
                 log.debug("Prima di executeUpdate");
                 int count = pstmt.executeUpdate();
                 log.debug("Record scritti/aggiornati: {}", count);
-            } finally {
-                IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(bufFis);
-                pstmt.close();
             }
             //
             rispostaControlli.setrBoolean(true);
@@ -151,43 +169,56 @@ public class WriteCompBlbOracle {
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "Eccezione WriteCompBlbOracle.salvaStreamSuBlobComp " + ex.getMessage()));
             log.error("Eccezione WriteCompBlbOracle.salvaStreamSuBlobComp ", ex);
+        } finally {
+            closeConnection(connection);
         }
 
         return rispostaControlli;
     }
 
-    public RispostaControlli aggiornaStreamSuBlobComp(WriteCompBlbOracle.DatiAccessori datiAccessori, FileBinario fb) {
+    private void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                log.error("Impossibile chiudere la connessione: ", ex);
+            }
+        }
+    }
+
+    public RispostaControlli aggiornaStreamSuBlobComp(FileBinario fb, long idPadre) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
-        //
-        String queryStrUpd = null;
-        //
-        switch (datiAccessori.getTabellaBlob()) {
-        case FIR_REPORT:
-            queryStrUpd = QRY_FIR_CONTENUTO_REPORT;
-            break;
-        }
+        String queryStrUpd = QRY_FIR_CONTENUTO_REPORT;
         // get connection
-        java.sql.Connection connection = entityManager.unwrap(java.sql.Connection.class);
-
-        try (BufferedInputStream bufFis = new BufferedInputStream(new FileInputStream(fb.getFileSuDisco()), BUFFERSIZE);
-                PreparedStatement pstmt = connection.prepareStatement(queryStrUpd);) {
-            //
-            log.debug("Aperto il BufferedInputStream.");
-            log.debug("Query: {}", queryStrUpd);
-            pstmt.setBlob(1, bufFis, fb.getFileSuDisco().length());
-            pstmt.setLong(2, datiAccessori.getIdPadre());
-            log.debug("Prima di executeUpdate");
-            int count = pstmt.executeUpdate();
-            log.debug("Record scritti/aggiornati: {}", count);
-            //
-            rispostaControlli.setrBoolean(true);
-        } catch (IOException | SQLException ex) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "Eccezione WriteCompBlbOracle.aggiornaStreamSuBlobComp " + ex.getMessage()));
-            log.error("Eccezione WriteCompBlbOracle.aggiornaStreamSuBlobComp ", ex);
+        java.sql.Connection connection = null;
+        try {
+            connection = JpaUtils.provideConnectionFrom(entityManager);
+        } catch (SQLException e) {
+            throw new ConnectionException("Impossibile recuperare la connessione", e);
+        }
+        if (connection != null) {
+            try (BufferedInputStream bufFis = new BufferedInputStream(new FileInputStream(fb.getFileSuDisco()),
+                    BUFFERSIZE); PreparedStatement pstmt = connection.prepareStatement(queryStrUpd)) {
+                //
+                log.debug("Aperto il BufferedInputStream.");
+                log.debug("Query: {}", queryStrUpd);
+                pstmt.setBlob(1, bufFis, fb.getFileSuDisco().length());
+                pstmt.setLong(2, idPadre);
+                log.debug("Prima di executeUpdate");
+                int count = pstmt.executeUpdate();
+                log.debug("Record scritti/aggiornati: {}", count);
+                //
+                rispostaControlli.setrBoolean(true);
+            } catch (IOException | SQLException ex) {
+                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                        "Eccezione WriteCompBlbOracle.aggiornaStreamSuBlobComp " + ex.getMessage()));
+                log.error("Eccezione WriteCompBlbOracle.aggiornaStreamSuBlobComp ", ex);
+            } finally {
+                closeConnection(connection);
+            }
         }
 
         return rispostaControlli;
@@ -195,7 +226,7 @@ public class WriteCompBlbOracle {
 
     public enum TabellaBlob {
 
-        ARO_CONTENUTO_COMP, ARO_FILE_COMP, VRS_CONTENUTO_FILE, FIR_REPORT
+        ARO_CONTENUTO_COMP, ARO_FILE_COMP, VRS_CONTENUTO_FILE_KO
     }
 
     public class DatiAccessori {
@@ -248,6 +279,10 @@ public class WriteCompBlbOracle {
 
         public long calcolaProgAnnoMeseVers() {
             return MessaggiWSFormat.formattaKeyPartAnnoMeseVers(dtVersamento);
+        }
+
+        public int calcolaAnnoVers() {
+            return MessaggiWSFormat.formattaKeyPartAnnoVers(dtVersamento);
         }
 
     }

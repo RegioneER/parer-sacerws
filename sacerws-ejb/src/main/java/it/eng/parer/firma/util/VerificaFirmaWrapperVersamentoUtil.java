@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -11,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.firma.dto.StatoComponente;
-import it.eng.parer.firma.util.VerificaFirmaEnums.EsitoControllo;
+import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.firma.xml.VFContrFirmaCompType;
 import it.eng.parer.firma.xml.VFContrMarcaCompType;
 import it.eng.parer.firma.xml.VFFirmaCompType;
@@ -121,7 +138,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
             tmpMarcaResp.getEsitoMarca().setDettaglioControlloConformita(marcaCompType.getDsMsgEsitoContrConforme());
             scriviDettagliContrMarca = true;
         }
-        if (esitoContrConf.equals(EsitoControllo.POSITIVO.name())) {
+        if (esitoContrConf.equals(SacerIndication.POSITIVO.name())) {
             tmpMarcaResp.getEsitoMarca().setControlloConformita(ECEsitoControlloType.POSITIVO);
 
             // Se l'esito è positivo imposto il tag di VerificaMarca
@@ -141,7 +158,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
                         tmpMarcaResp.getEsitoMarca().getVerificaMarca()
                                 .setDettaglioControlloCrittografico(messaggioEsitoCMarca);
                     }
-                    if (!tmpTiEsitoControlloMarca.equals(EsitoControllo.POSITIVO.name())) {
+                    if (!tmpTiEsitoControlloMarca.equals(SacerIndication.POSITIVO.name())) {
                         statoComponente.ctrlMarcheCrittNegativo = true;
                         // memorizzo l'anomalia relativa alla marca del componente. alla fine del ciclo
                         // firme-marche aggiungerò un warning
@@ -153,7 +170,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
                         tmpMarcaResp.getEsitoMarca().getVerificaMarca()
                                 .setDettaglioControlloCatenaTrusted(messaggioEsitoCMarca);
                     }
-                    if (!tmpTiEsitoControlloMarca.equals(EsitoControllo.POSITIVO.name())) {
+                    if (!tmpTiEsitoControlloMarca.equals(SacerIndication.POSITIVO.name())) {
                         statoComponente.ctrlMarcheCatenaNegativo = true;
                         // memorizzo l'anomalia relativa alla marca del componente. alla fine del ciclo
                         // firme-marche aggiungerò un warning
@@ -165,7 +182,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
                         tmpMarcaResp.getEsitoMarca().getVerificaMarca()
                                 .setDettaglioControlloCertificato(messaggioEsitoCMarca);
                     }
-                    if (!tmpTiEsitoControlloMarca.equals(EsitoControllo.POSITIVO.name())) {
+                    if (!tmpTiEsitoControlloMarca.equals(SacerIndication.POSITIVO.name())) {
                         statoComponente.ctrlMarcheCertificatoNegativo = true;
                         // memorizzo l'anomalia relativa alla marca del componente. alla fine del ciclo
                         // firme-marche aggiungerò un warning
@@ -176,8 +193,8 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     if (scriviDettagliContrMarca) {
                         tmpMarcaResp.getEsitoMarca().getVerificaMarca().setDettaglioControlloCRL(messaggioEsitoCMarca);
                     }
-                    if (!tmpTiEsitoControlloMarca.equals(EsitoControllo.POSITIVO.name())
-                            && !tmpTiEsitoControlloMarca.equals(EsitoControllo.NON_NECESSARIO.name())) {
+                    if (!tmpTiEsitoControlloMarca.equals(SacerIndication.POSITIVO.name())
+                            && !tmpTiEsitoControlloMarca.equals(SacerIndication.NON_NECESSARIO.name())) {
                         statoComponente.ctrlMarcheCrlNegativo = true;
                         // memorizzo l'anomalia relativa alla marca del componente. alla fine del ciclo
                         // firme-marche aggiungerò un warning
@@ -190,8 +207,8 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     if (scriviDettagliContrMarca) {
                         tmpMarcaResp.getEsitoMarca().getVerificaMarca().setDettaglioControlloOCSP(messaggioEsitoCMarca);
                     }
-                    if (!tmpTiEsitoControlloMarca.equals(EsitoControllo.OCSP_VALIDO.name())
-                            && !tmpTiEsitoControlloMarca.equals(EsitoControllo.NON_NECESSARIO.name())) {
+                    if (!tmpTiEsitoControlloMarca.equals(SacerIndication.OCSP_VALIDO.name())
+                            && !tmpTiEsitoControlloMarca.equals(SacerIndication.NON_NECESSARIO.name())) {
                         statoComponente.ctrlMarcheOcspNegativo = true;
                         // memorizzo l'anomalia relativa alla marca del componente. alla fine del ciclo
                         // firme-marche aggiungerò un warning
@@ -200,7 +217,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
             }
 
             // Quindi valorizzo VerificaMarca.CodiceEsito
-            if (marcaCompType.getTiEsitoVerifMarca().equals(EsitoControllo.POSITIVO.name())) {
+            if (marcaCompType.getTiEsitoVerifMarca().equals(SacerIndication.POSITIVO.name())) {
                 tmpMarcaResp.getEsitoMarca().getVerificaMarca().setCodiceEsito(ECEsitoPosNegWarType.POSITIVO);
             } else {
                 tmpMarcaResp.getEsitoMarca().getVerificaMarca().setCodiceEsito(ECEsitoPosNegWarType.WARNING);
@@ -254,20 +271,20 @@ public class VerificaFirmaWrapperVersamentoUtil {
         // ControlloConformità
         String esitoContrConf = firmaCompType.getTiEsitoContrConforme();
 
-        if (esitoContrConf.equals(EsitoControllo.FORMATO_NON_CONOSCIUTO.name())) {
+        if (esitoContrConf.equals(SacerIndication.FORMATO_NON_CONOSCIUTO.name())) {
             tmpFirmatarioResp.getEsitoFirma().setControlloConformita(ECEsitoControlloType.FORMATO_NON_CONOSCIUTO);
             firmaVerificabile = false; // nota bene: SOLO in questo caso, viene considerato come NON FIRMATO
             statoComponente.ctrlConfFirmeHasFormatoNonConosciuto = true;
             // memorizzo l'anomalia relativa alla firma del componente.
             // alla fine del ciclo firme-marche aggiungerò un warning o un errore in
             // funzione di forzature varie
-        } else if (esitoContrConf.equals(EsitoControllo.FORMATO_NON_CONFORME.name())) {
+        } else if (esitoContrConf.equals(SacerIndication.FORMATO_NON_CONFORME.name())) {
             tmpFirmatarioResp.getEsitoFirma().setControlloConformita(ECEsitoControlloType.FORMATO_NON_CONFORME);
             statoComponente.ctrlConfFirmeHasFormatoNonConforme = true;
             // memorizzo l'anomalia relativa alla firma del componente.
             // alla fine del ciclo firme-marche aggiungerò un warning o un errore in
             // funzione di forzature varie
-        } else if (esitoContrConf.equals(EsitoControllo.NON_AMMESSO_DELIB_45_CNIPA.name())) {
+        } else if (esitoContrConf.equals(SacerIndication.NON_AMMESSO_DELIB_45_CNIPA.name())) {
             tmpFirmatarioResp.getEsitoFirma().setControlloConformita(ECEsitoControlloType.NON_AMMESSO_DELIB_45_CNIPA);
             statoComponente.ctrlConfFirmeHasNonAmmessoDelib45 = true;
             // memorizzo l'anomalia relativa alla firma del componente.
@@ -303,7 +320,7 @@ public class VerificaFirmaWrapperVersamentoUtil {
                 esitoControlloFirma = contrFirmaCompType.getTiEsitoContrFirma();
                 messaggioEsitoCFirma = contrFirmaCompType.getDsMsgEsitoContrFirma();
 
-                final boolean esitoControlloPositivo = esitoControlloFirma.equals(EsitoControllo.POSITIVO.name());
+                final boolean esitoControlloPositivo = esitoControlloFirma.equals(SacerIndication.POSITIVO.name());
 
                 if (contrFirmaCompType.getTiContr().name().equals(VFTipoControlloType.CRITTOGRAFICO.name())) {
                     // imposto il valore e l'eventuale messaggio di dettaglio nell'esito
@@ -316,16 +333,16 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     // valuto gli esiti negativi o warning
                     if (!esitoControlloPositivo) {
                         // verifico lo stato:
-                        if (esitoControlloFirma.equals(EsitoControllo.NON_ESEGUITO.name())) {
+                        if (esitoControlloFirma.equals(SacerIndication.NON_ESEGUITO.name())) {
                             // se non eseguito la firma è in warn e aggiungo il warn alla lista
                             statoComponente.ctrlFirmeCrittWarning = true;
                             firmaWarn = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.ERRORE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.ERRORE.name())) {
                             // se è andato in errore, la firma è in err, il componente è in err e aggiungo
                             // l'errore alla lista
                             statoComponente.ctrlFirmeCrittErrore = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.NEGATIVO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.NEGATIVO.name())) {
                             statoComponente.ctrlFirmeCrittNegativo = true;
                             firmaErr = true;
                         } else {
@@ -343,16 +360,16 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     // valuto gli esiti negativi o warning
                     if (!esitoControlloPositivo) {
                         // verifico lo stato:
-                        if (esitoControlloFirma.equals(EsitoControllo.NON_ESEGUITO.name())) {
+                        if (esitoControlloFirma.equals(SacerIndication.NON_ESEGUITO.name())) {
                             // se non eseguito la firma è in warn e aggiungo il warn alla lista
                             statoComponente.ctrlFirmeCatenaWarning = true;
                             firmaWarn = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.ERRORE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.ERRORE.name())) {
                             // se è andato in errore, la firma è in err, il componente è in err e aggiungo
                             // l'errore alla lista
                             statoComponente.ctrlFirmeCatenaErrore = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.NEGATIVO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.NEGATIVO.name())) {
                             statoComponente.ctrlFirmeCatenaNegativo = true;
                             firmaErr = true;
                         } else {
@@ -370,23 +387,24 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     // valuto gli esiti negativi o warning
                     if (!esitoControlloPositivo) {
                         // verifico lo stato:
-                        if (esitoControlloFirma.equals(EsitoControllo.NON_ESEGUITO.name())) {
+                        if (esitoControlloFirma.equals(SacerIndication.NON_ESEGUITO.name())) {
                             // se non eseguito la firma è in warn e aggiungo il warn alla lista
                             statoComponente.ctrlFirmeCertificatoWarning = true;
                             firmaWarn = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.ERRORE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.ERRORE.name())) {
                             // se è andato in errore, la firma è in err, il componente è in err e aggiungo
                             // l'errore alla lista
                             statoComponente.ctrlFirmeCertificatoErrore = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CERTIFICATO_SCADUTO.name())
-                                || esitoControlloFirma.equals(EsitoControllo.REVOCHE_NON_CONSISTENTI.name())) {
-                            statoComponente.ctrlFirmeCertificatoScad = true;
+                        } else if (esitoControlloFirma.equals(SacerIndication.CERTIFICATO_SCADUTO.name())
+                                || esitoControlloFirma.equals(SacerIndication.REVOCHE_NON_CONSISTENTI.name())
+                                || esitoControlloFirma.equals(SacerIndication.CERTIFICATO_REVOCATO.name())) {
+                            statoComponente.ctrlFirmeCertificatoScadRev = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CERTIFICATO_NON_VALIDO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CERTIFICATO_NON_VALIDO.name())) {
                             statoComponente.ctrlFirmeCertificatoNoValid = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CERTIFICATO_ERRATO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CERTIFICATO_ERRATO.name())) {
                             statoComponente.ctrlFirmeCertificatoErrato = true;
                             firmaErr = true;
                         } else {
@@ -404,23 +422,23 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     // valuto gli esiti negativi o warning
                     if (!esitoControlloPositivo) {
                         // verifico lo stato:
-                        if (esitoControlloFirma.equals(EsitoControllo.NON_ESEGUITO.name())
-                                || esitoControlloFirma.equals(EsitoControllo.CERTIFICATO_SCADUTO_3_12_2009.name())) {
+                        if (esitoControlloFirma.equals(SacerIndication.NON_ESEGUITO.name())
+                                || esitoControlloFirma.equals(SacerIndication.CERTIFICATO_SCADUTO_3_12_2009.name())) {
                             statoComponente.ctrlFirmeCRLWarning = true;
                             firmaWarn = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.ERRORE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.ERRORE.name())) {
                             statoComponente.ctrlFirmeCRLErrore = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CERTIFICATO_REVOCATO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CERTIFICATO_REVOCATO.name())) {
                             statoComponente.ctrlFirmeCRLCertRev = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CRL_SCADUTA.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CRL_SCADUTA.name())) {
                             statoComponente.ctrlFirmeCRLScad = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CRL_NON_VALIDA.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CRL_NON_VALIDA.name())) {
                             statoComponente.ctrlFirmeCRLNoValid = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.CRL_NON_SCARICABILE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.CRL_NON_SCARICABILE.name())) {
                             statoComponente.ctrlFirmeCRLNoScaric = true;
                             firmaErr = true;
                         } else {
@@ -440,17 +458,17 @@ public class VerificaFirmaWrapperVersamentoUtil {
                     // valuto gli esiti negativi o warning
                     if (!esitoControlloPositivo) {
                         // verifico lo stato:
-                        if (esitoControlloFirma.equals(EsitoControllo.NON_ESEGUITO.name())
-                                || esitoControlloFirma.equals(EsitoControllo.OCSP_NON_AGGIORNATO.name())) {
+                        if (esitoControlloFirma.equals(SacerIndication.NON_ESEGUITO.name())
+                                || esitoControlloFirma.equals(SacerIndication.OCSP_NON_AGGIORNATO.name())) {
                             statoComponente.ctrlFirmeOCSPWarning = true;
                             firmaWarn = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.OCSP_SCONOSCIUTO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.OCSP_SCONOSCIUTO.name())) {
                             statoComponente.ctrlFirmeOCSPNoValid = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.OCSP_REVOCATO.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.OCSP_REVOCATO.name())) {
                             statoComponente.ctrlFirmeOCSPRev = true;
                             firmaErr = true;
-                        } else if (esitoControlloFirma.equals(EsitoControllo.OCSP_NON_SCARICABILE.name())) {
+                        } else if (esitoControlloFirma.equals(SacerIndication.OCSP_NON_SCARICABILE.name())) {
                             statoComponente.ctrlFirmeOCSPNoScaric = true;
                             firmaErr = true;
                         } else {

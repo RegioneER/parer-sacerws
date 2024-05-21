@@ -1,10 +1,40 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
+
+import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.DateUtilsConverter.format;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.OrgPartition;
 import it.eng.parer.entity.OrgPartitionStrut;
-import static it.eng.parer.util.DateUtilsConverter.convert;
-import static it.eng.parer.util.DateUtilsConverter.format;
-import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -13,20 +43,12 @@ import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VersamentoExt;
-import java.util.List;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Fioravanti_F
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliPartizioni")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
@@ -37,8 +59,7 @@ public class ControlliPartizioni {
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
-    public RispostaControlli verificaPartizioniBlob(StrutturaVersamento strutV, CSVersatore versatore,
-            CSChiave chiave) {
+    public RispostaControlli verificaPartizioniBlob(StrutturaVersamento strutV, CSVersatore versatore) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
@@ -204,7 +225,7 @@ public class ControlliPartizioni {
                 queryStr = "select count(t) from OrgVValSubPartition t " + "where t.idPartition = :idPartitionIn "
                         + "and t.cdValSubPartition > :cdValSubPartitionIn";
                 query = entityManager.createQuery(queryStr);
-                query.setParameter("idPartitionIn", idPart);
+                query.setParameter("idPartitionIn", new BigDecimal(idPart));
                 query.setParameter("cdValSubPartitionIn", convert(sessione.getTmApertura()));
                 if ((Long) query.getSingleResult() == 0) {
                     /*

@@ -1,14 +1,30 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.dto;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 
 import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper;
 import it.eng.parer.ws.utils.CostantiDB;
-import it.eng.parer.ws.utils.CostantiDB.TipiEntitaSacer;
 import it.eng.parer.ws.utils.CostantiDB.TipoAlgoritmoRappr;
 import it.eng.parer.ws.versamentoMM.dto.ComponenteMM;
 
@@ -78,30 +94,30 @@ public class ComponenteVers implements java.io.Serializable, IDatiSpecEntity, IP
     // riferimento alle classi di xml di risposta utilizzate per salvare le
     // informazioni di dimensione file
     // NOTA BENE: solo uno tra componente e sottocomponente è valorizzato
-    private it.eng.parer.ws.xml.versResp.ECComponenteType rifComponenteResp;
-    private it.eng.parer.ws.xml.versResp.ECSottoComponenteType rifSottoComponenteResp;
+    private transient it.eng.parer.ws.xml.versResp.ECComponenteType rifComponenteResp;
+    private transient it.eng.parer.ws.xml.versResp.ECSottoComponenteType rifSottoComponenteResp;
 
     // riferimento all'entity del componente
     // private AroCompDoc acdEntity;
-    private CompDocMock acdEntity;
+    private transient CompDocMock acdEntity;
     // MEV#18660
-    private VerificaFirmaWrapper vfWrapper;
+    private transient VerificaFirmaWrapper vfWrapper;
 
     // dati specifici del componente o del sottocomnponente
-    private HashMap<String, DatoSpecifico> datiSpecifici;
-    private HashMap<String, DatoSpecifico> datiSpecificiMigrazione;
+    private Map<String, DatoSpecifico> datiSpecifici;
+    private Map<String, DatoSpecifico> datiSpecificiMigrazione;
 
     // riferimento al ComponenteMM: questo è non null solo se il versamento è di
     // tipo VersamentoMM
-    private ComponenteMM rifComponenteMM = null;
+    private transient ComponenteMM rifComponenteMM = null;
     // i componenti sono:
     // 1.SottoComponente = NULL
     // 2.rifComponenteVersPadre = NULL
     // i sottocomponenti sono:
     // 1.SottoComponente è valorizzato
     // 2.rifComponenteVersPadre è valorizzato
-    private it.eng.parer.ws.xml.versReq.ComponenteType myComponente;
-    private it.eng.parer.ws.xml.versReq.SottoComponenteType mySottoComponente;
+    private transient it.eng.parer.ws.xml.versReq.ComponenteType myComponente;
+    private transient it.eng.parer.ws.xml.versReq.SottoComponenteType mySottoComponente;
     //
     private DocumentoVers rifDocumentoVers;
     private ComponenteVers rifComponenteVersPadre;
@@ -115,6 +131,7 @@ public class ComponenteVers implements java.io.Serializable, IDatiSpecEntity, IP
     private String urnPartComponenteNiOrdDoc = "";
 
     public ComponenteVers() {
+        //
     }
 
     public String getId() {
@@ -396,22 +413,22 @@ public class ComponenteVers implements java.io.Serializable, IDatiSpecEntity, IP
         this.idUnitaDocRif = idUnitaDocRif;
     }
 
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         return datiSpecifici;
     }
 
     @Override
-    public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
+    public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
         this.datiSpecifici = datiSpecifici;
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         return datiSpecificiMigrazione;
     }
 
     @Override
-    public void setDatiSpecificiMigrazione(HashMap<String, DatoSpecifico> datiSpecificiMigrazione) {
+    public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
         this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 

@@ -1,12 +1,25 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.ejb;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -17,10 +30,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.eng.parer.entity.AplParamApplic;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
@@ -40,7 +53,7 @@ public class ControlliMM {
     private EntityManager entityManager;
 
     @EJB
-    ConfigurationHelper config;
+    private ConfigurationHelper configurationHelper;
 
     public enum TipiRootPath {
 
@@ -53,71 +66,34 @@ public class ControlliMM {
         rispostaControlli.setrLong(-1);
         rispostaControlli.setrBoolean(false);
 
-        Properties props = new Properties();
-        boolean useDb = false;
-        boolean prosegui = true;
-        String rootftp = null;
+        try {
+            String paramName = StringUtils.EMPTY;
 
-        try (InputStream tmpStream = this.getClass().getClassLoader().getResourceAsStream("/sacerEjb.properties")) {
-            props.load(tmpStream);
-            if (props.getProperty("rootFtp.overrideDbUrl").equals("true")) {
-                switch (tipoRootPath) {
-                case In:
-                    rootftp = props.getProperty("rootFtp.url." + ParametroApplDB.PATH_MM_IN_ + appVersante);
-                    break;
-                case Out:
-                    rootftp = props.getProperty("rootFtp.url." + ParametroApplDB.PATH_MM_OUT_ + appVersante);
-                    break;
-                default:
-                    break;
-                }
-                rispostaControlli.setrString(rootftp);
-                rispostaControlli.setrBoolean(true);
-            } else {
-                useDb = true;
+            switch (tipoRootPath) {
+            case In:
+                paramName = ParametroApplDB.PATH_MM_IN + appVersante;
+                break;
+            case Out:
+                paramName = ParametroApplDB.PATH_MM_OUT + appVersante;
+                break;
+            default:
+                break;
             }
-        } catch (IOException ex) {
-            prosegui = false;
+            rispostaControlli.setrString(configurationHelper.getValoreParamApplicByApplic(paramName));
+            rispostaControlli.setrBoolean(true);
+        } catch (NoResultException e) {
+            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+            rispostaControlli
+                    .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666, "ControlliMM.caricaRootPath - "
+                            + "Applicativo chiamante non correttamente configurato nella tabella AplParamApplic"));
+        } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliMM.caricaRootPath - properties: " + ex.getMessage()));
-            log.error("Eccezione nella lettura del file di properties ", ex);
-        }
-
-        if (prosegui && useDb) {
-            try {
-                // carico i parametri applicativi
-                String queryStr = "select tpa " + "from AplParamApplic tpa "
-                        + "where tpa.tiParamApplic = :tiParamApplicIn " + "and tpa.nmParamApplic = :nmParamAppliciN ";
-
-                javax.persistence.Query query = entityManager.createQuery(queryStr, AplParamApplic.class);
-                query.setParameter("tiParamApplicIn", ParametroApplDB.TipoParametroAppl.PATH);
-                switch (tipoRootPath) {
-                case In:
-                    query.setParameter("nmParamAppliciN", ParametroApplDB.PATH_MM_IN_ + appVersante);
-                    break;
-                case Out:
-                    query.setParameter("nmParamAppliciN", ParametroApplDB.PATH_MM_OUT_ + appVersante);
-                    break;
-                default:
-                    break;
-                }
-                AplParamApplic tud = (AplParamApplic) query.getSingleResult();
-                rispostaControlli.setrString(config.getParamApplicValue(tud.getNmParamApplic()));
-                rispostaControlli.setrBoolean(true);
-            } catch (NoResultException e) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-                rispostaControlli
-                        .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666, "ControlliMM.caricaRootPath - "
-                                + "Applicativo chiamante non correttamente configurato nella tabella AplParamApplic"));
-            } catch (Exception e) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                        "ControlliMM.caricaRootPath - AplParamApplic: " + e.getMessage()));
-                log.error("Eccezione nella lettura  della tabella AplParamApplic", e);
-            }
+                    "ControlliMM.caricaRootPath - AplParamApplic: " + e.getMessage()));
+            log.error("Eccezione nella lettura  della tabella AplParamApplic", e);
         }
 
         return rispostaControlli;
     }
+
 }

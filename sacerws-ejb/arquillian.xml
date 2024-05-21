@@ -1,0 +1,22 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+ 
+    <!-- Force the use of the Servlet 3.0 protocol with all containers, as it 
+    is the most mature -->
+    <defaultProtocol type="Servlet 3.0" >
+        <property name="host">127.0.0.1 </property>
+    </defaultProtocol>
+    <!-- Example configuration for a remote WildFly instance -->
+    <container qualifier="jboss" default="true">
+        <configuration>
+            <!-- By default, arquillian will use the JBOSS_HOME environment variable. -->
+            <property name="jbossHome">/home/mbertuzzi/projects/jbosseap</property>
+            <property name="javaHome">/usr/lib/jvm/java-1.8.0-openjdk-amd64</property>
+            <!--<property name="javaVmArguments">-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</property>-->
+            <property name="allowConnectingToRunningServer">true</property>
+        </configuration>
+    </container>
+ 
+</arquillian>

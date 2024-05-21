@@ -1,4 +1,24 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.dto;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 import it.eng.parer.ws.dto.IWSDesc;
 import it.eng.parer.ws.dto.RispostaControlli;
@@ -6,7 +26,6 @@ import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.Costanti.ModificatoriWS;
 import it.eng.parer.ws.utils.Costanti.VersioneWS;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
-import java.util.EnumSet;
 
 /**
  *
@@ -17,11 +36,11 @@ public class VersamentoExt extends AbsVersamentoExt {
     private static final long serialVersionUID = 5261426459498072293L;
     private String datiXml;
     private boolean simulaScrittura;
-    private UnitaDocumentaria versamento;
-    private IWSDesc descrizione;
+    private transient UnitaDocumentaria versamento;
+    private transient IWSDesc descrizione;
     //
     private VersioneWS versioneCalc = null;
-    private EnumSet<ModificatoriWS> modificatoriWS = EnumSet.noneOf(Costanti.ModificatoriWS.class);
+    private Set<ModificatoriWS> modificatoriWS = EnumSet.noneOf(Costanti.ModificatoriWS.class);
 
     @Override
     public void setDatiXml(String datiXml) {
@@ -123,7 +142,7 @@ public class VersamentoExt extends AbsVersamentoExt {
     }
 
     @Override
-    public EnumSet<ModificatoriWS> getModificatoriWSCalc() {
+    public Set<ModificatoriWS> getModificatoriWSCalc() {
         return this.modificatoriWS;
     }
 
@@ -132,11 +151,11 @@ public class VersamentoExt extends AbsVersamentoExt {
         return this.versioneCalc.getVersion();
     }
 
-    public EnumSet<ModificatoriWS> getModificatoriWS() {
+    public Set<ModificatoriWS> getModificatoriWS() {
         return modificatoriWS;
     }
 
-    public void setModificatoriWS(EnumSet<ModificatoriWS> modificatoriWS) {
+    public void setModificatoriWS(Set<ModificatoriWS> modificatoriWS) {
         this.modificatoriWS = modificatoriWS;
     }
 

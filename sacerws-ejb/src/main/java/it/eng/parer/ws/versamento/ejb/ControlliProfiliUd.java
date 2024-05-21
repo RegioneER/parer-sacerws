@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -8,7 +25,6 @@ package it.eng.parer.ws.versamento.ejb;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +62,7 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.XmlUtils;
 import it.eng.parer.ws.xml.versReq.ProfiloNormativoType;
 
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliProfiliUd")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
@@ -126,7 +143,7 @@ public class ControlliProfiliUd {
         return rispostaControlli;
     }
 
-    private List<Long> checkXsdProfileExistence(long idTiEntita, TipiEntitaSacer tiEntitaSacer,
+    public List<Long> checkXsdProfileExistence(long idTiEntita, TipiEntitaSacer tiEntitaSacer,
             TiModelloXsdUd tiModelloXsdUd) {
         //
         StringBuilder queryStr = new StringBuilder();
@@ -136,7 +153,7 @@ public class ControlliProfiliUd {
             queryStr.append("where uso.decTipoUnitaDoc.idTipoUnitaDoc = :idTiEntita ");
         } else if (tiEntitaSacer.equals(TipiEntitaSacer.DOC)) {
             queryStr.append("select uso.idUsoModelloXsdDoc " + "from DecUsoModelloXsdDoc uso ");
-            queryStr.append("where uso.decTipoUnitaDoc.idTipoUnitaDoc = :idTiEntita ");
+            queryStr.append("where uso.decTipoDoc.idTipoDoc = :idTiEntita ");
         } else if (tiEntitaSacer.equals(TipiEntitaSacer.COMP) || tiEntitaSacer.equals(TipiEntitaSacer.SUB_COMP)) {
             queryStr.append("select uso.idUsoModelloXsdCompDoc " + "from DecUsoModelloXsdCompDoc uso ");
             queryStr.append("where uso.decTipoCompDoc.idTipoCompDoc = :idTiEntita ");
@@ -149,7 +166,7 @@ public class ControlliProfiliUd {
                 + "and uso.dtSoppres > :dataDiOggiIn ");
 
         javax.persistence.Query query = entityManager.createQuery(queryStr.toString());
-        query.setParameter("idTiEntita", new BigDecimal(idTiEntita));
+        query.setParameter("idTiEntita", idTiEntita);
         query.setParameter("tiModelloXsdUd", tiModelloXsdUd);
         query.setParameter("tiUsoModelloXsd", TiUsoModelloXsd.VERS.name());
         query.setParameter("dataDiOggiIn", new Date());
@@ -159,7 +176,7 @@ public class ControlliProfiliUd {
     /*
      * Nota: restituisce modello+pk uso del modello
      */
-    private Object[] getXsdProfileByVersion(List<Long> idUsoModelloXsds, TipiEntitaSacer tiEntitaSacer,
+    public Object[] getXsdProfileByVersion(List<Long> idUsoModelloXsds, TipiEntitaSacer tiEntitaSacer,
             TiModelloXsdUd tiModelloXsdUd, String version) {
         Object[] result = null;
 
@@ -170,15 +187,15 @@ public class ControlliProfiliUd {
         if (tiEntitaSacer.equals(TipiEntitaSacer.UNI_DOC)) {
             queryStr.append(", uso.idUsoModelloXsdUniDoc "); // pk
             queryStr.append("from DecUsoModelloXsdUniDoc uso ");
-            queryStr.append("where uso.idUsoModelloXsdUniDoc in :idUsoModelloXsds ");
+            queryStr.append("where uso.idUsoModelloXsdUniDoc in (:idUsoModelloXsds) ");
         } else if (tiEntitaSacer.equals(TipiEntitaSacer.DOC)) {
             queryStr.append(", uso.idUsoModelloXsdDoc "); // pk
             queryStr.append("from DecUsoModelloXsdDoc uso ");
-            queryStr.append("where uso.idUsoModelloXsdDoc in :idUsoModelloXsds ");
+            queryStr.append("where uso.idUsoModelloXsdDoc in (:idUsoModelloXsds) ");
         } else if (tiEntitaSacer.equals(TipiEntitaSacer.COMP) || tiEntitaSacer.equals(TipiEntitaSacer.SUB_COMP)) {
             queryStr.append(", uso.idUsoModelloXsdCompDoc "); // pk
             queryStr.append("from DecUsoModelloXsdCompDoc uso ");
-            queryStr.append("where uso.idUsoModelloXsdCompDoc in :idUsoModelloXsds ");
+            queryStr.append("where uso.idUsoModelloXsdCompDoc in (:idUsoModelloXsds)");
         }
         //
         queryStr.append("and uso.decModelloXsdUd.tiModelloXsd = :tiModelloXsdUd "

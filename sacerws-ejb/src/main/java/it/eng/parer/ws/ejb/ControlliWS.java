@@ -1,12 +1,31 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.ejb;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -15,13 +34,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.IamUser;
-import it.eng.parer.grantedEntity.UsrUser;
+import it.eng.parer.granted_entity.UsrUser;
 import it.eng.parer.idpjaas.logutils.LogDto;
 import it.eng.parer.ws.dto.IWSDesc;
 import it.eng.parer.ws.dto.RispostaControlli;
@@ -37,23 +57,25 @@ import it.eng.spagoLite.security.exception.AuthWSException;
  *
  * @author Fioravanti_F
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliWS")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
 public class ControlliWS {
 
+    private static final String ERRORE_AUTENTICAZIONE = "Eccezione nella fase di autenticazione del EJB ";
     @EJB
-    WsIdpLogger idpLogger;
+    private WsIdpLogger idpLogger;
 
     @EJB
-    ControlliSemantici controlliSemantici;
+    private ControlliSemantici controlliSemantici;
 
     private static final Logger log = LoggerFactory.getLogger(ControlliWS.class);
     //
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
-    public RispostaControlli checkVersione(String versione, String versioniWsKey, HashMap<String, String> xmlDefaults,
+    public RispostaControlli checkVersione(String versione, String versioniWsKey, Map<String, String> xmlDefaults,
             TipiWSPerControlli tipows) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
@@ -62,20 +84,14 @@ public class ControlliWS {
         if (versione == null || versione.isEmpty()) {
             switch (tipows) {
             case VERSAMENTO_RECUPERO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_010);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_010));
-                break;
             case ANNULLAMENTO:
+            case AGGIORNAMENTO_VERSAMENTO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_010);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_010));
                 break;
             case VERSAMENTO_FASCICOLO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_003_001);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_003_001));
-                break;
-            case AGGIORNAMENTO_VERSAMENTO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_010);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_010));
                 break;
             }
 
@@ -98,6 +114,7 @@ public class ControlliWS {
         if (!rispostaControlli.isrBoolean()) {
             switch (tipows) {
             case VERSAMENTO_RECUPERO:
+            case AGGIORNAMENTO_VERSAMENTO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_011);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_011, versione));
                 break;
@@ -109,10 +126,6 @@ public class ControlliWS {
             case VERSAMENTO_FASCICOLO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_003_002);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_003_002, versione));
-                break;
-            case AGGIORNAMENTO_VERSAMENTO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_011);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_011, versione));
                 break;
             }
         }
@@ -127,26 +140,19 @@ public class ControlliWS {
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
 
-        log.info("Indirizzo IP del chiamante - access: ws - IP: " + indirizzoIP);
-        // log.debug("Indirizzo IP del chiamante: " + indirizzoIP);
+        log.info("Indirizzo IP del chiamante - access: ws - IP: {}", indirizzoIP);
 
         if (loginName == null || loginName.isEmpty()) {
             switch (tipows) {
             case VERSAMENTO_RECUPERO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_004);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_004));
-                break;
             case ANNULLAMENTO:
+            case AGGIORNAMENTO_VERSAMENTO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_004);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_004));
                 break;
             case VERSAMENTO_FASCICOLO:
                 rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_002_007);
                 rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_002_007));
-                break;
-            case AGGIORNAMENTO_VERSAMENTO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_004);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_004));
                 break;
             }
             return rispostaControlli;
@@ -168,7 +174,7 @@ public class ControlliWS {
             UsrUser usrUser;
             String queryStr = "select iu, usr from IamUser iu, UsrUser usr "
                     + "where iu.nmUserid = :nmUseridIn and iu.idUserIam = usr.idUserIam";
-            javax.persistence.Query query = entityManager.createQuery(queryStr, IamUser.class);
+            javax.persistence.Query query = entityManager.createQuery(queryStr);
             query.setParameter("nmUseridIn", loginName);
             Object[] result = (Object[]) query.getSingleResult();
             iamUser = (IamUser) result[0]; // IamUser
@@ -190,9 +196,9 @@ public class ControlliWS {
             rispostaControlli.setrObject(utente);
             rispostaControlli.setrBoolean(true);
         } catch (AuthWSException e) {
-            log.warn("ERRORE DI AUTENTICAZIONE WS." + " Funzionalità: " + tipows.name() + " Utente: " + loginName
-                    + " Tipo errore: " + e.getCodiceErrore().name() + " Indirizzo IP: " + indirizzoIP + " Descrizione: "
-                    + e.getDescrizioneErrore());
+            log.warn(
+                    "ERRORE DI AUTENTICAZIONE WS. Funzionalità: {} Utente: {} Tipo errore: {} Indirizzo IP: {} Descrizione: {}",
+                    tipows.name(), loginName, e.getCodiceErrore().name(), indirizzoIP, e.getDescrizioneErrore());
             switch (tipows) {
             case VERSAMENTO_RECUPERO:
                 if (e.getCodiceErrore().equals(AuthWSException.CodiceErrore.UTENTE_SCADUTO)) {
@@ -258,7 +264,7 @@ public class ControlliWS {
                 String queryStr = "select count(iu) from IamUser iu where iu.nmUserid = :nmUseridIn";
                 javax.persistence.Query query = entityManager.createQuery(queryStr);
                 query.setParameter("nmUseridIn", loginName);
-                long tmpNumUtenti = (Long) query.getSingleResult();
+                long tmpNumUtenti = (long) query.getSingleResult();
                 if (tmpNumUtenti > 0) {
                     tmpLogDto.setTipoEvento(LogDto.TipiEvento.BAD_PASS);
                     tmpLogDto.setDsEvento("WS, bad password");
@@ -269,9 +275,9 @@ public class ControlliWS {
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "Eccezione nella fase di autenticazione del EJB " + e.getMessage()));
-            log.error("Eccezione nella fase di autenticazione del EJB ", e);
+            rispostaControlli.setDsErr(
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666, ERRORE_AUTENTICAZIONE + e.getMessage()));
+            log.error(ERRORE_AUTENTICAZIONE, e);
         }
 
         // scrittura log
@@ -291,8 +297,8 @@ public class ControlliWS {
             String queryStr = "select iu from IamUser iu where iu.nmUserid = :nmUseridIn";
             javax.persistence.Query query = entityManager.createQuery(queryStr, IamUser.class);
             query.setParameter("nmUseridIn", loginName);
-            List<IamUser> tmpUsers = (List<IamUser>) query.getResultList();
-            if (tmpUsers != null && tmpUsers.size() > 0) {
+            List<IamUser> tmpUsers = query.getResultList();
+            if (tmpUsers != null && !tmpUsers.isEmpty()) {
                 iamUser = tmpUsers.get(0);
 
                 if (!iamUser.getFlAttivo().equals("1")) {
@@ -321,9 +327,9 @@ public class ControlliWS {
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "Eccezione nella fase di autenticazione del EJB " + e.getMessage()));
-            log.error("Eccezione nella fase di autenticazione del EJB ", e);
+            rispostaControlli.setDsErr(
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666, ERRORE_AUTENTICAZIONE + e.getMessage()));
+            log.error(ERRORE_AUTENTICAZIONE, e);
         }
 
         return rispostaControlli;
@@ -334,7 +340,6 @@ public class ControlliWS {
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
         boolean checkOrgVersAuth = false;
-        long numAbil = 0;
         Integer tmpIdOrganizz = utente.getIdOrganizzazioneFoglia() != null
                 ? utente.getIdOrganizzazioneFoglia().intValue() : null;
         try {
@@ -344,6 +349,7 @@ public class ControlliWS {
             checkOrgVersAuth = true;
             switch (tipows) {
             case VERSAMENTO_RECUPERO:
+            case AGGIORNAMENTO_VERSAMENTO:
                 // L''utente {0} non è abilitato entro la struttura versante
                 rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_009);
                 rispostaControlli
@@ -358,11 +364,6 @@ public class ControlliWS {
                 rispostaControlli.setDsErr(
                         MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_002_006, utente.getUsername()));
                 break;
-            case AGGIORNAMENTO_VERSAMENTO:
-                rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_009);
-                rispostaControlli
-                        .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_009, utente.getUsername()));
-                break;
             }
         } catch (Exception ex) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
@@ -375,14 +376,14 @@ public class ControlliWS {
             try {
                 String queryStr = "select count(t) from IamAbilOrganiz t where " + "t.iamUser.idUserIam = :idUserIamIn "
                         + "and t.idOrganizApplic = :idOrganizApplicIn";
-                javax.persistence.Query query = entityManager.createQuery(queryStr, IamUser.class);
+                TypedQuery<Long> query = entityManager.createQuery(queryStr, Long.class);
                 query.setParameter("idUserIamIn", utente.getIdUtente());
-                query.setParameter("idOrganizApplicIn", tmpIdOrganizz);
-                numAbil = (long) query.getSingleResult();
-                if (numAbil > 0) {
+                query.setParameter("idOrganizApplicIn", new BigDecimal(tmpIdOrganizz));
+                Long numAbil = query.getSingleResult();
+                if (numAbil != null && numAbil > 0) {
                     switch (tipows) {
                     case VERSAMENTO_RECUPERO:
-                        // L''utente {0} non è autorizzato alla funzione {1}
+                    case AGGIORNAMENTO_VERSAMENTO:
                         rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_008);
                         rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_008,
                                 utente.getUsername(), descrizione.getNomeWs()));
@@ -392,14 +393,8 @@ public class ControlliWS {
                         rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.RICH_ANN_VERS_008));
                         break;
                     case VERSAMENTO_FASCICOLO:
-                        // L''utente {0} non è autorizzato alla funzione {1}
                         rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_002_005);
                         rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_002_005,
-                                utente.getUsername(), descrizione.getNomeWs()));
-                        break;
-                    case AGGIORNAMENTO_VERSAMENTO:
-                        rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_008);
-                        rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_008,
                                 utente.getUsername(), descrizione.getNomeWs()));
                         break;
                     }
@@ -432,7 +427,7 @@ public class ControlliWS {
             } else {
                 switch (tipows) {
                 case VERSAMENTO_RECUPERO:
-                    // L''utente {0} non è autorizzato alla funzione {1}
+                case AGGIORNAMENTO_VERSAMENTO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_008);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_008,
                             utente.getUsername(), descrizione.getNomeWs()));
@@ -442,24 +437,17 @@ public class ControlliWS {
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.RICH_ANN_VERS_008));
                     break;
                 case VERSAMENTO_FASCICOLO:
-                    // L''utente {0} non è autorizzato alla funzione {1}
                     rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_002_005);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_002_005,
-                            utente.getUsername(), descrizione.getNomeWs()));
-                    break;
-                case AGGIORNAMENTO_VERSAMENTO:
-                    // L''utente {0} non è autorizzato alla funzione {1}
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_008);
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_008,
                             utente.getUsername(), descrizione.getNomeWs()));
                     break;
                 }
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "Eccezione nella fase di autenticazione del EJB " + e.getMessage()));
-            log.error("Eccezione nella fase di autenticazione del EJB ", e);
+            rispostaControlli.setDsErr(
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666, ERRORE_AUTENTICAZIONE + e.getMessage()));
+            log.error(ERRORE_AUTENTICAZIONE, e);
         }
 
         return rispostaControlli;

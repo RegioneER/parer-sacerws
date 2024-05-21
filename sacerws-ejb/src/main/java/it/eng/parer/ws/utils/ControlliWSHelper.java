@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -21,11 +38,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecControlloWs;
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 
-/**
- *
- * @author sinatti_s
- */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliWSHelper")
 @LocalBean
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -52,9 +68,7 @@ public class ControlliWSHelper {
             query.setParameter("cdControlloWs", cdControlloWs);
             tmperr = (DecControlloWs) query.getSingleResult();
         } catch (RuntimeException ex) {
-            // log.fatal("ControlliWSHelper.caricaDecControlloWs fallita! ", ex);
-            log.error("ControlliWSHelper.caricaDecControlloWs fallita! ", ex);
-            throw ex;
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         }
 
         return tmperr;

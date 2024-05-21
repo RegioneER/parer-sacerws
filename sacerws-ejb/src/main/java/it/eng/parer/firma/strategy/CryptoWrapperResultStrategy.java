@@ -1,13 +1,33 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.firma.strategy;
 
 import static it.eng.parer.ws.utils.XmlDateUtility.dateToXMLGregorianCalendar;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +43,9 @@ import it.eng.parer.crypto.model.verifica.CryptoAroUsoCertifCaContrMarca;
 import it.eng.parer.crypto.model.verifica.CryptoFirCertifCa;
 import it.eng.parer.crypto.model.verifica.CryptoFirCertifFirmatario;
 import it.eng.parer.crypto.model.verifica.CryptoFirCrl;
-import it.eng.parer.crypto.model.verifica.CryptoFirFilePerFirma;
 import it.eng.parer.crypto.model.verifica.CryptoFirUrlDistribCrl;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
-import it.eng.parer.firma.util.VerificaFirmaEnums;
+import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.firma.xml.VFAdditionalInfoFirmaCompType;
 import it.eng.parer.firma.xml.VFAdditionalInfoMarcaCompType;
 import it.eng.parer.firma.xml.VFCertifCaType;
@@ -34,30 +53,20 @@ import it.eng.parer.firma.xml.VFCertifFirmatarioType;
 import it.eng.parer.firma.xml.VFContrFirmaCompType;
 import it.eng.parer.firma.xml.VFContrMarcaCompType;
 import it.eng.parer.firma.xml.VFCrlType;
-import it.eng.parer.firma.xml.VFFilePerFirmaType;
 import it.eng.parer.firma.xml.VFFirmaCompType;
 import it.eng.parer.firma.xml.VFMarcaCompType;
 import it.eng.parer.firma.xml.VFTipoControlloType;
-import it.eng.parer.firma.xml.VFTipoFileType;
 import it.eng.parer.firma.xml.VFTipoFirmaType;
 import it.eng.parer.firma.xml.VFUrlDistribCrlType;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper.VFBusta;
-import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultStrategy<CryptoAroCompDoc> {
 
     private final Logger LOG = LoggerFactory.getLogger(CryptoWrapperResultStrategy.class);
 
-    private AbsVersamentoExt versamento;
-
-    public CryptoWrapperResultStrategy(AbsVersamentoExt versamento) {
-        this.versamento = versamento;
+    public CryptoWrapperResultStrategy() {
+        super();
     }
 
     @Override
@@ -66,7 +75,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
     }
 
     @Override
-    public void fromVerificaOutOnWrapper(CryptoAroCompDoc result, VerificaFirmaWrapper wrapper, ZonedDateTime dtRef) {
+    public void fromVerificaOutOnWrapper(CryptoAroCompDoc result, VerificaFirmaWrapper wrapper) {
         // Inizio e fine validazione
 
         wrapper.setStartDate(dateToXMLGregorianCalendar(result.getInizioValidazione()));
@@ -333,8 +342,8 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
         // Aggiungo il controllo OCSP (con esito NON_NECESSARIO)
         VFContrFirmaCompType contrFirmaCompOCSP = new VFContrFirmaCompType();
         contrFirmaCompOCSP.setTiContr(VFTipoControlloType.OCSP);
-        contrFirmaCompOCSP.setTiEsitoContrFirma(VerificaFirmaEnums.EsitoControllo.NON_NECESSARIO.name());
-        contrFirmaCompOCSP.setDsMsgEsitoContrFirma(VerificaFirmaEnums.EsitoControllo.NON_NECESSARIO.message());
+        contrFirmaCompOCSP.setTiEsitoContrFirma(SacerIndication.NON_NECESSARIO.name());
+        contrFirmaCompOCSP.setDsMsgEsitoContrFirma(SacerIndication.NON_NECESSARIO.message());
 
         firma.getContrFirmaComps().add(contrFirmaCompOCSP);
         firma.setDlDnFirmatario(cryptoFirma.getDlDnFirmatario());
@@ -448,8 +457,8 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
         // Aggiungo il controllo OCSP (con esito NON_NECESSARIO)
         VFContrMarcaCompType contrMarcaCompOCSP = new VFContrMarcaCompType();
         contrMarcaCompOCSP.setTiContr(VFTipoControlloType.OCSP);
-        contrMarcaCompOCSP.setTiEsitoContrMarca(VerificaFirmaEnums.EsitoControllo.NON_NECESSARIO.name());
-        contrMarcaCompOCSP.setDsMsgEsitoContrMarca(VerificaFirmaEnums.EsitoControllo.NON_NECESSARIO.message());
+        contrMarcaCompOCSP.setTiEsitoContrMarca(SacerIndication.NON_NECESSARIO.name());
+        contrMarcaCompOCSP.setDsMsgEsitoContrMarca(SacerIndication.NON_NECESSARIO.message());
         marca.getContrMarcaComps().add(contrMarcaCompOCSP);
 
         return marca;
@@ -470,11 +479,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
         certifFirmatario.setDtFinValCertifFirmatario(
                 dateToXMLGregorianCalendar(cryptoFirmatario.getDtFinValCertifFirmatario()));
         certifFirmatario.setNiSerialCertifFirmatario(cryptoFirmatario.getNiSerialCertifFirmatario());
-        if (cryptoFirmatario.getFirFilePerFirma() != null) {
 
-            VFFilePerFirmaType filePerFirmaFirmatario = buildFilePerFirma(cryptoFirmatario.getFirFilePerFirma());
-            certifFirmatario.setFilePerFirma(filePerFirmaFirmatario);
-        }
         if (cryptoFirmatario.getFirCertifCa() != null) {
             VFCertifCaType certifCA = buildCertifCA(cryptoFirmatario.getFirCertifCa());
             certifFirmatario.setCertifCaFirmatario(certifCA);
@@ -509,34 +514,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
             certifCA.getUrlDistribCrls().add(urlDistribCrlType);
         }
 
-        // Blob della firma può essere NULL?
-        if (cryptoCa.getFirFilePerFirma() != null) {
-            VFFilePerFirmaType filePerFirma = buildFilePerFirma(cryptoCa.getFirFilePerFirma());
-            certifCA.setFilePerFirma(filePerFirma);
-        }
         return certifCA;
-    }
-
-    /**
-     * Compila la busta che contiene il blob, e relativi metadati, contenente:
-     * <ul>
-     * <li>{@link VFTipoFileType#CERTIF_CA}</li>
-     * <li>{@link VFTipoFileType#CERTIF_CRL}</li>
-     * <li>{@link VFTipoFileType#CERTIF_FIRMATARIO}</li>
-     * </ul>
-     *
-     * @param crytpoFilePerFirma
-     *            Modello restituito da crypto
-     * 
-     * @return modello di file per firma del wrapper
-     */
-    private VFFilePerFirmaType buildFilePerFirma(CryptoFirFilePerFirma crytpoFilePerFirma) {
-        VFFilePerFirmaType filePerFirma = new VFFilePerFirmaType();
-        filePerFirma.setNmFileDownload(crytpoFilePerFirma.getNmFileDownload());
-        filePerFirma.setBlFilePerFirma(crytpoFilePerFirma.getBlFilePerFirma());
-        // FIXME enum
-        filePerFirma.setTiFilePerFirma(VFTipoFileType.valueOf(crytpoFilePerFirma.getTiFilePerFirma()));
-        return filePerFirma;
     }
 
     /**
@@ -553,8 +531,6 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
         crl.setDtIniCrl(dateToXMLGregorianCalendar(cryptoCrl.getDtIniCrl()));
         crl.setDtScadCrl(dateToXMLGregorianCalendar(cryptoCrl.getDtScadCrl()));
         crl.setNiSerialCrl(cryptoCrl.getNiSerialCrl());
-        VFFilePerFirmaType buildFilePerFirma = buildFilePerFirma(cryptoCrl.getFirFilePerFirma());
-        crl.setFilePerFirma(buildFilePerFirma);
 
         CryptoFirCertifCa firCertifCa = cryptoCrl.getFirCertifCa();
         VFCertifCaType buildCertifCA = buildCertifCA(firCertifCa);

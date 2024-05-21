@@ -16,8 +16,8 @@
                 <jndi-name>java:/SacerJmsXA</jndi-name>
             </resource-env-ref>
             <resource-env-ref>
-                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
-                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+                <resource-env-ref-name>jms/queue/ElenchiDaElabQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabQueue</jndi-name>
             </resource-env-ref>
         </session>
         
@@ -30,8 +30,8 @@
                 <jndi-name>java:/SacerJmsXA</jndi-name>
             </resource-env-ref>
             <resource-env-ref>
-                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
-                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+                <resource-env-ref-name>jms/queue/ElenchiDaElabQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabQueue</jndi-name>
             </resource-env-ref>
         </session>
         
@@ -44,8 +44,8 @@
                 <jndi-name>java:/SacerJmsXA</jndi-name>
             </resource-env-ref>
             <resource-env-ref>
-                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
-                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+                <resource-env-ref-name>jms/queue/ElenchiDaElabQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabQueue</jndi-name>
             </resource-env-ref>
         </session>
         
@@ -58,8 +58,8 @@
                 <jndi-name>java:/SacerJmsXA</jndi-name>
             </resource-env-ref>
             <resource-env-ref>
-                <resource-env-ref-name>jms/ElenchiDaElabInAttesaSchedQueue</resource-env-ref-name>
-                <jndi-name>java:/jms/queue/ElenchiDaElabInAttesaSchedQueue</jndi-name>
+                <resource-env-ref-name>jms/queue/ElenchiDaElabQueue</resource-env-ref-name>
+                <jndi-name>java:/jms/queue/ElenchiDaElabQueue</jndi-name>
             </resource-env-ref>
         </session>
 

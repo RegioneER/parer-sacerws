@@ -1,9 +1,32 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.utils;
 
 import it.eng.parer.entity.AplParamApplic;
 
 //
 public class ParametroApplDB {
+
+    private static final IllegalStateException UTILITY_CLASS_EXCP = new IllegalStateException("Classi di utilità");
+
+    private ParametroApplDB() {
+        throw UTILITY_CLASS_EXCP;
+    }
 
     public static final String NM_APPLIC = "NM_APPLIC";
 
@@ -15,8 +38,8 @@ public class ParametroApplDB {
     public static final String FMT_UNKNOWN = "FMT_UNKNOWN";
     public static final String SERVER_NAME_SYSTEM_PROPERTY = "SERVER_NAME_SYSTEM_PROPERTY";
     //
-    public static final String PATH_MM_IN_ = "PATH_MM_IN_";
-    public static final String PATH_MM_OUT_ = "PATH_MM_OUT_";
+    public static final String PATH_MM_IN = "PATH_MM_IN_";
+    public static final String PATH_MM_OUT = "PATH_MM_OUT_";
     //
     public static final String TPI_ROOT_SACER = "root_SACER";
     public static final String TPI_ROOT_TPI = "root_TPI";
@@ -39,6 +62,7 @@ public class ParametroApplDB {
     public static final String TPI_NI_GG_MAX_MIGRAZ = "niGgMaxMigraz";
     public static final String TPI_TIMEOUT = "timeoutTPI";
     public static final String TPI_TIMEOUT_RETRIEVE = "timeoutTPIRetrieve";
+    public static final String TPI_ENABLE = "TPI_Enable";
     //
     // questi verranno rimossi quando la migrazione sarà completata
     public static final String TPI_NM_USER_MIG_BLB = "nmUserMigBlb";
@@ -79,7 +103,6 @@ public class ParametroApplDB {
     public static final String VERIFICA_FIRMA_TIMEOUT = "VERIFICA_FIRMA_TIMEOUT";
 
     /* CRYPTO */
-
     public static final String CRYPTO_VERIFICA_FIRMA_RETRY_TIMEOUT = "CRYPTO_VERIFICA_FIRMA_RETRY_TIMEOUT";
 
     public static final String CRYPTO_VERIFICA_FIRMA_MAX_TENTATIVI = "CRYPTO_VERIFICA_FIRMA_MAX_TENTATIVI";
@@ -91,7 +114,6 @@ public class ParametroApplDB {
     public static final String CRYPTO_VERIFICA_FIRMA_PERIODO_BACKOFF = "CRYPTO_VERIFICA_FIRMA_PERIODO_BACKOFF";
 
     /* EIDAS */
-
     public static final String EIDAS_VERIFICA_FIRMA_RETRY_TIMEOUT = "EIDAS_VERIFICA_FIRMA_RETRY_TIMEOUT";
 
     public static final String EIDAS_VERIFICA_FIRMA_MAX_TENTATIVI = "EIDAS_VERIFICA_FIRMA_MAX_TENTATIVI";
@@ -102,20 +124,32 @@ public class ParametroApplDB {
 
     public static final String EIDAS_VERIFICA_FIRMA_PERIODO_BACKOFF = "EIDAS_VERIFICA_FIRMA_PERIODO_BACKOFF";
 
-    /* AWS */
-    public static final String OBJECT_STORAGE_ADDR = "OBJECT_STORAGE_ADDR";
     public static final String TENANT_OBJECT_STORAGE = "TENANT_OBJECT_STORAGE";
 
-    // Report verifica firma su Object storage
-    public static final String REPORTVF_S3_ACCESS_KEY_ID = "REPORTVF_S3_ACCESS_KEY_ID";
-    public static final String REPORTVF_S3_SECRET_KEY = "REPORTVF_S3_SECRET_KEY";
-    public static final String BUCKET_REPORT_VERIFICAFIRMA = "BUCKET_REPORT_VERIFICAFIRMA";
+    // Configurazioni Storage
+    public static final String BACKEND_VRS_SES_UD_STAGING = "BACKEND_VRS_SES_UD_STAGING";
+    public static final String BACKEND_VERSAMENTO_SYNC = "BACKEND_VERSAMENTO_SYNC";
+    public static final String BACKEND_AGGIUNTALLEGATI_SYNC = "BACKEND_AGGIUNTALLEGATI_SYNC";
+    public static final String BACKEND_VERSAMENTO_MULTIMEDIA = "BACKEND_VERSAMENTO_MULTIMEDIA";
+    // MEV#29276
+    public static final String BACKEND_VERSAMENTO_AGG_MD = "BACKEND_VERSAMENTO_AGG_MD";
+    public static final String BACKEND_XML_SES_AGG_MD_ERR_KO = "BACKEND_XML_SES_AGG_MD_ERR_KO";
+    // end MEV#29276
+    // Configurazioni S3
+    public static final String S3_PRESIGNED_URL_DURATION = "S3_PRESIGNED_URL_DURATION";
+    public static final String S3_CLIENT_MAX_CONNECTIONS = "S3_CLIENT_MAX_CONNECTIONS";
+    public static final String S3_CLIENT_CONNECTION_TIMEOUT = "S3_CLIENT_CONNECTION_TIMEOUT";
+    public static final String S3_CLIENT_SOCKET_TIMEOUT = "S3_CLIENT_SOCKET_TIMEOUT";
 
     /**
      * Flags (specializzazione) {@link AplParamApplic}
      *
      */
     public class ParametroApplFl {
+
+        private ParametroApplFl() {
+            throw UTILITY_CLASS_EXCP;
+        }
 
         public static final String FL_GEST_FASCICOLI = "FL_GEST_FASCICOLI";
         public static final String FL_ACCETTA_CONTR_CRL_NOVAL = "FL_ACCETTA_CONTR_CRL_NOVAL";
@@ -188,14 +222,21 @@ public class ParametroApplDB {
         public static final String FL_ACCETTA_CONTR_OCSP_NEG = "FL_ACCETTA_CONTR_OCSP_NEG";
         public static final String FL_ACCETTA_CONTR_OCSP_NOSCAR = "FL_ACCETTA_CONTR_OCSP_NOSCAR";
         public static final String FL_ACCETTA_CONTR_OCSP_NOVAL = "FL_ACCETTA_CONTR_OCSP_NOVAL";
+        //
+        public static final String FL_EIDAS_INCLUDI_FILEBASE64 = "FL_EIDAS_INCLUDI_FILEBASE64";
+        public static final String FL_CRYPTO_INCLUDI_FILEBASE64 = "FL_CRYPTO_INCLUDI_FILEBASE64";
 
     }
 
     /**
      * {@link AplParamApplic}
-     * 
+     *
      */
     public class TipoParametroAppl {
+
+        private TipoParametroAppl() {
+            throw UTILITY_CLASS_EXCP;
+        }
 
         public static final String VERSAMENTO_DEFAULT = "Default di versamento";
         public static final String MAX_RESULT = "Paginazione risultati";

@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.firma.ejb;
 
 import java.math.BigInteger;
@@ -7,7 +24,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,19 +130,18 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
         try {
             wrapper = eidasInvoker.verificaAndWrapIt(in.getComponenteVers(), in.getSottoComponentiFirma(),
                     in.getSottoComponentiMarca(), in.getAbilitazioni(), in.getDataDiRiferimento(),
-                    in.isVerificaAllaDataDiFirma(), in.getUuid(), versamento);
+                    Boolean.FALSE/* default */, in.getUuid(), versamento);
         } catch (VerificaFirmaConnectionException ex) {
             /* Errore su invocazione (GRAVE) */
             LOG.error("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
             /* Si passa ad invocazione CRYPTO..... */
         } catch (VerificaFirmaGenericInvokeException epex) {
             /* Errore restituito da endpoint (gestito) */
-            LOG.debug("Risposta con errore restituito da verifica firma {} {}", epex.getCdService(),
-                    ExceptionUtils.getRootCauseMessage(epex), epex);
+            LOG.debug("Risposta con errore restituito da verifica firma {}", epex.getCdService(), epex);
             /* Si passa ad invocazione CRYPTO..... */
         } catch (VerificaFirmaWrapperResNotFoundException | VerificaFirmaWrapperGenericException wrapex) {
-            /* Errore restituito da endpoint o su wrapping della risposta (GRAVE) */
-            LOG.error("Errore wrapping risultato ottenuto da verifica firma EIDAS", wrapex);
+            /* Errore restituito da endpoint o su wrapping della risposta */
+            LOG.warn("Errore generico", wrapex);
             /* Si passa ad invocazione CRYPTO..... */
         }
         return wrapper;

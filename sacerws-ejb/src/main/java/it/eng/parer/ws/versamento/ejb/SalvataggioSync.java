@@ -1,13 +1,64 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.ejb;
 
+import static it.eng.parer.util.DateUtilsConverter.convert;
+import static it.eng.parer.util.DateUtilsConverter.format;
+import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
+import static it.eng.parer.ws.utils.Costanti.ERRORE_CLIENT_ERRATO;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.eng.parer.entity.AroArchivSec;
-import it.eng.parer.entity.AroBustaCrittog;
 import it.eng.parer.entity.AroCompDoc;
 import it.eng.parer.entity.AroCompUrnCalc;
 import it.eng.parer.entity.AroDoc;
-import it.eng.parer.entity.AroFirmaComp;
 import it.eng.parer.entity.AroLinkUnitaDoc;
-import it.eng.parer.entity.AroMarcaComp;
 import it.eng.parer.entity.AroStrutDoc;
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
@@ -31,7 +82,6 @@ import it.eng.parer.entity.DecXsdDatiSpec;
 import it.eng.parer.entity.ElvDocAggDaElabElenco;
 import it.eng.parer.entity.ElvUdVersDaElabElenco;
 import it.eng.parer.entity.FasFascicolo;
-import it.eng.parer.entity.FirReport;
 import it.eng.parer.entity.IamUser;
 import it.eng.parer.entity.MonAaUnitaDocRegistro;
 import it.eng.parer.entity.OrgStrut;
@@ -41,12 +91,13 @@ import it.eng.parer.entity.VrsUrnXmlSessioneVers;
 import it.eng.parer.entity.VrsXmlDatiSessioneVers;
 import it.eng.parer.entity.constraint.AroCompUrnCalc.TiUrn;
 import it.eng.parer.entity.constraint.VrsUrnXmlSessioneVers.TiUrnXmlSessioneVers;
-import it.eng.parer.viewEntity.VrsVLisXmlDocUrnDaCalc;
-import it.eng.parer.viewEntity.VrsVLisXmlUdUrnDaCalc;
-import it.eng.parer.viewEntity.VrsVLisXmlUpdUrnDaCalc;
 import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
-import it.eng.parer.firma.util.VerificaFirmaEnums;
+import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
+import it.eng.parer.util.Constants;
+import it.eng.parer.view_entity.VrsVLisXmlDocUrnDaCalc;
+import it.eng.parer.view_entity.VrsVLisXmlUdUrnDaCalc;
+import it.eng.parer.view_entity.VrsVLisXmlUpdUrnDaCalc;
 import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.BinEncUtility;
@@ -64,11 +115,13 @@ import it.eng.parer.ws.utils.JAXBUtils;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
+import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.DocumentoVers;
 import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.IRispostaVersWS;
+import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.RispostaWS;
 import it.eng.parer.ws.versamento.dto.RispostaWSAggAll;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
@@ -83,48 +136,18 @@ import it.eng.parer.ws.xml.versReq.CamiciaFascicoloType;
 import it.eng.parer.ws.xml.versReq.ChiaveType;
 import it.eng.parer.ws.xml.versReq.UnitaDocAggAllegati;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import org.apache.commons.lang3.StringUtils;
-import static it.eng.parer.util.DateUtilsConverter.convert;
-import static it.eng.parer.util.DateUtilsConverter.format;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Fioravanti_F
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "SalvataggioSync")
 @LocalBean
 public class SalvataggioSync {
 
     private static final Logger log = LoggerFactory.getLogger(SalvataggioSync.class);
+    public static final String ERROR_PERSISTENZA_UD = "Eccezione nella persistenza dell'unità documentaria ";
     //
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
@@ -134,12 +157,14 @@ public class SalvataggioSync {
     //
     @EJB
     private WriteCompBlbOracle writeCompBlbOracle;
+
+    @EJB
+    private ObjectStorageService objectStorageService;
+
     @EJB
     private SalvataggioFirmaManager salvataggioFirmaManager;
     //
-    private final static int DS_ERR_MAX_LEN = 1024;
-    //
-    private final static String LOCKNAME_CREA_DIRECTORY_VERS_TPI = "CREA_DIRECTORY_VERS_TPI";
+    private static final int DS_ERR_MAX_LEN = 1024;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public boolean salvaDatiVersamento(VersamentoExt versamento, RispostaWS rispostaWS) {
@@ -160,59 +185,52 @@ public class SalvataggioSync {
             }
 
             // SALVO UNITA' DOCUMENTARIA
-            if (prosegui) {
-                if (!this.salvaUnitaDoc(versamento.getStrutturaComponenti(), versamento.getVersamento(), rispostaWS)) {
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaUnitaDoc(versamento.getStrutturaComponenti(), versamento.getVersamento(),
+                    rispostaWS)) {
+                prosegui = false;
             }
 
             // SALVO UNITA' DOCUMENTARIA DA INSERIRE NELL'ELENCO DI VERSAMENTO
-            if (prosegui) {
-                if (!this.salvaUdElencoVers(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dell'unità documentaria da inserire nell'elenco di versamento");
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaUdElencoVers(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dell'unità documentaria da inserire nell'elenco di versamento");
+                prosegui = false;
             }
 
             // SALVO IL PROFILO ARCHIVISTICO
-            if (prosegui) {
-                if (!this.salvaFascicoliSecondari(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza del Profilo Archivistico ");
-                    prosegui = false;
-                }
+            if (prosegui
+                    && !this.salvaFascicoliSecondari(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza del Profilo Archivistico ");
+                prosegui = false;
             }
 
             // SALVO I DOCUMENTI COLLEGATI
-            if (prosegui) {
-                if (!this.salvaDocumentiCollegati(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei Documenti Collegati ");
-                    prosegui = false;
-                }
+            if (prosegui
+                    && !this.salvaDocumentiCollegati(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei Documenti Collegati ");
+                prosegui = false;
             }
 
             // SALVO I Dati specifici UD
-            if (prosegui) {
-                if (!this.salvaDatiSpecUD(versamento.getStrutturaComponenti())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei Dati Specifici UD ");
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaDatiSpecUD(versamento.getStrutturaComponenti())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei Dati Specifici UD ");
+                prosegui = false;
             }
 
             // SALVO I DOCUMENTI PRINCIPALE / ALLEGATI / ANNESSI / ANNOTAZIONI
             if (prosegui) {
                 ConfigPerDoc tmpConfigPerDoc = new ConfigPerDoc();
                 tmpConfigPerDoc.setForzaAccettazione(
-                        rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione() ? "1" : "0");
+                        booleanToFlag(rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione()));
                 tmpConfigPerDoc.setForzaConservazione(
-                        versamento.getStrutturaComponenti().isConfigFlagForzaConservazione() ? "1" : "0");
+                        booleanToFlag(versamento.getStrutturaComponenti().isConfigFlagForzaConservazione()));
                 tmpConfigPerDoc
                         .setTipoConservazione(rispostaWS.getIstanzaEsito().getConfigurazione().getTipoConservazione());
                 tmpConfigPerDoc.setSistemaDiMigrazione(
@@ -226,33 +244,27 @@ public class SalvataggioSync {
             }
 
             // SALVO I WARNING
-            if (prosegui) {
-                if (!this.salvaDatiWarning(versamento)) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei warning");
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaDatiWarning(versamento)) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, "Eccezione nella persistenza dei warning");
+                prosegui = false;
             }
 
             // salvo i componenti ed i sottocomponenti
-            if (prosegui) {
-                if (!this.salvaComponenti(tmpRispostaControlli, versamento.getStrutturaComponenti(),
-                        versamento.getVersamento().getIntestazione().getChiave())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei componenti " + tmpRispostaControlli.getDsErr());
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaComponenti(tmpRispostaControlli, versamento.getStrutturaComponenti(),
+                    versamento.getVersamento().getIntestazione().getChiave(),
+                    versamento.getDescrizione().getNomeWs())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei componenti " + tmpRispostaControlli.getDsErr());
+                prosegui = false;
             }
 
             // SALVO I Dati specifici Comp e Sub-Comp
-            if (prosegui) {
-                if (!this.salvaDatiSpecCompUD(versamento.getStrutturaComponenti())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei Dati Specifici Componenti ");
-                }
+            if (prosegui && !this.salvaDatiSpecCompUD(versamento.getStrutturaComponenti())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei Dati Specifici Componenti ");
             }
 
         } catch (Exception e) {
@@ -287,20 +299,17 @@ public class SalvataggioSync {
 
             // Aggiorno UNITA' DOCUMENTARIA
             if (prosegui) {
-                boolean result = this.aggiornaUnitaDoc(versamento.getStrutturaComponenti(), versamento.getVersamento(),
-                        rispostaWS);
+                boolean result = this.aggiornaUnitaDoc(versamento.getStrutturaComponenti(), rispostaWS);
                 if (!result) {
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dell'unità documentaria ");
+                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, ERROR_PERSISTENZA_UD);
                     prosegui = false;
                 }
             }
 
             // Aggiorno DOCUMENTI (niOrdDoc e calcolo UrnComponente)
             if (prosegui) {
-                boolean result = this.aggiornaDocumenti(versamento.getStrutturaComponenti(), versamento.getVersamento(),
-                        rispostaWS);
+                boolean result = this.aggiornaDocumenti(versamento.getStrutturaComponenti());
                 if (!result) {
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
@@ -311,8 +320,7 @@ public class SalvataggioSync {
 
             // Aggiorno PREGRESSO
             if (prosegui) {
-                boolean result = this.aggiornaPregressoDocumenti(versamento.getStrutturaComponenti(),
-                        versamento.getVersamento(), rispostaWS);
+                boolean result = this.aggiornaPregressoDocumenti(versamento.getStrutturaComponenti());
                 if (!result) {
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
@@ -325,9 +333,9 @@ public class SalvataggioSync {
             if (prosegui) {
                 ConfigPerDoc tmpConfigPerDoc = new ConfigPerDoc();
                 tmpConfigPerDoc.setForzaAccettazione(
-                        rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione() ? "1" : "0");
+                        booleanToFlag(rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione()));
                 tmpConfigPerDoc.setForzaConservazione(
-                        versamento.getStrutturaComponenti().isConfigFlagForzaConservazione() ? "1" : "0");
+                        booleanToFlag(versamento.getStrutturaComponenti().isConfigFlagForzaConservazione()));
                 tmpConfigPerDoc
                         .setTipoConservazione(rispostaWS.getIstanzaEsito().getConfigurazione().getTipoConservazione());
                 tmpConfigPerDoc.setSistemaDiMigrazione(
@@ -341,52 +349,42 @@ public class SalvataggioSync {
             }
 
             // SALVO DOCUMENTO DA INSERIRE NELL'ELENCO DI VERSAMENTO
-            if (prosegui) {
-                if (!this.salvaDocElencoVers(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza del documento da inserire nell'elenco di versamento");
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaDocElencoVers(versamento.getStrutturaComponenti(), versamento.getVersamento())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza del documento da inserire nell'elenco di versamento");
+                prosegui = false;
             }
 
             // SALVO I WARNING
-            if (prosegui) {
-                if (!this.salvaDatiWarning(versamento)) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei warning");
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaDatiWarning(versamento)) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, "Eccezione nella persistenza dei warning");
+                prosegui = false;
             }
 
             // salvo i componenti ed i sottocomponenti
-            if (prosegui) {
-                if (!this.salvaComponenti(tmpRispostaControlli, versamento.getStrutturaComponenti(),
-                        versamento.getVersamento().getIntestazione().getChiave())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei componenti " + tmpRispostaControlli.getDsErr());
-                    prosegui = false;
-                }
+            if (prosegui && !this.salvaComponenti(tmpRispostaControlli, versamento.getStrutturaComponenti(),
+                    versamento.getVersamento().getIntestazione().getChiave(),
+                    versamento.getDescrizione().getNomeWs())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei componenti " + tmpRispostaControlli.getDsErr());
+                prosegui = false;
             }
 
             // SALVO I Dati specifici Comp e Sub-Comp
-            if (prosegui) {
-                if (!this.salvaDatiSpecCompUD(versamento.getStrutturaComponenti())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei Dati Specifici Componenti ");
-                }
+            if (prosegui && !this.salvaDatiSpecCompUD(versamento.getStrutturaComponenti())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei Dati Specifici Componenti ");
             }
 
             // SALVO I dati di aggregazioni
-            if (prosegui) {
-                if (!this.salvaDatiAggregazioni(versamento.getStrutturaComponenti())) {
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Eccezione nella persistenza dei Dati di Aggregazioni ");
-                }
+            if (prosegui && !this.salvaDatiAggregazioni(versamento.getStrutturaComponenti())) {
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza dei Dati di Aggregazioni ");
             }
 
         } catch (Exception e) {
@@ -415,7 +413,7 @@ public class SalvataggioSync {
         // informazioni di base
         // intestazione
         tmpTabUD.setCdRegistroKeyUnitaDoc(ud.getIntestazione().getChiave().getTipoRegistro());
-        tmpTabUD.setAaKeyUnitaDoc(new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        tmpTabUD.setAaKeyUnitaDoc(BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         tmpTabUD.setCdKeyUnitaDoc(ud.getIntestazione().getChiave().getNumero());
 
         // salvo il registro anche come FK, utile per le ricerche
@@ -434,17 +432,15 @@ public class SalvataggioSync {
         Integer numeroAllegati = ud.getNumeroAllegati() != null ? ud.getNumeroAllegati() : 0;
         Integer numeroAnnessi = ud.getNumeroAnnessi() != null ? ud.getNumeroAnnessi() : 0;
         Integer numeroAnnotazioni = ud.getNumeroAnnotazioni() != null ? ud.getNumeroAnnotazioni() : 0;
-        tmpTabUD.setNiAlleg(new BigDecimal(numeroAllegati));
-        tmpTabUD.setNiAnnessi(new BigDecimal(numeroAnnessi));
-        tmpTabUD.setNiAnnot(new BigDecimal(numeroAnnotazioni));
+        tmpTabUD.setNiAlleg(BigDecimal.valueOf(numeroAllegati));
+        tmpTabUD.setNiAnnessi(BigDecimal.valueOf(numeroAnnessi));
+        tmpTabUD.setNiAnnot(BigDecimal.valueOf(numeroAnnotazioni));
 
         tmpTabUD.setIamUser(entityManager.find(IamUser.class, strutV.getIdUser()));
 
         // aggiunti da Paolo
         tmpTabUD.setFlUnitaDocFirmato(
-                rispostaWS.getIstanzaEsito().getUnitaDocumentaria().isFirmatoDigitalmente() != null
-                        && rispostaWS.getIstanzaEsito().getUnitaDocumentaria().isFirmatoDigitalmente().booleanValue()
-                                ? "1" : "0");
+                booleanToFlag(rispostaWS.getIstanzaEsito().getUnitaDocumentaria().isFirmatoDigitalmente()));
         tmpTabUD.setDsMsgEsitoVerifFirme(strutV.getDsMsgEsitoVerifica());
         tmpTabUD.setTiEsitoVerifFirme(strutV.getTiEsitoVerifFirme());
 
@@ -453,19 +449,19 @@ public class SalvataggioSync {
         // salva il progressivo calcolato, estratto dal numero della chiave.. potrebbe
         // non esistere
         if (strutV.getProgressivoCalcolato() != null) {
-            tmpTabUD.setPgUnitaDoc(new BigDecimal(strutV.getProgressivoCalcolato()));
+            tmpTabUD.setPgUnitaDoc(BigDecimal.valueOf(strutV.getProgressivoCalcolato()));
         }
 
         // configurazione
         tmpTabUD.setFlForzaAccettazione(
-                rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione() ? "1" : "0");
-        tmpTabUD.setFlForzaConservazione(strutV.isConfigFlagForzaConservazione() ? "1" : "0");
+                booleanToFlag(rispostaWS.getIstanzaEsito().getConfigurazione().isForzaAccettazione()));
+        tmpTabUD.setFlForzaConservazione(booleanToFlag(strutV.isConfigFlagForzaConservazione()));
         tmpTabUD.setTiConservazione(rispostaWS.getIstanzaEsito().getConfigurazione().getTipoConservazione());
         tmpTabUD.setNmSistemaMigraz(rispostaWS.getIstanzaEsito().getConfigurazione().getSistemaDiMigrazione() != null
                 ? rispostaWS.getIstanzaEsito().getConfigurazione().getSistemaDiMigrazione() : "");
 
         tmpTabUD.setFlForzaCollegamento(
-                rispostaWS.getIstanzaEsito().getConfigurazione().isForzaCollegamento() ? "1" : "0");
+                booleanToFlag(rispostaWS.getIstanzaEsito().getConfigurazione().isForzaCollegamento()));
 
         // profilo archivistico - principale (il fascicolo principale esiste sempre se
         // esiste il profilo archivistico)
@@ -491,7 +487,7 @@ public class SalvataggioSync {
         tmpTabUD.setFlCartaceo("0");
         if (ud.getProfiloUnitaDocumentaria() != null) {
             Boolean cartaceo = ud.getProfiloUnitaDocumentaria().isCartaceo();
-            tmpTabUD.setFlCartaceo((cartaceo != null && cartaceo) ? "1" : "0");
+            tmpTabUD.setFlCartaceo(booleanToFlag(cartaceo != null && cartaceo));
             tmpTabUD.setDlOggettoUnitaDoc(ud.getProfiloUnitaDocumentaria().getOggetto());
             if (ud.getProfiloUnitaDocumentaria().getData() != null) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -500,12 +496,10 @@ public class SalvataggioSync {
                     d = format.parse(ud.getProfiloUnitaDocumentaria().getData());
                 } catch (ParseException ex) {
                     tmpReturn = false;
-
-                    log.info(
-                            "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ");
-
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.UD_002_001, strutV.getUrnPartChiaveUd());
+                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
+                            "Eccezione salvaUnitaDoc su parsing date ProfiloUnitaDocumentaria.Data  "
+                                    + ExceptionUtils.getRootCauseMessage(ex));
                     rispostaWS.getIstanzaEsito()
                             .setXMLVersamento("La sessione di versamento per l'UD da versare non è presente.");
                     return tmpReturn;
@@ -537,8 +531,7 @@ public class SalvataggioSync {
         } catch (RuntimeException re) {
             tmpReturn = false;
             if (ExceptionUtils.indexOfThrowable(re, java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
-                log.info(
-                        "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ");
+                log.info(ERRORE_CLIENT_ERRATO);
                 rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                 rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.UD_002_001, strutV.getUrnPartChiaveUd());
                 rispostaWS.setErroreElementoDoppio(true);
@@ -550,21 +543,20 @@ public class SalvataggioSync {
                 return tmpReturn;
             } else {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza dell'unità documentaria ", re);
+                log.error(ERROR_PERSISTENZA_UD, re);
             }
         }
 
         if (tmpReturn && strutV.isWarningFormatoNumero()) {
             try {
-                tmpReturn = salvaWarningAARegistroUd(strutV, ud, rispostaWS);
+                tmpReturn = salvaWarningAARegistroUd(strutV, ud);
             } catch (RuntimeException re) {
                 tmpReturn = false;
                 if (ExceptionUtils.indexOfThrowable(re, java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
                     // se sono arrivato qui, vuol dire che un versamento in parallelo ha creato il
                     // record
                     // prima di me, provocando un errore di chiave duplicata.
-                    log.info(
-                            "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ");
+                    log.info(ERRORE_CLIENT_ERRATO);
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
                             "Impossibile salvare i dati di warning sul formato del numero, "
@@ -572,7 +564,7 @@ public class SalvataggioSync {
                     return tmpReturn;
                 } else {
                     /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza dell'unità documentaria ", re);
+                    log.error(ERROR_PERSISTENZA_UD, re);
                 }
             }
         }
@@ -588,16 +580,14 @@ public class SalvataggioSync {
         }
 
         if (!tmpReturn) {
-            rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                    "Eccezione nella persistenza dell'unità documentaria ");
+            rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, ERROR_PERSISTENZA_UD);
             rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
         }
 
         return tmpReturn;
     }
 
-    // TODO !!!!!!
-    private boolean salvaWarningAARegistroUd(StrutturaVersamento strutV, UnitaDocumentaria ud, RispostaWS rispostaWS) {
+    private boolean salvaWarningAARegistroUd(StrutturaVersamento strutV, UnitaDocumentaria ud) {
         // qui, in caso di eccezione, rendo un 666P con un messaggio che indica il
         // problema di
         // aggiornamento parallelo nella tabella.
@@ -611,12 +601,13 @@ public class SalvataggioSync {
         javax.persistence.Query query = entityManager.createQuery(queryStr);
         query.setParameter("flWarnAaRegistroUnitaDocIn", "1");
         query.setParameter("idAaRegistroUnitaDocIn", strutV.getConfigRegAnno().getIdAaRegistroUnitaDoc());
-        query.setParameter("aaRegistroUnitaDocIn", new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        query.setParameter("aaRegistroUnitaDocIn", BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         numWarningAggiornati = query.executeUpdate();
         // se non ho aggiornato alcun record, vuol dire che lo devo creare...
         if (numWarningAggiornati == 0) {
             DecWarnAaRegistroUd tmpDecWarnAaRegistroUd = new DecWarnAaRegistroUd();
-            tmpDecWarnAaRegistroUd.setAaRegistroUnitaDoc(new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+            tmpDecWarnAaRegistroUd
+                    .setAaRegistroUnitaDoc(BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
             tmpDecWarnAaRegistroUd.setDecAaRegistroUnitaDoc(entityManager.find(DecAaRegistroUnitaDoc.class,
                     strutV.getConfigRegAnno().getIdAaRegistroUnitaDoc()));
             tmpDecWarnAaRegistroUd.setFlWarnAaRegistroUnitaDoc("1");
@@ -642,11 +633,11 @@ public class SalvataggioSync {
                 + "and ud.aaUnitaDocRegistro = :aaUnitaDocRegistroIn ";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
         query.setParameter("idRegistroUnitaDocIn", strutV.getIdRegistroUnitaDoc());
-        query.setParameter("aaUnitaDocRegistroIn", new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        query.setParameter("aaUnitaDocRegistroIn", BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         numAaUdReg = (Long) query.getSingleResult();
         if (numAaUdReg == 0) {
-            Map<String, Object> properties = new HashMap();
-            properties.put("javax.persistence.lock.timeout", 25);
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
 
             /*
              * se il registro è da inserire, lock esclusivo sul registro (che funge da semaforo)
@@ -657,7 +648,7 @@ public class SalvataggioSync {
                         LockModeType.PESSIMISTIC_WRITE, properties);
             } catch (Exception re) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza dell'unità documentaria ", re);
+                log.error(ERROR_PERSISTENZA_UD, re);
                 tmpReturn = false;
             }
 
@@ -671,13 +662,14 @@ public class SalvataggioSync {
                         + "and ud.aaUnitaDocRegistro = :aaUnitaDocRegistroIn ";
                 query = entityManager.createQuery(queryStr);
                 query.setParameter("idRegistroUnitaDocIn", strutV.getIdRegistroUnitaDoc());
-                query.setParameter("aaUnitaDocRegistroIn", new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+                query.setParameter("aaUnitaDocRegistroIn",
+                        BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
                 numAaUdReg = (Long) query.getSingleResult();
                 if (numAaUdReg == 0) {
                     MonAaUnitaDocRegistro tmpAaUnitaDocRegistro;
                     tmpAaUnitaDocRegistro = new MonAaUnitaDocRegistro();
                     tmpAaUnitaDocRegistro
-                            .setAaUnitaDocRegistro(new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+                            .setAaUnitaDocRegistro(BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
                     tmpAaUnitaDocRegistro.setDecRegistroUnitaDoc(
                             entityManager.find(DecRegistroUnitaDoc.class, strutV.getIdRegistroUnitaDoc()));
 
@@ -722,15 +714,14 @@ public class SalvataggioSync {
                 + "and al.cdRegistroKeyUnitaDocLink = :cdRegistroKeyUnitaDocLinkIn ";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
         query.setParameter("aroUnitaDocLinkIn", entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
-        query.setParameter("idStrutIn", new BigDecimal(strutV.getIdStruttura()));
+        query.setParameter("idStrutIn", BigDecimal.valueOf(strutV.getIdStruttura()));
         query.setParameter("cdRegistroKeyUnitaDocLinkIn", ud.getIntestazione().getChiave().getTipoRegistro());
-        query.setParameter("aaKeyUnitaDocLinkIn", new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        query.setParameter("aaKeyUnitaDocLinkIn", BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         query.setParameter("cdKeyUnitaDocLinkIn", ud.getIntestazione().getChiave().getNumero());
         try {
             numCollAggiustati = query.executeUpdate();
             if (numCollAggiustati > 0) {
-                log.debug(String.format("Sono stati connessi %s collegamenti forzati da precedenti versamenti",
-                        numCollAggiustati));
+                log.debug("Sono stati connessi {} collegamenti forzati da precedenti versamenti", numCollAggiustati);
             }
         } catch (RuntimeException re) {
             /// logga l'errore e blocca tutto
@@ -753,15 +744,14 @@ public class SalvataggioSync {
                 + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
                 + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn ";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
-        query.setParameter("idStrutIn", new BigDecimal(strutV.getIdStruttura()));
+        query.setParameter("idStrutIn", strutV.getIdStruttura());
         query.setParameter("cdRegistroKeyUnitaDocIn", ud.getIntestazione().getChiave().getTipoRegistro());
-        query.setParameter("aaKeyUnitaDocIn", new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        query.setParameter("aaKeyUnitaDocIn", BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         query.setParameter("cdKeyUnitaDocIn", ud.getIntestazione().getChiave().getNumero());
         try {
             numUdNonVersRimosse = query.executeUpdate();
             if (numUdNonVersRimosse > 0) {
-                log.debug(String.format("Sono stati rimossi %s tentativi falliti di versamento UD ",
-                        numUdNonVersRimosse));
+                log.debug("Sono stati rimossi {} tentativi falliti di versamento UD ", numUdNonVersRimosse);
             }
         } catch (RuntimeException re) {
             /// logga l'errore e blocca tutto
@@ -776,9 +766,9 @@ public class SalvataggioSync {
         boolean tmpReturn = true;
         ElvUdVersDaElabElenco tmpTab = new ElvUdVersDaElabElenco();
         tmpTab.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
-        tmpTab.setAaKeyUnitaDoc(new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        tmpTab.setAaKeyUnitaDoc(BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         tmpTab.setDtCreazione(convert(strutV.getDataVersamento()));
-        tmpTab.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+        tmpTab.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
         // nel caso il salvataggio sia su filesystem/Tivoli,
         // lo stato dell'UD passerà ad IN_ATTESA_SCHED
         // solo dopo la effettiva memorizzazione in Tivoli
@@ -829,7 +819,7 @@ public class SalvataggioSync {
                     && !tmpFp.getSottoFascicolo().getOggetto().isNil()) {
                 tmpArrP[4] = tmpFp.getSottoFascicolo().getOggetto().getValue();
             }
-            List tmpListP = Arrays.asList(tmpArrP);
+            List<String> tmpListP = Arrays.asList(tmpArrP);
 
             // elimina i fascicoli/sottofascicoli inseriti due volte
             // il problema si presenta con alcuni versatori poco precisi.
@@ -855,7 +845,7 @@ public class SalvataggioSync {
                         && !tmpFs.getSottoFascicolo().getOggetto().isNil()) {
                     tmpArr[4] = tmpFs.getSottoFascicolo().getOggetto().getValue();
                 }
-                List tmpList = Arrays.asList(tmpArr);
+                List<String> tmpList = Arrays.asList(tmpArr);
                 if (!tmpListP.equals(tmpList)) {
                     // se il fascicolo è uguale al principale, non lo considero
                     // in ogni caso inserisco il dato in un'hashmap, così i fascicoli duplicati
@@ -869,7 +859,7 @@ public class SalvataggioSync {
         for (CamiciaFascicoloType tmpFascicolo : tmpFascicoliUnivoci.values()) {
             tmpTabAS = new AroArchivSec();
             tmpTabAS.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
-            tmpTabAS.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+            tmpTabAS.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
             tmpTabAS.setDsClassif(tmpFascicolo.getClassifica());
             if (tmpFascicolo.getFascicolo() != null) {
                 tmpTabAS.setCdFascic(tmpFascicolo.getFascicolo().getIdentificativo());
@@ -907,9 +897,9 @@ public class SalvataggioSync {
                 AroLinkUnitaDoc tmpTabLUD = new AroLinkUnitaDoc();
 
                 tmpTabLUD.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
-                tmpTabLUD.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+                tmpTabLUD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
                 tmpTabLUD.setCdRegistroKeyUnitaDocLink(tmpUnitaDocColl.getChiave().getTipoRegistro());
-                tmpTabLUD.setAaKeyUnitaDocLink(new BigDecimal(tmpUnitaDocColl.getChiave().getAnno()));
+                tmpTabLUD.setAaKeyUnitaDocLink(BigDecimal.valueOf(tmpUnitaDocColl.getChiave().getAnno()));
                 tmpTabLUD.setCdKeyUnitaDocLink(tmpUnitaDocColl.getChiave().getNumero());
 
                 // Se il Documento Collegato non è presente, non ha chiave.
@@ -960,7 +950,7 @@ public class SalvataggioSync {
      * ************************************************************************** salvataggio dati e metadati per
      * aggiunta documenti **************************************************************************
      */
-    private boolean aggiornaUnitaDoc(StrutturaVersamento strutV, UnitaDocAggAllegati ud, RispostaWSAggAll rispostaWS) {
+    private boolean aggiornaUnitaDoc(StrutturaVersamento strutV, RispostaWSAggAll rispostaWS) {
         AroUnitaDoc tmpTabUD = null;
         boolean tmpReturn = true;
         int progressivoVersione = 0;
@@ -973,25 +963,24 @@ public class SalvataggioSync {
             tmpTabUD = entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc(), LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception re) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza dell'unità documentaria ", re);
+            log.error(ERROR_PERSISTENZA_UD, re);
             tmpReturn = false;
         }
         if (tmpReturn) {
             // prima di tutto aggiungo un elemento
             if (strutV.getDocumentiAttesi().get(0).getCategoriaDoc() == CategoriaDocumento.Allegato) {
-                tmpTabUD.setNiAlleg(tmpTabUD.getNiAlleg().add(new BigDecimal(1)));
+                tmpTabUD.setNiAlleg(tmpTabUD.getNiAlleg().add(BigDecimal.valueOf(1)));
             }
             if (strutV.getDocumentiAttesi().get(0).getCategoriaDoc() == CategoriaDocumento.Annesso) {
-                tmpTabUD.setNiAnnessi(tmpTabUD.getNiAnnessi().add(new BigDecimal(1)));
+                tmpTabUD.setNiAnnessi(tmpTabUD.getNiAnnessi().add(BigDecimal.valueOf(1)));
             }
             if (strutV.getDocumentiAttesi().get(0).getCategoriaDoc() == CategoriaDocumento.Annotazione) {
-                tmpTabUD.setNiAnnot(tmpTabUD.getNiAnnot().add(new BigDecimal(1)));
+                tmpTabUD.setNiAnnot(tmpTabUD.getNiAnnot().add(BigDecimal.valueOf(1)));
             }
 
             // se sono già stati creati degli AIP, pongo lo stato conservazione ad AIP IN
             // AGGIORNAMENTO
-            if (progressivoVersione > 0
-            // MAC#26281
+            if (progressivoVersione > 0 // MAC#26281
             // /* MAC#22948 */
             // || tmpTabUD.getTiStatoConservazione()
             // .equals(CostantiDB.StatoConservazioneUnitaDoc.IN_VOLUME_DI_CONSERVAZIONE.name())
@@ -1019,7 +1008,7 @@ public class SalvataggioSync {
                  * ogni caso con il valore NEGATIVO.
                  *
                  */
-                if (strutV.getTiEsitoVerifFirme().equals(VerificaFirmaEnums.EsitoControllo.NEGATIVO.name())) {
+                if (strutV.getTiEsitoVerifFirme().equals(SacerIndication.NEGATIVO.name())) {
                     tmpTabUD.setTiEsitoVerifFirme(strutV.getTiEsitoVerifFirme());
                     tmpTabUD.setDsMsgEsitoVerifFirme(strutV.getDsMsgEsitoVerifica());
                 }
@@ -1028,8 +1017,8 @@ public class SalvataggioSync {
                  * se il doc appena aggiunto è in warning, mentre l'unità doc già presente è POSITIVO, aggiorna l'unità
                  * doc a WARNING
                  */
-                if (strutV.getTiEsitoVerifFirme().equals(VerificaFirmaEnums.EsitoControllo.WARNING.name())
-                        && tmpTabUD.getTiEsitoVerifFirme().equals(VerificaFirmaEnums.EsitoControllo.POSITIVO.name())) {
+                if (strutV.getTiEsitoVerifFirme().equals(SacerIndication.WARNING.name())
+                        && tmpTabUD.getTiEsitoVerifFirme().equals(SacerIndication.POSITIVO.name())) {
                     tmpTabUD.setTiEsitoVerifFirme(strutV.getTiEsitoVerifFirme());
                     tmpTabUD.setDsMsgEsitoVerifFirme(strutV.getDsMsgEsitoVerifica());
                 }
@@ -1047,7 +1036,7 @@ public class SalvataggioSync {
                 entityManager.flush();
             } catch (RuntimeException re) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza dell'unità documentaria ", re);
+                log.error(ERROR_PERSISTENZA_UD, re);
                 tmpReturn = false;
             }
         }
@@ -1055,8 +1044,7 @@ public class SalvataggioSync {
         return tmpReturn;
     }
 
-    private boolean aggiornaDocumenti(StrutturaVersamento strutV, UnitaDocAggAllegati versamento,
-            RispostaWSAggAll rispostaWS) {
+    private boolean aggiornaDocumenti(StrutturaVersamento strutV) {
         boolean tmpReturn = true;
 
         try {
@@ -1201,8 +1189,7 @@ public class SalvataggioSync {
         }
     }
 
-    private boolean aggiornaPregressoDocumenti(StrutturaVersamento strutV, UnitaDocAggAllegati versamento,
-            RispostaWSAggAll rispostaWS) {
+    private boolean aggiornaPregressoDocumenti(StrutturaVersamento strutV) {
         boolean tmpReturn = true;
         // A. check data massima versamento recuperata in precedenza rispetto parametro
         // su db
@@ -1309,9 +1296,8 @@ public class SalvataggioSync {
     private List<VrsVLisXmlUdUrnDaCalc> retrieveVrsVLisXmlUdUrnDaCalcByUd(long idUnitaDoc) {
         Query query = entityManager
                 .createQuery("SELECT vrs FROM VrsVLisXmlUdUrnDaCalc vrs WHERE vrs.idUnitaDoc = :idUnitaDoc ");
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<VrsVLisXmlUdUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idUnitaDoc", BigDecimal.valueOf(idUnitaDoc));
+        return query.getResultList();
     }
 
     private boolean salvaUrnXmlSessioneVers(VrsXmlDatiSessioneVers xmlDatiSessioneVers, String tmpUrn,
@@ -1405,9 +1391,8 @@ public class SalvataggioSync {
 
     private List<VrsVLisXmlDocUrnDaCalc> retrieveVrsVLisXmlDocUrnDaCalcByDoc(long idDoc) {
         Query query = entityManager.createQuery("SELECT vrs FROM VrsVLisXmlDocUrnDaCalc vrs WHERE vrs.idDoc = :idDoc ");
-        query.setParameter("idDoc", idDoc);
-        List<VrsVLisXmlDocUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idDoc", BigDecimal.valueOf(idDoc));
+        return query.getResultList();
     }
 
     private void scriviUrnSipUpdPreg(AroUnitaDoc tmpAroUnitaDoc, StrutturaVersamento svf) {
@@ -1460,17 +1445,15 @@ public class SalvataggioSync {
     private List<AroUpdUnitaDoc> retrieveAroUpdUnitaDocByUd(long idUnitaDoc) {
         Query query = entityManager
                 .createQuery("SELECT upd FROM AroUpdUnitaDoc upd WHERE upd.aroUnitaDoc.idUnitaDoc = :idUnitaDoc ");
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<AroUpdUnitaDoc> upds = query.getResultList();
-        return upds;
+        query.setParameter("idUnitaDoc", Long.valueOf(idUnitaDoc));
+        return query.getResultList();
     }
 
     private List<VrsVLisXmlUpdUrnDaCalc> retrieveVrsVLisXmlUpdUrnDaCalcByUpd(long idUpdUnitaDoc) {
         Query query = entityManager
                 .createQuery("SELECT vrs FROM VrsVLisXmlUpdUrnDaCalc vrs WHERE vrs.idUpdUnitaDoc = :idUpdUnitaDoc ");
-        query.setParameter("idUpdUnitaDoc", idUpdUnitaDoc);
-        List<VrsVLisXmlUpdUrnDaCalc> vrs = query.getResultList();
-        return vrs;
+        query.setParameter("idUpdUnitaDoc", BigDecimal.valueOf(idUpdUnitaDoc));
+        return query.getResultList();
     }
 
     //
@@ -1478,9 +1461,9 @@ public class SalvataggioSync {
         boolean tmpReturn = true;
         ElvDocAggDaElabElenco tmpTab = new ElvDocAggDaElabElenco();
         tmpTab.setAroDoc(entityManager.find(AroDoc.class, strutV.getDocumentiAttesi().get(0).getIdRecDocumentoDB()));
-        tmpTab.setAaKeyUnitaDoc(new BigDecimal(ud.getIntestazione().getChiave().getAnno()));
+        tmpTab.setAaKeyUnitaDoc(BigDecimal.valueOf(ud.getIntestazione().getChiave().getAnno()));
         tmpTab.setDtCreazione(convert(strutV.getDataVersamento()));
-        tmpTab.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+        tmpTab.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
         // nel caso il salvataggio sia su filesystem/Tivoli,
         // lo stato del documento passerà ad IN_ATTESA_SCHED
         // solo dopo la effettiva memorizzazione in Tivoli
@@ -1634,7 +1617,7 @@ public class SalvataggioSync {
 
             // setto i valori generici
             tmpTabD.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
-            tmpTabD.setPgDoc(new BigDecimal(valueDocVers.getProgressivo()));
+            tmpTabD.setPgDoc(BigDecimal.valueOf(valueDocVers.getProgressivo()));
             tmpTabD.setDecTipoDoc(entityManager.find(DecTipoDoc.class, valueDocVers.getIdTipoDocumentoDB()));
             //
             if (configPerDoc.getTipoCreazioneDoc() == TipoCreazioneDoc.AGGIUNTA_DOCUMENTO) {
@@ -1654,7 +1637,7 @@ public class SalvataggioSync {
             tmpTabD.setDtAnnul(tmpCal.getTime());
             //
             tmpTabD.setCdKeyDocVers(valueDocVers.getRifDocumento().getIDDocumento());
-            tmpTabD.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+            tmpTabD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
 
             // aggiunti da Paolo
             tmpTabD.setFlDocFirmato(valueDocVers.getFlFileFirmato());
@@ -1683,7 +1666,7 @@ public class SalvataggioSync {
             // tipo documento (PRINCIPALE, ALLEGATO, ANNOTAZIONE, ANNESSO)
             tmpTabD.setTiDoc(valueDocVers.getCategoriaDoc().getValoreDb());
             // niOrd
-            tmpTabD.setNiOrdDoc(new BigDecimal(valueDocVers.getNiOrdDoc()));
+            tmpTabD.setNiOrdDoc(BigDecimal.valueOf(valueDocVers.getNiOrdDoc()));
 
             // inserisco su DB
             try {
@@ -1695,8 +1678,7 @@ public class SalvataggioSync {
                 tmpReturn = false;
                 if (configPerDoc.getTipoCreazioneDoc() == TipoCreazioneDoc.AGGIUNTA_DOCUMENTO && ExceptionUtils
                         .indexOfThrowable(re, java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
-                    log.info(
-                            "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ");
+                    log.info(ERRORE_CLIENT_ERRATO);
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.DOC_008_001,
                             valueDocVers.getRifDocumento().getIDDocumento(), strutV.getUrnPartChiaveUd());
@@ -1733,15 +1715,11 @@ public class SalvataggioSync {
     }
 
     private boolean salvaDatiAccessoriDocumenti(DocumentoVers documentoVersIn, StrutturaVersamento strutV) {
-        boolean tmpReturn = true;
         AroStrutDoc tmpTabSD = null;
 
-        // salvo dati specifici, tabelle nuove
-        if (tmpReturn) {
-            tmpReturn = this.salvaDatiSpecGen(CostantiDB.TipiUsoDatiSpec.VERS, TipiEntitaSacer.DOC,
-                    documentoVersIn.getIdRecDocumentoDB(), strutV.getIdStruttura(),
-                    documentoVersIn.getIdRecXsdDatiSpec(), documentoVersIn.getDatiSpecifici(), strutV.getIdUnitaDoc());
-        }
+        boolean tmpReturn = this.salvaDatiSpecGen(CostantiDB.TipiUsoDatiSpec.VERS, TipiEntitaSacer.DOC,
+                documentoVersIn.getIdRecDocumentoDB(), strutV.getIdStruttura(), documentoVersIn.getIdRecXsdDatiSpec(),
+                documentoVersIn.getDatiSpecifici(), strutV.getIdUnitaDoc());
 
         if (tmpReturn) {
             tmpReturn = this.salvaDatiSpecGen(CostantiDB.TipiUsoDatiSpec.MIGRAZ, TipiEntitaSacer.DOC,
@@ -1757,11 +1735,11 @@ public class SalvataggioSync {
 
             // setto i valori generici
             tmpTabSD.setAroDoc(entityManager.find(AroDoc.class, documentoVersIn.getIdRecDocumentoDB()));
-            tmpTabSD.setNiOrdStrutDoc(new BigDecimal(1));
+            tmpTabSD.setNiOrdStrutDoc(BigDecimal.valueOf(1));
             tmpTabSD.setDecTipoStrutDoc(
                     entityManager.find(DecTipoStrutDoc.class, documentoVersIn.getIdTipoStrutturaDB()));
             tmpTabSD.setFlStrutOrig("1");
-            tmpTabSD.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+            tmpTabSD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
 
             // inserisco su DB
             try {
@@ -1786,16 +1764,15 @@ public class SalvataggioSync {
                 + "and al.aaKeyUnitaDoc = :aaKeyUnitaDocIn " + "and al.cdKeyUnitaDoc = :cdKeyUnitaDocIn "
                 + "and al.cdRegistroKeyUnitaDoc = :cdRegistroKeyUnitaDocIn " + "and al.cdKeyDocVers = :cdKeyDocVersIn";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
-        query.setParameter("idStrutIn", new BigDecimal(strutV.getIdStruttura()));
+        query.setParameter("idStrutIn", strutV.getIdStruttura());
         query.setParameter("cdRegistroKeyUnitaDocIn", chiaveUd.getTipoRegistro());
-        query.setParameter("aaKeyUnitaDocIn", new BigDecimal(chiaveUd.getAnno()));
+        query.setParameter("aaKeyUnitaDocIn", BigDecimal.valueOf(chiaveUd.getAnno()));
         query.setParameter("cdKeyUnitaDocIn", chiaveUd.getNumero());
         query.setParameter("cdKeyDocVersIn", documentoVersIn.getRifDocumento().getIDDocumento());
         try {
             numUdNonVersRimosse = query.executeUpdate();
             if (numUdNonVersRimosse > 0) {
-                log.debug(String.format("Sono stati rimossi %s tentativi falliti di versamento UD ",
-                        numUdNonVersRimosse));
+                log.debug("Sono stati rimossi {} tentativi falliti di versamento UD ", numUdNonVersRimosse);
             }
         } catch (RuntimeException re) {
             /// logga l'errore e blocca tutto
@@ -1839,7 +1816,7 @@ public class SalvataggioSync {
                 }
 
                 tmpWarnUnitaDoc.setDsWarn(tmpErrMess);
-                tmpWarnUnitaDoc.setPgWarnUnitaDoc(new BigDecimal(progWarn));
+                tmpWarnUnitaDoc.setPgWarnUnitaDoc(BigDecimal.valueOf(progWarn));
                 tmpWarnUnitaDoc.setTiEntitaSacer(tmpVdE.getElementoResponsabile().name());
                 tmpWarnUnitaDoc.setAroUnitaDoc(
                         entityManager.find(AroUnitaDoc.class, versamento.getStrutturaComponenti().getIdUnitaDoc()));
@@ -1861,35 +1838,25 @@ public class SalvataggioSync {
         return tmpReturn;
     }
 
-    private boolean salvaComponenti(RispostaControlli risposta, StrutturaVersamento strutV, ChiaveType chiave) {
+    private boolean salvaComponenti(RispostaControlli risposta, StrutturaVersamento strutV, ChiaveType chiave,
+            String nomeWs) {
         boolean tmpReturn = true;
         AroCompDoc tmpTabCDComponente = null;
-        AroCompDoc tmpTabCDSottoComp = null;
         AroStrutDoc tmpAroStrutDoc = null;
         AroStrutDoc tmpAroStrutDocMerged = null;
-        // String tmpUrnCalc;
 
         risposta.reset();
         for (DocumentoVers valueDocVers : strutV.getDocumentiAttesi()) {
             // recupero la struttura documento a cui agganciare i componenti del documento
             tmpAroStrutDoc = entityManager.find(AroStrutDoc.class, valueDocVers.getIdRecStrutturaDB());
             for (ComponenteVers tmpCV : valueDocVers.getFileAttesi()) {
-                // tmpUrnCalc = this.calcolaUrnComp(tmpCV, strutV.getUrnPartVersatore());
                 if (tmpCV.getMySottoComponente() == null) {
-                    // sto elaborando un componente
-                    // MEV#18660 {
-                    // tmpTabCDComponente = tmpCV.getAcdEntity();
-                    // if (tmpTabCDComponente == null) { // questo caso si verifica se il tipo
-                    // supporto è diverso da
-                    // FILE
-                    // tmpTabCDComponente = new AroCompDoc();
-                    // }
                     tmpTabCDComponente = new AroCompDoc();
                     // } MEV#18660
 
                     tmpTabCDComponente.setAroStrutDoc(tmpAroStrutDoc);
                     tmpTabCDComponente
-                            .setNiOrdCompDoc(new BigDecimal(tmpCV.getMyComponente().getOrdinePresentazione()));
+                            .setNiOrdCompDoc(BigDecimal.valueOf(tmpCV.getMyComponente().getOrdinePresentazione()));
                     tmpTabCDComponente
                             .setTiSupportoComp(tmpCV.getMyComponente().getTipoSupportoComponente().toString());
                     tmpTabCDComponente
@@ -1902,7 +1869,8 @@ public class SalvataggioSync {
 
                     switch (tmpCV.getTipoSupporto()) {
                     case FILE:
-                        tmpTabCDComponente.setNiSizeFileCalc(new BigDecimal(tmpCV.getRifFileBinario().getDimensione()));
+                        tmpTabCDComponente
+                                .setNiSizeFileCalc(BigDecimal.valueOf(tmpCV.getRifFileBinario().getDimensione()));
                         tmpTabCDComponente.setDecFormatoFileDoc(
                                 entityManager.find(DecFormatoFileDoc.class, tmpCV.getIdFormatoFileVers()));
                         break;
@@ -1923,10 +1891,7 @@ public class SalvataggioSync {
                     tmpTabCDComponente.setDsRifTempVers(tmpCV.getMyComponente().getDescrizioneRiferimentoTemporale());
 
                     // non viene più persistito
-                    // tmpTabCDComponente.setDsUrnCompCalc(tmpUrnCalc);
-
-                    tmpTabCDComponente.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
-                    //// MEV#18660 {
+                    tmpTabCDComponente.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
                     // TODO: (da firma MEV#18660)
                     CompDocMock mock = tmpCV.withAcdEntity();
                     Date tmRifTempVers = null;
@@ -1962,14 +1927,16 @@ public class SalvataggioSync {
 
                     //// } MEV#18660
                     // salvo nell'esito del componente il valore dell'URN calcolato
-                    // tmpCV.getRifComponenteResp().setURN(tmpUrnCalc);
                     // aggiungo alla struttura documento il componente appena elaborato
+                    if (tmpAroStrutDoc.getAroCompDocs() == null) {
+                        tmpAroStrutDoc.setAroCompDocs(new ArrayList<>());
+                    }
                     tmpAroStrutDoc.getAroCompDocs().add(tmpTabCDComponente);
                     // salvo l'ordine di presentazione nella struttura documento, per recuperarlo in
                     // seguito
                     tmpCV.setOrdinePresentazione(tmpCV.getMyComponente().getOrdinePresentazione());
                     //
-                    tmpTabCDComponente.setAroAroCompUrnCalcs(new ArrayList<AroCompUrnCalc>());
+                    tmpTabCDComponente.setAroAroCompUrnCalcs(new ArrayList<>());
 
                     // gestione nuovo urn ORIGINALE
                     String tmpUrn = MessaggiWSFormat.formattaBaseUrnDoc(strutV.getUrnPartVersatore(),
@@ -1988,10 +1955,10 @@ public class SalvataggioSync {
 
                     this.salvaCompUrnCalc(tmpTabCDComponente, tmpUrn, TiUrn.NORMALIZZATO);
                     // init bi-directionals
-                    tmpTabCDComponente.setAroMarcaComps(new ArrayList<AroMarcaComp>());
-                    tmpTabCDComponente.setAroFirmaComps(new ArrayList<AroFirmaComp>());
-                    tmpTabCDComponente.setAroBustaCrittogs(new ArrayList<AroBustaCrittog>());
-                    tmpTabCDComponente.setFirReport(new ArrayList<FirReport>());
+                    tmpTabCDComponente.setAroMarcaComps(new ArrayList<>());
+                    tmpTabCDComponente.setAroFirmaComps(new ArrayList<>());
+                    tmpTabCDComponente.setAroBustaCrittogs(new ArrayList<>());
+                    tmpTabCDComponente.setFirReport(new ArrayList<>());
 
                     // flag di verifica firma attivati e almeno una busta presente
                     boolean elabResultVerificaFirma = strutV.effettuaVerificaFirma()
@@ -1999,7 +1966,7 @@ public class SalvataggioSync {
                     if (elabResultVerificaFirma) {
                         // per ogni componente salvo i dati relativi alla firma (se esistono)
                         tmpReturn = salvataggioFirmaManager.salvaBustaCrittografica(risposta, tmpCV.getId(),
-                                tmpCV.getVfWrapper(), tmpTabCDComponente, tmpTabCDSottoComp);
+                                tmpCV.getVfWrapper(), tmpTabCDComponente, null);
                         // se ci sono problemi nel salvataggio, blocco tutto
                         if (!tmpReturn) {
                             return tmpReturn;
@@ -2009,7 +1976,7 @@ public class SalvataggioSync {
                         if (StringUtils.isNotBlank(tmpTabCDComponente.getFlCompFirmato())
                                 && tmpTabCDComponente.getFlCompFirmato().equals(Flag.TRUE)) {
                             tmpReturn = salvataggioFirmaManager.salvaReportVerificaCompDoc(risposta,
-                                    tmpCV.getVfWrapper(), strutV, tmpTabCDComponente);
+                                    tmpCV.getVfWrapper(), strutV, tmpTabCDComponente, nomeWs);
                             // se ci sono problemi nel salvataggio, blocco tutto
                             if (!tmpReturn) {
                                 return tmpReturn;
@@ -2017,14 +1984,7 @@ public class SalvataggioSync {
                         }
                     }
                 } else {
-                    // MEV#18660 {
-                    // sto elaborando un sottocomponente
-                    // tmpTabCDSottoComp = tmpCV.getAcdEntity();
-                    // if (tmpTabCDSottoComp == null) { // questo caso si verifica se il tipo
-                    // supporto è diverso da FILE
-                    // tmpTabCDSottoComp = new AroCompDoc();
-                    // }
-                    tmpTabCDSottoComp = new AroCompDoc();
+                    AroCompDoc tmpTabCDSottoComp = new AroCompDoc();
                     // } MEV#18660
 
                     // imposto il riferimento al componente padre
@@ -2032,7 +1992,7 @@ public class SalvataggioSync {
 
                     tmpTabCDSottoComp.setAroStrutDoc(tmpAroStrutDoc);
                     tmpTabCDSottoComp
-                            .setNiOrdCompDoc(new BigDecimal(tmpCV.getMySottoComponente().getOrdinePresentazione()));
+                            .setNiOrdCompDoc(BigDecimal.valueOf(tmpCV.getMySottoComponente().getOrdinePresentazione()));
                     tmpTabCDSottoComp
                             .setTiSupportoComp(tmpCV.getMySottoComponente().getTipoSupportoComponente().toString());
                     tmpTabCDSottoComp
@@ -2043,7 +2003,8 @@ public class SalvataggioSync {
 
                     switch (tmpCV.getTipoSupporto()) {
                     case FILE:
-                        tmpTabCDSottoComp.setNiSizeFileCalc(new BigDecimal(tmpCV.getRifFileBinario().getDimensione()));
+                        tmpTabCDSottoComp
+                                .setNiSizeFileCalc(BigDecimal.valueOf(tmpCV.getRifFileBinario().getDimensione()));
                         tmpTabCDSottoComp.setDecFormatoFileDoc(
                                 entityManager.find(DecFormatoFileDoc.class, tmpCV.getIdFormatoFileVers()));
                         break;
@@ -2058,11 +2019,12 @@ public class SalvataggioSync {
                     }
 
                     // non viene più persistito
-                    // tmpTabCDSottoComp.setDsUrnCompCalc(tmpUrnCalc);
-                    tmpTabCDSottoComp.setIdStrut(new BigDecimal(strutV.getIdStruttura()));
+                    tmpTabCDSottoComp.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
 
                     // salvo nell'esito del sottocomponente il valore dell'URN calcolato
-                    // tmpCV.getRifSottoComponenteResp().setURN(tmpUrnCalc);
+                    if (tmpAroStrutDoc.getAroCompDocs() == null) {
+                        tmpAroStrutDoc.setAroCompDocs(new ArrayList<>());
+                    }
                     // aggiungo alla struttura documento il componente appena elaborato
                     tmpAroStrutDoc.getAroCompDocs().add(tmpTabCDSottoComp);
                     // salvo l'ordine di presentazione nella struttura documento, per recuperarlo in
@@ -2070,7 +2032,7 @@ public class SalvataggioSync {
                     tmpCV.setOrdinePresentazione(tmpCV.getMySottoComponente().getOrdinePresentazione());
 
                     //
-                    tmpTabCDSottoComp.setAroAroCompUrnCalcs(new ArrayList<AroCompUrnCalc>());
+                    tmpTabCDSottoComp.setAroAroCompUrnCalcs(new ArrayList<>());
 
                     // gestione nuovo urn ORIGINALE
                     String tmpUrn = MessaggiWSFormat.formattaBaseUrnDoc(strutV.getUrnPartVersatore(),
@@ -2089,7 +2051,6 @@ public class SalvataggioSync {
 
                     this.salvaCompUrnCalc(tmpTabCDSottoComp, tmpUrn, TiUrn.NORMALIZZATO);
 
-                    //// MEV#18660 {
                     // TODO: (da firma MEV#18660)
                     CompDocMock mock = tmpCV.withAcdEntity();
                     Date tmRifTempVers = null;
@@ -2124,10 +2085,10 @@ public class SalvataggioSync {
                                 mock.getIdDecFormatoFileStandard().longValue()));
                     }
                     // init bi-directionals
-                    tmpTabCDSottoComp.setAroMarcaComps(new ArrayList<AroMarcaComp>());
-                    tmpTabCDSottoComp.setAroFirmaComps(new ArrayList<AroFirmaComp>());
-                    tmpTabCDSottoComp.setAroBustaCrittogs(new ArrayList<AroBustaCrittog>());
-                    tmpTabCDSottoComp.setFirReport(new ArrayList<FirReport>());
+                    tmpTabCDSottoComp.setAroMarcaComps(new ArrayList<>());
+                    tmpTabCDSottoComp.setAroFirmaComps(new ArrayList<>());
+                    tmpTabCDSottoComp.setAroBustaCrittogs(new ArrayList<>());
+                    tmpTabCDSottoComp.setFirReport(new ArrayList<>());
 
                     //// } MEV#18660
                     boolean elabResultVerificaFirma = strutV.effettuaVerificaFirma()
@@ -2145,7 +2106,7 @@ public class SalvataggioSync {
                         if (StringUtils.isNotBlank(tmpTabCDSottoComp.getFlCompFirmato())
                                 && tmpTabCDSottoComp.getFlCompFirmato().equals(Flag.TRUE)) {
                             tmpReturn = salvataggioFirmaManager.salvaReportVerificaCompDoc(risposta,
-                                    tmpCV.getVfWrapper(), strutV, tmpTabCDSottoComp);
+                                    tmpCV.getVfWrapper(), strutV, tmpTabCDSottoComp, nomeWs);
                             // se ci sono problemi nel salvataggio, blocco tutto
                             if (!tmpReturn) {
                                 return tmpReturn;
@@ -2165,7 +2126,7 @@ public class SalvataggioSync {
                 switch (strutV.getTipoSalvataggioFile()) {
                 case BLOB:
                     tmpReturn = this.salvaBlobStrutDoc(tmpAroStrutDocMerged, valueDocVers, risposta, strutV, chiave,
-                            WriteCompBlbOracle.TabellaBlob.ARO_CONTENUTO_COMP);
+                            WriteCompBlbOracle.TabellaBlob.ARO_CONTENUTO_COMP, nomeWs);
                     break;
                 case FILE:
                     if (strutV.isTpiAbilitato()) {
@@ -2177,7 +2138,7 @@ public class SalvataggioSync {
                          * tabella di blob dedicata chiamata ARO_FILE_COMP con struttura identica a ARO_CONTENUTO_COMP
                          */
                         tmpReturn = this.salvaBlobStrutDoc(tmpAroStrutDocMerged, valueDocVers, risposta, strutV, chiave,
-                                WriteCompBlbOracle.TabellaBlob.ARO_FILE_COMP);
+                                WriteCompBlbOracle.TabellaBlob.ARO_FILE_COMP, nomeWs);
                     }
                     break;
                 }
@@ -2201,7 +2162,7 @@ public class SalvataggioSync {
     /**
      * Rispetta la firma degli altri metodi privati, di fatto restituisce sempre true, non esistono infatti casistiche
      * per cui debba fallire
-     * 
+     *
      * @param aroCompDoc
      * @param tmpUrn
      * @param tiUrn
@@ -2218,7 +2179,7 @@ public class SalvataggioSync {
     }
 
     private boolean salvaBlobStrutDoc(AroStrutDoc aroStrutDoc, DocumentoVers valueDocVers, RispostaControlli risposta,
-            StrutturaVersamento strutV, ChiaveType chiave, WriteCompBlbOracle.TabellaBlob tabellaBlob) {
+            StrutturaVersamento strutV, ChiaveType chiave, WriteCompBlbOracle.TabellaBlob tabellaBlob, String nomeWs) {
         // ricarico i componenti appena salvati per recuperare gli ID e conservarli in
         // memoria
         // inoltre preparo e salvo i record di contenuto componente relativi ai file
@@ -2226,7 +2187,7 @@ public class SalvataggioSync {
             for (ComponenteVers tmpCV : valueDocVers.getFileAttesi()) {
                 if (tmpCV.getOrdinePresentazione() == tmpCompDoc.getNiOrdCompDoc().longValue()) {
                     tmpCV.setIdRecDB(tmpCompDoc.getIdCompDoc());
-                    if (!this.aggiungiBlobSuBlob(risposta, tmpCV, tmpCompDoc, strutV, chiave, tabellaBlob)) {
+                    if (!this.aggiungiBlobSuBlob(risposta, tmpCV, tmpCompDoc, strutV, chiave, tabellaBlob, nomeWs)) {
                         return false;
                     }
                 }
@@ -2254,7 +2215,7 @@ public class SalvataggioSync {
     }
 
     private boolean aggiungiBlobSuBlob(RispostaControlli risposta, ComponenteVers componente, AroCompDoc compntEntity,
-            StrutturaVersamento strutV, ChiaveType chiave, WriteCompBlbOracle.TabellaBlob tabellaBlob) {
+            StrutturaVersamento strutV, ChiaveType chiave, WriteCompBlbOracle.TabellaBlob tabellaBlob, String nomeWs) {
         boolean tmpReturn = true;
         FileBinario tmpFb;
         byte[] hash;
@@ -2264,11 +2225,6 @@ public class SalvataggioSync {
         }
 
         tmpFb = componente.getRifFileBinario();
-        if (tmpFb.isInMemoria()) {
-            risposta.setrBoolean(false);
-            risposta.setDsErr("[BLOB] Errore: non è possibile archiviare un file gestito in memoria.");
-            tmpReturn = false;
-        }
 
         if (tmpReturn) {
             try (FileInputStream fis = new FileInputStream(tmpFb.getFileSuDisco())) {
@@ -2309,7 +2265,6 @@ public class SalvataggioSync {
                 }
 
                 // in ogni caso algoritmo ed encoding sono considerati costanti
-                // compntEntity.setDsAlgoHashFileCalc(CostantiDB.TipiHash.SHA_1.descrivi());
                 compntEntity.setDsAlgoHashFileCalc(CostantiDB.TipiHash.SHA_256.descrivi());
                 compntEntity.setCdEncodingHashFileCalc(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
 
@@ -2338,18 +2293,32 @@ public class SalvataggioSync {
 
         if (tmpReturn) {
             try {
-                // procedo alla memorizzazione del file sul blob, via JDBC
-                WriteCompBlbOracle.DatiAccessori datiAccessori = new WriteCompBlbOracle().new DatiAccessori();
-                datiAccessori.setTabellaBlob(tabellaBlob);
-                datiAccessori.setIdPadre(compntEntity.getIdCompDoc());
-                datiAccessori.setIdStruttura(compntEntity.getIdStrut().longValue());
-                datiAccessori.setAaKeyUnitaDoc(chiave.getAnno());
-                datiAccessori.setDtVersamento(strutV.getDataVersamento());
+                AroDoc docRif = compntEntity.getAroStrutDoc().getAroDoc();
+                long idTipoUnitaDoc = docRif.getAroUnitaDoc().getDecTipoUnitaDoc().getIdTipoUnitaDoc().longValue();
+                BackendStorage backendComponenti = objectStorageService.lookupBackendByServiceName(idTipoUnitaDoc,
+                        nomeWs);
 
-                RispostaControlli tmpControlli = writeCompBlbOracle.salvaStreamSuBlobComp(datiAccessori, tmpFb);
-                if (!tmpControlli.isrBoolean()) {
-                    risposta.setDsErr(tmpControlli.getDsErr());
-                    tmpReturn = false;
+                if (backendComponenti.isDataBase()) {
+
+                    // procedo alla memorizzazione del file sul blob, via JDBC
+                    WriteCompBlbOracle.DatiAccessori datiAccessori = new WriteCompBlbOracle().new DatiAccessori();
+                    datiAccessori.setTabellaBlob(tabellaBlob);
+                    datiAccessori.setIdPadre(compntEntity.getIdCompDoc());
+                    datiAccessori.setIdStruttura(compntEntity.getIdStrut().longValue());
+                    datiAccessori.setAaKeyUnitaDoc(chiave.getAnno());
+                    datiAccessori.setDtVersamento(strutV.getDataVersamento());
+
+                    RispostaControlli tmpControlli = writeCompBlbOracle.salvaStreamSuBlobComp(datiAccessori, tmpFb);
+                    if (!tmpControlli.isrBoolean()) {
+                        risposta.setDsErr(tmpControlli.getDsErr());
+                        tmpReturn = false;
+                    }
+                } else { // Backend Object storage
+                    ObjectStorageResource componenteSuOS = objectStorageService.createOrCopyResourceInComponenti(
+                            backendComponenti.getBackendName(), compntEntity.getIdCompDoc().longValue(), tmpFb);
+                    log.debug("Salvato il componente su Object storage nel bucket {} con chiave {}! ",
+                            componenteSuOS.getBucket(), componenteSuOS.getKey());
+
                 }
             } catch (Exception re) {
                 /// logga l'errore e blocca tutto
@@ -2386,11 +2355,6 @@ public class SalvataggioSync {
         }
 
         tmpFb = componente.getRifFileBinario();
-        if (tmpFb.isInMemoria()) {
-            risposta.setrBoolean(false);
-            risposta.setDsErr("[TIVOLI] Errore: non è possibile archiviare su nastro un file gestito in memoria.");
-            tmpReturn = false;
-        }
 
         if (tmpReturn) {
             try (FileInputStream fis = new FileInputStream(tmpFb.getFileSuDisco())) {
@@ -2438,7 +2402,6 @@ public class SalvataggioSync {
                 compntEntity.setDsNomeFileArk(tmpFilePath);
 
                 // in ogni caso algoritmo ed encoding sono considerati costanti
-                // compntEntity.setDsAlgoHashFileCalc(CostantiDB.TipiHash.SHA_1.descrivi());
                 compntEntity.setDsAlgoHashFileCalc(CostantiDB.TipiHash.SHA_256.descrivi());
                 compntEntity.setCdEncodingHashFileCalc(CostantiDB.TipiEncBinari.HEX_BINARY.descrivi());
 
@@ -2531,7 +2494,7 @@ public class SalvataggioSync {
     }
 
     private boolean salvaDatiSpecGen(CostantiDB.TipiUsoDatiSpec tipoUso, TipiEntitaSacer tipoEntity, long idEntity,
-            long idStrut, long idXsd, HashMap<String, DatoSpecifico> datiSpecifici, long idAroUnitaDoc) {
+            long idStrut, long idXsd, Map<String, DatoSpecifico> datiSpecifici, long idAroUnitaDoc) {
         boolean tmpReturn = true;
         AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec = null;
         AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec = null;
@@ -2560,7 +2523,7 @@ public class SalvataggioSync {
                 break;
             }
 
-            tmpAroUsoXsdDatiSpec.setIdStrut(new BigDecimal(idStrut));
+            tmpAroUsoXsdDatiSpec.setIdStrut(BigDecimal.valueOf(idStrut));
             tmpAroUsoXsdDatiSpec.setDecXsdDatiSpec(entityManager.find(DecXsdDatiSpec.class, idXsd));
 
             // inserisco su DB
@@ -2578,7 +2541,7 @@ public class SalvataggioSync {
                 for (DatoSpecifico tmpDS : datiSpecifici.values()) {
                     tmpAroValoreAttribDatiSpec = new AroValoreAttribDatiSpec();
                     tmpAroValoreAttribDatiSpec.setAroUsoXsdDatiSpec(tmpAroUsoXsdDatiSpec);
-                    tmpAroValoreAttribDatiSpec.setIdStrut(new BigDecimal(idStrut));
+                    tmpAroValoreAttribDatiSpec.setIdStrut(BigDecimal.valueOf(idStrut));
                     tmpAroValoreAttribDatiSpec
                             .setDecAttribDatiSpec(entityManager.find(DecAttribDatiSpec.class, tmpDS.getIdDatoSpec()));
                     tmpAroValoreAttribDatiSpec.setDlValore(tmpDS.getValore());
@@ -2604,7 +2567,7 @@ public class SalvataggioSync {
      *
      *
      * @param strutturaVersIn
-     * 
+     *
      * @return
      */
     private boolean salvaDatiAggregazioni(StrutturaVersamento strutV) {
@@ -2649,11 +2612,10 @@ public class SalvataggioSync {
      * return list of idVerSerie
      */
     private List<BigDecimal> retrieveSerVLisVerserByUpdUd(long idUnitaDoc) {
-        Query query = entityManager
-                .createQuery("SELECT ser.idVerSerie FROM SerVLisVerserByUpdUd ser WHERE ser.idUnitaDoc = :idUnitaDoc ");
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<BigDecimal> serie = query.getResultList();
-        return serie;
+        Query query = entityManager.createQuery(
+                "SELECT ser.serVLisVerserByUpdUdId.idVerSerie FROM SerVLisVerserByUpdUd ser WHERE ser.serVLisVerserByUpdUdId.idUnitaDoc = :idUnitaDoc ");
+        query.setParameter("idUnitaDoc", BigDecimal.valueOf(idUnitaDoc));
+        return query.getResultList();
     }
 
     /*
@@ -2664,28 +2626,27 @@ public class SalvataggioSync {
      * return list of idFascicolo
      */
     private List<BigDecimal> retrieveFasVLisFascByUpdUd(long idUnitaDoc) {
-        Query query = entityManager
-                .createQuery("SELECT ser.idFascicolo FROM FasVLisFascByUpdUd ser WHERE ser.idUnitaDoc = :idUnitaDoc ");
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        List<BigDecimal> fascicoli = query.getResultList();
-        return fascicoli;
+        Query query = entityManager.createQuery(
+                "SELECT ser.fasVLisFascByUpdUdId.idFascicolo FROM FasVLisFascByUpdUd ser WHERE ser.fasVLisFascByUpdUdId.idUnitaDoc = :idUnitaDoc ");
+        query.setParameter("idUnitaDoc", BigDecimal.valueOf(idUnitaDoc));
+        return query.getResultList();
     }
 
     /**
      * Restituisce il valore del progressivo versione indice AIP di tipo UNISINCRO
      *
      * @param idUnitaDoc
-     * 
+     *
      * @return il progressivo versione oppure 0 se questo ancora non esiste
      */
-    private int recuperaProgressivoVersione(Long idUnitaDoc) {
+    private int recuperaProgressivoVersione(long idUnitaDoc) {
         List<AroVerIndiceAipUd> aroVerIndiceAipList;
         String queryStr = "SELECT u FROM AroVerIndiceAipUd u "
                 + "WHERE u.aroIndiceAipUd.aroUnitaDoc.idUnitaDoc = :idUnitaDoc "
                 + "AND u.aroIndiceAipUd.tiFormatoIndiceAip = 'UNISYNCRO' " + "ORDER BY u.pgVerIndiceAip DESC ";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
-        query.setParameter("idUnitaDoc", idUnitaDoc);
-        aroVerIndiceAipList = (List<AroVerIndiceAipUd>) query.getResultList();
+        query.setParameter("idUnitaDoc", Long.valueOf(idUnitaDoc));
+        aroVerIndiceAipList = query.getResultList();
         if (aroVerIndiceAipList != null && !aroVerIndiceAipList.isEmpty()) {
             return aroVerIndiceAipList.get(0).getPgVerIndiceAip().intValue();
         } else {

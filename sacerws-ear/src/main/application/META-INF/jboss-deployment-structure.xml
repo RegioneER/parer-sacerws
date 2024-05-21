@@ -2,16 +2,7 @@
     <deployment>
         <dependencies>
             <module name="deployment.XADisk.rar"/>
-            <module name="org.eclipse.persistence" export="TRUE" />
-            <!-- Questo serve per evitare l'errore di CASTOR
-                Could not instantiate serializer com.sun.org.apache.xml.internal.serialize.XMLSerializer: 
-                    java.lang.ClassNotFoundException: com.sun.org.apache.xml.internal.serialize.XMLSerializer
-            -->
-            <system>
-                <paths>
-                    <path name="com/sun/org/apache/xml/internal/serialize"/>
-                </paths>
-            </system> 
+            <module name="org.dom4j" export="true" />                        
         </dependencies>
         <exclusions>
             <!--            <module name="org.slf4j" />
@@ -23,8 +14,8 @@
     </deployment>
     <sub-deployment name="sacerws-ejb-${project.version}.jar">
         <dependencies>
-            <module name="deployment.XADisk.rar" export="TRUE"/>
-            <module name="org.eclipse.persistence" export="TRUE" />
+            <module name="deployment.XADisk.rar" export="true"/>
+            <module name="org.eclipse.persistence" export="true" />
         </dependencies>
         <exclusions>
             <!--            <module name="org.slf4j" />

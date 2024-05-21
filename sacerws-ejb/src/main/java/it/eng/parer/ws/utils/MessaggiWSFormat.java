@@ -1,12 +1,32 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.utils;
 
+import static it.eng.parer.util.DateUtilsConverter.convert;
+
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -21,8 +41,6 @@ import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.utils.Costanti.CategoriaDocumento;
-import java.time.ZonedDateTime;
-import static it.eng.parer.util.DateUtilsConverter.convert;
 
 /**
  *
@@ -35,13 +53,6 @@ public class MessaggiWSFormat {
     }
 
     //
-    public static String bonificaUrnPerNomeFile(String urn) {
-        return urn.replaceAll("[^A-Za-z0-9\\. _-]", "_");
-    }
-
-    public static String bonificaID(String iD) {
-        return iD.replace(" ", "_");
-    }
 
     // MEV#16490
     public static String formattaUrnPartVersatore(CSVersatore versatore) {
@@ -90,25 +101,10 @@ public class MessaggiWSFormat {
     }
 
     //
-    public static String formattaChiaveDocumento(String chiaveUd, CategoriaDocumento categoria, int progressivo) {
-        return formattaChiaveDocumento(chiaveUd, categoria, progressivo, false,
-                Costanti.UrnFormatter.CHIAVE_DOC_FMT_STRING, Costanti.UrnFormatter.PADNODIGITS_FMT);
-    }
-
-    //
     public static String formattaChiaveDocumento(String chiaveUd, CategoriaDocumento categoria, int progressivo,
             boolean pgpad, String fmtUsed, String padfmtUsed) {
         return MessageFormat.format(Costanti.UrnFormatter.CHIAVE_DOC_FMT_STRING, chiaveUd,
                 formattaUrnPartDocumento(categoria, progressivo, pgpad, fmtUsed, padfmtUsed));
-    }
-
-    /*
-     * OLD ONE (in questo caso non si è "generalizzato" dato che la logica di calcola della chiave del componentente è
-     * del tutto nuova) Vedi sotto : è di fatto cambiata la firma del metodo !
-     */
-    public static String formattaChiaveComponente(String chiaveDoc, int progressivoStrutDoc, long progressivoComp) {
-        return MessageFormat.format(Costanti.UrnFormatter.CHIAVE_COMP_FMT_STRING, chiaveDoc, progressivoStrutDoc,
-                progressivoComp);
     }
 
     //
@@ -191,12 +187,6 @@ public class MessaggiWSFormat {
                 pathVersatore, pathUd, nomeFile);
     }
 
-    public static String formattaFileLogRetrieve(CSVersatore versatore, CSChiave chiave) {
-        return MessageFormat.format(Costanti.UrnFormatter.FNAME_LOG_TSM_RETRIEVE, versatore.getAmbiente(),
-                versatore.getEnte(), versatore.getStruttura(), chiave.getTipoRegistro(), chiave.getAnno().toString(),
-                chiave.getNumero());
-    }
-
     public static Long formattaKeyPartAnnoMeseVers(Date dtVersamento) {
         Calendar date = Calendar.getInstance();
         date.setTime(dtVersamento);
@@ -227,34 +217,16 @@ public class MessaggiWSFormat {
         return MessageFormat.format(Costanti.UrnFormatter.URN_DOC_UNI_DOC_FMT_STRING, urnBase);
     }
 
-    // old URN
-    public static String formattaUrnIndiceSip(String urnBase) {
-        return formattaUrnIndiceSip(urnBase, Costanti.UrnFormatter.URN_INDICE_SIP_FMT_STRING); // default
-    }
-
     public static String formattaUrnIndiceSip(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
-    }
-
-    public static String formattaUrnPiSip(String urnBase) {
-        return formattaUrnPiSip(urnBase, Costanti.UrnFormatter.URN_PI_SIP_FMT_STRING);
     }
 
     public static String formattaUrnPiSip(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
     }
 
-    public static String formattaUrnEsitoVers(String urnBase) {
-        return formattaUrnEsitoVers(urnBase, Costanti.UrnFormatter.URN_ESITO_VERS_FMT_STRING);
-    }
-
     public static String formattaUrnEsitoVers(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
-    }
-
-    // old urn
-    public static String formattaUrnRappVers(String urnBase) {
-        return formattaUrnRappVers(urnBase, Costanti.UrnFormatter.URN_RAPP_VERS_FMT_STRING);
     }
 
     public static String formattaUrnRappVers(String urnBase, String fmtUsed) {
@@ -292,24 +264,12 @@ public class MessaggiWSFormat {
         }
     }
 
-    public static String formattaUrnIndiceSipFasc(String urnBase) {
-        return formattaUrnIndiceSip(urnBase, Costanti.UrnFormatter.URN_INDICE_SIP_FASC_FMT_STRING);
-    }
-
     public static String formattaUrnIndiceSipFasc(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
     }
 
-    public static String formattaUrnRappVersFasc(String urnBase) {
-        return formattaUrnRappVersFasc(urnBase, Costanti.UrnFormatter.URN_RAPP_VERS_FASC_FMT_STRING);
-    }
-
     public static String formattaUrnRappVersFasc(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
-    }
-
-    public static String formattaUrnRappNegFasc(String urnBase) {
-        return MessageFormat.format(Costanti.UrnFormatter.URN_RAPP_NEG_FASC_FMT_STRING, urnBase);
     }
 
     public static String formattaUrnPartFasc(CSChiaveFasc chiave) {
@@ -317,18 +277,8 @@ public class MessaggiWSFormat {
                 chiave.getNumero());
     }
 
-    // AGGIORNAMENTO UD
-    public static String formattaBaseUrnUpdUnitaDoc(String versatore, String unitaDoc) {
-        return formattaBaseUrnUpdUnitaDoc(versatore, unitaDoc, Costanti.UrnFormatter.UPD_FMT_STRING);
-    }
-
     public static String formattaBaseUrnUpdUnitaDoc(String versatore, String unitaDoc, String fmtUsed) {
         return MessageFormat.format(fmtUsed, versatore, unitaDoc, -1);
-    }
-
-    // OLD URN
-    public static String formattaBaseUrnUpdUnitaDoc(String versatore, String unitaDoc, long progressivo) {
-        return formattaBaseUrnUpdUnitaDoc(versatore, unitaDoc, progressivo, false);
     }
 
     // NEW URN
@@ -347,16 +297,8 @@ public class MessaggiWSFormat {
                 pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
     }
 
-    public static String formattaUrnPartRappVersUpd(String urnBase) {
-        return formattaUrnPartRappVersUpd(urnBase, Costanti.UrnFormatter.URN_RAPP_VERS_FMT_STRING);
-    }
-
     public static String formattaUrnPartRappVersUpd(String urnBase, String fmtUsed) {
         return MessageFormat.format(fmtUsed, urnBase);
-    }
-
-    public static String formattaUrnIndiceSipUpd(String urnBase) {
-        return formattaUrnIndiceSipUpd(urnBase, Costanti.UrnFormatter.URN_INDICE_SIP_FMT_STRING);
     }
 
     public static String formattaUrnIndiceSipUpd(String urnBase, String fmtUsed) {
@@ -364,20 +306,11 @@ public class MessaggiWSFormat {
     }
 
     public static String formattaUrnReportVerificaFirma(String urnBase, String fmtUsed) {
-        return formattaUrnReportVerificaFirma(urnBase, fmtUsed, false);
-    }
-
-    private static String formattaUrnReportVerificaFirma(String urnBase, String fmtUsed, boolean toNormalize) {
-        return MessageFormat.format(fmtUsed, toNormalize ? MessaggiWSFormat.normalizingKey(urnBase) : urnBase);
+        return MessageFormat.format(fmtUsed, urnBase);
     }
 
     public static String formattaUrnReportVerificaFirma(String urnBase, long pgBusta, String fmtUsed) {
-        return formattaUrnReportVerificaFirma(urnBase, pgBusta, fmtUsed, false);
-    }
-
-    private static String formattaUrnReportVerificaFirma(String urnBase, long pgBusta, String fmtUsed,
-            boolean toNormalize) {
-        return MessageFormat.format(fmtUsed, toNormalize ? MessaggiWSFormat.normalizingKey(urnBase) : urnBase, pgBusta);
+        return MessageFormat.format(fmtUsed, urnBase, pgBusta);
     }
 
     /* AWS : RULES FOR CD_KEY_FILE SU COMPONENTE */
@@ -410,4 +343,9 @@ public class MessaggiWSFormat {
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "").replaceAll("[^A-Za-z0-9\\. _-]", "_");
     }
 
+    public static int formattaKeyPartAnnoVers(ZonedDateTime dtVersamento) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(convert(dtVersamento));
+        return date.get(Calendar.YEAR);
+    }
 }

@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -23,10 +40,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.paginator.util.HibernateUtils;
 import it.eng.parer.entity.AroCompDoc;
 import it.eng.parer.entity.AroDoc;
 import it.eng.parer.entity.AroUnitaDoc;
@@ -47,7 +66,7 @@ import it.eng.parer.entity.OrgAmbiente;
 import it.eng.parer.entity.OrgEnte;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
-import it.eng.parer.viewEntity.AroVDtVersMaxByUnitaDoc;
+import it.eng.parer.view_entity.AroVDtVersMaxByUnitaDoc;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.dto.RispostaControlli;
@@ -64,13 +83,13 @@ import it.eng.parer.ws.versamento.dto.ConfigRegAnno;
 import it.eng.parer.ws.versamento.dto.DatiRegistroFiscale;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.RispostaControlliAttSpec;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author Pagani_S (iniziata)
  * @author Fioravanti_F
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliSemantici")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
@@ -81,7 +100,7 @@ public class ControlliSemantici {
     private EntityManager entityManager;
 
     @EJB
-    ConfigurationHelper config;
+    private ConfigurationHelper config;
 
     public enum TipologieComponente {
 
@@ -116,8 +135,9 @@ public class ControlliSemantici {
                         "ControlliSemantici.caricaDefaultDaDB: "
                                 + "Parametri applicativi non correttamente configurati per "
                                 + String.join(",", tipoPars)));
-                log.error("ControlliSemantici.caricaDefaultDaDB: "
-                        + "Parametri applicativi non correttamente configurati per " + String.join(",", tipoPars));
+                log.atError().setMessage(
+                        "ControlliSemantici.caricaDefaultDaDB: Parametri applicativi non correttamente configurati per {}.")
+                        .addArgument(() -> String.join(",", tipoPars)).log();
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
@@ -160,6 +180,7 @@ public class ControlliSemantici {
             if (orgAmbienteS.isEmpty()) {
                 switch (tipows) {
                 case VERSAMENTO_RECUPERO:
+                case AGGIORNAMENTO_VERSAMENTO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_001);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_001, amb));
                     break;
@@ -170,10 +191,6 @@ public class ControlliSemantici {
                 case VERSAMENTO_FASCICOLO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_001_001);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_001_001, amb));
-                    break;
-                case AGGIORNAMENTO_VERSAMENTO:
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_001);
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_001, amb));
                     break;
                 }
                 return rispostaControlli;
@@ -201,6 +218,7 @@ public class ControlliSemantici {
             if (orgEnteS.isEmpty()) {
                 switch (tipows) {
                 case VERSAMENTO_RECUPERO:
+                case AGGIORNAMENTO_VERSAMENTO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_002);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_002, ente));
                     break;
@@ -211,10 +229,6 @@ public class ControlliSemantici {
                 case VERSAMENTO_FASCICOLO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_001_002);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_001_002, ente));
-                    break;
-                case AGGIORNAMENTO_VERSAMENTO:
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_002);
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_002, ente));
                     break;
                 }
                 return rispostaControlli;
@@ -242,6 +256,7 @@ public class ControlliSemantici {
             if (orgStrutS.isEmpty()) {
                 switch (tipows) {
                 case VERSAMENTO_RECUPERO:
+                case AGGIORNAMENTO_VERSAMENTO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_003);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_003, strut));
                     break;
@@ -252,10 +267,6 @@ public class ControlliSemantici {
                 case VERSAMENTO_FASCICOLO:
                     rispostaControlli.setCodErr(MessaggiWSBundle.FAS_CONFIG_001_003);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_001_003, strut));
-                    break;
-                case AGGIORNAMENTO_VERSAMENTO:
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_001_003);
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_001_003, strut));
                     break;
                 }
                 return rispostaControlli;
@@ -302,10 +313,6 @@ public class ControlliSemantici {
             } else if (orgStrutS.get(0).getDtIniValStrut() != null && orgStrutS.get(0).getDtFineValStrut() != null) {
                 // In tutta l'applicazione viene utilizzato joda time solo per questo metodo. refactor senza usare la
                 // libreria
-                // hasDateErr = !new Interval(
-                // DateUtils.truncate(orgStrutS.get(0).getDtIniValStrut(), Calendar.DATE).getTime(),
-                // DateUtils.truncate(orgStrutS.get(0).getDtFineValStrut(), Calendar.DATE).getTime())
-                // .contains(DateUtils.truncate(dataVersamento, Calendar.DATE).getTime());
                 long dtIni = DateUtils.truncate(orgStrutS.get(0).getDtIniValStrut(), Calendar.DATE).getTime();
                 long dtFine = DateUtils.truncate(orgStrutS.get(0).getDtFineValStrut(), Calendar.DATE).getTime();
                 long dtVers = DateUtils.truncate(dataVersamento, Calendar.DATE).getTime();
@@ -329,7 +336,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkIdStrut: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -358,7 +365,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkSistemaMigraz: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -388,13 +395,13 @@ public class ControlliSemantici {
             javax.persistence.Query query = entityManager.createQuery(queryStr, AroUnitaDoc.class);
             query.setParameter("idStrutIn", idStruttura);
             query.setParameter("cdKeyUnitaDocIn", numero);
-            query.setParameter("aaKeyUnitaDocIn", anno);
+            query.setParameter("aaKeyUnitaDocIn", new BigDecimal(anno));
             query.setParameter("cdRegistroKeyUnitaDocIn", tipoReg);
             unitaDocS = query.getResultList();
 
             // chiave già presente (uno o più righe trovate, mi interessa solo l'ultima -
             // più recente)
-            if (unitaDocS.size() > 0) {
+            if (!unitaDocS.isEmpty()) {
                 StatoConservazioneUnitaDoc scud = StatoConservazioneUnitaDoc
                         .valueOf(unitaDocS.get(0).getTiStatoConservazione());
                 if (scud == StatoConservazioneUnitaDoc.ANNULLATA
@@ -452,7 +459,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkChiave: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -509,7 +516,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipologiaUD: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -534,7 +541,7 @@ public class ControlliSemantici {
             // STRETTAMENTE
             // MAGGIORE della
             // data di
-            // riferimento!!!;
+            // riferimento!!!
 
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecRegistroUnitaDoc.class);
             query.setParameter("idStrutIn", idStruttura);
@@ -563,7 +570,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoRegistro: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
         return rispostaControlli;
     }
@@ -590,7 +597,7 @@ public class ControlliSemantici {
             // STRETTAMENTE
             // MAGGIORE della
             // data di
-            // riferimento!!!;
+            // riferimento!!!
 
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecRegistroUnitaDoc.class);
             query.setParameter("idStrutIn", idStruttura);
@@ -636,7 +643,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoRegistroTipoUD: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -661,14 +668,14 @@ public class ControlliSemantici {
 
             javax.persistence.Query query = entityManager.createQuery(queryStr);
             query.setParameter("idRegistroUnitaDocIn", idRegistroUnitaDoc);
-            query.setParameter("annoUDIn", anno);
-            query.setParameter("annoCorrenteIn", new GregorianCalendar().get(Calendar.YEAR));
+            query.setParameter("annoUDIn", new BigDecimal(anno));
+            query.setParameter("annoCorrenteIn", new BigDecimal(new GregorianCalendar().get(Calendar.YEAR)));
 
-            List<DecAaRegistroUnitaDoc> tmpLst = (List<DecAaRegistroUnitaDoc>) query.getResultList();
+            List<DecAaRegistroUnitaDoc> tmpLst = query.getResultList();
             if (tmpLst.size() == 1) {
                 DecAaRegistroUnitaDoc tmpAaRegistroUnitaDoc = tmpLst.get(0);
                 ConfigRegAnno tmpConfAnno = this.caricaPartiAARegistro(tmpAaRegistroUnitaDoc.getIdAaRegistroUnitaDoc());
-                if (tmpConfAnno.getParti().size() > 0) {
+                if (!tmpConfAnno.getParti().isEmpty()) {
                     rispostaControlli.setrObject(tmpConfAnno);
                     rispostaControlli.setrBoolean(true);
                 } else {
@@ -700,7 +707,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoRegistroAnno: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -716,7 +723,7 @@ public class ControlliSemantici {
                 + "order by t.niParteNumeroRegistro";
         javax.persistence.Query query = entityManager.createQuery(queryStr);
         query.setParameter("idAaRegistroUnitaDoc", idAaRegistroUnitaDoc);
-        List<DecParteNumeroRegistro> tmpLstP = (List<DecParteNumeroRegistro>) query.getResultList();
+        List<DecParteNumeroRegistro> tmpLstP = query.getResultList();
 
         for (DecParteNumeroRegistro tmpParte : tmpLstP) {
             ConfigRegAnno.ParteRegAnno tmpPRanno = tmpConfAnno.aggiungiParte();
@@ -815,7 +822,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoDocumento: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -866,7 +873,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoStruttura: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -954,7 +961,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoComponente: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -997,48 +1004,11 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoRappComponente: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
     }
-
-    // public RispostaControlli checkFlagFC(long idTipologiaUD) {
-    // RispostaControlli rispostaControlli;
-    // rispostaControlli = new RispostaControlli();
-    //
-    // rispostaControlli.setrInt(1);
-    //
-    // // lista entity JPA ritornate dalle Query
-    // List<DecTipoUnitaDoc> tipoUnitaDocS = null;
-    //
-    // // lancio query di controllo
-    // try {
-    //
-    // // ricavo le ud presenti in base ai parametri impostati
-    // String queryStr = "select tud "
-    // + "from DecTipoUnitaDoc tud "
-    // + "where tud.idTipoUnitaDoc = :idTipoUnitaDocIn ";
-    //
-    // javax.persistence.Query query = entityManager.createQuery(queryStr, DecTipoUnitaDoc.class);
-    // query.setParameter("idTipoUnitaDocIn", idTipologiaUD);
-    // tipoUnitaDocS = query.getResultList();
-    //
-    // for (DecTipoUnitaDoc tud : tipoUnitaDocS) {
-    // if (tud.getFlForzaCollegamento().equals("0")) {
-    // rispostaControlli.setrInt(0);
-    // }
-    // }
-    // } catch (Exception e) {
-    // rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-    // rispostaControlli.setDsErr(
-    // MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-    // "ControlliSemantici.checkFlagFC: " + e.getMessage()));
-    // log.error("Eccezione nella lettura della tabella di decodifica ", e);
-    // }
-    //
-    // return rispostaControlli;
-    // }
 
     public RispostaControlli checkPresenzaDatiSpec(TipiUsoDatiSpec tiUsoXsd, TipiEntitaSacer tipoEntitySacer,
             String sistemaMig, long idStruttura, long idTipoEntitySacer, Date dataRiferimento) {
@@ -1090,7 +1060,7 @@ public class ControlliSemantici {
                         // da notare STRETTAMENTE MAGGIORE della data di riferimento!!!
                         tmpTipoEntita);
 
-                javax.persistence.Query query = entityManager.createQuery(queryStr, DecXsdDatiSpec.class);
+                javax.persistence.Query query = entityManager.createQuery(queryStr, Long.class);
                 query.setParameter("idStrutIn", idStruttura);
                 query.setParameter("tiUsoXsdIn", tiUsoXsd.name());
                 query.setParameter("idTipoEntitySacerIn", idTipoEntitySacer);
@@ -1108,7 +1078,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkPresenzaDatiSpec: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -1188,7 +1158,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkXSDDatiSpec: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -1239,7 +1209,7 @@ public class ControlliSemantici {
                         + " and %s = :idTipoEntitySacerIn " + " and t.tiEntitaSacer = :tiEntitaSacerIn "
                         + " and t.cdVersioneXsd = :cdVersioneXsdIn ", tmpTipoEntita);
 
-                javax.persistence.Query query = entityManager.createQuery(queryStr, DecXsdDatiSpec.class);
+                javax.persistence.Query query = entityManager.createQuery(queryStr);
                 query.setParameter("idStrutIn", idStruttura);
                 query.setParameter("tiUsoXsdIn", tiUsoXsd.name());
                 query.setParameter("idTipoEntitySacerIn", idTipoEntitySacer);
@@ -1257,7 +1227,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkPresenzaVersioneDatiSpec: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
@@ -1268,7 +1238,7 @@ public class ControlliSemantici {
         RispostaControlliAttSpec rispostaControlli;
         rispostaControlli = new RispostaControlliAttSpec();
         rispostaControlli.setrBoolean(false);
-        rispostaControlli.setDatiSpecifici(new LinkedHashMap<String, DatoSpecifico>());
+        rispostaControlli.setDatiSpecifici(new LinkedHashMap<>());
         DatoSpecifico tmpDatoSpecifico;
         List<DecAttribDatiSpec> lstAttribDatiSpecs = null;
 
@@ -1287,7 +1257,7 @@ public class ControlliSemantici {
                 query.setParameter("idXsdDatiSpecIn", idXsdDatiSpec);
                 lstAttribDatiSpecs = query.getResultList();
 
-                if (lstAttribDatiSpecs.size() > 0) {
+                if (!lstAttribDatiSpecs.isEmpty()) {
                     rispostaControlli.setrBoolean(true);
                     for (DecAttribDatiSpec td : lstAttribDatiSpecs) {
                         tmpDatoSpecifico = new DatoSpecifico();
@@ -1328,7 +1298,7 @@ public class ControlliSemantici {
                 query.setParameter("idXsdDatiSpecIn", idXsdDatiSpec);
                 lstAttribDatiSpecs = query.getResultList();
 
-                if (lstAttribDatiSpecs.size() > 0) {
+                if (!lstAttribDatiSpecs.isEmpty()) {
                     rispostaControlli.setrBoolean(true);
                     for (DecAttribDatiSpec td : lstAttribDatiSpecs) {
                         tmpDatoSpecifico = new DatoSpecifico();
@@ -1343,14 +1313,14 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkDatiSpecifici: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
         return rispostaControlli;
     }
 
-    public RispostaControlli checkRiferimentoUD(CSChiave key, long idUnitaDoc, long idStrutturaVersante,
-            TipologieComponente tComp, String descChiaveComp) {
+    public RispostaControlli checkRiferimentoUD(CSChiave key, long idStrutturaVersante, TipologieComponente tComp,
+            String descChiaveComp) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
 
@@ -1377,11 +1347,11 @@ public class ControlliSemantici {
             javax.persistence.Query query = entityManager.createQuery(queryStr);
             query.setParameter("idStrutIn", idStrutturaVersante);
             query.setParameter("cdRegistroKeyUnitaDocIn", tipoReg);
-            query.setParameter("aaKeyUnitaDocIn", anno);
+            query.setParameter("aaKeyUnitaDocIn", new BigDecimal(anno));
             query.setParameter("cdKeyUnitaDocIn", numero);
             query.setParameter("dataDiOggiIn", new Date());
 
-            aroCompDocs = (List<AroCompDoc>) query.getResultList();
+            aroCompDocs = query.getResultList();
             if (aroCompDocs == null || aroCompDocs.isEmpty()) {
                 if (tComp == TipologieComponente.COMPONENTE) {
                     // Nel documento PRINCIPALE dell?unitï¿½ documentaria indicata dal riferimento,
@@ -1447,7 +1417,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkRiferimentoUD: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
         return rispostaControlli;
     }
@@ -1552,7 +1522,6 @@ public class ControlliSemantici {
         rispostaControlli.setrBoolean(false);
         BigDecimal max = null;
         // lista entity JPA ritornate dalle Query
-        List<AroDoc> aroDocs = null;
 
         // lancio query di controllo
         try {
@@ -1709,7 +1678,7 @@ public class ControlliSemantici {
 
             javax.persistence.Query query = entityManager.createQuery(queryStr);
             query.setParameter("idRegistro", idRegistro);
-            query.setParameter("aaKeyUnitaDoc", key.getAnno());
+            query.setParameter("aaKeyUnitaDoc", HibernateUtils.bigDecimalFrom(key.getAnno()));
             query.setParameter("cdKeyUnitaDoc", key.getNumero());
             query.setParameter("cdKeyUnitaDocNormaliz", cdKeyUnitaDocNormaliz);
 
@@ -1781,7 +1750,7 @@ public class ControlliSemantici {
         try {
             Query query = entityManager
                     .createQuery("SELECT aro FROM AroVDtVersMaxByUnitaDoc aro WHERE aro.idUnitaDoc = :idUnitaDoc ");
-            query.setParameter("idUnitaDoc", idUnitaDoc);
+            query.setParameter("idUnitaDoc", HibernateUtils.bigDecimalFrom(idUnitaDoc));
             aroVDtVersMaxByUnitaDoc = (AroVDtVersMaxByUnitaDoc) query.getSingleResult();
             if (aroVDtVersMaxByUnitaDoc == null) {
                 rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
@@ -1794,7 +1763,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.getDtMaxVersMaxByUd: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica " + e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
         return rispostaControlli;
     }
@@ -1808,7 +1777,7 @@ public class ControlliSemantici {
             // recupero parametro
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date dtInizioCalcNuoviUrn = dateFormat
-                    .parse(config.getParamApplicValue(ParametroApplDB.DATA_INIZIO_CALC_NUOVI_URN));
+                    .parse(config.getValoreParamApplicByApplic(ParametroApplDB.DATA_INIZIO_CALC_NUOVI_URN));
 
             rispostaControlli.setrDate(dtInizioCalcNuoviUrn);
         } catch (Exception e) {
@@ -1816,7 +1785,7 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.getDtCalcInizioNuoviUrn: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica " + e);
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
         return rispostaControlli;
     }

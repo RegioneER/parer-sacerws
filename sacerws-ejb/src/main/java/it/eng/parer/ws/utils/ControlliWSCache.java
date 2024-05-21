@@ -1,15 +1,29 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.eng.parer.ws.utils;
 
-import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,6 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecControlloWs;
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.versamentoUpd.dto.ControlloWSResp;
 
 /**
@@ -57,9 +73,7 @@ public class ControlliWSCache {
                                 cnt.getCdFamigliaControllo(), cnt.getDsControlloWs(), cnt.getNiOrdControllo()));
             }
         } catch (RuntimeException ex) {
-            // log.fatal("Inizializzazione singleton ControlliWSCache fallita! ", ex);
-            log.error("Inizializzazione singleton ControlliWSCache fallita! ", ex);
-            throw ex;
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         }
         log.info("Inizializzazione singleton ControlliWSCache... completata.");
     }
@@ -71,7 +85,7 @@ public class ControlliWSCache {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public String getString(String cdControllo, Object... params) {
-        return StringEscapeUtils.unescapeJava(MessageFormat.format(controlliMap.get(controlliMap).toString(), params));
+        return StringEscapeUtils.unescapeJava(MessageFormat.format(controlliMap.get(cdControllo).toString(), params));
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

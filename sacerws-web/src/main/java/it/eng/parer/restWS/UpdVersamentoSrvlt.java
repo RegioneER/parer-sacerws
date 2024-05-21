@@ -1,23 +1,43 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.restWS;
+
+import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
+import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -43,35 +63,36 @@ import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
 import it.eng.parer.ws.versamentoUpd.ejb.AggiornamentoVersamentoSync;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.versamentoUpd.utils.WSDescUpdVers;
-import java.time.ZonedDateTime;
+import it.eng.spagoCore.configuration.ConfigSingleton;
 
 /**
  *
  * @author sinatti_s
  */
+@WebServlet(urlPatterns = { "/AggiornamentoUnitaDocumentariaSync" }, asyncSupported = true)
 public class UpdVersamentoSrvlt extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(UpdVersamentoSrvlt.class);
-    private final String uploadDir;
-    private final String instanceName;
-    private final boolean salvaLogSessione;
+    private String uploadDir;
+    private String instanceName;
 
-    public UpdVersamentoSrvlt() throws IOException {
-        super();
-        Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream("/Sacer.properties"));
-        /*
-         * TODO: per il momento, dato che questo servizio fa riferimento ai versamenti (ne aggiorna i metadati), a rigor
-         * di logica dovrebbe utilizzare gli stessi parametri, a meno che non si decide di utilizzarne altri o di farne
-         * ad-hoc
-         */
+    @EJB(mappedName = "java:app/sacerws-ejb/AggiornamentoVersamentoSync")
+    private AggiornamentoVersamentoSync aggVersamentoSync;
 
-        uploadDir = props.getProperty("recuperoSync.upload.directory");
-        salvaLogSessione = props.getProperty("recuperoSync.saveLogSession").equals("1") ? true : false;
+    @EJB(mappedName = "java:app/sacerws-ejb/XmlUpdVersCache")
+    private XmlUpdVersCache xmlUpdVersCache;
 
-        instanceName = props.getProperty("ws.instanceName");
+    // @EJB(mappedName = "java:app/sacerws-ejb/RequestPrsr")
+    @EJB
+    private RequestPrsr myRequestPrsr;
 
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // custom
+        uploadDir = ConfigSingleton.getInstance().getStringValue(WS_STAGING_UPLOAD_DIR.name());
+        instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
     }
 
     @Override
@@ -95,17 +116,13 @@ public class UpdVersamentoSrvlt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AggiornamentoVersamentoSync aggVersamentoSync;
-        XmlUpdVersCache xmlUpdVersCache;
         RispostaWSUpdVers rispostaWs;
         UpdVersamentoExt myVersamentoExt;
         SyncFakeSessn sessioneFinta = new SyncFakeSessn();
-        Iterator tmpIterator = null;
+        Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
-        List fileItems = null;
+        List<FileItem> fileItems = null;
         AvanzamentoWs tmpAvanzamento;
-        RequestPrsr myRequestPrsr = new RequestPrsr();
-        RequestPrsr.ReqPrsrConfig tmpPrsrConfig = new RequestPrsr().new ReqPrsrConfig();
 
         rispostaWs = new RispostaWSUpdVers();
         myVersamentoExt = new UpdVersamentoExt();
@@ -114,20 +131,6 @@ public class UpdVersamentoSrvlt extends HttpServlet {
         tmpAvanzamento.logAvanzamento();
 
         rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ASSENTE);
-
-        // Recupera l'ejb, se possibile - altrimenti segnala errore
-        try {
-            aggVersamentoSync = (AggiornamentoVersamentoSync) new InitialContext()
-                    .lookup("java:app/sacerws-ejb/AggiornamentoVersamentoSync");
-        } catch (NamingException ex) {
-            throw new ServletException("Impossibile recuperare l'ejb AggiornamentoVersamentoSync ", ex);
-        }
-
-        try {
-            xmlUpdVersCache = (XmlUpdVersCache) new InitialContext().lookup("java:app/sacerws-ejb/XmlUpdVersCache");
-        } catch (NamingException ex) {
-            throw new ServletException("Impossibile recuperare l'ejb XmlUpdVersCache ", ex);
-        }
 
         tmpAvanzamento.setFase("EJB recuperato").logAvanzamento();
 
@@ -153,7 +156,8 @@ public class UpdVersamentoSrvlt extends HttpServlet {
                 try {
                     tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.TrasferimentoPayloadIn)
                             .setFase("pronto a ricevere").logAvanzamento();
-                    //
+
+                    RequestPrsr.ReqPrsrConfig tmpPrsrConfig = RequestPrsr.createConfig();
                     tmpPrsrConfig.setLeggiFile(false);
                     tmpPrsrConfig.setLeggindiceMM(false);
                     tmpPrsrConfig.setAvanzamentoWs(tmpAvanzamento);
@@ -319,28 +323,16 @@ public class UpdVersamentoSrvlt extends HttpServlet {
         response.reset();
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/xml; charset=\"utf-8\"");
-        ServletOutputStream out = response.getOutputStream();
-        OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(out, "UTF-8");
-        try {
-            JAXBContext tmpcontesto = xmlUpdVersCache.getVersRespCtxforEsitoAggiornamentoVersamento();
-            Marshaller tmpMarshaller = tmpcontesto.createMarshaller();
+        try (OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(response.getOutputStream(),
+                StandardCharsets.UTF_8);) {
+
+            Marshaller tmpMarshaller = xmlUpdVersCache.getVersRespCtxforEsitoAggiornamentoVersamento()
+                    .createMarshaller();
             tmpMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             tmpMarshaller.marshal(myEsito.produciEsitoAggiornamento(), tmpStreamWriter);
-        } catch (JAXBException e) {
+
+        } catch (Exception e) {
             log.error("Eccezione nella servlet aggiornamento versamento sync", e);
-        } finally {
-            try {
-                tmpStreamWriter.flush();
-                tmpStreamWriter.close();
-            } catch (Exception ei) {
-                log.error("Eccezione nella servlet aggiornamento versamento sync", ei);
-            }
-            try {
-                out.flush();
-                out.close();
-            } catch (Exception ei) {
-                log.error("Eccezione nella servlet aggiornamento versamento sync", ei);
-            }
         }
 
         tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Fine).setFase("").logAvanzamento();

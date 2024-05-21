@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,31 +27,10 @@ package it.eng.parer.util;
  */
 public class Constants {
 
-    public final static int PASSWORD_EXPIRATION_DAYS = 90;
-    public final static String SACER = "SACER";
-    public final static String SACERWS = "SACERWS";
-    // Constants for Transformer
-    public final static String ENTITY_PACKAGE_NAME = "it.eng.parer.entity";
-    public final static String GRANTED_ENTITY_PACKAGE_NAME = "it.eng.parer.grantedEntity";
-    public final static String VIEWENTITY_PACKAGE_NAME = "it.eng.parer.viewEntity";
-    public final static String GRANTED_VIEWENTITY_PACKAGE_NAME = "it.eng.parer.grantedViewEntity";
-    public final static String ROWBEAN_PACKAGE_NAME = "it.eng.parer.slite.gen.tablebean";
-    public final static String VIEWROWBEAN_PACKAGE_NAME = "it.eng.parer.slite.gen.viewbean";
-    // Costanti per lista "Totale Definito Da" nella gestione dei dati specifici
-    public final static String TI_UNI_DOC = "Tipo unità doc.";
-    public final static String TI_DOC = "Tipo doc.";
-    public final static String TI_SIS_MIGR_UD = "Migraz. unità doc.";
-    public final static String TI_SIS_MIGR_DOC = "Migraz. doc.";
-    // Costanti per dati specifici
-    public final static String TI_USO_XSD_VERS = "VERS";
-    public final static String TI_USO_XSD_MIGR = "MIGRAZ";
-
-    // Formato data/ora
-    public static final String DATE_FORMAT_TIMESTAMP_TYPE = "dd/MM/yyyy HH:mm:ss";
-    public static final String DATE_FORMAT_DATE_TYPE = "dd/MM/yyyy";
-    public static final String DATE_FORMAT_HOUR_MINUTE_TYPE = "dd/MM/yyyy HH:mm";
-    public static final String DATE_FORMAT_DAY_MONTH_TYPE = "dd/MM";
-    public static final String DATE_FORMAT_DATE_COMPACT_TYPE = "dd/MM/yy";
+    public static final String SACERWS = "SACERWS";
+    public static final String JAVAX_PERSISTENCE_LOCK_TIMEOUT = "javax.persistence.lock.timeout";
+    public static final String FLAG_TRUE = "1";
+    public static final String FLAG_FALSE = "0";
 
     // Enum per tipo sessione
     public enum TipoSessione {

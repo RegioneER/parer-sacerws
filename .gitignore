@@ -10,10 +10,12 @@
 /sacerws-ejb/nbproject/
 /nbactions.xml
 /sacerws-ejb/nbproject/project.properties
-.idea/
+/**/.idea/
 .project
 /**/.classpath
 /**/.project
 /**/*.iml
 /**/*.factorypath
 .vscode/
+/**/xaDiskHome
+.idea/*

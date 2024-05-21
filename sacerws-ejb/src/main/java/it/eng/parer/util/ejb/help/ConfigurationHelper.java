@@ -1,23 +1,21 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.util.ejb.help;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.AplParamApplic;
 import it.eng.parer.entity.constraint.AplValoreParamApplic.TiAppart;
@@ -26,7 +24,25 @@ import it.eng.parer.util.ejb.help.dto.AplVGetValParamDto;
 import it.eng.parer.ws.utils.FlagConverter;
 import it.eng.parer.ws.utils.ParametroApplDB;
 import it.eng.parer.ws.utils.ParametroApplDB.TipoAplVGetValAppart;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@SuppressWarnings("unchecked")
 @Stateless
 @LocalBean
 public class ConfigurationHelper {
@@ -46,33 +62,87 @@ public class ConfigurationHelper {
         String queryStr = "SELECT config FROM AplParamApplic config";
         // CREO LA QUERY ATTRAVERSO L'ENTITY MANAGER
         Query query = entityManager.createQuery(queryStr);
-
         List<AplParamApplic> configurazioni = query.getResultList();
-        Map<String, String> config = new HashMap<String, String>();
+        Map<String, String> config = new HashMap<>();
         for (AplParamApplic configurazione : configurazioni) {
-            config.put(configurazione.getNmParamApplic(), me.getParamApplicValue(configurazione.getNmParamApplic()));
+            config.put(configurazione.getNmParamApplic(),
+                    me.getValoreParamApplicByApplic(configurazione.getNmParamApplic()));
         }
         return config;
     }
 
-    public String getParamApplicValue(String nmParamApplic) {
+    /**
+     * Ottieni il valore del parametro indicato dal codice in input. Il valore viene ottenuto filtrando per tipologia
+     * <em>APPLIC</em> {@link TipoAplVGetValAppart#APPLIC}
+     *
+     * @param nmParamApplic
+     *            codice del parametro
+     * 
+     * @return valore del parametro filtrato per tipologia <em>APPLIC</em> .
+     */
+    public String getValoreParamApplicByApplic(String nmParamApplic) {
         return getParamApplicValue(nmParamApplic, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE,
                 Integer.MIN_VALUE, TipoAplVGetValAppart.APPLIC);
     }
 
-    public String getParamApplicValue(String nmParamApplic, long idStrut, long idAmbiente) {
+    /**
+     * Ottieni il valore del parametro indicato dal codice in input. Il valore viene ottenuto filtrando per tipologia
+     * <em>STRUT</em> {@link TipoAplVGetValAppart#STRUT}
+     *
+     * @param nmParamApplic
+     *            codice del parametro
+     * @param idAmbiente
+     *            id ambiente
+     * @param idStrut
+     *            id struttura
+     * 
+     * 
+     * @return valore del parametro filtrato per tipologia <em>STRUT</em> .
+     */
+    public String getValoreParamApplicByStrut(String nmParamApplic, long idStrut, long idAmbiente) {
         return getParamApplicValue(nmParamApplic, idStrut, idAmbiente, Integer.MIN_VALUE, Integer.MIN_VALUE,
                 TipoAplVGetValAppart.STRUT);
     }
 
-    public String getParamApplicValue(String nmParamApplic, long idStrut, long idAmbiente, long idTipoUnitaDoc) {
+    /**
+     * Ottieni il valore del parametro indicato dal codice in input. Il valore viene ottenuto filtrando per tipologia
+     * <em>TIPOUNITADOC</em> {@link TipoAplVGetValAppart#TIPOUNITADOC}
+     *
+     * @param nmParamApplic
+     *            codice del parametro
+     * @param idAmbiente
+     *            id ambiente
+     * @param idStrut
+     *            id struttura
+     * @param idTipoUnitaDoc
+     *            id tipologia unità documentaria
+     * 
+     * @return valore del parametro filtrato per tipologia <em>TIPOUNITADOC</em> .
+     */
+    public String getValoreParamApplicByTipoUd(String nmParamApplic, long idStrut, long idAmbiente,
+            long idTipoUnitaDoc) {
         return getParamApplicValue(nmParamApplic, idStrut, idAmbiente, idTipoUnitaDoc, Integer.MIN_VALUE,
                 TipoAplVGetValAppart.TIPOUNITADOC);
     }
 
-    public String getParamApplicValue(String nmParamApplic, long idStrut, long idAmbiente, long idTipoUnitaDoc,
+    /**
+     * Ottieni il valore del parametro indicato dal codice in input. Il valore viene ottenuto filtrando per tipologia
+     * <em>AATIPOFASCICOLO</em> {@link TipoAplVGetValAppart#AATIPOFASCICOLO}
+     *
+     * @param nmParamApplic
+     *            codice del parametro
+     * @param idAmbiente
+     *            id ambiente
+     * @param idStrut
+     *            id struttura
+     * @param idAaTipoFascicolo
+     *            id tipologia anno fascicolo
+     * 
+     * @return valore del parametro filtrato per tipologia <em>AATIPOFASCICOLO</em> .
+     */
+    public String getValoreParamApplicByAaTipoFasc(String nmParamApplic, long idStrut, long idAmbiente,
             long idAaTipoFascicolo) {
-        return getParamApplicValue(nmParamApplic, idStrut, idAmbiente, idTipoUnitaDoc, idAaTipoFascicolo,
+        return getParamApplicValue(nmParamApplic, idStrut, idAmbiente, Integer.MIN_VALUE, idAaTipoFascicolo,
                 TipoAplVGetValAppart.AATIPOFASCICOLO);
     }
 
@@ -82,7 +152,7 @@ public class ConfigurationHelper {
     private static final String IDAPLVGETVALPARAMBY = "idAplVGetvalParamBy";
 
     /**
-     *
+     * 
      * @param nmParamApplic
      *            nome parametro
      * @param idStrut
@@ -98,7 +168,6 @@ public class ConfigurationHelper {
      *
      * @return Valore del parametro indicato secondo nome
      */
-    @SuppressWarnings("unchecked")
     private String getParamApplicValue(String nmParamApplic, long idStrut, long idAmbiente, long idTipoUnitaDoc,
             long idAaTipoFascicolo, TipoAplVGetValAppart tipoAplVGetValAppart) {
 
@@ -131,7 +200,7 @@ public class ConfigurationHelper {
             queryData.put(FLAPLPARAMAPPLICAPPART, "flAppartAaTipoFascicolo");
             queryData.put(IDAPLVGETVALPARAMBY, "AND getvalParam.idAaTipoFascicolo = :id");
             // replace
-            queryStr = StrSubstitutor.replace(queryStrTempl, queryData);
+            queryStr = StringSubstitutor.replace(queryStrTempl, queryData);
             break;
         case TIPOUNITADOC:
             //
@@ -144,7 +213,7 @@ public class ConfigurationHelper {
             queryData.put(FLAPLPARAMAPPLICAPPART, "flAppartTipoUnitaDoc");
             queryData.put(IDAPLVGETVALPARAMBY, "AND getvalParam.idTipoUnitaDoc = :id");
             // replace
-            queryStr = StrSubstitutor.replace(queryStrTempl, queryData);
+            queryStr = StringSubstitutor.replace(queryStrTempl, queryData);
             break;
         case STRUT:
             //
@@ -157,7 +226,7 @@ public class ConfigurationHelper {
             queryData.put(FLAPLPARAMAPPLICAPPART, "flAppartStrut");
             queryData.put(IDAPLVGETVALPARAMBY, "AND getvalParam.idStrut = :id");
             // replace
-            queryStr = StrSubstitutor.replace(queryStrTempl, queryData);
+            queryStr = StringSubstitutor.replace(queryStrTempl, queryData);
             break;
         case AMBIENTE:
             //
@@ -170,7 +239,7 @@ public class ConfigurationHelper {
             queryData.put(FLAPLPARAMAPPLICAPPART, "flAppartAmbiente");
             queryData.put(IDAPLVGETVALPARAMBY, "AND getvalParam.idAmbiente = :id");
             // replace
-            queryStr = StrSubstitutor.replace(queryStrTempl, queryData);
+            queryStr = StringSubstitutor.replace(queryStrTempl, queryData);
             break;
         default:
             //
@@ -181,7 +250,7 @@ public class ConfigurationHelper {
             queryData.put(FLAPLPARAMAPPLICAPPART, "flAppartApplic");
             queryData.put(IDAPLVGETVALPARAMBY, "");
             // replace
-            queryStr = StrSubstitutor.replace(queryStrTempl, queryData);
+            queryStr = StringSubstitutor.replace(queryStrTempl, queryData);
             break;
         }
 
@@ -191,7 +260,7 @@ public class ConfigurationHelper {
             query.setParameter("flAppart", "1");// fixed
             // solo nel caso in cui contenga la condition sull'ID
             if (StringUtils.isNotBlank(queryData.get(IDAPLVGETVALPARAMBY))) {
-                query.setParameter("id", id);
+                query.setParameter("id", new BigDecimal(id));
             }
             // get result
             result = query.getResultList();
@@ -230,7 +299,6 @@ public class ConfigurationHelper {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private String getDsValoreParamApplicByTiAppart(String nmParamApplic, List<AplVGetValParamDto> result,
             final TiAppart tiAppart) {
         // get entity from list
@@ -269,10 +337,6 @@ public class ConfigurationHelper {
 
     }
 
-    public Map<String, String> getValoreParamApplicByTiParamApplicAsMap(String tiParamApplic) {
-        return getValoreParamApplicByTiParamApplicAsMap(Arrays.asList(tiParamApplic));
-    }
-
     public Map<String, String> getValoreParamApplicByTiParamApplicAsMap(List<String> tiParamApplics) {
         Map<String, String> config = new HashMap<>();
 
@@ -284,7 +348,7 @@ public class ConfigurationHelper {
         List<AplParamApplic> result = query.getResultList();
 
         for (AplParamApplic cfg : result) {
-            config.put(cfg.getNmParamApplic(), me.getParamApplicValue(cfg.getNmParamApplic()));
+            config.put(cfg.getNmParamApplic(), me.getValoreParamApplicByApplic(cfg.getNmParamApplic()));
         }
 
         return config;
@@ -292,15 +356,15 @@ public class ConfigurationHelper {
 
     /**
      *
-     * Gestione FLAG true -gt; 1, false -&gt; 0
+     * Gestione FLAG true = 1, false = 0
      *
      * @param nmParamApplic
      *            nome parametro applicativo
      * 
      * @return Valore del flag indicato secondo nome
      */
-    public String getParamApplicValueAsFl(String nmParamApplic) {
-        return FlagConverter.fromBoolToFl(me.getParamApplicValue(nmParamApplic));
+    public String getValoreParamApplicByApplicAsFl(String nmParamApplic) {
+        return FlagConverter.fromBoolToFl(me.getValoreParamApplicByApplic(nmParamApplic));
     }
 
     /**
@@ -318,8 +382,10 @@ public class ConfigurationHelper {
      *
      * @return Valore del flag indicato secondo nome
      */
-    public String getParamApplicValueAsFl(String nmParamApplic, long idStrut, long idAmbiente, long idTipoUnitaDoc) {
-        return FlagConverter.fromBoolToFl(me.getParamApplicValue(nmParamApplic, idStrut, idAmbiente, idTipoUnitaDoc));
+    public String getValoreParamApplicByTipoUdAsFl(String nmParamApplic, long idStrut, long idAmbiente,
+            long idTipoUnitaDoc) {
+        return FlagConverter
+                .fromBoolToFl(me.getValoreParamApplicByTipoUd(nmParamApplic, idStrut, idAmbiente, idTipoUnitaDoc));
     }
 
     /**
@@ -332,16 +398,14 @@ public class ConfigurationHelper {
      *            id struttura
      * @param idAmbiente
      *            id ambiente
-     * @param idTipoUnitaDoc
-     *            id tipo unita doc
      * @param idAaTipoFascicolo
      *            id anno tipo fascicolo
      *
      * @return Valore del flag indicato secondo nome
      */
-    public String getParamApplicValueAsFl(String nmParamApplic, long idStrut, long idAmbiente, long idTipoUnitaDoc,
+    public String getValoreParamApplicByAaTipoFascAsFl(String nmParamApplic, long idStrut, long idAmbiente,
             long idAaTipoFascicolo) {
         return FlagConverter.fromBoolToFl(
-                me.getParamApplicValue(nmParamApplic, idStrut, idAmbiente, idTipoUnitaDoc, idAaTipoFascicolo));
+                me.getValoreParamApplicByAaTipoFasc(nmParamApplic, idStrut, idAmbiente, idAaTipoFascicolo));
     }
 }

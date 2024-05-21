@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.firma.crypto.helper;
 
 import java.util.LinkedList;
@@ -54,7 +71,7 @@ public class CryptoRestConfiguratorHelper implements RestConfiguratorHelper {
     private Long getLongParameter(final String name) {
         Long paramValue = null;
         try {
-            final String longParameterString = configurationHelper.getParamApplicValue(name);
+            final String longParameterString = configurationHelper.getValoreParamApplicByApplic(name);
             paramValue = Long.parseLong(longParameterString);
 
         } catch (ParamApplicNotFoundException | NumberFormatException ignore) {
@@ -66,7 +83,7 @@ public class CryptoRestConfiguratorHelper implements RestConfiguratorHelper {
     private Integer getIntParameter(final String name) {
         Integer paramValue = null;
         try {
-            final String intParameterString = configurationHelper.getParamApplicValue(name);
+            final String intParameterString = configurationHelper.getValoreParamApplicByApplic(name);
             paramValue = Integer.parseInt(intParameterString);
 
         } catch (ParamApplicNotFoundException | NumberFormatException ignore) {
@@ -79,7 +96,7 @@ public class CryptoRestConfiguratorHelper implements RestConfiguratorHelper {
     private Boolean getBooleanParameter(final String name) {
         Boolean paramValue = true;
         try {
-            final String boolParameterString = configurationHelper.getParamApplicValue(name);
+            final String boolParameterString = configurationHelper.getValoreParamApplicByApplic(name);
             paramValue = Boolean.parseBoolean(boolParameterString);
 
         } catch (ParamApplicNotFoundException ignore) {
@@ -132,7 +149,7 @@ public class CryptoRestConfiguratorHelper implements RestConfiguratorHelper {
     @Override
     public List<String> endPoints() {
         final List<String> endPointCL = new LinkedList<>();
-        final String endPointsString = configurationHelper.getParamApplicValue(CRYPTO_ENDPOINT);
+        final String endPointsString = configurationHelper.getValoreParamApplicByApplic(CRYPTO_ENDPOINT);
         Pattern.compile(ENDPOINT_SEPARATOR).splitAsStream(endPointsString).map(String::trim).forEach(endpoint -> {
             endPointCL.add(endpoint);
         });

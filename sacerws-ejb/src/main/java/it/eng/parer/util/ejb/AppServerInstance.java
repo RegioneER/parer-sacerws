@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.util.ejb;
 
 import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
@@ -39,6 +56,7 @@ public class AppServerInstance {
     private static final Logger LOG = LoggerFactory.getLogger(AppServerInstance.class);
     String servername = null;
 
+    @SuppressWarnings("unchecked")
     @PostConstruct
     protected void initSingleton() {
         try {
@@ -102,8 +120,8 @@ public class AppServerInstance {
             for (Enumeration<?> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
                 NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
                 // Scorri su tutti gli indirizzi IP associati ad una scheda di rete
-                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
-                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+                    InetAddress inetAddr = inetAddrs.nextElement();
                     LOG.debug("Verifico l'indirizzo {}", inetAddr.getHostAddress());
                     AddressTypes tipo = decodeAddrType(inetAddr);
                     // se è già presente un indirizzo di questo tipo (per esempio se

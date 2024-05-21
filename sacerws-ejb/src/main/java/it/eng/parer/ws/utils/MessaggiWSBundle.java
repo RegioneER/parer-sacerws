@@ -1,3 +1,19 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
 
 /*
  * (written by Francesco Fioravanti)
@@ -58,7 +74,6 @@ public class MessaggiWSBundle {
         try {
             return (MessaggiWSCache) new InitialContext().lookup("java:app/sacerws-ejb/MessaggiWSCache");
         } catch (NamingException ex) {
-            log.error("Errore lookup dei messaggi {}", ExceptionUtils.getRootCauseMessage(ex), ex);
             throw new SacerWsRuntimeException(
                     "Errore lookup singleton dei messaggi " + ExceptionUtils.getRootCauseMessage(ex),
                     SacerWsErrorCategory.INTERNAL_ERROR);
@@ -1214,6 +1229,11 @@ public class MessaggiWSBundle {
     public static final String DATISPEC_003_001 = "DATISPEC-003-001";
 
     /**
+     * {0} {1}: I dati specifici attesi non coincidono con l''XSD
+     */
+    public static final String DATISPEC_003_002 = "DATISPEC-003-002";
+
+    /**
      * {0} {1}: La versione di dati specifici {2} indicata per il tipo {0} {3} non esiste.
      */
     public static final String DATISPECM_001_001 = "DATISPECM-001-001";
@@ -1271,6 +1291,20 @@ public class MessaggiWSBundle {
      */
     public static final String PROFNORM_001_004 = "PROFNORM-001-004";
 
+    /**
+     * {0} {1}: Esiste un xsd di profilo normativo associato a {2} attivo alla data di versamento. Eliminazione non
+     * consentita per l''elemento ProfiloNormativo.
+     */
+    public static final String PROFNORM_001_005 = "PROFNORM-001-005";
+    /**
+     * {0} {1}: Profilo Normativo non presente nell''xml del SIP per l''Unità Documentaria. Eliminazione non consentita
+     * per l''elemento ProfiloNormativo.
+     */
+    public static final String PROFNORM_001_006 = "PROFNORM-001-006";
+    /**
+     * Necessario valorizzare xml del Profilo Normativo per la versione specificata
+     */
+    public static final String PROFNORM_001_007 = "PROFNORM-001-007";
     /**
      * Componente {0}: per questo componente è obbligatorio indicare l''hash
      */
@@ -1704,5 +1738,4 @@ public class MessaggiWSBundle {
     public static final String SERVIZI_USR_005 = "SERVIZI-USR-005";
 
     // </editor-fold>
-
 }

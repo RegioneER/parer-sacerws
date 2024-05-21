@@ -1,14 +1,31 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.ws.versamento.dto;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.CostantiDB.TipoSalvataggioFile;
-import java.time.ZonedDateTime;
 
 /**
  *
@@ -16,9 +33,11 @@ import java.time.ZonedDateTime;
  */
 public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntity, IProfiloEntity {
 
+    private static final long serialVersionUID = 3514833629482500859L;
+
     private ZonedDateTime dataVersamento;
     //
-    private HashMap<String, ComponenteVers> fileAttesi;
+    private Map<String, ComponenteVers> fileAttesi;
     private List<DocumentoVers> documentiAttesi;
     //
     private boolean trovatiIdCompDuplicati;
@@ -97,8 +116,8 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
     private boolean warningFormatoNumero;
     //
     private String sistemaDiMigrazione = null;
-    private HashMap<String, DatoSpecifico> datiSpecifici;
-    private HashMap<String, DatoSpecifico> datiSpecificiMigrazione;
+    private Map<String, DatoSpecifico> datiSpecifici;
+    private Map<String, DatoSpecifico> datiSpecificiMigrazione;
     private long idRecXsdDatiSpec;
     private long idRecXsdDatiSpecMigrazione;
     //
@@ -137,7 +156,7 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
     /**
      * @return the fileAttesi
      */
-    public HashMap<String, ComponenteVers> getFileAttesi() {
+    public Map<String, ComponenteVers> getFileAttesi() {
         return fileAttesi;
     }
 
@@ -145,7 +164,7 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
      * @param fileAttesi
      *            the fileAttesi to set
      */
-    public void setFileAttesi(HashMap<String, ComponenteVers> fileAttesi) {
+    public void setFileAttesi(Map<String, ComponenteVers> fileAttesi) {
         this.fileAttesi = fileAttesi;
     }
 
@@ -497,22 +516,22 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecifici() {
+    public Map<String, DatoSpecifico> getDatiSpecifici() {
         return datiSpecifici;
     }
 
     @Override
-    public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
+    public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
         this.datiSpecifici = datiSpecifici;
     }
 
     @Override
-    public HashMap<String, DatoSpecifico> getDatiSpecificiMigrazione() {
+    public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
         return datiSpecificiMigrazione;
     }
 
     @Override
-    public void setDatiSpecificiMigrazione(HashMap<String, DatoSpecifico> datiSpecificiMigrazione) {
+    public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
         this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 

@@ -4,9 +4,9 @@
     <parent>
         <artifactId>sacerws</artifactId>
         <groupId>it.eng.parer</groupId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>5.2.1-SNAPSHOT</version>
     </parent>
-    <groupId>it.eng.parer</groupId>
+
     <artifactId>sacerws-web</artifactId>
     <packaging>war</packaging>
     <name>sacerws-web</name>
@@ -19,7 +19,7 @@
 
         <dependency>  
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-6.0</artifactId>
+            <artifactId>jboss-jakartaee-8.0</artifactId>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
@@ -104,8 +104,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <!-- DISABILITATO: Skinny WAR non supportato da NetBeans https://netbeans.org/bugzilla/show_bug.cgi?id=213960 ; tutte le dipendenze devono essere di tipo PROVIDED e dichiarate COMPILE nel pom dell'ear! -->
-                    <!--<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>-->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
                     <archive>

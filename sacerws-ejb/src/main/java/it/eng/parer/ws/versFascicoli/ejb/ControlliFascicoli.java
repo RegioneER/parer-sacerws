@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -39,9 +56,8 @@ import it.eng.parer.entity.FasXmlVersFascicolo;
 import it.eng.parer.entity.IamAbilTipoDato;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.constraint.FasFascicolo.TiStatoConservazione;
-import it.eng.parer.grantedEntity.SIOrgEnteSiam;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
-import it.eng.parer.viewEntity.OrgVChkPartitionFascByAa;
+import it.eng.parer.view_entity.OrgVChkPartitionFascByAa;
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -52,19 +68,20 @@ import it.eng.parer.ws.versFascicoli.dto.DXPAVoceClassificazione;
 import it.eng.parer.ws.versFascicoli.dto.DatiXmlProfiloArchivistico;
 import it.eng.parer.ws.versFascicoli.dto.FlControlliFasc;
 import it.eng.parer.ws.versFascicoli.dto.StrutturaVersFascicolo;
-import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
 import it.eng.parer.ws.versFascicoli.utils.KeyOrdFascUtility.TipiCalcolo;
 
 /**
  *
  * @author fioravanti_f
  */
+@SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliFascicoli")
 @LocalBean
 @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
 public class ControlliFascicoli {
 
     private static final Logger log = LoggerFactory.getLogger(ControlliFascicoli.class);
+    private static final String ERRORE_TABELLA_DECODIFICA = "Eccezione nella lettura della tabella di decodifica ";
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
 
@@ -76,7 +93,7 @@ public class ControlliFascicoli {
         CARICA, CONSIDERA_ASSENTE
     }
 
-    final static String NOME_FASCICOLO_SCONOSCIUTO = "Tipo fascicolo sconosciuto";
+    static final String NOME_FASCICOLO_SCONOSCIUTO = "Tipo fascicolo sconosciuto";
 
     public RispostaControlli verificaPartizioniStruttAnnoFascicoli(String descKey, long idStruttura, long anno) {
         RispostaControlli rispostaControlli;
@@ -93,12 +110,12 @@ public class ControlliFascicoli {
             query.setParameter("annoIn", new BigDecimal(anno));
             ovcspfs = query.getResultList();
 
-            if (ovcspfs.size() == 1) {
-                // trovata la struttura, vediamo se è tutta ben partizionata.
-                // se ci sono problemi il versamento è sempre e comunque errato
-                if (ovcspfs.get(0).getFlPartFascOk().equals("1")) {
-                    rispostaControlli.setrBoolean(true);
-                }
+            /*
+             * trovata una struttura ben partizionata. se ci sono problemi il versamento è sempre e comunque errato
+             */
+            if (ovcspfs.size() == 1 && ovcspfs.get(0).getFlPartFascOk().equals("1")) {
+
+                rispostaControlli.setrBoolean(true);
             }
             if (!rispostaControlli.isrBoolean()) {
                 rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
@@ -109,7 +126,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.verificaPartizioniStruttFascicoli: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -126,7 +143,7 @@ public class ControlliFascicoli {
             String queryStr = "select t from DecTipoFascicolo t " + "where t.orgStrut.idStrut = :idStrutIn "
                     + "and upper(t.nmTipoFascicolo) = :nmTipoFascicolo " + " and t.dtIstituz <= :dataDiOggiIn "
                     + " and t.dtSoppres > :dataDiOggiIn "; // da notare STRETTAMENTE MAGGIORE della data di
-                                                           // riferimento!!!;
+            // riferimento!!!
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecTipoFascicolo.class);
             query.setParameter("idStrutIn", idStruttura);
             query.setParameter("nmTipoFascicolo", nomeTipoFascicolo.toUpperCase());
@@ -146,7 +163,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.checkTipoFascicolo: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -166,9 +183,9 @@ public class ControlliFascicoli {
                     + "and t.iamAbilOrganiz.idOrganizApplic = :idOrganizApplic  "
                     + "and t.idTipoDatoApplic = :idTipoFasc  " + "and t.nmClasseTipoDato = 'TIPO_FASCICOLO'  ";
             javax.persistence.Query query = entityManager.createQuery(queryStr, IamAbilTipoDato.class);
-            query.setParameter("idOrganizApplic", idStruttura);
+            query.setParameter("idOrganizApplic", new BigDecimal(idStruttura));
             query.setParameter("idUserIam", idUser);
-            query.setParameter("idTipoFasc", idTipoFasc);
+            query.setParameter("idTipoFasc", new BigDecimal(idTipoFasc));
 
             iamAbilTipoDatos = query.getResultList();
 
@@ -185,7 +202,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.checkTipoFascicoloOrganizzazione: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -203,16 +220,16 @@ public class ControlliFascicoli {
             String queryStr = "select t from DecAaTipoFascicolo t "
                     + "where t.decTipoFascicolo.idTipoFascicolo = :idTipoFascicolo "
                     + "and t.aaIniTipoFascicolo <= :aaFasc  " + "and t.aaFinTipoFascicolo >= :aaFasc  ";// gli anni NON
-                                                                                                        // si
-                                                                                                        // sovrappongono
-                                                                                                        // quindi esiste
-                                                                                                        // un risultato
-                                                                                                        // per la
-                                                                                                        // verifica su
-                                                                                                        // tipo fasc
+            // si
+            // sovrappongono
+            // quindi esiste
+            // un risultato
+            // per la
+            // verifica su
+            // tipo fasc
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecAaTipoFascicolo.class);
             query.setParameter("idTipoFascicolo", idTipoFascicolo);
-            query.setParameter("aaFasc", anno);
+            query.setParameter("aaFasc", new BigDecimal(anno));
             decAaTipoFascicolos = query.getResultList();
 
             // ne esiste almeno uno
@@ -229,7 +246,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.checkTipoFascicoloAnno: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -244,7 +261,7 @@ public class ControlliFascicoli {
         try {
             String queryStr = "select t from DecTipoFascicolo t " + "where t.orgStrut.idStrut = :idStrutIn "
                     + "and upper(t.nmTipoFascicolo) = :nmTipoFascicolo ";
-            // da notare che non viene indicata la data di riferimento!!!;
+            // da notare che non viene indicata la data di riferimento!!!
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecTipoFascicolo.class);
             query.setParameter("idStrutIn", idStruttura);
             query.setParameter("nmTipoFascicolo", NOME_FASCICOLO_SCONOSCIUTO.toUpperCase());
@@ -263,7 +280,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.checkTipoFascicoloSconosciuto: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -288,17 +305,20 @@ public class ControlliFascicoli {
             query.setParameter("cdKeyFascicolo", key.getNumero());
             query.setParameter("aaFascicolo", new BigDecimal(key.getAnno()));
             fasFascicolos = query.getResultList();
-            // chiave già presente (uno o più righe trovate, mi interessa solo l'ultima - più recente)
-            if (fasFascicolos.size() > 0) {
+            // chiave già presente (uno o più righe trovate, mi interessa solo l'ultima -
+            // più recente)
+            if (!fasFascicolos.isEmpty()) {
                 TiStatoConservazione scud = fasFascicolos.get(0).getTiStatoConservazione();
                 if (scud == TiStatoConservazione.ANNULLATO && tgfa == TipiGestioneFascAnnullati.CONSIDERA_ASSENTE) {
                     // mi comporto come se non avesse trovato il fascicolo
-                    // NOTA: quando questo metodo verrà usato in un ws di recupero, qui dovrà costruire
+                    // NOTA: quando questo metodo verrà usato in un ws di recupero, qui dovrà
+                    // costruire
                     // un messaggio di errore, come in ControlliSemantici#checkChiave
                     rispostaControlli.setrBoolean(true);
                 } else {
                     // gestione normale: ho trovato il fascicolo e non è annullato.
-                    // Oppure è annullato e voglio caricarlo lo stesso (il solo caso è nel ws recupero stato fascicolo)
+                    // Oppure è annullato e voglio caricarlo lo stesso (il solo caso è nel ws
+                    // recupero stato fascicolo)
                     // intanto rendo l'errore di chiave già presente
                     rispostaControlli.setCodErr(MessaggiWSBundle.FASC_001_001);
                     rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.FASC_001_001, descKey));
@@ -315,7 +335,8 @@ public class ControlliFascicoli {
             }
 
             // Chiave non trovata
-            // NOTA: quando questo metodo verrà usato in un ws di recupero, qui dovrà costruire
+            // NOTA: quando questo metodo verrà usato in un ws di recupero, qui dovrà
+            // costruire
             // un messaggio di errore, come in ControlliSemantici#checkChiave
             rispostaControlli.setrBoolean(true);
 
@@ -323,7 +344,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.checkChiave: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -333,90 +354,6 @@ public class ControlliFascicoli {
      * ######## FASE II ########
      * 
      */
-    public RispostaControlli verificaCodSoggettoProduttore(VersFascicoloExt versamento, String codice) {
-        return verificaSoggettoProduttore(versamento, codice, null);
-    }
-
-    public RispostaControlli verificaDenSoggettoProduttore(VersFascicoloExt versamento, String denominazione) {
-        return verificaSoggettoProduttore(versamento, null, denominazione);
-    }
-
-    private RispostaControlli verificaSoggettoProduttore(VersFascicoloExt versamento, String codice,
-            String denominazione) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-
-        StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
-
-        List<SIOrgEnteSiam> siOrgEnteConvenzs = null;
-
-        try {
-            /*
-             * case 1
-             * 
-             * Nota: al momento NON si controlla se l'ente risulta valido nel range di date SYSDATE <= DT_CESSAZIONE AND
-             * SYSDATE >= DT_INI_VAL
-             */
-            String queryStr = "select e from SIOrgEnteConvenz e where ";
-            StringBuilder sb = new StringBuilder();
-            if (codice != null) {
-                sb.append(" ");
-                sb.append("upper(e.cdEnteConvenz) = :cdEnteConvenz");
-            }
-
-            if (denominazione != null) {
-                sb.append(" ");
-                sb.append("upper(e.nmEnteConvenz) = :nmEnteConvenz");
-            }
-            sb.append(" ");
-
-            queryStr += sb.toString();
-
-            javax.persistence.Query query = entityManager.createQuery(queryStr, SIOrgEnteSiam.class);
-            if (codice != null) {
-                query.setParameter("cdEnteConvenz", codice.toUpperCase().trim());// rispulisco da eventuali spazi
-            }
-            if (denominazione != null) {
-                query.setParameter("nmEnteSiam", denominazione.toUpperCase().trim());// rispulisco da eventuali spazi
-            }
-
-            siOrgEnteConvenzs = query.getResultList();
-
-            /*
-             * codice + denominazione
-             * 
-             * Nota: si verifica che ne esista almeno uno in quanto la chiave univoca legata al codice dell'ente riporta
-             * anche al tipo (constraint UN_ENTE_CONVENZ_CD) dato che attualmente non è presente su xml (non previsto
-             * dall'xsd)
-             */
-            if (siOrgEnteConvenzs.size() >= 1) {
-                // se trovato, rendo l'id dell'ente convenzionato / -> non per il momento (vedi
-                // Nota)
-                rispostaControlli.setrLong(siOrgEnteConvenzs.get(0).getIdEnteSiam());// considero sempre come un solo
-                                                                                     // risultato (TODO: da verificare)
-                rispostaControlli.setrBoolean(true);
-            } else {
-                if (codice != null) {
-                    versamento.listErrAddError(svf.getUrnPartChiaveFascicolo(), MessaggiWSBundle.FAS_CONFIG_004_001,
-                            codice);
-                }
-                if (denominazione != null) {
-                    versamento.listErrAddError(svf.getUrnPartChiaveFascicolo(), MessaggiWSBundle.FAS_CONFIG_004_002,
-                            denominazione);
-                }
-
-            }
-
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliFascicoli.verificaSoggettoProduttore: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella enti convenzionati ", e);
-        }
-
-        return rispostaControlli;
-    }
 
     public RispostaControlli verificaSIPTitolario(StrutturaVersFascicolo svf) {
         RispostaControlli rispostaControlli;
@@ -437,7 +374,7 @@ public class ControlliFascicoli {
                 if (dxpa != null && StringUtils.isNotBlank(dxpa.getIndiceClassificazione())) {
 
                     // verifica sulle singole (composito)
-                    tmpControlli = this.checkVoceDescTitol(dxpa.getVociClassificazione(), svf.getIdStruttura(),
+                    tmpControlli = this.checkVoceDescTitol(dxpa.getVociClassificazione(),
                             svf.getDatiXmlProfiloGenerale().getDataApertura(), decTitol.getIdTitol());
 
                     if (!tmpControlli.isrBoolean()) {
@@ -462,8 +399,8 @@ public class ControlliFascicoli {
                         // StrutTitolariEjb.creaVoce)
                         query.setParameter("cdCompositoVoceTitol", StringEscapeUtils
                                 .escapeEcmaScript(dxpa.getIndiceClassificazione().toUpperCase().trim().toUpperCase()));// ripulisco
-                                                                                                                       // dagli
-                                                                                                                       // spazi
+                        // dagli
+                        // spazi
                         query.setParameter("dtApertura", svf.getDatiXmlProfiloGenerale().getDataApertura());
 
                         decVoceTitols = query.getResultList();
@@ -504,10 +441,10 @@ public class ControlliFascicoli {
         return rispostaControlli;
     }
 
-    private RispostaControlli checkVoceDescTitol(List<DXPAVoceClassificazione> vociClassificazione, long idStrutt,
-            Date dtApertura, long idTitol) {
+    private RispostaControlli checkVoceDescTitol(List<DXPAVoceClassificazione> vociClassificazione, Date dtApertura,
+            long idTitol) {
 
-        Map<BigDecimal, DecValVoceTitol> decLvlVoceTitols = new HashMap<BigDecimal, DecValVoceTitol>();
+        Map<BigDecimal, DecValVoceTitol> decLvlVoceTitols = new HashMap<>();
 
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
@@ -525,7 +462,8 @@ public class ControlliFascicoli {
                         voce.getDescrizioneVoce()));
                 return tmpControlli;
             }
-            // serve per la gestione del composito da confrontare con l'indice di classificazione
+            // serve per la gestione del composito da confrontare con l'indice di
+            // classificazione
             DecValVoceTitol decValVoceTitol = (DecValVoceTitol) tmpControlli.getrObject();
             decLvlVoceTitols.put(decValVoceTitol.getDecVoceTitol().getDecLivelloTitol().getNiLivello(),
                     decValVoceTitol);
@@ -540,7 +478,8 @@ public class ControlliFascicoli {
             // recupero la voce dalla mappa
             DecValVoceTitol decValVoceTitol = decLvlVoceTitols.get(nextniLivello);
 
-            // se esiste recupero il livello successivo per ottenere il separatore da usare alla prossima iterazione
+            // se esiste recupero il livello successivo per ottenere il separatore da usare
+            // alla prossima iterazione
             RispostaControlli tmpControlli = this.getDecLvlVoceTitolWithNiLivello(nextniLivello.longValue(), idTitol);
 
             if (tmpControlli.isrBoolean()) {
@@ -583,7 +522,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.getDecAaTipoFascicolo: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica " + e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
         return rispostaControlli;
     }
@@ -619,35 +558,35 @@ public class ControlliFascicoli {
             }
 
             // fl (possono essere nulli -> recepisco quelli dell'organizzazione)
-            flAbilitaContrClassif = configurationHelper.getParamApplicValueAsFl(
+            flAbilitaContrClassif = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
                     ParametroApplFl.FL_ABILITA_CONTR_CLASSIF, orgStrut.getIdStrut(),
-                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE, idAaTipoFasc);
-            flAccettaContrClassifNeg = configurationHelper.getParamApplicValueAsFl(
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flAccettaContrClassifNeg = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
                     ParametroApplFl.FL_ACCETTA_CONTR_CLASSIF_NEG, orgStrut.getIdStrut(),
-                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE, idAaTipoFasc);
-            flForzaContrClassif = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_FORZA_CONTR_CLASSIF,
-                    orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE,
-                    idAaTipoFasc);
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flForzaContrClassif = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
+                    ParametroApplFl.FL_FORZA_CONTR_CLASSIF, orgStrut.getIdStrut(),
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
             //
-            flAbilitaContrNum = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_ABILITA_CONTR_NUMERO,
-                    orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE,
-                    idAaTipoFasc);
-            flAccettaContrNumNeg = configurationHelper.getParamApplicValueAsFl(
+            flAbilitaContrNum = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
+                    ParametroApplFl.FL_ABILITA_CONTR_NUMERO, orgStrut.getIdStrut(),
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flAccettaContrNumNeg = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
                     ParametroApplFl.FL_ACCETTA_CONTR_NUMERO_NEG, orgStrut.getIdStrut(),
-                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE, idAaTipoFasc);
-            flForzaContrNum = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_FORZA_CONTR_NUMERO,
-                    orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE,
-                    idAaTipoFasc);
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flForzaContrNum = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
+                    ParametroApplFl.FL_FORZA_CONTR_NUMERO, orgStrut.getIdStrut(),
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
             //
-            flAbilitaContrColl = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_ABILITA_CONTR_COLLEG,
-                    orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE,
-                    idAaTipoFasc);
-            flAccettaContrCollNeg = configurationHelper.getParamApplicValueAsFl(
+            flAbilitaContrColl = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
+                    ParametroApplFl.FL_ABILITA_CONTR_COLLEG, orgStrut.getIdStrut(),
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flAccettaContrCollNeg = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
                     ParametroApplFl.FL_ACCETTA_CONTR_COLLEG_NEG_FAS, orgStrut.getIdStrut(),
-                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE, idAaTipoFasc);
-            flForzaContrColl = configurationHelper.getParamApplicValueAsFl(ParametroApplFl.FL_FORZA_CONTR_COLLEG,
-                    orgStrut.getIdStrut(), orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), Integer.MIN_VALUE,
-                    idAaTipoFasc);
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
+            flForzaContrColl = configurationHelper.getValoreParamApplicByAaTipoFascAsFl(
+                    ParametroApplFl.FL_FORZA_CONTR_COLLEG, orgStrut.getIdStrut(),
+                    orgStrut.getOrgEnte().getOrgAmbiente().getIdAmbiente(), idAaTipoFasc);
 
             FlControlliFasc flControlliFasc = new FlControlliFasc();
 
@@ -690,7 +629,7 @@ public class ControlliFascicoli {
             ConfigNumFasc tmpConfigNumFasc = this.caricaPartiAANumero(decAaTipoFascicolo.getIdAaTipoFascicolo(),
                     decAaTipoFascicolo.getNiCharPadParteClassif().longValue());
 
-            if (tmpConfigNumFasc.getParti().size() > 0) {
+            if (!tmpConfigNumFasc.getParti().isEmpty()) {
                 rispostaControlli.setrObject(tmpConfigNumFasc);
                 rispostaControlli.setrBoolean(true);
             } else {
@@ -719,7 +658,7 @@ public class ControlliFascicoli {
 
         javax.persistence.Query query = entityManager.createQuery(queryStr);
         query.setParameter("idAaTipoFascicolo", idAaNumeroFasc);
-        List<DecParteNumeroFascicolo> tmpLstP = (List<DecParteNumeroFascicolo>) query.getResultList();
+        List<DecParteNumeroFascicolo> tmpLstP = query.getResultList();
 
         for (DecParteNumeroFascicolo tmpParte : tmpLstP) {
             ConfigNumFasc.ParteNumero tmpPRanno = tmpConfAnno.aggiungiParte();
@@ -792,12 +731,13 @@ public class ControlliFascicoli {
                 if (StringUtils.isNotBlank(cdVoceTitol)) {
                     query.setParameter("cdVoceTitol",
                             StringEscapeUtils.escapeEcmaScript(cdVoceTitol.toUpperCase().trim()));// ripulisco dagli
-                                                                                                  // spazi
+                    // spazi
                 }
-                // escaping (stessa gestione della fase di inserimento sulle voci vedi StrutTitolariEjb.creaVoce)
+                // escaping (stessa gestione della fase di inserimento sulle voci vedi
+                // StrutTitolariEjb.creaVoce)
                 query.setParameter("cdCompositoVoceTitol",
                         StringEscapeUtils.escapeEcmaScript(cdCompositoVoceTitol.toUpperCase().trim()));// ripulisco
-                                                                                                       // dagli spazi
+                // dagli spazi
                 query.setParameter("dtApertura", dtApertura);
 
                 decVoceTitols = query.getResultList();
@@ -877,20 +817,21 @@ public class ControlliFascicoli {
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecValVoceTitol.class);
 
             query.setParameter("idTitol", idTitol);
-            // escaping (stessa gestione della fase di inserimento sulle voci vedi StrutTitolariEjb.creaVoce)
+            // escaping (stessa gestione della fase di inserimento sulle voci vedi
+            // StrutTitolariEjb.creaVoce)
             if (StringUtils.isNotBlank(cdVoceTitol)) {
                 query.setParameter("cdVoceTitol", StringEscapeUtils.escapeEcmaScript(cdVoceTitol.toUpperCase().trim()));// ripulisco
-                                                                                                                        // dagli
-                                                                                                                        // spazi
+                // dagli
+                // spazi
             }
             if (StringUtils.isNotBlank(cdCompositoVoceTitol)) {
                 query.setParameter("cdCompositoVoceTitol",
                         StringEscapeUtils.escapeEcmaScript(cdCompositoVoceTitol.toUpperCase().trim()));// ripulisco
-                                                                                                       // dagli spazi
+                // dagli spazi
             }
             query.setParameter("dsVoceTitol", StringEscapeUtils.escapeEcmaScript(dsVoceTitol.toUpperCase().trim()));// ripulisco
-                                                                                                                    // dagli
-                                                                                                                    // spazi
+            // dagli
+            // spazi
             query.setParameter("dtApertura", dtApertura);
 
             decValVoceTitols = query.getResultList();
@@ -950,7 +891,7 @@ public class ControlliFascicoli {
 
             javax.persistence.Query query = entityManager.createQuery(queryStr, DecLivelloTitol.class);
             query.setParameter("idTitol", idTitol);
-            query.setParameter("niLivello", niLivello);// livello successivo
+            query.setParameter("niLivello", new BigDecimal(niLivello));// livello successivo
 
             decLivelloTitols = query.getResultList();
 
@@ -965,7 +906,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.getDecLvlVoceTitolWithNiLivello: " + e.getMessage()));
-            log.error("Eccezione nella lettura  della tabella di decodifica ", e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
 
         return rispostaControlli;
@@ -997,7 +938,7 @@ public class ControlliFascicoli {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliFascicoli.getDecTitol: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica " + e);
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
         }
         return rispostaControlli;
     }

@@ -1,4 +1,49 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.parer.restWS;
+
+import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
+import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.eng.parer.restWS.util.RequestPrsr;
 import it.eng.parer.restWS.util.Response405;
@@ -18,47 +63,36 @@ import it.eng.parer.ws.versFascicoli.ejb.VersFascicoloSync;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.xml.versfascicoloresp.ECEsitoPosNegType;
 import it.eng.parer.ws.xml.versfascicoloresp.ECEsitoXSDType;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.time.ZonedDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import it.eng.spagoCore.configuration.ConfigSingleton;
 
 /**
  *
  * @author fioravanti_f
  */
+@WebServlet(urlPatterns = { "/VersamentoFascicoloSync" }, asyncSupported = true)
 public class VersamentoFascicoloSrvlt extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(VersamentoFascicoloSrvlt.class);
-    private final String uploadDir;
-    private final String instanceName;
+    private String uploadDir;
+    private String instanceName;
 
-    public VersamentoFascicoloSrvlt() throws IOException {
-        super();
-        Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream("/Sacer.properties"));
-        uploadDir = props.getProperty("recuperoSync.upload.directory");
-        instanceName = props.getProperty("ws.instanceName");
+    @EJB(mappedName = "java:app/sacerws-ejb/VersFascicoloSync")
+    private VersFascicoloSync versFascicoloSync;
+
+    @EJB(mappedName = "java:app/sacerws-ejb/XmlFascCache")
+    private XmlFascCache xmlFascCache;
+
+    // @EJB(mappedName = "java:app/sacerws-ejb/RequestPrsr")
+    @EJB
+    private RequestPrsr myRequestPrsr;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // custom
+        uploadDir = ConfigSingleton.getInstance().getStringValue(WS_STAGING_UPLOAD_DIR.name());
+        instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
     }
 
     @Override
@@ -82,17 +116,13 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        VersFascicoloSync versFascicoloSync;
-        XmlFascCache xmlFascCache;
         RispostaWSFascicolo rispostaWs;
         VersFascicoloExt myVersamentoExt;
         SyncFakeSessn sessioneFinta = new SyncFakeSessn();
-        Iterator tmpIterator = null;
+        Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
-        List fileItems = null;
+        List<FileItem> fileItems = null;
         AvanzamentoWs tmpAvanzamento;
-        RequestPrsr myRequestPrsr = new RequestPrsr();
-        RequestPrsr.ReqPrsrConfig tmpPrsrConfig = new RequestPrsr().new ReqPrsrConfig();
 
         rispostaWs = new RispostaWSFascicolo();
         myVersamentoExt = new VersFascicoloExt();
@@ -103,22 +133,6 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
         // in questo punto non ho elementi per salvare la sessione di versamento, per quanto errata
         // (mi serve almeno l'user id definito nella chiamata del ws)
         rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ASSENTE);
-
-        // Recupera l'ejb, se possibile - altrimenti segnala errore
-        try {
-            versFascicoloSync = (VersFascicoloSync) new InitialContext()
-                    .lookup("java:app/sacerws-ejb/VersFascicoloSync");
-        } catch (NamingException ex) {
-            log.error("Errore nel recupero dell'EJB VersamentoSync ", ex);
-            throw new ServletException("Impossibile recuperare l'ejb VersFascicoloSync ", ex);
-        }
-
-        try {
-            xmlFascCache = (XmlFascCache) new InitialContext().lookup("java:app/sacerws-ejb/XmlFascCache");
-        } catch (NamingException ex) {
-            log.error("Errore nel recupero dell'EJB XmlContextCache ", ex);
-            throw new ServletException("Impossibile recuperare l'ejb XmlFascCache ", ex);
-        }
 
         tmpAvanzamento.setFase("EJB recuperato").logAvanzamento();
 
@@ -144,7 +158,7 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
                 try {
                     tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.TrasferimentoPayloadIn)
                             .setFase("pronto a ricevere").logAvanzamento();
-                    //
+                    RequestPrsr.ReqPrsrConfig tmpPrsrConfig = RequestPrsr.createConfig();
                     tmpPrsrConfig.setLeggiFile(false);
                     tmpPrsrConfig.setLeggindiceMM(false);
                     tmpPrsrConfig.setAvanzamentoWs(tmpAvanzamento);
@@ -251,28 +265,15 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
         response.reset();
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/xml; charset=\"utf-8\"");
-        ServletOutputStream out = response.getOutputStream();
-        OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(out, "UTF-8");
-        try {
-            JAXBContext tmpcontesto = xmlFascCache.getVersRespFascicoloCtx();
-            Marshaller tmpMarshaller = tmpcontesto.createMarshaller();
+        try (OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(response.getOutputStream(),
+                StandardCharsets.UTF_8);) {
+
+            Marshaller tmpMarshaller = xmlFascCache.getVersRespFascicoloCtx().createMarshaller();
             tmpMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             tmpMarshaller.marshal(myEsito.produciEsitoFascicolo(), tmpStreamWriter);
-        } catch (JAXBException e) {
+
+        } catch (Exception e) {
             log.error("Eccezione nella servlet versamento fascicolo sync", e);
-        } finally {
-            try {
-                tmpStreamWriter.flush();
-                tmpStreamWriter.close();
-            } catch (Exception ei) {
-                log.error("Eccezione nella servlet versamento fascicolo sync", ei);
-            }
-            try {
-                out.flush();
-                out.close();
-            } catch (Exception ei) {
-                log.error("Eccezione nella servlet versamento fascicolo sync", ei);
-            }
         }
 
         tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Fine).setFase("").logAvanzamento();

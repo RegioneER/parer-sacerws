@@ -1,4 +1,21 @@
 /*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -17,16 +34,10 @@ public class Costanti {
     public static final String WS_VERSAMENTO_VRSN = "1.5";
     public static final String WS_AGGIUNTA_VRSN = "1.4";
     public static final String WS_VERS_FASCICOLO_VRSN = "1.0";
-    public static final String WS_AGGIORNAMENTO_VERS_VRSN = "1.4";
+    public static final String WS_AGGIORNAMENTO_VERS_VRSN = "1.5";
     /**
      * Si reperiscono da DB (parametri applicativi)
      */
-    // public static final String[] WS_VERSAMENTO_COMP = {"1.1", "1.2", "1.25",
-    // "1.3", "1.4", "1.5"};
-    // public static final String[] WS_AGGIUNTA_COMP = {"1.3", "1.4","1.5"};
-    // public static final String[] WS_VERS_FASCICOLO_COMP = {"1.0"};
-    // public static final String[] WS_AGGIORNAMENTO_VERS_COMP = {"1.4"};
-    //
     public static final String WS_VERSAMENTO_NOME = "VersamentoSync";
     public static final String WS_AGGIUNTA_DOC_NOME = "AggiuntaAllegatiSync";
 
@@ -46,7 +57,7 @@ public class Costanti {
     public class UrnFormatter {
 
         private UrnFormatter() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException("UrnFormatter Utility class");
         }
 
         public static final char URN_STD_SEPARATOR = ':';
@@ -168,6 +179,11 @@ public class Costanti {
 
     // AWS
     public class AwsFormatter {
+
+        private AwsFormatter() {
+            throw new IllegalStateException("AwsFormatter Utility class");
+        }
+
         public static final String COMP_CD_KEY_FILE_FMT = "{0}/{1}/{2}/{3}/{4}/{5}";
 
         public static final String COMP_REPORTVF_CD_KEY_FILE_FMT = COMP_CD_KEY_FILE_FMT + "/{6}";
@@ -175,17 +191,41 @@ public class Costanti {
     }
 
     //
-    public class JMSMsgProperties {
+    public class AwsConstants {
 
-        // msg properties
-        public final static String MSG_K_PAYLOADTYPE = "tipoPayload";
-        public final static String MSG_K_STATUS = "statoElenco";
-        public final static String MSG_K_APP = "fromApplication";
+        private AwsConstants() {
+            throw new IllegalStateException("AwsS3Constants Utility class");
+        }
+
+        // custom tags
+        public static final String TAG_KEY_VRSOBJ_TYPE = "vrs-object-type";
+        public static final String TAG_VALUE_VRSOBJ_FILE_COMP = "file_componente_uddoc";
+        public static final String TAG_VALUE_VRSOBJ_METADATI = "xml_metadati_uddoc";
+        public static final String TAG_VALUE_VRSOBJ_TMP = "temporany";
+
+        public static final String TAG_KEY_RVF_CDSERV = "rvf-cd-service";
+        public static final String TAG_KEY_RVF_NMVERS = "rvf-nm-version";
+
+        // custom metadata
+        public static final String MEATADATA_INGEST_NODE = "ingest-node";
+        public static final String MEATADATA_INGEST_TIME = "ingest-time";
 
     }
 
     //
-    //
+    public class JMSMsgProperties {
+
+        private JMSMsgProperties() {
+            throw new IllegalStateException("JMSMsgProperties Utility class");
+        }
+
+        // msg properties
+        public static final String MSG_K_PAYLOADTYPE = "tipoPayload";
+        public static final String MSG_K_STATUS = "statoElenco";
+        public static final String MSG_K_APP = "fromApplication";
+
+    }
+
     //
     public enum ModificatoriWS {
 
@@ -215,8 +255,13 @@ public class Costanti {
         // end MEV#23176
         TAG_PROFILI_1_5,
         // MEV#25288
-        TAG_URN_SIP_FASC_1_1 // tag per urn dei sip in Esito Versamento e Rapporto di Versamento dei Fascicoli
+        TAG_URN_SIP_FASC_1_1, // tag per urn dei sip in Esito Versamento e Rapporto di Versamento dei
+        // Fascicoli
         // end MEV#25288
+        // MEV#26423
+        TAG_PROFILI_UPD_1_6, // tag per ProfiloNormativo servizio aggiornamento versamento
+        // MEV#28309
+        TAG_DATISPEC_DEL_1_6 // tag per eliminazione DatiSpecifici servizio aggiornamento versamento
 
     }
 
@@ -225,18 +270,18 @@ public class Costanti {
         Principale(CostantiDB.TipoDocumento.PRINCIPALE, 1), Allegato(CostantiDB.TipoDocumento.ALLEGATO, 2),
         Annotazione(CostantiDB.TipoDocumento.ANNOTAZIONE, 3), Annesso(CostantiDB.TipoDocumento.ANNESSO, 4),
         Documento(Costanti.UrnFormatter.URN_DOC_PREFIX);// "categoria"
-                                                        // speciale,
-                                                        // in
-                                                        // quanto
-                                                        // utilizzata
-                                                        // esclusivamente
-                                                        // per
-                                                        // il
-                                                        // supporto
-                                                        // legato
-                                                        // alla
-                                                        // composizione
-                                                        // dell'URN
+        // speciale,
+        // in
+        // quanto
+        // utilizzata
+        // esclusivamente
+        // per
+        // il
+        // supporto
+        // legato
+        // alla
+        // composizione
+        // dell'URN
 
         private String valore;
         private int ordine;
@@ -286,7 +331,8 @@ public class Costanti {
      */
     public enum VersioneWS {
 
-        V_EMPTY(""), V1_0("1.0"), V1_1("1.1"), V1_2("1.2"), V1_25("1.25"), V1_3("1.3"), V1_4("1.4"), V1_5("1.5");
+        V_EMPTY(""), V1_0("1.0"), V1_1("1.1"), V1_2("1.2"), V1_25("1.25"), V1_3("1.3"), V1_4("1.4"), V1_5("1.5"),
+        V1_6("1.6");
 
         private String version;
 
@@ -312,10 +358,12 @@ public class Costanti {
     }
 
     public static final String VERIFICA_FIRMA_METADATI_REPORT_NOVERSION = "NO_VERSION"; // VERS_FMT_STRING +
-                                                                                        // UD_FMT_STRING
+    // UD_FMT_STRING
 
     public enum GenReportVerificaFirma {
         OFF, ON, ALL;
     }
+
+    public static final String ERRORE_CLIENT_ERRATO = "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ";
 
 }
