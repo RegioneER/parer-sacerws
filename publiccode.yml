@@ -21,8 +21,6 @@ description:
     longDescription: |
       SacerWS (Sacer Web Service) è il modulo del Sistema di Conservazione SACER che espone i web service REST di versamento dei Pacchetti 
       di Versamento (detti anche SIP o PdV) nel sistema di conservazione SACER.
-
-      DA REVISIONARE
     shortDescription: |-
       SACERWS espone i web service REST di versamento dei Pacchetti di Versamento (detti anche SIP o PdV) nel sistema di conservazione SACER.
 developmentStatus: stable
@@ -53,7 +51,7 @@ localisation:
     - it
   localisationReady: true
 logo: |-
-  https://raw.githubusercontent.com/RegioneER/parer-verifica-firma-crypto/master/src/docs/rer-logo.png
+  https://raw.githubusercontent.com/RegioneER/parer-sacerws/master/src/docs/rer-logo.png
 maintenance:
   contacts:
     - email: areasviluppoparer@regione.emilia-romagna.it
@@ -67,5 +65,5 @@ platforms:
   - linux
 releaseDate: '2023-11-13'
 softwareType: standalone/backend
-url: 'https://github.com/RegioneER/parer-sacer.git'
+url: 'https://github.com/RegioneER/parer-sacerws.git'
 applicationSuite: SACER
