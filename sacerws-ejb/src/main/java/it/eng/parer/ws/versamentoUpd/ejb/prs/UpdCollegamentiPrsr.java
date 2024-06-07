@@ -170,7 +170,7 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
                         // allora è un errore di database..
 
                         this.setEsitoControlloErr(ControlliWSBundle.CTRL_GENERIC_ERROR, rispostaControlli.getCodErr(),
-                                rispostaControlli.getDsErr());
+                                rispostaControlli.getDsErr(), rispostaWs);
 
                         // esco dal ciclo
                         break;
@@ -203,7 +203,7 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
                                 && rispostaControlli.getCodErr().equals(MessaggiWSBundle.ERR_666)) {
                             // è un errore di database..
                             this.setEsitoControlloErr(ControlliWSBundle.CTRL_GENERIC_ERROR,
-                                    rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+                                    rispostaControlli.getCodErr(), rispostaControlli.getDsErr(), rispostaWs);
 
                             // esco dal ciclo
                             break;
@@ -236,7 +236,7 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
                                 && rispostaControlli.getCodErr().equals(MessaggiWSBundle.ERR_666)) {
                             // è un errore di database..
                             this.setEsitoControlloErr(ControlliWSBundle.CTRL_GENERIC_ERROR,
-                                    rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+                                    rispostaControlli.getCodErr(), rispostaControlli.getDsErr(), rispostaWs);
                             break;
                         } else {
 
@@ -279,7 +279,6 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
                                 rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO, tmpCsChiaveColl,
                                 rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
                         collegamentoHasErr = true;
-                        continue;
                     } else {
                         // registro esito positivo su controllo
                         // aggiunta su controlli su collegamento
@@ -317,7 +316,7 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
         // valutazione dell'esito
 
         // se ho riscontrato un errore ...
-        this.evaluateControlliOnCollegamenti(collegamentoHasErr, tmpForzaColl, versamento);
+        this.evaluateControlliOnCollegamenti(collegamentoHasErr, tmpForzaColl, versamento, rispostaWs);
 
         // build on esisto (collegamenti normalizzati)
         /* aggiunta questa condizione qualora non fossero presenti collegamenti (casistica della cancellazione) */
@@ -329,13 +328,14 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
     }
 
     private void evaluateControlliOnCollegamenti(boolean collegamentoHasErr, boolean tmpForzaColl,
-            UpdVersamentoExt versamento) {
+            UpdVersamentoExt versamento, IRispostaUpdVersWS rispostaWs) {
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         if (collegamentoHasErr) {
             // ...ma esiste la forzatura sui controlli lo trasformo in WARNING
             if (tmpForzaColl) {
                 // esito generale
-                this.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_COLLEGAMENTI, MessaggiWSBundle.UD_016_003);
+                this.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_COLLEGAMENTI, MessaggiWSBundle.UD_016_003,
+                        rispostaWs);
 
                 // aggiunta su warnings
                 versamento.addControlloOnWarningsBundle(
@@ -349,7 +349,8 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
 
             } else {
                 // esito generale
-                this.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_COLLEGAMENTI, MessaggiWSBundle.UD_016_003);
+                this.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_COLLEGAMENTI, MessaggiWSBundle.UD_016_003,
+                        rispostaWs);
                 // aggiunta su controlli documento (ultimo errore registrato)
                 versamento.addEsitoControlloOnControlliUnitaDocumentariaBundle(
                         ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_UD_COLLEGAMENTI),

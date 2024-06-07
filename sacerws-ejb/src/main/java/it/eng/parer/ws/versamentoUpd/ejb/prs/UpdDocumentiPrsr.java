@@ -319,6 +319,7 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         init(versamento, myEsito);
 
         boolean prosegui = true;
+
         AvanzamentoWs myAvanzamentoWs = rispostaWs.getAvanzamento();
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
 
@@ -339,7 +340,7 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
 
             // verifico abilitazione al tipo documento
             if (prosegui) {
-                prosegui = this.verificaAbilitazioneTipoDocumento(documento, versamento);
+                prosegui = this.verificaAbilitazioneTipoDocumento(documento, versamento, rispostaWs);
             }
 
             // verifico la corrispondenza dei DATI SPECIFICI del Documento
@@ -367,19 +368,20 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         /*
          * Valutazione esito "complessivo" dei controlli su componenti
          */
-        this.evaluteControlliOnComponente(strutturaUpdVers.getDocumentiAttesi(), versamento);
+        this.evaluteControlliOnComponente(strutturaUpdVers.getDocumentiAttesi(), versamento, rispostaWs);
 
         /*
          * Valutazione esito "complessivo" dei controlli su documenti eseguiti
          */
-        this.evaluteControlliOnDocumento(strutturaUpdVers.getDocumentiAttesi(), versamento);
+        this.evaluteControlliOnDocumento(strutturaUpdVers.getDocumentiAttesi(), versamento, rispostaWs);
 
         myAvanzamentoWs.resetFase().setFase("verifica semantica documenti - fine").logAvanzamento();
 
         return prosegui;// TODO: verificare se ha senso ..
     }
 
-    private void evaluteControlliOnDocumento(List<UpdDocumentoVers> documenti, UpdVersamentoExt versamento) {
+    private void evaluteControlliOnDocumento(List<UpdDocumentoVers> documenti, UpdVersamentoExt versamento,
+            IRispostaUpdVersWS rispostaWs) {
         // 0. merge di tutti i controlli fatti sui componenti dei documenti per singolo
         // documento
         // (principale, annessi, allegati, annotazioni ...)
@@ -411,7 +413,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         if (versamento.anyMatchEsitoControlli(controlliGlobal, VoceDiErrore.TipiEsitoErrore.NEGATIVO)) {
 
             // esito generale
-            this.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_DOCUMENTI, MessaggiWSBundle.UD_016_001);
+            super.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_DOCUMENTI, MessaggiWSBundle.UD_016_001,
+                    rispostaWs);
 
             // aggiunta su controlli ud
             versamento.addEsitoControlloOnControlliUnitaDocumentariaBundle(
@@ -421,7 +424,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
                 VoceDiErrore.TipiEsitoErrore.WARNING)) {
 
             // esito generale
-            this.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_DOCUMENTI, MessaggiWSBundle.UD_016_001);
+            super.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_DOCUMENTI, MessaggiWSBundle.UD_016_001,
+                    rispostaWs);
 
             // aggiunta su warnings
             versamento.addControlloOnWarningsBundle(ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_UD_DOCUMENTI),
@@ -445,7 +449,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         }
     }
 
-    private void evaluteControlliOnComponente(List<UpdDocumentoVers> documenti, UpdVersamentoExt versamento) {
+    private void evaluteControlliOnComponente(List<UpdDocumentoVers> documenti, UpdVersamentoExt versamento,
+            IRispostaUpdVersWS rispostaWs) {
         // 0. merge di tutti i controlli fatti sui componenti dei documenti per singolo documento
         // (principale, annessi, allegati, annotazioni ...)
         // per ogni documento
@@ -477,7 +482,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         if (versamento.anyMatchEsitoControlli(controlliGlobal, VoceDiErrore.TipiEsitoErrore.NEGATIVO)) {
 
             // esito generale
-            this.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_COMPONENTI, MessaggiWSBundle.UD_016_002);
+            super.setEsitoControlloErrBundle(ControlliWSBundle.CTRL_UD_COMPONENTI, MessaggiWSBundle.UD_016_002,
+                    rispostaWs);
 
             // aggiunta su controlli ud
             versamento.addEsitoControlloOnControlliUnitaDocumentariaBundle(
@@ -487,7 +493,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
                 VoceDiErrore.TipiEsitoErrore.WARNING)) {
 
             // esito generale
-            this.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_COMPONENTI, MessaggiWSBundle.UD_016_002);
+            super.setEsitoControlloWarnBundle(ControlliWSBundle.CTRL_UD_COMPONENTI, MessaggiWSBundle.UD_016_002,
+                    rispostaWs);
 
             // aggiunta su warnings
             versamento.addControlloOnWarningsBundle(
@@ -777,7 +784,8 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         return !hasDocError;
     }
 
-    private boolean verificaAbilitazioneTipoDocumento(UpdDocumentoVers documento, UpdVersamentoExt versamento) {
+    private boolean verificaAbilitazioneTipoDocumento(UpdDocumentoVers documento, UpdVersamentoExt versamento,
+            IRispostaUpdVersWS rispostaWs) {
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         boolean hasDocError = false;
         String cdCtrl = ControlliWSBundle.CTRL_DOC_ABILITAZIONEUTENTETIPO;
@@ -848,7 +856,7 @@ public class UpdDocumentiPrsr extends UpdBasePrsr {
         }
         // esito generale in caso di errore
         if (hasDocError) {
-            this.setEsitoControlloErr(cdCtrl, rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+            super.setEsitoControlloErr(cdCtrl, rispostaControlli.getCodErr(), rispostaControlli.getDsErr(), rispostaWs);
         } else {
             // set id abilitazione
             documento.setIdAbilTipoDocumentoDB(rispostaControlli.getrLong());

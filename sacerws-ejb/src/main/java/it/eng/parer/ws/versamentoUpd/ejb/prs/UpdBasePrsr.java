@@ -28,96 +28,38 @@ import it.eng.parer.ws.versamentoUpd.utils.IRispostaUpdVersWS;
 
 public abstract class UpdBasePrsr {
 
-    protected IRispostaUpdVersWS rispostaWs;
-
-    protected void setEsitoControlloErr(String ctrlws, String codErr, String dsErr) {
+    protected void setEsitoControlloErr(String ctrlws, String codErr, String dsErr, IRispostaUpdVersWS rispostaWs) {
         // è un errore grave ...
         rispostaWs.setSeverity(SeverityEnum.ERROR);
         // esito generale
-        rispostaWs.setEsitoWsError(ControlliWSBundle.getControllo(ctrlws), // TODO: il
-                                                                           // controllo
-                                                                           // che è
-                                                                           // fallito
-                                                                           // (verificare
-                                                                           // se
-                                                                           // esplicitarlo
-                                                                           // direttamente
-                                                                           // e non
-                                                                           // inserirlo
-                                                                           // come
-                                                                           // parte
-                                                                           // della
-                                                                           // risposta)
-                codErr, dsErr);
+        rispostaWs.setEsitoWsError(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
 
     }
 
-    protected void setEsitoControlloErrBundle(String ctrlws, String codErr) {
+    protected void setEsitoControlloErrBundle(String ctrlws, String codErr, IRispostaUpdVersWS rispostaWs) {
         // è un errore grave ...
         rispostaWs.setSeverity(SeverityEnum.ERROR);
         // esito generale
-        rispostaWs.setEsitoWsErrBundle(ControlliWSBundle.getControllo(ctrlws), // TODO: il
-                                                                               // controllo
-                                                                               // che è
-                                                                               // fallito
-                                                                               // (verificare
-                                                                               // se
-                                                                               // esplicitarlo
-                                                                               // direttamente
-                                                                               // e non
-                                                                               // inserirlo
-                                                                               // come
-                                                                               // parte
-                                                                               // della
-                                                                               // risposta)
-                codErr);
+        rispostaWs.setEsitoWsErrBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
 
     }
 
-    protected void setEsitoControlloWarn(String ctrlws, String codErr, String dsErr) {
+    protected void setEsitoControlloWarn(String ctrlws, String codErr, String dsErr, IRispostaUpdVersWS rispostaWs) {
         // warning (solo se severity diverso da ERROR)
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             rispostaWs.setSeverity(SeverityEnum.WARNING);
             // esito generale
-            rispostaWs.setEsitoWsWarning(ControlliWSBundle.getControllo(ctrlws), // TODO: il
-                                                                                 // controllo
-                                                                                 // che è
-                                                                                 // fallito
-                                                                                 // (verificare
-                                                                                 // se
-                                                                                 // esplicitarlo
-                                                                                 // direttamente
-                                                                                 // e non
-                                                                                 // inserirlo
-                                                                                 // come
-                                                                                 // parte
-                                                                                 // della
-                                                                                 // risposta)
-                    codErr, dsErr);
+            rispostaWs.setEsitoWsWarning(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
         }
 
     }
 
-    protected void setEsitoControlloWarnBundle(String ctrlws, String codErr) {
+    protected void setEsitoControlloWarnBundle(String ctrlws, String codErr, IRispostaUpdVersWS rispostaWs) {
         // warning (solo se severity diverso da ERROR)
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             rispostaWs.setSeverity(SeverityEnum.WARNING);
             // esito generale
-            rispostaWs.setEsitoWsWarnBundle(ControlliWSBundle.getControllo(ctrlws), // TODO: il
-                    // controllo
-                    // che è
-                    // fallito
-                    // (verificare
-                    // se
-                    // esplicitarlo
-                    // direttamente
-                    // e non
-                    // inserirlo
-                    // come
-                    // parte
-                    // della
-                    // risposta)
-                    codErr);
+            rispostaWs.setEsitoWsWarnBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
         }
     }
 

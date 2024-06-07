@@ -33,7 +33,6 @@ import it.eng.parer.entity.FirCertifFirmatario;
 import it.eng.parer.entity.FirCertifOcsp;
 import it.eng.parer.entity.FirCrl;
 import it.eng.parer.entity.FirOcsp;
-import it.eng.parer.firma.crypto.verifica.CryptoInvoker;
 import it.eng.parer.firma.dto.input.InvokeVerificaInput;
 import it.eng.parer.firma.dto.input.InvokeVerificaRule;
 import it.eng.parer.firma.exception.VerificaFirmaConnectionException;

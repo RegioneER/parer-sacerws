@@ -40,14 +40,14 @@ import it.eng.parer.entity.DecEstensioneFile;
 import it.eng.parer.entity.DecFormatoFileDoc;
 import it.eng.parer.entity.DecFormatoFileStandard;
 import it.eng.parer.entity.OrgStrut;
-import it.eng.parer.firma.crypto.verifica.VerFormatiEnums;
-import it.eng.parer.firma.crypto.verifica.VerFormatiEnums.EsitoControlloFormato;
-import it.eng.parer.firma.crypto.verifica.VerFormatiEnums.FormatiStandardFirme;
-import it.eng.parer.firma.crypto.verifica.VerFormatiEnums.IdoneitaFormato;
 import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.dto.input.InvokeVerificaInput;
 import it.eng.parer.firma.dto.input.InvokeVerificaRule;
 import it.eng.parer.firma.exception.VerificaFirmaException;
+import it.eng.parer.firma.util.VerificaFormatiEnums;
+import it.eng.parer.firma.util.VerificaFormatiEnums.EsitoControlloFormato;
+import it.eng.parer.firma.util.VerificaFormatiEnums.FormatiStandardFirme;
+import it.eng.parer.firma.util.VerificaFormatiEnums.IdoneitaFormato;
 import it.eng.parer.firma.xml.VFAdditionalInfoBustaType;
 import it.eng.parer.firma.xml.VFFirmaCompType;
 import it.eng.parer.firma.xml.VFMarcaCompType;
@@ -391,18 +391,20 @@ public class FirmeFormatiVers {
 
             if (formatoStd == null) {
                 formatoRapprBuilder.put(busta.getPgBusta().intValue(),
-                        VerFormatiEnums.SEPARATORE_FORMATI + VerFormatiEnums.FORMATO_SCONOSCIUTO);
-                builderMessaggio.put(busta.getPgBusta().intValue(), VerFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
+                        VerificaFormatiEnums.SEPARATORE_FORMATI + VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
+                builderMessaggio.put(busta.getPgBusta().intValue(),
+                        VerificaFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
             } else if (!formatoStd.getNmFormatoFileStandard().equals(FormatiStandardFirme.XML.name())
                     && !formatoStd.getNmFormatoFileStandard().equals(FormatiStandardFirme.PDF.name())) {
                 // sono esclusi i formati XML e PDF altrimenti avrei XML.XML o PDF.PDF
                 formatoRapprBuilder.put(busta.getPgBusta().intValue(),
-                        VerFormatiEnums.SEPARATORE_FORMATI + formatoStd.getNmFormatoFileStandard());
-                builderMessaggio.put(busta.getPgBusta().intValue(), VerFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
+                        VerificaFormatiEnums.SEPARATORE_FORMATI + formatoStd.getNmFormatoFileStandard());
+                builderMessaggio.put(busta.getPgBusta().intValue(),
+                        VerificaFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
             } else if (formatoStd.getNmFormatoFileStandard().equals(FormatiStandardFirme.XML.name())) {
-                tikaMime = VerFormatiEnums.XML_MIME;
+                tikaMime = VerificaFormatiEnums.XML_MIME;
             } else if (formatoStd.getNmFormatoFileStandard().equals(FormatiStandardFirme.PDF.name())) {
-                tikaMime = VerFormatiEnums.PDF_MIME;
+                tikaMime = VerificaFormatiEnums.PDF_MIME;
             }
         }
         // Eventuale normalizzazione mime type xml
@@ -466,7 +468,7 @@ public class FirmeFormatiVers {
             // formatoStd può essere null se e solo se il mime tika non è censito tra i
             // formati standard
             if (formatoStd == null) {
-                formatoRapprBuilder.put(0, VerFormatiEnums.FORMATO_SCONOSCIUTO);
+                formatoRapprBuilder.put(0, VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
             } else {
                 formatoRapprBuilder.put(0, formatoStd.getNmFormatoFileStandard());
                 mock.setIdDecFormatoFileStandard(new BigDecimal(formatoStd.getIdFormatoFileStandard()));
@@ -505,8 +507,8 @@ public class FirmeFormatiVers {
                 formatoRappr.append(formatoStd.getNmFormatoFileStandard());
                 listaFormatiMimeTypeTika.append(formatoStd.getNmFormatoFileStandard());
             } else {
-                formatoRapprEsteso.append(VerFormatiEnums.FORMATO_SCONOSCIUTO);
-                formatoRappr.append(VerFormatiEnums.FORMATO_SCONOSCIUTO);
+                formatoRapprEsteso.append(VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
+                formatoRappr.append(VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
                 listaFormatiMimeTypeTika.append(builderMessaggio.get(1));
             }
         } else {
@@ -514,8 +516,8 @@ public class FirmeFormatiVers {
             // versata come componente, caso di formato di firma non conforme]
             // MEV#18660
             mock.setIdDecFormatoFileStandard(null);
-            formatoRapprBuilder.put(0, VerFormatiEnums.FORMATO_SCONOSCIUTO);
-            builderMessaggio.put(0, VerFormatiEnums.FORMATO_SCONOSCIUTO);
+            formatoRapprBuilder.put(0, VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
+            builderMessaggio.put(0, VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
             String nthFormat = formatoRapprBuilder.get(0);
             formatoRappr.append(nthFormat);
             formatoRapprEsteso.append(nthFormat);
@@ -570,10 +572,10 @@ public class FirmeFormatiVers {
                     mock.setTiEsitoContrFormatoFile(EsitoControlloFormato.NEGATIVO.name());
                     StringBuilder esitoNegativo = new StringBuilder();
                     esitoNegativo.append("Il formato di rappresentazione");
-                    if (formatoRappr.indexOf(VerFormatiEnums.FORMATO_SCONOSCIUTO) > -1) {
+                    if (formatoRappr.indexOf(VerificaFormatiEnums.FORMATO_SCONOSCIUTO) > -1) {
                         esitoNegativo.append(" è sconosciuto");
                         if (!formatoRappr.toString().equalsIgnoreCase(listaFormatiMimeTypeTika.toString())
-                                && !VerFormatiEnums.OCTET_STREAM_MIME.equalsIgnoreCase(tikaMime)) {
+                                && !VerificaFormatiEnums.OCTET_STREAM_MIME.equalsIgnoreCase(tikaMime)) {
                             esitoNegativo.append(", può corrispondere a ");
                             esitoNegativo.append(listaFormatiMimeTypeTika);
                         }
@@ -581,7 +583,7 @@ public class FirmeFormatiVers {
                         esitoNegativo.append(" calcolato è ");
                         esitoNegativo.append(formatoRappr);
                         if (!formatoRappr.toString().equalsIgnoreCase(listaFormatiMimeTypeTika.toString())
-                                && !VerFormatiEnums.OCTET_STREAM_MIME.equalsIgnoreCase(tikaMime)) {
+                                && !VerificaFormatiEnums.OCTET_STREAM_MIME.equalsIgnoreCase(tikaMime)) {
                             esitoNegativo.append(", corrisponde a ");
                             esitoNegativo.append(listaFormatiMimeTypeTika);
                         }
@@ -759,7 +761,7 @@ public class FirmeFormatiVers {
 
     private String buildMessage(List<DecFormatoFileStandard> res) {
         if (res.isEmpty()) {
-            return VerFormatiEnums.FORMATO_SCONOSCIUTO;
+            return VerificaFormatiEnums.FORMATO_SCONOSCIUTO;
         }
         if (res.size() == 1) {
             return res.get(0).getNmFormatoFileStandard();

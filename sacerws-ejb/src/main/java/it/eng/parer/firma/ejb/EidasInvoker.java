@@ -48,11 +48,11 @@ import it.eng.parer.eidas.model.EidasDataToValidateMetadata;
 import it.eng.parer.eidas.model.EidasWSReportsDTOTree;
 import it.eng.parer.eidas.model.EidasValidationResponse;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
-import it.eng.parer.firma.crypto.helper.EidasRestConfiguratorHelper;
 import it.eng.parer.firma.exception.VerificaFirmaConnectionException;
 import it.eng.parer.firma.exception.VerificaFirmaGenericInvokeException;
 import it.eng.parer.firma.exception.VerificaFirmaWrapperGenericException;
 import it.eng.parer.firma.exception.VerificaFirmaWrapperResNotFoundException;
+import it.eng.parer.firma.helper.EidasRestConfiguratorHelper;
 import it.eng.parer.firma.strategy.EidasWrapperResultStrategy;
 import it.eng.parer.firma.util.EidasErrorHandler;
 import it.eng.parer.firma.util.EidasUtils;
@@ -212,10 +212,12 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
                 sottoComponentiFirma, controlliAbilitati, dataDiRiferimento, uuid);
 
         // file from o.s.
-        if (isComponenteSuObjectStorage(componenteVers)) {
+        if (isComponenteSuObjectStorage(componenteVers) && !restInvoker.isEnableMultipartRequest().booleanValue()) {
+            LOG.debug("Invocazione verifica firma EIDAS (application/json)");
             // call
             esito = verificaEidasJson(dto);
         } else {
+            LOG.debug("Invocazione verifica firma EIDAS (multipart/form-data)");
             // file from multipart
             final boolean hasFirmeDetached = sottoComponentiFirma != null && !sottoComponentiFirma.isEmpty();
             File signed = null;
