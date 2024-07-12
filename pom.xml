@@ -228,7 +228,7 @@
         <module>sacerws-ear</module>
     </modules>
     <scm>
-        <developerConnection>scm:git:git@gitlab.ente.regione.emr.it:parer/jboss/sacerws.git</developerConnection>
-        <tag>sacerws-5.3.0</tag>
+        <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.sacerws.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 </project>
