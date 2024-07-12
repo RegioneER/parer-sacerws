@@ -19,13 +19,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.eng.parer.firma.crypto.verifica;
+package it.eng.parer.firma.util;
 
 /**
  *
  * @author Quaranta_M
  */
-public class VerFormatiEnums {
+public class VerificaFormatiEnums {
 
     public enum FormatiStandardFirme {
 

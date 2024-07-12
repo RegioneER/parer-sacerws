@@ -127,7 +127,7 @@ public abstract class UpdVersamentoBasePrsr {
 
         // ALLEGATI
         if (strutturaUpdVers.isCorrAllegatiDichiarati() != null) {
-            if (!strutturaUpdVers.isCorrAllegatiDichiarati().booleanValue()) {
+            if (!strutturaUpdVers.isCorrAllegatiDichiarati()) {
                 rispostaWs.setSeverity(SeverityEnum.ERROR);
 
                 // esito generale
@@ -148,7 +148,7 @@ public abstract class UpdVersamentoBasePrsr {
 
         // ANNESSI
         if (strutturaUpdVers.isCorrAnnessiDichiarati() != null) {
-            if (!strutturaUpdVers.isCorrAnnessiDichiarati().booleanValue()) {
+            if (!strutturaUpdVers.isCorrAnnessiDichiarati()) {
                 rispostaWs.setSeverity(SeverityEnum.ERROR);
 
                 // esito generale
@@ -168,7 +168,7 @@ public abstract class UpdVersamentoBasePrsr {
         }
         // ANNOTAZIONI
         if (strutturaUpdVers.isCorrAnnotazioniDichiarati() != null) {
-            if (!strutturaUpdVers.isCorrAnnotazioniDichiarati().booleanValue()) {
+            if (!strutturaUpdVers.isCorrAnnotazioniDichiarati()) {
                 rispostaWs.setSeverity(SeverityEnum.ERROR);
 
                 // esito generale

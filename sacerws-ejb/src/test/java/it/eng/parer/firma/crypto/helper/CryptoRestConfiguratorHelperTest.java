@@ -34,6 +34,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import it.eng.parer.firma.helper.CryptoRestConfiguratorHelper;
+
 @RunWith(Arquillian.class)
 
 public class CryptoRestConfiguratorHelperTest {

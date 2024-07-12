@@ -15,7 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.firma.crypto.verifica;
+package it.eng.parer.firma.ejb;
 
 import java.io.File;
 import java.net.URI;
@@ -52,12 +52,11 @@ import it.eng.parer.crypto.model.verifica.input.CryptoDataToValidateMetadataFile
 import it.eng.parer.crypto.model.verifica.input.CryptoProfiloVerifica;
 import it.eng.parer.crypto.model.verifica.input.TipologiaDataRiferimento;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
-import it.eng.parer.firma.crypto.helper.CryptoRestConfiguratorHelper;
-import it.eng.parer.firma.ejb.IVerificaFirmaInvoker;
 import it.eng.parer.firma.exception.VerificaFirmaConnectionException;
 import it.eng.parer.firma.exception.VerificaFirmaGenericInvokeException;
 import it.eng.parer.firma.exception.VerificaFirmaWrapperGenericException;
 import it.eng.parer.firma.exception.VerificaFirmaWrapperResNotFoundException;
+import it.eng.parer.firma.helper.CryptoRestConfiguratorHelper;
 import it.eng.parer.firma.strategy.CryptoWrapperResultStrategy;
 import it.eng.parer.firma.util.CryptoErrorHandler;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper;
@@ -233,12 +232,14 @@ public class CryptoInvoker implements IVerificaFirmaInvoker {
 
         final boolean hasFirmeDetached = sottoComponentiFirma != null && !sottoComponentiFirma.isEmpty();
         CryptoAroCompDoc output;
-        if (isComponenteSuObjectStorage(componenteVers)) {
+        if (isComponenteSuObjectStorage(componenteVers) && !restInvoker.isEnableMultipartRequest().booleanValue()) {
+            LOG.debug("Invocazione verifica firma CRYPTO (application/json)");
 
             CryptoDataToValidateDataUri data = buildDataUri(componenteVers, sottoComponentiFirma, sottoComponentiMarca);
             output = verificaCrypto(data, metadata);
 
         } else {
+            LOG.debug("Invocazione verifica firma CRYPTO (multipart/form-data)");
 
             // File firme detached (o null)
             List<File> sottoComponentiMarcaFile = compilaFileDetached(sottoComponentiMarca);
