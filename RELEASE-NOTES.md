@@ -1,7 +1,7 @@
-## 5.3.0 (07-06-2024)
+## 5.4.0 (18-07-2024)
 
 ### Bugfix: 1
-- [#32033](https://parermine.regione.emilia-romagna.it/issues/32033) Aggiornamento metadati: gestire errore dovuto all'aggiornamento errato del TipoConservazione
+- [#32809](https://parermine.regione.emilia-romagna.it/issues/32809) Correzione messaggio di errore creazione / copia oggetto "componente" (AWS S3) 
 
 ### Novità: 1
-- [#32653](https://parermine.regione.emilia-romagna.it/issues/32653) Gestione invocazione microservice di verifica firma
+- [#32817](https://parermine.regione.emilia-romagna.it/issues/32817) Modifica modello CRYPTO response

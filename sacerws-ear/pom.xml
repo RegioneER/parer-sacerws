@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sacerws</artifactId>
         <groupId>it.eng.parer</groupId>
-    	<version>5.3.1-SNAPSHOT</version>
+    	<version>5.4.0</version>
     </parent>
 
     <artifactId>sacerws-ear</artifactId>

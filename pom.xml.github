@@ -2,11 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sacerws</artifactId>
-    <version>5.4.0</version>
+    <version>5.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
-    <url>https://nexus.ente.regione.emr.it/repository/parer-site/sacerws/${project.version}/</url>
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>parer-pom</artifactId>
@@ -20,7 +19,7 @@
         <!-- spagofat bom -->
         <spagofat.version>5.12.0</spagofat.version>
         <verificafirma-eidas-beans.version>1.9.0</verificafirma-eidas-beans.version>
-        <verificafirma-crypto-beans.version>1.4.1</verificafirma-crypto-beans.version>
+        <verificafirma-crypto-beans.version>1.3.0</verificafirma-crypto-beans.version>
         <parer-retry.version>2.1.0</parer-retry.version>
         <idp-jaas-rdbms.version>0.0.9</idp-jaas-rdbms.version>
         <!-- third party lib -->
@@ -29,11 +28,18 @@
     </properties>
 
     <distributionManagement>
-        <site>
-            <id>site</id>
-            <url>dav:https://nexus.ente.regione.emr.it/repository/parer-site/sacerws/${project.version}</url>
-        </site>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/RegioneER/parer-sacerws</url>
+        </repository>      
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>           
+        </repository>
+     </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -222,7 +228,7 @@
         <module>sacerws-ear</module>
     </modules>
     <scm>
-        <developerConnection>scm:git:git@gitlab.ente.regione.emr.it:parer/jboss/sacerws.git</developerConnection>
-        <tag>sacerws-5.4.0</tag>
+        <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.sacerws.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 </project>

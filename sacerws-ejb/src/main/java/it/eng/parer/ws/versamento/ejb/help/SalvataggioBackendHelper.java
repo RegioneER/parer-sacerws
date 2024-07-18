@@ -408,7 +408,7 @@ public class SalvataggioBackendHelper {
                     .build();
         } catch (Exception e) {
             throw ObjectStorageException.builder().message(
-                    "{0}: impossibile spostare dal bucket {1} oggetto con chiave {2} sul bucket {3} con chiave {4}",
+                    "{0}: errore generico creazione / copia oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
                     sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(), sourceKey,
                     destConfiguration.getBucket(), destKey).cause(e).build();
         }
@@ -418,7 +418,7 @@ public class SalvataggioBackendHelper {
 
         } catch (Exception e) {
             throw ObjectStorageException.builder().message(
-                    "{0}: impossibile spostare dal bucket {1} oggetto con chiave {2} sul bucket {3} con chiave {4}",
+                    "{0}: impossibile creare / copiare oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
                     sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(), sourceKey,
                     destConfiguration.getBucket(), destKey).cause(e).build();
         }
