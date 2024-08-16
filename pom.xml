@@ -6,7 +6,6 @@
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
-    <url>https://nexus.ente.regione.emr.it/repository/parer-site/sacerws/${project.version}/</url>
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>parer-pom</artifactId>
@@ -29,11 +28,18 @@
     </properties>
 
     <distributionManagement>
-        <site>
-            <id>site</id>
-            <url>dav:https://nexus.ente.regione.emr.it/repository/parer-site/sacerws/${project.version}</url>
-        </site>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/RegioneER/parer-sacerws</url>
+        </repository>      
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>           
+        </repository>
+     </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -222,7 +228,7 @@
         <module>sacerws-ear</module>
     </modules>
     <scm>
-        <developerConnection>scm:git:git@gitlab.ente.regione.emr.it:parer/jboss/sacerws.git</developerConnection>
-        <tag>sacerws-5.4.0</tag>
+        <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.sacerws.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 </project>
