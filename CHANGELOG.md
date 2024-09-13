@@ -1,4 +1,9 @@
 
+## 6.0.0 (13-08-2024)
+
+### Novità: 1
+- [#30804](https://parermine.regione.emilia-romagna.it/issues/30804) Aggiornamento a Java 11
+
 ## 5.4.0 (18-07-2024)
 
 ### Bugfix: 1

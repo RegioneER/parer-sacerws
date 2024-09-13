@@ -17,13 +17,9 @@
 
 package it.eng.parer.entity;
 
-import it.eng.sequences.hibernate.NonMonotonicSequenceGenerator;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * The persistent class for the VRS_ERR_SESSIONE_VERS_KO database table.
