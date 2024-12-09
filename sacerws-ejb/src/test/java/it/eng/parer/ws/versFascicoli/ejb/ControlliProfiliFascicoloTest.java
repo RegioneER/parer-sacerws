@@ -17,6 +17,23 @@
 
 package it.eng.parer.ws.versFascicoli.ejb;
 
+import static it.eng.ArquillianTestUtils.assertNoErr;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+
+import java.util.Arrays;
+
+import javax.ejb.EJB;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.versFascicoli.dto.StrutturaVersFascicolo;
@@ -25,18 +42,6 @@ import it.eng.parer.ws.xml.versfascicolo.ConfigType;
 import it.eng.parer.ws.xml.versfascicolo.IndiceSIPFascicolo;
 import it.eng.parer.ws.xml.versfascicolo.ProfiloArchivisticoType;
 import it.eng.parer.ws.xml.versfascicoloresp.ECFascicoloType;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.ejb.EJB;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.util.Arrays;
-
-import static it.eng.ArquillianTestUtils.*;
 
 @RunWith(Arquillian.class)
 public class ControlliProfiliFascicoloTest {

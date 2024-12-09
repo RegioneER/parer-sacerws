@@ -19,7 +19,7 @@ I SIP devono rispettare una determinata struttura dati e sono composti da due el
 Requisiti minimi per installazione: 
 
 - Sistema operativo : consigliato Linux server (in alternativa compatibilità con Windows server);
-- Java versione 8 (OpenJDK / Oracle);
+- Java versione 11 (OpenJDK / Oracle);
 - JBoss 7 EAP;
 - Oracle DB (versione consigliata 19c).
 
@@ -194,6 +194,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 
 # Librerie utilizzate
 
+
 |  GroupId | ArtifactId  | Version |
 |:---:|:---:|:---:|
 |none|||
@@ -214,12 +215,12 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |commons-io|commons-io|2.12.0|
 |commons-logging|commons-logging|1.2|
 |commons-net|commons-net|3.9.0|
-|it.eng.parer|spagofat-core|5.12.0|
-|it.eng.parer|spagofat-middle|5.12.0|
-|it.eng.parer|spagofat-paginator-ejb|5.12.0|
-|it.eng.parer|spagofat-paginator-gf|5.12.0|
-|it.eng.parer|spagofat-sl-jpa|5.12.0|
-|it.eng.parer|spagofat-timer-wrapper-common|5.12.0|
+|it.eng.parer|spagofat-core|6.14.1|
+|it.eng.parer|spagofat-middle|6.14.1|
+|it.eng.parer|spagofat-paginator-ejb|6.14.1|
+|it.eng.parer|spagofat-paginator-gf|6.14.1|
+|it.eng.parer|spagofat-sl-jpa|6.14.1|
+|it.eng.parer|spagofat-timer-wrapper-common|6.14.1|
 |jakarta.enterprise|jakarta.enterprise.cdi-api|2.0.2.redhat-00002|
 |jakarta.inject|jakarta.inject-api|1.0.3.redhat-00001|
 |jakarta.json.bind|jakarta.json.bind-api|1.0.2.redhat-00001|
@@ -229,10 +230,13 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |jakarta.validation|jakarta.validation-api|2.0.2.redhat-00001|
 |jakarta.xml.bind|jakarta.xml.bind-api|2.3.2|
 |javax.activation|javax.activation-api|1.2.0|
+|javax.annotation|javax.annotation-api|1.3.2|
 |javax.jws|jsr181-api|1.0.0.MR1-redhat-8|
 |javax.persistence|javax.persistence-api|2.2|
 |javax.validation|validation-api|2.0.1.Final|
 |javax.xml.bind|jaxb-api|2.3.0|
+|javax.xml.soap|javax.xml.soap-api|1.4.0|
+|javax.xml.ws|jaxws-api|2.3.1|
 |joda-time|joda-time|2.12.5|
 |net.bytebuddy|byte-buddy|1.11.12.redhat-00002|
 |org.apache-extras.beanshell|bsh|2.0b6|
@@ -242,18 +246,19 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.commons|commons-text|1.10.0|
 |org.apache.httpcomponents|httpclient|4.5.14|
 |org.apache.httpcomponents|httpcore|4.4.16|
-|org.apache.poi|poi|4.1.2|
+|org.apache.logging.log4j|log4j-api|2.18.0|
+|org.apache.poi|poi|5.2.3|
 |org.apache.santuario|xmlsec|2.2.3.redhat-00001|
 |org.apache.taglibs|taglibs-standard-impl|1.2.6.RC1-redhat-1|
 |org.apache.taglibs|taglibs-standard-spec|1.2.6.RC1-redhat-1|
 |org.apache.velocity|velocity-engine-core|2.0|
-|org.apache.xmlbeans|xmlbeans|3.1.0|
+|org.apache.xmlbeans|xmlbeans|5.1.1|
 |org.bouncycastle|bcpkix-jdk15on|1.70|
 |org.bouncycastle|bcprov-jdk15on|1.70|
 |org.bouncycastle|bcutil-jdk15on|1.70|
 |org.codehaus.jettison|jettison|1.5.4|
 |org.codehaus.woodstox|stax2-api|4.2.1.redhat-00001|
-|org.dom4j|dom4j|2.1.3.redhat-00001|
+|org.dom4j|dom4j|2.1.4|
 |org.eclipse.persistence|org.eclipse.persistence.antlr|2.3.2|
 |org.eclipse.persistence|org.eclipse.persistence.asm|2.3.2|
 |org.eclipse.persistence|org.eclipse.persistence.core|2.3.2|
@@ -387,13 +392,13 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |it.eng.parer|idp-jaas-rdbms|0.0.9|
 |it.eng.parer|parer-retry|2.1.0|
 |it.eng.parer|sacer-xml|2.8.0|
-|it.eng.parer|sacerws-jpa|5.3.1-SNAPSHOT|
-|it.eng.parer|spagofat-core|5.12.0|
-|it.eng.parer|spagofat-middle|5.12.0|
-|it.eng.parer|spagofat-paginator-ejb|5.12.0|
-|it.eng.parer|spagofat-paginator-gf|5.12.0|
-|it.eng.parer|spagofat-timer-wrapper-common|5.12.0|
-|it.eng.parer|verificafirma-crypto-beans|1.3.0|
+|it.eng.parer|sacerws-jpa|6.0.1-SNAPSHOT|
+|it.eng.parer|spagofat-core|6.14.1|
+|it.eng.parer|spagofat-middle|6.14.1|
+|it.eng.parer|spagofat-paginator-ejb|6.14.1|
+|it.eng.parer|spagofat-paginator-gf|6.14.1|
+|it.eng.parer|spagofat-timer-wrapper-common|6.14.1|
+|it.eng.parer|verificafirma-crypto-beans|1.4.1|
 |it.eng.parer|verificafirma-eidas-beans|1.9.0|
 |jakarta.activation|jakarta.activation-api|1.2.2|
 |jakarta.enterprise|jakarta.enterprise.cdi-api|2.0.2.redhat-00002|
@@ -407,11 +412,14 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |jakarta.xml.bind|jakarta.xml.bind-api|2.3.2|
 |jakarta.xml.soap|jakarta.xml.soap-api|1.4.2|
 |jakarta.xml.ws|jakarta.xml.ws-api|2.3.3|
+|javax.annotation|javax.annotation-api|1.3.2|
 |javax.inject|javax.inject|1|
 |javax.jws|jsr181-api|1.0.0.MR1-redhat-8|
 |javax.servlet|jstl|1.2|
 |javax.validation|validation-api|1.0.0.GA|
 |javax.xml.bind|jaxb-api|2.3.0|
+|javax.xml.soap|javax.xml.soap-api|1.4.0|
+|javax.xml.ws|jaxws-api|2.3.1|
 |joda-time|joda-time|2.12.5|
 |junit|junit|4.13.2|
 |net.java.xadisk|xadisk|1.2.2.5|
@@ -440,6 +448,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.httpcomponents|httpclient|4.5.14|
 |org.apache.httpcomponents|httpcore|4.4.16|
 |org.apache.httpcomponents|httpmime|4.5.14|
+|org.apache.logging.log4j|log4j-api|2.18.0|
 |org.apache.maven.wagon|wagon-file|3.3.4|
 |org.apache.maven.wagon|wagon-http-lightweight|2.6|
 |org.apache.maven.wagon|wagon-http-shared|2.6|
@@ -486,7 +495,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.openwebbeans|openwebbeans-jsf|1.2.8|
 |org.apache.openwebbeans|openwebbeans-spi|1.2.8|
 |org.apache.openwebbeans|openwebbeans-web|1.2.8|
-|org.apache.poi|poi|4.1.2|
+|org.apache.poi|poi|5.2.3|
 |org.apache.santuario|xmlsec|2.2.3.redhat-00001|
 |org.apache.taglibs|taglibs-standard-impl|1.2.6.RC1-redhat-1|
 |org.apache.taglibs|taglibs-standard-spec|1.2.6.RC1-redhat-1|
@@ -512,7 +521,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.xbean|xbean-finder-shaded|4.2|
 |org.apache.xbean|xbean-naming|4.2|
 |org.apache.xbean|xbean-reflect|4.2|
-|org.apache.xmlbeans|xmlbeans|3.1.0|
+|org.apache.xmlbeans|xmlbeans|5.1.1|
 |org.bouncycastle|bcpkix-jdk15on|1.70|
 |org.bouncycastle|bcpkix-jdk18on|1.76|
 |org.bouncycastle|bcprov-jdk15on|1.70|
@@ -524,7 +533,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.codehaus.plexus|plexus-utils|3.2.1|
 |org.codehaus.swizzle|swizzle-stream|1.6.2|
 |org.codehaus.woodstox|stax2-api|4.2.1.redhat-00001|
-|org.dom4j|dom4j|2.1.3.redhat-00001|
+|org.dom4j|dom4j|2.1.4|
 |org.eclipse.aether|aether-api|1.0.0.v20140518|
 |org.eclipse.aether|aether-connector-basic|1.0.0.v20140518|
 |org.eclipse.aether|aether-impl|1.0.0.v20140518|
@@ -788,14 +797,14 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |it.eng.parer|idp-jaas-rdbms|0.0.9|
 |it.eng.parer|parer-retry|2.1.0|
 |it.eng.parer|sacer-xml|2.8.0|
-|it.eng.parer|sacerws-ejb|5.3.1-SNAPSHOT|
-|it.eng.parer|sacerws-jpa|5.3.1-SNAPSHOT|
-|it.eng.parer|spagofat-core|5.12.0|
-|it.eng.parer|spagofat-middle|5.12.0|
-|it.eng.parer|spagofat-paginator-ejb|5.12.0|
-|it.eng.parer|spagofat-paginator-gf|5.12.0|
-|it.eng.parer|spagofat-timer-wrapper-common|5.12.0|
-|it.eng.parer|verificafirma-crypto-beans|1.3.0|
+|it.eng.parer|sacerws-ejb|6.0.1-SNAPSHOT|
+|it.eng.parer|sacerws-jpa|6.0.1-SNAPSHOT|
+|it.eng.parer|spagofat-core|6.14.1|
+|it.eng.parer|spagofat-middle|6.14.1|
+|it.eng.parer|spagofat-paginator-ejb|6.14.1|
+|it.eng.parer|spagofat-paginator-gf|6.14.1|
+|it.eng.parer|spagofat-timer-wrapper-common|6.14.1|
+|it.eng.parer|verificafirma-crypto-beans|1.4.1|
 |it.eng.parer|verificafirma-eidas-beans|1.9.0|
 |jakarta.activation|jakarta.activation-api|1.2.2|
 |jakarta.enterprise|jakarta.enterprise.cdi-api|2.0.2.redhat-00002|
@@ -809,8 +818,11 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |jakarta.xml.bind|jakarta.xml.bind-api|2.3.2|
 |jakarta.xml.soap|jakarta.xml.soap-api|1.4.2|
 |jakarta.xml.ws|jakarta.xml.ws-api|2.3.3|
+|javax.annotation|javax.annotation-api|1.3.2|
 |javax.jws|jsr181-api|1.0.0.MR1-redhat-8|
 |javax.xml.bind|jaxb-api|2.3.0|
+|javax.xml.soap|javax.xml.soap-api|1.4.0|
+|javax.xml.ws|jaxws-api|2.3.1|
 |joda-time|joda-time|2.12.5|
 |org.apache-extras.beanshell|bsh|2.0b6|
 |org.apache.commons|commons-collections4|4.4|
@@ -821,12 +833,13 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.httpcomponents|httpclient|4.5.14|
 |org.apache.httpcomponents|httpcore|4.4.16|
 |org.apache.httpcomponents|httpmime|4.5.14|
-|org.apache.poi|poi|4.1.2|
+|org.apache.logging.log4j|log4j-api|2.18.0|
+|org.apache.poi|poi|5.2.3|
 |org.apache.santuario|xmlsec|2.2.3.redhat-00001|
 |org.apache.taglibs|taglibs-standard-impl|1.2.6.RC1-redhat-1|
 |org.apache.taglibs|taglibs-standard-spec|1.2.6.RC1-redhat-1|
 |org.apache.velocity|velocity-engine-core|2.0|
-|org.apache.xmlbeans|xmlbeans|3.1.0|
+|org.apache.xmlbeans|xmlbeans|5.1.1|
 |org.bouncycastle|bcpkix-jdk15on|1.70|
 |org.bouncycastle|bcpkix-jdk18on|1.76|
 |org.bouncycastle|bcprov-jdk15on|1.70|
@@ -972,23 +985,26 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |it.eng.parer|idp-jaas-rdbms|0.0.9|
 |it.eng.parer|parer-retry|2.1.0|
 |it.eng.parer|sacer-xml|2.8.0|
-|it.eng.parer|sacerws-ejb|5.3.1-SNAPSHOT|
-|it.eng.parer|sacerws-jpa|5.3.1-SNAPSHOT|
-|it.eng.parer|sacerws-web|5.3.1-SNAPSHOT|
-|it.eng.parer|spagofat-core|5.12.0|
-|it.eng.parer|spagofat-middle|5.12.0|
-|it.eng.parer|spagofat-paginator-ejb|5.12.0|
-|it.eng.parer|spagofat-paginator-gf|5.12.0|
-|it.eng.parer|spagofat-sl-jpa|5.12.0|
-|it.eng.parer|spagofat-timer-wrapper-common|5.12.0|
-|it.eng.parer|verificafirma-crypto-beans|1.3.0|
+|it.eng.parer|sacerws-ejb|6.0.1-SNAPSHOT|
+|it.eng.parer|sacerws-jpa|6.0.1-SNAPSHOT|
+|it.eng.parer|sacerws-web|6.0.1-SNAPSHOT|
+|it.eng.parer|spagofat-core|6.14.1|
+|it.eng.parer|spagofat-middle|6.14.1|
+|it.eng.parer|spagofat-paginator-ejb|6.14.1|
+|it.eng.parer|spagofat-paginator-gf|6.14.1|
+|it.eng.parer|spagofat-sl-jpa|6.14.1|
+|it.eng.parer|spagofat-timer-wrapper-common|6.14.1|
+|it.eng.parer|verificafirma-crypto-beans|1.4.1|
 |it.eng.parer|verificafirma-eidas-beans|1.9.0|
 |jakarta.activation|jakarta.activation-api|1.2.2|
 |jakarta.jws|jakarta.jws-api|2.1.0|
 |jakarta.xml.bind|jakarta.xml.bind-api|2.3.2|
 |jakarta.xml.soap|jakarta.xml.soap-api|1.4.2|
 |jakarta.xml.ws|jakarta.xml.ws-api|2.3.3|
+|javax.annotation|javax.annotation-api|1.3.2|
 |javax.xml.bind|jaxb-api|2.3.0|
+|javax.xml.soap|javax.xml.soap-api|1.4.0|
+|javax.xml.ws|jaxws-api|2.3.1|
 |joda-time|joda-time|2.12.5|
 |org.apache-extras.beanshell|bsh|2.0b6|
 |org.apache.commons|commons-collections4|4.4|
@@ -999,10 +1015,11 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |org.apache.httpcomponents|httpclient|4.5.14|
 |org.apache.httpcomponents|httpcore|4.4.16|
 |org.apache.httpcomponents|httpmime|4.5.14|
-|org.apache.poi|poi|4.1.2|
+|org.apache.logging.log4j|log4j-api|2.18.0|
+|org.apache.poi|poi|5.2.3|
 |org.apache.santuario|xmlsec|2.2.3.redhat-00001|
 |org.apache.velocity|velocity-engine-core|2.0|
-|org.apache.xmlbeans|xmlbeans|3.1.0|
+|org.apache.xmlbeans|xmlbeans|5.1.1|
 |org.bouncycastle|bcpkix-jdk15on|1.70|
 |org.bouncycastle|bcpkix-jdk18on|1.76|
 |org.bouncycastle|bcprov-jdk15on|1.70|
@@ -1097,7 +1114,7 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
  * lgpl_v2_1   : GNU General Lesser Public License (LGPL) version 2.1
  * lgpl_v3     : GNU General Lesser Public License (LGPL) version 3.0
  * mit         : MIT-License
-  
+
 # Supporto
 
 Mantainer del progetto è [Engineering Ingegneria Informatica S.p.A.](https://www.eng.it/).

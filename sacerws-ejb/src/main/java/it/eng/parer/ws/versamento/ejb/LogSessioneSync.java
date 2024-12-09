@@ -465,7 +465,7 @@ public class LogSessioneSync {
         /*
          * BACKEND_SIP: se OS effettua salvataggio su bucket (TipiXmlDati.RICHIESTA + TipiXmlDati.RISPOSTA +
          * TipiXmlDati.INDICE_FILE + TipiXmlDati.RAPP_VERS)
-         * 
+         *
          * Nota: in caso di sessione fallita tutti i dati utilizzeranno il backend di tipo "staging"
          */
         BackendStorage backendMetadata = null;

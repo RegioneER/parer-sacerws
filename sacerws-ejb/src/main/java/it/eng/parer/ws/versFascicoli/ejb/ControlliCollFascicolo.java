@@ -185,7 +185,7 @@ public class ControlliCollFascicolo {
 
         /*
          * vengono costruite due liste: duplicated -> chiavi duplicate notDuplicated -> chiavi non duplicate
-         * 
+         *
          * obiettivo: costrutire un'unica lista da processare successivamente ossia fascicoliToBeLinked
          */
 

@@ -18,7 +18,6 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Cacheable;
@@ -56,7 +55,7 @@ public class FirCertifFirmatario implements Serializable {
 
     private Date dtIniValCertifFirmatario;
 
-    private BigDecimal niSerialCertifFirmatario;
+    private String dsSerialCertifFirmatario;
 
     private FirCertifCa firCertifCa;
 
@@ -99,13 +98,13 @@ public class FirCertifFirmatario implements Serializable {
         this.dtIniValCertifFirmatario = dtIniValCertifFirmatario;
     }
 
-    @Column(name = "NI_SERIAL_CERTIF_FIRMATARIO")
-    public BigDecimal getNiSerialCertifFirmatario() {
-        return this.niSerialCertifFirmatario;
+    @Column(name = "DS_SERIAL_CERTIF_FIRMATARIO")
+    public String getDsSerialCertifFirmatario() {
+        return this.dsSerialCertifFirmatario;
     }
 
-    public void setNiSerialCertifFirmatario(BigDecimal niSerialCertifFirmatario) {
-        this.niSerialCertifFirmatario = niSerialCertifFirmatario;
+    public void setDsSerialCertifFirmatario(String dsSerialCertifFirmatario) {
+        this.dsSerialCertifFirmatario = dsSerialCertifFirmatario;
     }
 
     // bi-directional many-to-one association to FirCertifCa

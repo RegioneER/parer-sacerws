@@ -60,7 +60,7 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
     /**
      * Firma necessaria al costrutture per le logiche successive che serviranno a determinare, sulla base dell'output di
      * verifica, come gestire determinate casistiche (vedi controlli e tipo rif alla data)
-     * 
+     *
      * @param controlliAbilitati
      *            lista dei controlli (flag true/false)
      * @param isDataDiRiferimentoOnCompVers

@@ -77,7 +77,7 @@ public class ConfigurationHelper {
      *
      * @param nmParamApplic
      *            codice del parametro
-     * 
+     *
      * @return valore del parametro filtrato per tipologia <em>APPLIC</em> .
      */
     public String getValoreParamApplicByApplic(String nmParamApplic) {
@@ -95,8 +95,8 @@ public class ConfigurationHelper {
      *            id ambiente
      * @param idStrut
      *            id struttura
-     * 
-     * 
+     *
+     *
      * @return valore del parametro filtrato per tipologia <em>STRUT</em> .
      */
     public String getValoreParamApplicByStrut(String nmParamApplic, long idStrut, long idAmbiente) {
@@ -116,7 +116,7 @@ public class ConfigurationHelper {
      *            id struttura
      * @param idTipoUnitaDoc
      *            id tipologia unità documentaria
-     * 
+     *
      * @return valore del parametro filtrato per tipologia <em>TIPOUNITADOC</em> .
      */
     public String getValoreParamApplicByTipoUd(String nmParamApplic, long idStrut, long idAmbiente,
@@ -137,7 +137,7 @@ public class ConfigurationHelper {
      *            id struttura
      * @param idAaTipoFascicolo
      *            id tipologia anno fascicolo
-     * 
+     *
      * @return valore del parametro filtrato per tipologia <em>AATIPOFASCICOLO</em> .
      */
     public String getValoreParamApplicByAaTipoFasc(String nmParamApplic, long idStrut, long idAmbiente,
@@ -152,7 +152,7 @@ public class ConfigurationHelper {
     private static final String IDAPLVGETVALPARAMBY = "idAplVGetvalParamBy";
 
     /**
-     * 
+     *
      * @param nmParamApplic
      *            nome parametro
      * @param idStrut
@@ -360,7 +360,7 @@ public class ConfigurationHelper {
      *
      * @param nmParamApplic
      *            nome parametro applicativo
-     * 
+     *
      * @return Valore del flag indicato secondo nome
      */
     public String getValoreParamApplicByApplicAsFl(String nmParamApplic) {

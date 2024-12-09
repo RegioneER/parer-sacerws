@@ -28,7 +28,7 @@ package it.eng.parer.ws.dto;
 public class CSChiaveSottFasc extends CSChiaveFasc {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private String oggetto;

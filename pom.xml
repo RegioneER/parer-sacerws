@@ -2,39 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sacerws</artifactId>
-    <version>6.0.1-SNAPSHOT</version>
+    <version>6.1.0</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>parer-pom</artifactId>
-        <version>6.3.1</version>
+        <version>6.5.0</version>
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- custom libraries -->
         <!-- Questa è la versione del modulo sacer-xml che dovrà essere inclusa nel progetto -->
-        <sacer.xmlmodule.version>2.8.0</sacer.xmlmodule.version>
+        <sacer.xmlmodule.version>2.12.0</sacer.xmlmodule.version>
         <!-- spagofat bom -->
-        <spagofat.version>6.14.1</spagofat.version>
-        <verificafirma-eidas-beans.version>1.9.0</verificafirma-eidas-beans.version>
-        <verificafirma-crypto-beans.version>1.4.1</verificafirma-crypto-beans.version>
-        <parer-retry.version>2.1.0</parer-retry.version>
+        <spagofat.version>6.16.0</spagofat.version>
+        <verificafirma-eidas-beans.version>1.10.0</verificafirma-eidas-beans.version>
+        <verificafirma-crypto-beans.version>1.6.0</verificafirma-crypto-beans.version>
+        <parer-retry.version>2.2.0</parer-retry.version>
         <idp-jaas-rdbms.version>0.0.9</idp-jaas-rdbms.version>
         <!-- third party lib -->
-        <software.amazon.awssdk.version>2.20.87</software.amazon.awssdk.version>
-        <xadisk.version>1.2.2.5</xadisk.version>                      
+        <software.amazon.awssdk.version>2.27.7</software.amazon.awssdk.version>
+        <netty.version>4.1.112.Final</netty.version>
+        <xadisk.version>1.2.2.5</xadisk.version>
     </properties>
 
-    <distributionManagement>
+<distributionManagement>
         <repository>
           <id>github</id>
           <url>https://maven.pkg.github.com/RegioneER/parer-sacerws</url>
         </repository>      
     </distributionManagement>
 
-    <repositories>
+<repositories>
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>           
@@ -85,17 +86,25 @@
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
-            <!-- Imposto le versioni per Xerces & Xalan -->
+            <!-- Xerces & co -->
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
                 <version>${xerces.version}</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <version>${xalan.version}</version>
-            </dependency>           
+                <scope>runtime</scope>
+            </dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>serializer</artifactId>
+				<version>${xalan.version}</version>
+				<scope>runtime</scope>
+			</dependency>         
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>parer-retry</artifactId>
@@ -116,6 +125,47 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Netty AWS-->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-common</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-buffer</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-transport</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-handler</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-resolver</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-transport-native-unix-common</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-transport-classes-epoll</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
             <!-- Framework -->
             <dependency>
                 <groupId>it.eng.parer</groupId>
@@ -124,58 +174,43 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Provided by runtime -->
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>${jaxb.version}</version>
-                <scope>provided</scope>
+             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
+ 			<dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+ 			</dependency>
             <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${jaxb.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.soap</groupId>
-                <artifactId>javax.xml.soap-api</artifactId>
-                <version>${javax.xml.soap-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.activation</groupId>
-                <artifactId>javax.activation</artifactId>
-                <version>${javax.activation.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>javax.activation-api</artifactId>
-                <version>${javax.activation.version}</version>
-                <scope>provided</scope>
-            </dependency>            
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>${javax.annotation-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>${xml-apis.version}</version>
+                <scope>provided</scope>               
+            </dependency> 
   			<!-- Fork di Xadisk del parer -->
             <dependency>
                 <groupId>net.java.xadisk</groupId>
                 <artifactId>xadisk</artifactId>
                 <version>${xadisk.version}</version>
-            </dependency>            
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- OWASP -->
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <configuration>
+                        <suppressionFile>src/site/owasp/suppress.xml</suppressionFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -222,12 +257,12 @@
         </plugins>
     </build>
     <modules>
+        <module>sacerws-jpa</module>    
         <module>sacerws-ejb</module>
         <module>sacerws-web</module>
-        <module>sacerws-jpa</module>
         <module>sacerws-ear</module>
     </modules>
-    <scm>
+<scm>
         <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.sacerws.git</developerConnection>
         <tag>HEAD</tag>
     </scm>

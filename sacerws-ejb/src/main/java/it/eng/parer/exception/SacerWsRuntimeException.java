@@ -30,7 +30,7 @@ import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 public class SacerWsRuntimeException extends RuntimeException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5015771412184277789L;
 

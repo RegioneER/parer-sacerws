@@ -36,7 +36,7 @@ import it.eng.parer.ws.xml.versReq.DocumentoType;
 public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IProfiloEntity {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3535916524583964078L;
 
@@ -303,7 +303,7 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
     }
 
     /**
-     * 
+     *
      * @return numero ordinamento doc
      */
     public int getNiOrdDoc() {
@@ -311,7 +311,7 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
     }
 
     /**
-     * 
+     *
      * @param niOrdDoc
      *            ordinamento doc
      */
@@ -320,7 +320,7 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
     }
 
     /**
-     * 
+     *
      * @return parte URN per numero ordinamento doc
      */
     public String getUrnPartDocumentoNiOrdDoc() {
@@ -328,7 +328,7 @@ public class DocumentoVers implements java.io.Serializable, IDatiSpecEntity, IPr
     }
 
     /**
-     * 
+     *
      * @param urnPartDocumentoNiOrdDoc
      *            URN per numero ordinamento doc
      */

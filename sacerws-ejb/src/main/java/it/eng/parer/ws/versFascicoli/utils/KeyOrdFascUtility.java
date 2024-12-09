@@ -381,7 +381,7 @@ public class KeyOrdFascUtility {
      *
      * @param chiave
      *            la chiave del Fascicolo di cui calcolare la chiave ordinamento
-     * 
+     *
      * @return istanza di RispostaControlli contenente un'istanza di KeyOrdResult
      */
     public RispostaControlli calcolaKeyOrdGenerica(CSChiaveFasc chiave) {
@@ -708,7 +708,7 @@ public class KeyOrdFascUtility {
            * else TODO: per il momento non esiste un errore su fascicoli collegati versati {
            * rc.setCodErr(MessaggiWSBundle.UD_004_005); rc.setDsErr(
            * MessaggiWSBundle.getString(MessaggiWSBundle.UD_004_005, descKeyVersata, descKeyDaVerificare, causa));
-           * 
+           *
            * }
            */
     }

@@ -18,7 +18,6 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +41,7 @@ import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the FIR_CERTIF_OCSP database table.
- * 
+ *
  */
 @Entity
 @Cacheable(true)
@@ -52,7 +51,7 @@ public class FirCertifOcsp implements Serializable {
     private Long idCertifOcsp;
     private Date dtFinValCertifOcsp;
     private Date dtIniValCertifOcsp;
-    private BigDecimal niSerialCertifOcsp;
+    private String dsSerialCertifOcsp;
     private String dlDnSubjectCertifOcsp;
 
     private FirCertifCa firCertifCa;
@@ -95,13 +94,13 @@ public class FirCertifOcsp implements Serializable {
         this.dtIniValCertifOcsp = dtIniValCertifOcsp;
     }
 
-    @Column(name = "NI_SERIAL_CERTIF_OCSP")
-    public BigDecimal getNiSerialCertifOcsp() {
-        return this.niSerialCertifOcsp;
+    @Column(name = "DS_SERIAL_CERTIF_OCSP")
+    public String getDsSerialCertifOcsp() {
+        return this.dsSerialCertifOcsp;
     }
 
-    public void setNiSerialCertifOcsp(BigDecimal niSerialCertifOcsp) {
-        this.niSerialCertifOcsp = niSerialCertifOcsp;
+    public void setDsSerialCertifOcsp(String dsSerialCertifOcsp) {
+        this.dsSerialCertifOcsp = dsSerialCertifOcsp;
     }
 
     // bi-directional many-to-one association to FirCertifCa

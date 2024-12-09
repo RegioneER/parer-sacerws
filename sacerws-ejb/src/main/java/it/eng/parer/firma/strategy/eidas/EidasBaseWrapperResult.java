@@ -295,7 +295,7 @@ public abstract class EidasBaseWrapperResult {
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateCAOCSP, "serialNumber",
                 Optional.ofNullable(xmlcertificateCAOCSP.getId()));
-        certifCaOcspType.setNiSerialCertifCa(new BigDecimal(xmlcertificate.getSerialNumber()));
+        certifCaOcspType.setDsSerialCertifCa(xmlcertificate.getSerialNumber());
 
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateCAOCSP, "notBefore",
@@ -360,7 +360,7 @@ public abstract class EidasBaseWrapperResult {
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateOcspResp, "serialNumber",
                 Optional.ofNullable(xmlcertificateOcspResp.getId()));
-        certifOcspType.setNiSerialCertifOcsp(new BigDecimal(xmlcertificateOcspResp.getSerialNumber()));
+        certifOcspType.setDsSerialCertifOcsp(xmlcertificateOcspResp.getSerialNumber());
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateOcspResp, "notBefore",
                 Optional.ofNullable(xmlcertificateOcspResp.getId()));

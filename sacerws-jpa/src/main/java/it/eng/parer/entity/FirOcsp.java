@@ -35,7 +35,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the FIR_OCSP database table.
- * 
+ *
  */
 @Entity
 @Cacheable(true)

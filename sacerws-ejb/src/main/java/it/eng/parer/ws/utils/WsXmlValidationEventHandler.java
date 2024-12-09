@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * classe che implementa un event handler per l'unmarshaller di JAXB. Questo handler provoca l'interruzione della
  * verifica e dell'unmarshall al primo errore, che viene scritto nella variabile 'messaggio'
  *

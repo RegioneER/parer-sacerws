@@ -170,7 +170,7 @@ public class KeyOrdUtility {
      *
      * @param chiave
      *            la chiave dell'UD di cui calcolare la chiave ordinamento
-     * 
+     *
      * @return istanza di RispostaControlli contenente un'istanza di KeyOrdResult
      */
     public RispostaControlli calcolaKeyOrdGenerica(CSChiave chiave) {

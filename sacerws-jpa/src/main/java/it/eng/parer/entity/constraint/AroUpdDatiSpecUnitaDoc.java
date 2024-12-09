@@ -29,7 +29,7 @@ public final class AroUpdDatiSpecUnitaDoc {
 
     /**
      * Uso vers. XSD
-     * 
+     *
      * ti_uso_xsd IN ('MIGRAZ', 'VERS')
      */
     public enum TiUsoXsdAroUpdDatiSpecUnitaDoc {
@@ -38,7 +38,7 @@ public final class AroUpdDatiSpecUnitaDoc {
 
     /**
      * Tipo entita SACER
-     * 
+     *
      * ti_entita_sacer IN ('UPD_COMP', 'UPD_DOC', 'UPD_UNI_DOC')
      */
     public enum TiEntitaAroUpdDatiSpecUnitaDoc {

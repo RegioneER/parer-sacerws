@@ -32,6 +32,16 @@ public class Constants {
     public static final String FLAG_TRUE = "1";
     public static final String FLAG_FALSE = "0";
 
+    // Log stato conservazione UD
+
+    public static final String AGGIORNAMENTO_UD = "Aggiornamento unità documentaria";
+    public static final String AGGIUNTA_DOCUMENTO = "Aggiunta documento";
+    public static final String VERSAMENTO_UD = "Versamento unità documentaria";
+
+    public static final String WS_AGGIORNAMENTO_UD = "WS aggiornamento UD";
+    public static final String WS_AGGIUNTA_DOC = "WS aggiunta documenti UD";
+    public static final String WS_VERSAMENTO_UD = "WS versamento UD";
+
     // Enum per tipo sessione
     public enum TipoSessione {
 

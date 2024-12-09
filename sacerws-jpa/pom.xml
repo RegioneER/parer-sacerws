@@ -3,7 +3,7 @@
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>sacerws</artifactId>
-        <version>6.0.1-SNAPSHOT</version>
+        <version>6.1.0</version>
     </parent>
     <artifactId>sacerws-jpa</artifactId>
     <name>sacerws-jpa</name>
@@ -29,12 +29,6 @@
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
             <version>${jboss-vfs.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-jakartaee-8.0</artifactId>
-            <type>pom</type>
             <scope>provided</scope>
         </dependency>
         <dependency>

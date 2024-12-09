@@ -28,7 +28,7 @@ package it.eng.parer.firma.exception;
 public class VerificaFirmaGenericInvokeException extends Exception implements IVerificaFirmaInvokeException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -8607219490984095397L;
 

@@ -35,7 +35,7 @@ import it.eng.parer.ws.versamento.dto.DocumentoVers;
 public class UpdDocumentoVers extends DocumentoVers {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6310644609467033551L;
 

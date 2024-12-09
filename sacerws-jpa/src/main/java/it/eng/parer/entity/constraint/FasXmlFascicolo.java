@@ -29,7 +29,7 @@ public final class FasXmlFascicolo {
 
     /**
      * Tipi modelli
-     * 
+     *
      * ti_modello_xsd IN ('PROFILO_GENERALE_FASCICOLO', 'PROFILO_ARCHIVISTICO_FASCICOLO',
      * 'PROFILO_SPECIFICO_FASCICOLO','PROFILO_NORMATIVO_FASCICOLO')
      */

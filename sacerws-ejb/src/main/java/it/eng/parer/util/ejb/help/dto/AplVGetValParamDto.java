@@ -22,7 +22,7 @@ import java.io.Serializable;
 public class AplVGetValParamDto implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5996789178422769294L;
     private String dsValoreParamApplic;

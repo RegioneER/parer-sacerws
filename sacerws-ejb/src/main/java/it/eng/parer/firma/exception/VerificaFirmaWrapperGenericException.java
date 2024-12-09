@@ -30,7 +30,7 @@ import it.eng.parer.firma.xml.VerificaFirmaWrapper;
 public class VerificaFirmaWrapperGenericException extends Exception {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4578580893175157354L;
 

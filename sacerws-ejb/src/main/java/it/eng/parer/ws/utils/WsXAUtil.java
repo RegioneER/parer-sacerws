@@ -226,7 +226,7 @@ public class WsXAUtil {
      *            la sessione in transazione
      * @param dirPath
      *            la directory
-     * 
+     *
      * @throws SacerWsException
      *             errore generico
      */

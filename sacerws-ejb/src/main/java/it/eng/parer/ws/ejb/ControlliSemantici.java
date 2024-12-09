@@ -135,9 +135,9 @@ public class ControlliSemantici {
                         "ControlliSemantici.caricaDefaultDaDB: "
                                 + "Parametri applicativi non correttamente configurati per "
                                 + String.join(",", tipoPars)));
-                log.atError().setMessage(
-                        "ControlliSemantici.caricaDefaultDaDB: Parametri applicativi non correttamente configurati per {}.")
-                        .addArgument(() -> String.join(",", tipoPars)).log();
+                log.error(
+                        "ControlliSemantici.caricaDefaultDaDB: Parametri applicativi non correttamente configurati per {}.",
+                        tipoPars.length > 0 ? String.join(",", tipoPars) : "default_params_not_configured");
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);

@@ -29,7 +29,7 @@ public final class VrsXmlSesUpdUnitaDocKo {
 
     /**
      * Tipo XML
-     * 
+     *
      * ti_xml IN ('RICHIESTA', 'RISPOSTA')
      */
     public enum TiXmlVrsXmlSesUpdUnitaDocKo {

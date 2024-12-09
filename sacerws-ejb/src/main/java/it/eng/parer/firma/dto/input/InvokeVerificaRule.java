@@ -36,7 +36,7 @@ public class InvokeVerificaRule implements Serializable {
 
     /**
      * SCENARIO DEFAULT
-     * 
+     *
      * eseguiVerificaFirma = SI eseguiVerificaFirmaOnlyCrypto = NO
      *
      * PRIORITARIO = EIDAS -> SE IGNOTO = CRYPTO

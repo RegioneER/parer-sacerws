@@ -337,7 +337,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#produciControlliAllegato (java.lang.String)
      */
     @Override
@@ -347,7 +347,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#produciControlliAnnesso( java.lang.String)
      */
     @Override
@@ -357,7 +357,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliAnnotazione(java.lang.String)
      */
     @Override
@@ -367,7 +367,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * produciControlliCollegamento(it.eng.parer.ws.dto.CSChiave)
      */
@@ -378,7 +378,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliComponenteAllegati(java.lang.String)
      */
     @Override
@@ -388,7 +388,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliComponenteAnnessi(java.lang.String)
      */
     @Override
@@ -398,7 +398,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * produciControlliComponenteAnnotazioni(java.lang.String)
      */
@@ -409,7 +409,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * produciControlliComponenteDocPrincipale(java.lang.String)
      */
@@ -420,7 +420,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliDocPrincipale(java.lang.String)
      */
     @Override
@@ -430,7 +430,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliFallitiUlteriori()
      */
     @Override
@@ -467,7 +467,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# produciControlliUnitaDocumentaria()
      */
     @Override
@@ -477,7 +477,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#produciWarnings()
      */
     @Override
@@ -501,7 +501,7 @@ public class UpdVersamentoExt extends AbsUpdVersamentoExt {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#resetControlli()
      */
     @Override

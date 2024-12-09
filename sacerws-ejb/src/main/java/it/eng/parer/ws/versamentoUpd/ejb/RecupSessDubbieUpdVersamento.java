@@ -105,7 +105,7 @@ public class RecupSessDubbieUpdVersamento {
      * popolare o meglio di TENTARE di popolare quelle informazioni che normalmente verrebbero estratte in ambito di
      * "parsing" del SIP inviato. Il recupero quindi è composto dalle operazioni "minime" che sancisco che la sessione
      * ERRATA può essere "trasformata" in FALLITA.
-     * 
+     *
      * Nota2: la logica di recupero dell'unità documentaria, al momento, serve solo a verificare la presenza della
      * stessa su DB e non ha lo scopo di ricavare altre informazioni
      */
@@ -454,7 +454,7 @@ public class RecupSessDubbieUpdVersamento {
      * Nota: verifica esisteza UD, se esiste tutte le informazioni saranno recuperate dall'UD altrimenti si
      * utilizzeranno quelle determinate in precedenza Arrivato a questo controllo la sessione è già FALLITA
      * (=trasformazione OK)
-     * 
+     *
      * @param versamento
      * @param rispostaWs
      */
@@ -521,7 +521,7 @@ public class RecupSessDubbieUpdVersamento {
 
     /**
      * Nota: in caso di match con almeno un risultato NEGATIVO non si eseguono verifiche successive
-     * 
+     *
      * @return true/false con risultato di verifica della partizione struttura
      */
     private boolean verificaCtrlStruttPartz(UpdVersamentoExt versamento) {

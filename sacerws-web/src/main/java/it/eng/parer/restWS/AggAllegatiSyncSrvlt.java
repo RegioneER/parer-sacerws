@@ -84,9 +84,6 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
     @EJB(mappedName = "java:app/sacerws-ejb/XmlVersCache")
     private XmlVersCache xmlVersCache;
 
-    @EJB
-    private RequestPrsr myRequestPrsr;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -116,6 +113,7 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
         DiskFileItem tmpFileItem = null;
         List<FileItem> fileItems = null;
 
+        RequestPrsr myRequestPrsr = new RequestPrsr();
         RispostaWSAggAll rispostaWs = new RispostaWSAggAll();
         VersamentoExtAggAll myVersamentoExt = new VersamentoExtAggAll();
         myVersamentoExt.setDescrizione(new WSDescVersamentoAggAll());

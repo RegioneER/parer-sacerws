@@ -176,10 +176,10 @@ public class SalvataggioUpdVersamento {
             /*
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-             * 
+             *
              * Gestione KEY NORMALIZED / URN PREGRESSI
-             * 
-             * 
+             *
+             *
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              */
@@ -206,11 +206,11 @@ public class SalvataggioUpdVersamento {
             /*
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-             * 
+             *
              * Gestione Etity *INI*
-             * 
+             *
              * Metadati Iniziali
-             * 
+             *
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              */
@@ -518,9 +518,9 @@ public class SalvataggioUpdVersamento {
             /*
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-             * 
+             *
              * Gestione Etity *UPD*
-             * 
+             *
              * Aggiornamento §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              */
@@ -654,9 +654,9 @@ public class SalvataggioUpdVersamento {
             /*
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-             * 
+             *
              * Gestione Etity *ARO*
-             * 
+             *
              * Aggiornamento UD §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              * §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
              */
@@ -664,8 +664,14 @@ public class SalvataggioUpdVersamento {
             // 1. se stato di conservazione per unita doc = AIP_GENERATO o AIP_FIRMATO o
             // AIP_IN_ARCHIVIO o
             // AIP_IN_CUSTODIA
+
+            // Tag UserId ed Utente nella chiamata al servizio
+            String userid = versamento.getVersamento().getUnitaDocumentaria().getIntestazione().getVersatore()
+                    .getUserID();
+            String utente = null;
+            String nomeAgente = "userid: " + userid + "; utente: " + utente;
             tmpRispostaControlli = salvataggioUpdAroVersamentoHelper.aggiornaStatoConservazione(tmpAroUnitaDoc,
-                    strutturaUpdVers);
+                    strutturaUpdVers, nomeAgente);
             if (!tmpRispostaControlli.isrBoolean()) {
                 context.setRollbackOnly();
                 this.impostaErrore(rispostaWs, tmpRispostaControlli);

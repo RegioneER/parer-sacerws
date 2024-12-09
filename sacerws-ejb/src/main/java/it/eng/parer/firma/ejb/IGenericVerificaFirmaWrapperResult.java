@@ -32,16 +32,16 @@ public interface IGenericVerificaFirmaWrapperResult {
 
     /**
      * Invocazione verifica firma (microservices eidas/crypto)
-     * 
+     *
      * @param rule
      *            regole per invocazione
      * @param in
      *            input
      * @param versamento
      *            astrazione con metadati di versamento
-     * 
+     *
      * @return wrapper del risultato ottenuto (secondo modello xsd)
-     * 
+     *
      * @throws VerificaFirmaException
      *             eccezione generica
      */

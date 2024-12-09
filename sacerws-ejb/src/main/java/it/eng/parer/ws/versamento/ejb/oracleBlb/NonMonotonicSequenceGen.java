@@ -46,7 +46,7 @@ public class NonMonotonicSequenceGen implements ISequenceGen {
      * <code>Integer.MAX_VALUE - 1</code>.
      *
      * @return Integer between min and max, inclusive.
-     * 
+     *
      * @see java.util.Random#nextInt(int)
      */
     private static int randInt() {

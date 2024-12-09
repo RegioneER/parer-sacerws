@@ -949,15 +949,15 @@ public class CostantiDB {
 
     /*
      * Tutte le versioni relative ai report zip gestiti su servizi di verifica firma
-     * 
+     *
      * V_10 -> all, none versions (il report versione 1.0 è il primo supportato da tutte le versioni di tutti i servizi
      * delle librerie sui micro di verifica firma in essere).
-     * 
+     *
      * Una eventuale versione 1.1 o 2.0 specifica per certi servizi / versioni dovrà essere censita nella logica
      * sottostante del tipo:
-     * 
+     *
      * V_11("EIDAS|CRYPTO","6.0|1.13.0") oppure V_20("EIDAS","7.0")
-     * 
+     *
      * differenziare poi la gestione sia lato generazione del report che in fase di parsing.
      *
      */

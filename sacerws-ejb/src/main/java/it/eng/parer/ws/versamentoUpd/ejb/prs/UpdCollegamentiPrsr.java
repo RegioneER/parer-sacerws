@@ -258,7 +258,7 @@ public class UpdCollegamentiPrsr extends UpdBasePrsr {
                     /*
                      * 2.4.3.3.1. controlla il numero dell’unità doc da collegare sia coerente con il formato previsto
                      * dal periodo di validità del registro determinato dall’anno dell’unità doc da collegare
-                     * 
+                     *
                      * All'utility NON viene passata la parte relativa al TPI dato che si tratta esclusivamente di
                      * aggiornamento dei METADATI del singolo collegamento
                      */

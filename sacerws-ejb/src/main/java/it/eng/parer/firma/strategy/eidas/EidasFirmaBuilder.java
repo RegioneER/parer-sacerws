@@ -125,7 +125,7 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult implements IEidasB
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificate, "serialNumber",
                 Optional.ofNullable(xmlcertificate.getId()));
-        certifFirmatarioType.setNiSerialCertifFirmatario(new BigDecimal(xmlcertificate.getSerialNumber()));
+        certifFirmatarioType.setDsSerialCertifFirmatario(xmlcertificate.getSerialNumber());
 
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificate, "notBefore",
@@ -150,7 +150,7 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult implements IEidasB
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateCA, "serialNumber",
                 Optional.ofNullable(xmlcertificateCA.getId()));
-        certifCaType.setNiSerialCertifCa(new BigDecimal(xmlcertificateCA.getSerialNumber()));
+        certifCaType.setDsSerialCertifCa(xmlcertificateCA.getSerialNumber());
 
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateCA, "notBefore",

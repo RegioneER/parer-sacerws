@@ -219,7 +219,7 @@ public class ObjectStorageService {
      *            id dati sessione di versamento
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @return risorsa su OS che identifica il file caricato
      */
     public ObjectStorageResource createSipInStaging(String nomeBackend, Map<String, String> xmlFiles,
@@ -356,7 +356,7 @@ public class ObjectStorageService {
      *            id sessione fallita
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @return risorsa su OS che identifica il file caricato
      */
     public ObjectStorageResource createSipInSessioniKoAggMd(String nomeBackend, Map<String, String> xmlFiles,
@@ -387,7 +387,7 @@ public class ObjectStorageService {
      *            id sessione errata
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @return risorsa su OS che identifica il file caricato
      */
     public ObjectStorageResource createSipInSessioniErrAggMd(String nomeBackend, Map<String, String> xmlFiles,
@@ -624,7 +624,7 @@ public class ObjectStorageService {
      *            report verifia firma (zip archive)
      *
      * @return risorsa su OS che identifica il file caricato oppure null
-     * 
+     *
      * @throws ObjectStorageException
      *             eccezione generica
      */
@@ -737,15 +737,15 @@ public class ObjectStorageService {
 
     /**
      * Calcola il message digest MD5 (base64 encoded) del file da inviare via S3
-     * 
+     *
      * Nota: questa scelta deriva dal modello supportato dal vendor
      * (https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) *
-     * 
+     *
      * @param path
      *            file
-     * 
+     *
      * @return rappresentazione base64 del contenuto calcolato
-     * 
+     *
      * @throws NoSuchAlgorithmException
      *             errore generico
      * @throws IOException
@@ -843,9 +843,9 @@ public class ObjectStorageService {
     }
 
     /**
-     * 
+     *
      * Tagging della componente su bucket per gestione lifecycle su tagging vrs-object-type=file_componente_uddoc
-     * 
+     *
      * @param stagingResource
      *            risorsa salvata in staging
      * @param nomeBackend

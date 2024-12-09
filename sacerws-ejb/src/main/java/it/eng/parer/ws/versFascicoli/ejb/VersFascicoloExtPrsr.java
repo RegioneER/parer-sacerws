@@ -804,7 +804,7 @@ public class VersFascicoloExtPrsr {
                  * . Se tutti i fascicoli della struttura versante identificate con la chiave definita dai tag “Numero”,
                  * “Anno” dei tag “ChiaveCollegamento” del XML di versamento, esistono nel DB, il tag
                  * <ControlloCollegamenti> è valorizzato con “POSITIVO”.
-                 * 
+                 *
                  * 2) Il sistema controlla che la descrizione del collegamento non superi il limite massimo previsto da
                  * DB (attualmente 256 caratteri) Se la descrizione non supera il limite consentito il tag
                  * <ControlloCollegamenti> è valorizzato con “POSITIVO”. In caso contrario il sistema genera errore
@@ -1155,36 +1155,36 @@ public class VersFascicoloExtPrsr {
         // TODO : per il momento commentato (codice testato e funzionante da attivare nella prossima versione del WS)
         /*
          * if (parsedIndiceFasc.getIntestazione() .getSoggettoProduttore() != null) {
-         * 
+         *
          * String code = parsedIndiceFasc. getIntestazione(). getSoggettoProduttore(). getCodice(); String den =
          * parsedIndiceFasc. getIntestazione(). getSoggettoProduttore(). getDenominazione();
-         * 
+         *
          * Nota: vengono sempre testati entrambi i campi!
-         * 
+         *
          * Casi 1 : codice 2 : denominazione
-         * 
+         *
          * //verifica per codice if(StringUtils.isNotBlank(code)) {
-         * 
+         *
          * rispostaControlli = controlliFascicoli.verificaCodSoggettoProduttore(versamento, code);
-         * 
+         *
          * if (!rispostaControlli.isrBoolean()) { myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.NEGATIVO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.NEGATIVO); } else {
          * versamento.getStrutturaComponenti().setIdOrgEnteConv(rispostaControlli.getrLong());
          * myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.POSITIVO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.POSITIVO); } }//codice
          * //verifica per denominazione if(StringUtils.isNotBlank(den)) {
-         * 
+         *
          * rispostaControlli = controlliFascicoli.verificaDenSoggettoProduttore(versamento, den);
-         * 
+         *
          * if (!rispostaControlli.isrBoolean()) { myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.NEGATIVO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.NEGATIVO); } else {
          * versamento.getStrutturaComponenti().setIdOrgEnteConv(rispostaControlli.getrLong());
          * myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.POSITIVO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.POSITIVO);
-         * 
+         *
          * } }//denominazione //Nota: non indicati codice/denominazione -> si restituiscono entrambi gli errori?
          * if(StringUtils.isBlank(code) && StringUtils.isBlank(den)) {
-         * 
+         *
          * myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.NEGATIVO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.NEGATIVO); // aggiungo
          * l'errore restituito alla lista errori versamento.addError(descChiaveFasc,
@@ -1192,7 +1192,7 @@ public class VersFascicoloExtPrsr {
          * // aggiungo l'errore restituito alla lista errori versamento.addError(descChiaveFasc,
          * MessaggiWSBundle.FAS_CONFIG_004_002, MessaggiWSBundle.getString(MessaggiWSBundle.FAS_CONFIG_004_002, "N/A"));
          * }
-         * 
+         *
          * } else { myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.NON_ATTIVATO);
          * myControlliFascicolo.setIdentificazioneSoggettoProduttore(ECEsitoPosNegWarType.NON_ATTIVATO); }
          */

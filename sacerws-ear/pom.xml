@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sacerws</artifactId>
         <groupId>it.eng.parer</groupId>
-    	<version>6.0.1-SNAPSHOT</version>
+    	<version>6.1.0</version>
     </parent>
 
     <artifactId>sacerws-ear</artifactId>
@@ -48,26 +48,20 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
         </dependency>
-
         <dependency>
             <groupId>it.eng.parer</groupId>
             <artifactId>spagofat-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>it.eng.parer</groupId>
             <artifactId>spagofat-middle</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.logging.log4j</groupId>
+            		<artifactId>log4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
-        <!-- xalan & co -->
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-        </dependency>
-
         <!-- FINE dipendenze progetto WEB -->
         <dependency>
             <groupId>${project.groupId}</groupId>

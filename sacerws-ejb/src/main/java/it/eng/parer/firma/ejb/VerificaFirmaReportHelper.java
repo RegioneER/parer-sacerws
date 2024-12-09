@@ -72,7 +72,7 @@ import it.eng.parer.ws.utils.MessaggiWSFormat;
 
 /*
  * EJB di supporto per la gestione del report di verifica firma in formato ZIP.
- * 
+ *
  */
 @Stateless(mappedName = "VerificaFirmaReportHelper")
 @LocalBean
@@ -95,7 +95,7 @@ public class VerificaFirmaReportHelper {
 
     /**
      * Gestione report verifica firma eidas
-     * 
+     *
      * @param reportZip
      *            report verifica firma (zip)
      * @param servizioVerifica
@@ -106,7 +106,7 @@ public class VerificaFirmaReportHelper {
      *            verifia firma eidas response (dto)
      * @param compUrnNorm
      *            urn componente
-     * 
+     *
      * @throws IOException
      *             eccezione generica
      * @throws VerificaFirmaException
@@ -159,7 +159,7 @@ public class VerificaFirmaReportHelper {
 
     /**
      * Gestione report verifica firma crypto
-     * 
+     *
      * @param reportZip
      *            report verifica firma (zip)
      * @param wrapper
@@ -168,7 +168,7 @@ public class VerificaFirmaReportHelper {
      *            servizio verifica firma
      * @param compUrnNorm
      *            urn componente
-     * 
+     *
      * @throws IOException
      *             eccezione generica
      * @throws VerificaFirmaException

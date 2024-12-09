@@ -20,7 +20,6 @@ package it.eng.parer.ws.versamento.ejb;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.naming.NamingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

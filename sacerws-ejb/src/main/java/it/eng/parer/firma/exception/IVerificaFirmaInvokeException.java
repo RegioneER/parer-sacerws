@@ -16,7 +16,7 @@
  */
 
 /**
- * 
+ *
  */
 package it.eng.parer.firma.exception;
 

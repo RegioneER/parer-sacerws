@@ -29,7 +29,7 @@ public final class MonContaSesUpdUdKo {
 
     /**
      * Stato Update KO
-     * 
+     *
      * ti_stato_udp_ud_ko IN ('NON_RISOLUBILE', 'NON_VERIFICATO', 'RISOLTO', 'VERIFICATO')
      */
     public enum TiStatoUdpUdKoMonContaSesUpdUdKo {

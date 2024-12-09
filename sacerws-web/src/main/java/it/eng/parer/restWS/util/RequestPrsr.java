@@ -21,19 +21,14 @@
  */
 package it.eng.parer.restWS.util;
 
-import it.eng.parer.ws.dto.IRispostaWS;
-import it.eng.parer.ws.utils.AvanzamentoWs;
-import it.eng.parer.ws.utils.MessaggiWSBundle;
-import it.eng.parer.ws.versamento.dto.FileBinario;
-import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
-import java.util.Iterator;
-import java.util.List;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
-import java.nio.file.Files;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -41,14 +36,17 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.ws.dto.IRispostaWS;
+import it.eng.parer.ws.utils.AvanzamentoWs;
+import it.eng.parer.ws.utils.MessaggiWSBundle;
+import it.eng.parer.ws.versamento.dto.FileBinario;
+import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
+
 /**
  * Parser di request di tipo POST/MULTIPART FORM DATA
  *
  * @author Fioravanti_F
  */
-// @Stateless(mappedName = "RequestPrsr")
-@Stateless
-@LocalBean
 public class RequestPrsr {
 
     private static final Logger log = LoggerFactory.getLogger(RequestPrsr.class);

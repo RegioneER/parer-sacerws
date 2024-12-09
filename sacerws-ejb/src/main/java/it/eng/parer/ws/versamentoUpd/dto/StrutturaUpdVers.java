@@ -44,7 +44,7 @@ import it.eng.parer.ws.versamento.dto.IProfiloEntity;
 public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, IProfiloEntity {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3628770831632889102L;
 

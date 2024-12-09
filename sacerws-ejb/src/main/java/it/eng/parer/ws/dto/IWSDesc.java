@@ -35,7 +35,7 @@ public interface IWSDesc {
 
     /**
      * Deprecated : fare riferimento a metodo getVersione(String versioniWsParamVal)
-     * 
+     *
      * @return versione del ws
      */
     @Deprecated

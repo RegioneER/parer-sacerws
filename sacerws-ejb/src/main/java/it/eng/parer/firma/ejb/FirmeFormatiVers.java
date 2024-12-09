@@ -243,8 +243,8 @@ public class FirmeFormatiVers {
 
             rs.setrLong(0); // OK
         } catch (VerificaFirmaException ex) {
-            LOG.error("Errore grave riscontrato durante verifica firma eseguita in {} ms su riferimento {}",
-                    (System.currentTimeMillis() - start), tmpUrn != null ? tmpUrn : "non calcolabile", ex);
+            LOG.warn("Errore riscontrato durante verifica firma eseguita in {} ms urn {}",
+                    (System.currentTimeMillis() - start), tmpUrn != null ? tmpUrn : "non presente/calcolato", ex);
             rs.setrLong(-1);
             rs.setrBoolean(false);
             rs.setCodErr(ex.getCodiceErrore());

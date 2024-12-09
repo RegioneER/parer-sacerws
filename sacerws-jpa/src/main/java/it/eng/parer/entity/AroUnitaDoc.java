@@ -172,6 +172,8 @@ public class AroUnitaDoc implements Serializable {
 
     private List<AroUpdUnitaDoc> aroUpdUnitaDocs = new ArrayList<>();
 
+    private List<AroLogStatoConservUd> aroLogStatoConservUds;
+
     public AroUnitaDoc() {/* Hibernate */
     }
 
@@ -747,6 +749,16 @@ public class AroUnitaDoc implements Serializable {
 
     public void setAroXmlUnitaDocObjectStorage(AroXmlUnitaDocObjectStorage aroXmlUnitaDocObjectStorage) {
         this.aroXmlUnitaDocObjectStorage = aroXmlUnitaDocObjectStorage;
+    }
+
+    // bi-directional many-to-one association to AroLogStatoConservUd
+    @OneToMany(mappedBy = "aroUnitaDoc")
+    public List<AroLogStatoConservUd> getAroLogStatoConservUds() {
+        return this.aroLogStatoConservUds;
+    }
+
+    public void setAroLogStatoConservUds(List<AroLogStatoConservUd> aroLogStatoConservUds) {
+        this.aroLogStatoConservUds = aroLogStatoConservUds;
     }
 
 }

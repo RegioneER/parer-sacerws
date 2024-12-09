@@ -28,11 +28,11 @@ package it.eng.parer.exception;
 public class ParamApplicNotFoundException extends RuntimeException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 4519094509856840927L;
     /**
-     * 
+     *
      */
 
     private final String nmParamApplic;

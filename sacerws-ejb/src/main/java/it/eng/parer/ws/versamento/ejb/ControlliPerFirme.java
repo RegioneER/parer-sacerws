@@ -352,7 +352,7 @@ public class ControlliPerFirme {
     /**
      * Recupero del certificato per il firmatario della CA. Eccezione altrimenti.
      *
-     * @param niSerialCertifCa
+     * @param dsSerialCertifCa
      *            serial number
      * @param dlDnIssuerCertifCa
      *            distinguished name della CA
@@ -362,7 +362,7 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException
      *             in caso di errore nell'accesso al DB
      */
-    public FirCertifCa getFirCertifCa(BigDecimal niSerialCertifCa, String dlDnIssuerCertifCa)
+    public FirCertifCa getFirCertifCa(String dsSerialCertifCa, String dlDnIssuerCertifCa)
             throws VerificaFirmaException {
 
         // result
@@ -374,7 +374,7 @@ public class ControlliPerFirme {
             CriteriaQuery<FirCertifCa> criteriaQuery = criteriaBuilder.createQuery(FirCertifCa.class);
             Root<FirCertifCa> root = criteriaQuery.from(FirCertifCa.class);
             criteriaQuery.select(root)
-                    .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("niSerialCertifCa"), niSerialCertifCa),
+                    .where(criteriaBuilder.and(criteriaBuilder.equal(root.get("dsSerialCertifCa"), dsSerialCertifCa),
                             criteriaBuilder.equal(root.get("dlDnIssuerCertifCa"), dlDnIssuerCertifCa)));
             List<FirCertifCa> firCertifCas = entityManager.createQuery(criteriaQuery).getResultList();
 
@@ -396,7 +396,7 @@ public class ControlliPerFirme {
      *
      * @param firCertifCa
      *            entity della CA
-     * @param niSerialCrl
+     * @param dsSerialCrl
      *            numero di serie della CRL (può essere null)
      * @param dtIniCrl
      *            data inizio della CRL
@@ -408,25 +408,25 @@ public class ControlliPerFirme {
      * @throws it.eng.parer.firma.exception.VerificaFirmaException
      *             in caso di errore nell'accesso al DB
      */
-    public FirCrl getFirCrl(FirCertifCa firCertifCa, BigDecimal niSerialCrl, Date dtIniCrl, Date dtScadCrl)
+    public FirCrl getFirCrl(FirCertifCa firCertifCa, String dsSerialCrl, Date dtIniCrl, Date dtScadCrl)
             throws VerificaFirmaException {
         FirCrl firCrl = null;
 
         try {
             String queryStr = "SELECT c FROM FirCrl c WHERE c.firCertifCa = :firCertifCa AND c.dtIniCrl = :dtIniCrl AND c.dtScadCrl = :dtScadCrl";
 
-            if (niSerialCrl != null) {
-                queryStr += " AND c.niSerialCrl = :niSerialCrl";
+            if (dsSerialCrl != null) {
+                queryStr += " AND c.dsSerialCrl = :dsSerialCrl";
             } else {
-                queryStr += " AND c.niSerialCrl is null";
+                queryStr += " AND c.dsSerialCrl is null";
             }
 
             TypedQuery<FirCrl> query = entityManager.createQuery(queryStr, FirCrl.class);
             query.setParameter("firCertifCa", firCertifCa).setParameter("dtIniCrl", dtIniCrl).setParameter("dtScadCrl",
                     NeverendingDateConverter.verifyOverZoneId(dtScadCrl, TimeZone.getTimeZone("UTC").toZoneId()));
 
-            if (niSerialCrl != null) {
-                query.setParameter("niSerialCrl", niSerialCrl);
+            if (dsSerialCrl != null) {
+                query.setParameter("dsSerialCrl", dsSerialCrl);
             }
 
             List<FirCrl> resultList = query.getResultList();
@@ -440,14 +440,14 @@ public class ControlliPerFirme {
         }
     }
 
-    public FirCertifOcsp getFirCertifOcsp(FirCertifCa firCertifCa, BigDecimal niSerialCertifOcsp)
+    public FirCertifOcsp getFirCertifOcsp(FirCertifCa firCertifCa, String dsSerialCertifOcsp)
             throws VerificaFirmaException {
         FirCertifOcsp firCertifOcsp = null;
         try {
-            final String findFirCertifOcpByAlternateKey = "Select f from FirCertifOcsp f Where f.firCertifCa = :firCertifCa And f.niSerialCertifOcsp = :niSerialCertifOcsp";
+            final String findFirCertifOcpByAlternateKey = "Select f from FirCertifOcsp f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifOcsp = :dsSerialCertifOcsp";
             TypedQuery<FirCertifOcsp> query = entityManager
                     .createQuery(findFirCertifOcpByAlternateKey, FirCertifOcsp.class)
-                    .setParameter("firCertifCa", firCertifCa).setParameter("niSerialCertifOcsp", niSerialCertifOcsp);
+                    .setParameter("firCertifCa", firCertifCa).setParameter("dsSerialCertifOcsp", dsSerialCertifOcsp);
             List<FirCertifOcsp> resultList = query.getResultList();
             if (resultList != null && !resultList.isEmpty()) {
                 firCertifOcsp = resultList.get(0);
@@ -512,7 +512,7 @@ public class ControlliPerFirme {
      *
      * @param firCertifCa
      *            (id) della ca
-     * @param niSerialCertifFirmatario
+     * @param dsSerialCertifFirmatario
      *            seriale del firmatario
      *
      * @return il firmatario oppure null
@@ -520,15 +520,15 @@ public class ControlliPerFirme {
      * @throws it.eng.parer.firma.exception.VerificaFirmaException
      *             in caso di errore nell'accesso al DB
      */
-    public FirCertifFirmatario getFirCertifFirmatario(FirCertifCa firCertifCa, BigDecimal niSerialCertifFirmatario)
+    public FirCertifFirmatario getFirCertifFirmatario(FirCertifCa firCertifCa, String dsSerialCertifFirmatario)
             throws VerificaFirmaException {
         FirCertifFirmatario firFirCertifFirmatario = null;
         try {
-            final String findFirCertifFirmatarioByAlternateKey = "Select f from FirCertifFirmatario f Where f.firCertifCa = :firCertifCa And f.niSerialCertifFirmatario = :niSerialCertifFirmatario";
+            final String findFirCertifFirmatarioByAlternateKey = "Select f from FirCertifFirmatario f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifFirmatario = :dsSerialCertifFirmatario";
             TypedQuery<FirCertifFirmatario> query = entityManager
                     .createQuery(findFirCertifFirmatarioByAlternateKey, FirCertifFirmatario.class)
                     .setParameter("firCertifCa", firCertifCa)
-                    .setParameter("niSerialCertifFirmatario", niSerialCertifFirmatario);
+                    .setParameter("dsSerialCertifFirmatario", dsSerialCertifFirmatario);
             List<FirCertifFirmatario> resultList = query.getResultList();
             if (resultList != null && !resultList.isEmpty()) {
                 firFirCertifFirmatario = resultList.get(0);
@@ -546,7 +546,7 @@ public class ControlliPerFirme {
     /**
      * Ritorna la lista dei certificati del firmatario. Eccezione altrimenti.
      *
-     * @param niSerialCertifFirmatario
+     * @param dsSerialCertifFirmatario
      *            serial number del firmatario
      * @param firCertifCa
      *            CA
@@ -556,7 +556,7 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException
      *             in caso di errore nell'accesso al DB
      */
-    public List<Long> getFirCertifFirmatarioIds(BigDecimal niSerialCertifFirmatario, FirCertifCa firCertifCa)
+    public List<Long> getFirCertifFirmatarioIds(BigDecimal dsSerialCertifFirmatario, FirCertifCa firCertifCa)
             throws VerificaFirmaException {
         // lista entity JPA ritornate dalle Query
         List<Long> firFirCertifFirmatarios = new ArrayList<>();
@@ -568,7 +568,7 @@ public class ControlliPerFirme {
             Root<FirCertifFirmatario> root = criteriaQuery.from(FirCertifFirmatario.class);
             criteriaQuery.select(root.get("idCertifFirmatario"))
                     .where(criteriaBuilder.and(
-                            criteriaBuilder.equal(root.get("niSerialCertifFirmatario"), niSerialCertifFirmatario),
+                            criteriaBuilder.equal(root.get("dsSerialCertifFirmatario"), dsSerialCertifFirmatario),
                             criteriaBuilder.equal(root.get("firCertifCa"), firCertifCa)));
 
             firFirCertifFirmatarios = entityManager.createQuery(criteriaQuery).getResultList();

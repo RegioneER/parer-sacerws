@@ -28,7 +28,7 @@ package it.eng.parer.ws.dto;
 public class CSChiave implements java.io.Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3179459131532762427L;
 
