@@ -26,7 +26,7 @@ public interface IProfiloEntity {
     /**
      * Logica che si è possibile esndere aggiungendo eventuali altri id di profili censiti. (e.g.
      * getIdRecXsdProfiloNormativo != null and getIdRecXsdProfiloGenerale != null and ....etc.)
-     * 
+     *
      * @return true se presente almeno un profilo
      */
     public default boolean hasXsdProfile() {

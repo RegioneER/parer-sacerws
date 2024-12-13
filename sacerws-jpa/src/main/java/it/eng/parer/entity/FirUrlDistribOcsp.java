@@ -33,7 +33,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the FIR_URL_DISTRIB_CRL database table.
- * 
+ *
  */
 @Entity
 @Table(name = "FIR_URL_DISTRIB_OCSP")

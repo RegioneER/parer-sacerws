@@ -33,7 +33,7 @@ public interface IVerificaFirmaInvoker {
 
     /**
      * Effettua verifica e wrappping della risposta
-     * 
+     *
      * @param componenteVers
      *            componente versato
      * @param sottoComponentiFirma
@@ -50,9 +50,9 @@ public interface IVerificaFirmaInvoker {
      *            UUID
      * @param versamento
      *            astrazione con metadati di versamento
-     * 
+     *
      * @return wrapper compilato con risposta da microservizio
-     * 
+     *
      * @throws VerificaFirmaWrapperResNotFoundException
      *             eccezione generica
      * @throws VerificaFirmaConnectionException

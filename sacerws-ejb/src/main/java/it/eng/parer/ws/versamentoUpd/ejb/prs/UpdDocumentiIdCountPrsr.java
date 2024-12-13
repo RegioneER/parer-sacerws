@@ -189,7 +189,7 @@ public class UpdDocumentiIdCountPrsr extends UpdBasePrsr {
      * documentaria vengono versati durante il versamento, questa analizza soltanto il songolo documento che viene
      * versato dal servizio. (che può essere un Allegato, un Annesso, un'Annotazione)
      *
-     * 
+     *
      */
     private boolean aggiungiVerificaDocumento(DocumentoType doc, int progressivo, CategoriaDocumento categoria,
             Map<String, UpdDocumentoVers> tmpDocumentiMap, List<UpdDocumentoVers> documentiAttesi,

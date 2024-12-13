@@ -292,7 +292,7 @@ public class AggiornamentoVersamentoSync {
     // TODO: da fare
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamento.ejb.VersamentoSyncBase#salvaTutto(it.eng.parer.ws. versamento.dto.SyncFakeSessn,
      * it.eng.parer.ws.versamento.dto.RispostaWS, it.eng.parer.ws.versamento.dto.VersamentoExt) 1. save su INI entities
      * la prima versione dei metadati se non presenti e sulla base di QUELLO che viene comunicato 2. saverOrUpdate su

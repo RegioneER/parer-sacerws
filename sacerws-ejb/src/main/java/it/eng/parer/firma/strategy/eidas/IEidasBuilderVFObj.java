@@ -38,7 +38,7 @@ public interface IEidasBuilderVFObj<T extends Object> {
     /**
      * Main method per la generazione del dto trattatot nel singolo strategy (vedi {@link EidasFirmaBuilder}
      * {@link EidasMarcaBuilder}), viene restituito un oggetto di tipo {@link VFFirmaCompType} / {@link VFMarcaCompType}
-     * 
+     *
      * @param eidasReportsDto
      *            dto contentenete la risposta del servizio di verifica firma EIDAS
      * @param vfWrapper
@@ -51,9 +51,9 @@ public interface IEidasBuilderVFObj<T extends Object> {
      *            data di verifica (esplicitata su metadati o sysdate)
      * @param pgs
      *            array di progressivi busta/firma/marca
-     * 
+     *
      * @return restituitisce un oggetto di tipo {@link VFFirmaCompType} o {@link VFMarcaCompType}
-     * 
+     *
      * @throws InvocationTargetException
      *             eccezione generica
      * @throws IllegalArgumentException
@@ -62,7 +62,7 @@ public interface IEidasBuilderVFObj<T extends Object> {
      *             eccezione generica
      * @throws NoSuchMethodException
      *             eccezione generica
-     * 
+     *
      */
     public T build(EidasWSReportsDTOTree eidasReportsDto, VerificaFirmaWrapper vfWrapper, SignatureWrapper signatureW,
             Optional<TimestampWrapper> timestampW, ZonedDateTime dataDiRiferimento, BigDecimal[] pgs)

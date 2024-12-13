@@ -36,7 +36,7 @@ import it.eng.parer.entity.constraint.FiUrnReport.TiUrnReport;
 
 /**
  * The persistent class for the ELV_URN_ELENCO_VERS database table.
- * 
+ *
  */
 @Entity
 @Table(name = "FIR_URN_REPORT")

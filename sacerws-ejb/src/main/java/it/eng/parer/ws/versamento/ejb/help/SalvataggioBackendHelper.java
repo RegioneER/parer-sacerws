@@ -719,7 +719,7 @@ public class SalvataggioBackendHelper {
      *            id sessione fallita
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @throws ObjectStorageException
      *             in caso di errore
      */
@@ -755,7 +755,7 @@ public class SalvataggioBackendHelper {
      *            id sessione errata
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @throws ObjectStorageException
      *             in caso di errore
      */
@@ -793,7 +793,7 @@ public class SalvataggioBackendHelper {
      *            id dati sessione vers
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @throws ObjectStorageException
      *             in caso di errore
      */
@@ -826,7 +826,7 @@ public class SalvataggioBackendHelper {
      *            id file sessione
      * @param idStrut
      *            id della struttura versante
-     * 
+     *
      * @throws ObjectStorageException
      *             in caso di errore
      */
@@ -1226,14 +1226,14 @@ public class SalvataggioBackendHelper {
     /**
      * Effettua il tagging di un oggetto esistente su bucket con chiave e nell'object storage indicato (su base
      * configurazioni)
-     * 
+     *
      * @param osResource
      *            risorsa salvata su object storage
      * @param configuration
      *            configurazione per accedere all'object storage
      * @param tags
      *            tag da impostare sull'oggetto
-     * 
+     *
      * @throws ObjectStorageException
      *             eccezzione generica (S3 error code / varie)
      */

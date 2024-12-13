@@ -94,15 +94,15 @@ public class KeySizeFascUtility {
     /*
      * private int calcolaMaxLenNumeroPathTivoli(CSVersatore versatore, CSChiave chiave) { return MAX_LEN_FILENAME_ARK -
      * this.calcolaPathTivoli(versatore, chiave, tc).length(); }
-     * 
-     * 
+     *
+     *
      * private String calcolaPathTivoli(CSVersatore versatore, CSChiave chiave, TpiConfig tc) { String spData =
      * MessaggiWSFormat.formattaSubPathData(new Date()); // la data vera non conta; una volta formattate sono tutte
      * grandi uguali String spVersatore = MessaggiWSFormat.formattaSubPathVersatoreArk(versatore); String spUnitaDoc =
      * MessaggiWSFormat.formattaSubPathUnitaDocArk(chiave); String spNomeFile = MessaggiWSFormat.formattaNomeFileArk(
      * Costanti.CategoriaDocumento.Annotazione, 99, 1, 99); String tmpString = MessaggiWSFormat.formattaFilePathArk(
      * tc.getTpiRootTpi(), tc.getTpiRootArkVers(), spData, spVersatore, spUnitaDoc, spNomeFile);
-     * 
+     *
      * return ""; }
      */
 

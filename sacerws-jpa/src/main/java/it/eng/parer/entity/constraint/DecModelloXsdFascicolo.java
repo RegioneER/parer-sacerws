@@ -19,7 +19,7 @@ package it.eng.parer.entity.constraint;
 
 /**
  * DecModelloXsdFascicolo's constraint
- * 
+ *
  */
 public final class DecModelloXsdFascicolo {
 

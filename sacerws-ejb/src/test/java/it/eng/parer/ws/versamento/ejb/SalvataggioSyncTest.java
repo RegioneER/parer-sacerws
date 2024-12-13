@@ -68,35 +68,35 @@ public class SalvataggioSyncTest {
     /*
      * "java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl"
      * )
-     * 
+     *
      * @Test public void salvaDatiVersamento() { }
-     * 
+     *
      * @Test public void testSalvaDatiVersamento() { }
-     * 
+     *
      * @Test public void salvaWarningAARegistroUd() { }
-     * 
+     *
      * @Test public void aggiornaRegistriFiscaliUd() { }
-     * 
+     *
      * @Test public void riparaCollegamentiUdNonRisolti() { }
-     * 
+     *
      * @Test public void rimuoviUdNonVersate() { }
-     * 
+     *
      * @Test public void retrieveVrsVLisXmlUdUrnDaCalcByUd() { }
-     * 
+     *
      * @Test public void retrieveVrsVLisXmlDocUrnDaCalcByDoc() { }
-     * 
+     *
      * @Test public void retrieveAroUpdUnitaDocByUd() { }
-     * 
+     *
      * @Test public void retrieveVrsVLisXmlUpdUrnDaCalcByUpd() { }
-     * 
+     *
      * @Test public void rimuoviSessVersDocErrate() { }
-     * 
+     *
      * @Test public void salvaDatiWarning() { }
-     * 
+     *
      * @Test public void retrieveSerVLisVerserByUpdUd() { }
-     * 
+     *
      * @Test public void retrieveFasVLisFascByUpdUd() { }
-     * 
+     *
      * @Test public void recuperaProgressivoVersione() { }
      */
 }

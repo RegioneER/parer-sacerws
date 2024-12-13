@@ -97,16 +97,16 @@ public class VerificaFirmaWrapperVersamentoUtil {
 
     /*
      * (non-Javadoc)
-     * 
-     * 
+     *
+     *
      * Nota: ex DocumentoVersVFirme.loopMarcheComp
-     * 
+     *
      * TODO: da integrare su WRAPPER (gestione del report/risultato al netto della verifica della firma)
-     * 
+     *
      * marcaCompType.getTiEsitoVerifMarca() / marcaCompType.setTiEsitoVerifMarca()
      * firmaCompType.getDsMsgEsitoContrConforme() / firmaCompType.setDsMsgEsitoContrConforme()
-     * 
-     * 
+     *
+     *
      * @see it.eng.parer.firma.helper.IBaseWrapperParser#buildECMarcaType(it.eng.parer. firma.xml.VerificaFirmaWrapper)
      */
     private static void buildECMarcaType(AbsVersamentoExt versamento, ComponenteVers tmpCV,
@@ -233,11 +233,11 @@ public class VerificaFirmaWrapperVersamentoUtil {
     }
 
     /*
-     * 
+     *
      * (non-Javadoc)
-     * 
+     *
      * Nota: ex DocumentoVersVFirme.loopFirmeComp
-     * 
+     *
      * @see it.eng.parer.firma.helper.IBaseWrapperParser#buildECFirmatarioType(it.eng.
      * parer.firma.xml.VerificaFirmaWrapper)
      */

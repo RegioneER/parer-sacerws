@@ -17,25 +17,33 @@
 
 package it.eng.parer.ws.versamento.ejb;
 
-import it.eng.parer.entity.*;
-import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc;
-import it.eng.parer.firma.exception.VerificaFirmaException;
-import it.eng.parer.ws.dto.RispostaControlli;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+
+import javax.ejb.EJB;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import it.eng.parer.entity.FirCertifCa;
+import it.eng.parer.entity.FirCertifOcsp;
+import it.eng.parer.entity.OrgEnte;
+import it.eng.parer.entity.OrgStrut;
+import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc;
+import it.eng.parer.firma.exception.VerificaFirmaException;
+import it.eng.parer.ws.dto.RispostaControlli;
 
 @RunWith(Arquillian.class)
 public class ControlliPerFirmeTest {
@@ -118,14 +126,14 @@ public class ControlliPerFirmeTest {
 
     @Test
     public void getFirCertifCa_queryIsOk() throws VerificaFirmaException {
-        helper.getFirCertifCa(BigDecimal.ZERO, "dlDnIssuerCertifCa");
+        helper.getFirCertifCa(StringUtils.EMPTY, "dlDnIssuerCertifCa");
         assertTrue(true);
     }
 
     @Test
     public void getFirCrl_queryIsOk() throws VerificaFirmaException {
         final FirCertifCa firCertifCa = aFirCertifCa();
-        final BigDecimal niSerialCrl = BigDecimal.ZERO;
+        final String niSerialCrl = StringUtils.EMPTY;
         final Date dtIniCrl = new Date();
         final Date dtScadCrl = new Date();
         helper.getFirCrl(firCertifCa, niSerialCrl, dtIniCrl, dtScadCrl);
@@ -140,7 +148,7 @@ public class ControlliPerFirmeTest {
 
     @Test
     public void getFirCertifOcsp_queryIsOk() throws VerificaFirmaException {
-        helper.getFirCertifOcsp(aFirCertifCa(), BigDecimal.ZERO);
+        helper.getFirCertifOcsp(aFirCertifCa(), StringUtils.EMPTY);
         assertTrue(true);
     }
 
@@ -154,7 +162,7 @@ public class ControlliPerFirmeTest {
 
     @Test
     public void getFirCertifFirmatario_queryIsOk() throws VerificaFirmaException {
-        helper.getFirCertifFirmatario(aFirCertifCa(), BigDecimal.ZERO);
+        helper.getFirCertifFirmatario(aFirCertifCa(), StringUtils.EMPTY);
         assertTrue(true);
     }
 

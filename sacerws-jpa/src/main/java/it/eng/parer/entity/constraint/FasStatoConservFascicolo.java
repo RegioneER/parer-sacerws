@@ -21,7 +21,7 @@ package it.eng.parer.entity.constraint;
  * FasStatoConservFascicolo constraint
  *
  * @author sinatti_s
- * 
+ *
  */
 public final class FasStatoConservFascicolo {
 

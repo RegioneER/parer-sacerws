@@ -29,7 +29,7 @@ public final class AroUpdUnitaDoc {
 
     /**
      * Stato UD in conservazione
-     * 
+     *
      * " ti_stato_udp_elenco_vers IN ('IN_ATTESA_SCHED', 'IN_ELENCO_APERTO', 'IN_ELENCO_CHIUSO', 'IN_ELENCO_COMPLETATO',
      * 'IN_ELENCO_CON_INDICI_AIP_GENERATI', 'IN_ELENCO_DA_CHIUDERE', 'IN_ELENCO_VALIDATO',
      * 'IN_ELENCO_IN_CODA_INDICE_AIP', 'NON_SELEZ_SCHED', 'IN_ELENCO_CON_ELENCO_INDICI_AIP_CREATO',

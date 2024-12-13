@@ -463,7 +463,7 @@ public class UpdVersamentoPrsr extends UpdVersamentoBasePrsr {
 
     /**
      * Nota: in caso di match con almeno un risultato NEGATIVO non si eseguono verifiche successive
-     * 
+     *
      * @return true/false con risultato dei controlli generali
      */
     private boolean verificaControlliGenerali(UpdVersamentoExt versamento) {

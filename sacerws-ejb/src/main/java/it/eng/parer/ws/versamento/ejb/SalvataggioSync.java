@@ -59,6 +59,7 @@ import it.eng.parer.entity.AroCompDoc;
 import it.eng.parer.entity.AroCompUrnCalc;
 import it.eng.parer.entity.AroDoc;
 import it.eng.parer.entity.AroLinkUnitaDoc;
+import it.eng.parer.entity.AroLogStatoConservUd;
 import it.eng.parer.entity.AroStrutDoc;
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
@@ -95,6 +96,7 @@ import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
 import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.util.Constants;
+import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.view_entity.VrsVLisXmlDocUrnDaCalc;
 import it.eng.parer.view_entity.VrsVLisXmlUdUrnDaCalc;
 import it.eng.parer.view_entity.VrsVLisXmlUpdUrnDaCalc;
@@ -136,6 +138,8 @@ import it.eng.parer.ws.xml.versReq.CamiciaFascicoloType;
 import it.eng.parer.ws.xml.versReq.ChiaveType;
 import it.eng.parer.ws.xml.versReq.UnitaDocAggAllegati;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 
 /**
  *
@@ -151,6 +155,8 @@ public class SalvataggioSync {
     //
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
+    @Resource
+    private SessionContext context;
     //
     @EJB
     private SalvataggioCompFS salvataggioCompFS;
@@ -163,6 +169,9 @@ public class SalvataggioSync {
 
     @EJB
     private SalvataggioFirmaManager salvataggioFirmaManager;
+
+    @EJB
+    private ConfigurationHelper configurationHelper;
     //
     private static final int DS_ERR_MAX_LEN = 1024;
 
@@ -185,8 +194,11 @@ public class SalvataggioSync {
             }
 
             // SALVO UNITA' DOCUMENTARIA
+            String userid = versamento.getVersamento().getIntestazione().getVersatore().getUserID();
+            String utente = versamento.getVersamento().getIntestazione().getVersatore().getUtente();
+            String nomeAgente = "userid: " + userid + "; utente: " + utente;
             if (prosegui && !this.salvaUnitaDoc(versamento.getStrutturaComponenti(), versamento.getVersamento(),
-                    rispostaWS)) {
+                    rispostaWS, nomeAgente)) {
                 prosegui = false;
             }
 
@@ -299,7 +311,11 @@ public class SalvataggioSync {
 
             // Aggiorno UNITA' DOCUMENTARIA
             if (prosegui) {
-                boolean result = this.aggiornaUnitaDoc(versamento.getStrutturaComponenti(), rispostaWS);
+                // Tag UserId ed Utente nella chiamata al servizio
+                String userid = versamento.getVersamento().getIntestazione().getVersatore().getUserID();
+                String utente = versamento.getVersamento().getIntestazione().getVersatore().getUtente();
+                String nomeAgente = "userid: " + userid + "; utente: " + utente;
+                boolean result = this.aggiornaUnitaDoc(versamento.getStrutturaComponenti(), rispostaWS, nomeAgente);
                 if (!result) {
                     rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
                     rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P, ERROR_PERSISTENZA_UD);
@@ -402,7 +418,8 @@ public class SalvataggioSync {
      * ************************************************************************** salvataggio dati e metadati per
      * versamento completo **************************************************************************
      */
-    private boolean salvaUnitaDoc(StrutturaVersamento strutV, UnitaDocumentaria ud, RispostaWS rispostaWS) {
+    private boolean salvaUnitaDoc(StrutturaVersamento strutV, UnitaDocumentaria ud, RispostaWS rispostaWS,
+            String nomeAgente) {
         AroUnitaDoc tmpTabUD = new AroUnitaDoc();
         Calendar tmpCal;
         boolean tmpReturn = true;
@@ -528,6 +545,13 @@ public class SalvataggioSync {
              * caso dell'aggiunta documento, questa informazione è caricata durante i controlli.
              */
             strutV.setIdUnitaDoc(tmpTabUD.getIdUnitaDoc());
+
+            // MEV #31162
+            context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpTabUD.getIdUnitaDoc(),
+                    nomeAgente, Constants.VERSAMENTO_UD, CostantiDB.StatoConservazioneUnitaDoc.PRESA_IN_CARICO.name(),
+                    Constants.WS_VERSAMENTO_UD);
+            // end MEV #31162
+
         } catch (RuntimeException re) {
             tmpReturn = false;
             if (ExceptionUtils.indexOfThrowable(re, java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
@@ -950,7 +974,7 @@ public class SalvataggioSync {
      * ************************************************************************** salvataggio dati e metadati per
      * aggiunta documenti **************************************************************************
      */
-    private boolean aggiornaUnitaDoc(StrutturaVersamento strutV, RispostaWSAggAll rispostaWS) {
+    private boolean aggiornaUnitaDoc(StrutturaVersamento strutV, RispostaWSAggAll rispostaWS, String nomeAgente) {
         AroUnitaDoc tmpTabUD = null;
         boolean tmpReturn = true;
         int progressivoVersione = 0;
@@ -988,6 +1012,18 @@ public class SalvataggioSync {
             // end MAC#26281
             ) {
                 tmpTabUD.setTiStatoConservazione(CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name());
+                // MEV #31162
+                context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpTabUD.getIdUnitaDoc(),
+                        nomeAgente, Constants.AGGIUNTA_DOCUMENTO,
+                        CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(), Constants.WS_AGGIUNTA_DOC);
+                // end MEV #31162
+            } else {
+                // Mantengo lo stato precedente da loggare
+                // MEV #31162
+                context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpTabUD.getIdUnitaDoc(),
+                        nomeAgente, Constants.AGGIUNTA_DOCUMENTO, tmpTabUD.getTiStatoConservazione(),
+                        Constants.WS_AGGIUNTA_DOC);
+                // end MEV #31162
             }
 
             // se il documento appena aggiunto è firmato, aggiorno il flag dell'unitaDoc
@@ -2608,7 +2644,7 @@ public class SalvataggioSync {
      * DA_FIRMARE o FIRMATA o IN_CUSTODIA, oppure con stato = DA_CONTROLLARE e contenuto effettivo con stato =
      * CONTROLLO_CONSIST_IN_CORSO, nel cui contenuto di tipo EFFETTIVO sia presente l’unità documentaria in
      * aggiornamento
-     * 
+     *
      * return list of idVerSerie
      */
     private List<BigDecimal> retrieveSerVLisVerserByUpdUd(long idUnitaDoc) {
@@ -2622,7 +2658,7 @@ public class SalvataggioSync {
      * il sistema determina i fascicoli con stato nell’elenco = IN_ELENCO_IN_CODA_CREAZIONE_AIP o
      * IN_ELENCO_CON_AIP_CREATO o IN_ELENCO_CON_ELENCO_INDICI_AIP_CREATO o IN_ELENCO_COMPLETATO nel cui contenuto e’
      * presente l’unità documentaria in aggiornamento
-     * 
+     *
      * return list of idFascicolo
      */
     private List<BigDecimal> retrieveFasVLisFascByUpdUd(long idUnitaDoc) {
@@ -2651,6 +2687,35 @@ public class SalvataggioSync {
             return aroVerIndiceAipList.get(0).getPgVerIndiceAip().intValue();
         } else {
             return 0;
+        }
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void insertLogStatoConservUd(long idUnitaDoc, String nmAgente, String tiEvento, String tiStatoConservazione,
+            String tiMod) {
+        AroUnitaDoc unitaDoc = entityManager.find(AroUnitaDoc.class, idUnitaDoc);
+        long idAmbiente = unitaDoc.getOrgStrut().getOrgEnte().getOrgAmbiente().getIdAmbiente();
+        long idStrut = unitaDoc.getOrgStrut().getIdStrut();
+        long idTipoUnitaDoc = unitaDoc.getDecTipoUnitaDoc().getIdTipoUnitaDoc();
+        // Recupero il parametro per verificare se procedere o meno al log
+        boolean flAbilitaLogStatoConserv = Boolean.parseBoolean(configurationHelper
+                .getValoreParamApplicByTipoUd("FL_ABILITA_LOG_STATO_CONSERV", idAmbiente, idStrut, idTipoUnitaDoc));
+        if (flAbilitaLogStatoConserv) {
+            AroLogStatoConservUd logStatoConservUd = new AroLogStatoConservUd();
+            logStatoConservUd.setAroUnitaDoc(unitaDoc);
+            logStatoConservUd.setDtStato(new Date());
+            logStatoConservUd.setOrgSubStrut(unitaDoc.getOrgSubStrut());
+            logStatoConservUd.setNmAgente(nmAgente);
+            logStatoConservUd.setTiEvento(tiEvento);
+            logStatoConservUd.setTiMod(tiMod);
+            logStatoConservUd.setAaKeyUnitaDoc(unitaDoc.getAaKeyUnitaDoc());
+            logStatoConservUd.setTiStatoConservazione(tiStatoConservazione);
+            if (unitaDoc.getAroLogStatoConservUds() == null) {
+                unitaDoc.setAroLogStatoConservUds(new ArrayList<>());
+            }
+            unitaDoc.getAroLogStatoConservUds().add(logStatoConservUd);
+            entityManager.persist(logStatoConservUd);
+            entityManager.flush();
         }
     }
 

@@ -342,7 +342,7 @@ public class VersamentoExtAggAllPrsr {
              * valori definiti su DB. Mettendo questo default diventa impossibile, a valle, capire se il valore "false"
              * sia stato impostato sul SIP oppure se non sia stata proprio creata la busta. Vedi anche
              * VersamentoExtPrsr, VerificaFirmeHash e VerificaFirmeHashAggAll cercando la stringa MAC #23544.
-             * 
+             *
              * Aggiornamento: RIMOSSA la gestione di un default sui flag che sono presenti anche su DB (ossia che
              * possono essere presenti su SIP).
              */
@@ -509,7 +509,7 @@ public class VersamentoExtAggAllPrsr {
 
         /*
          * Verifica del pregresso
-         * 
+         *
          * 1. Recupero parameto da DB
          */
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
@@ -527,7 +527,7 @@ public class VersamentoExtAggAllPrsr {
 
         /*
          * Verifica del pregresso
-         * 
+         *
          * 2. Verifica univocità chiave normalizzata
          */
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
@@ -554,7 +554,7 @@ public class VersamentoExtAggAllPrsr {
 
         /*
          * Calcolo delle chiavi normalizzate (versatore + UD)
-         * 
+         *
          * Una volta individuata la UD (verifica precedente) se non esite si calcola la cd_key normalizzata
          */
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {

@@ -131,7 +131,7 @@ public class AwsClient {
      *            accessKeyID per l'accesso a questo bucket
      * @param secretKey
      *            secretKe per l'accesso a questo bucket
-     * 
+     *
      * @return client S3 configurato
      */
     public S3Client getClient(URI storageAddress, String accessKeyId, String secretKey) {

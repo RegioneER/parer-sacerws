@@ -80,10 +80,10 @@ public class RapportoVersBuilder {
     /**
      * Canonicalizzazione dell'XML SIP recuperato da sessione.getDatiDaSalvareIndiceSip (viene restituito l'xml secondo
      * transformazione e secondo il "formato" comunicato dal client)
-     * 
+     *
      * @param sessione
      *            di tipo {@link SyncFakeSessn}
-     * 
+     *
      * @return RispostaControlli con indice sip canonicalizzato
      */
     public RispostaControlli canonicalizzaDaSalvareIndiceSip(SyncFakeSessn sessione) {
@@ -93,14 +93,14 @@ public class RapportoVersBuilder {
     /**
      * Canonicalizzazione dell'XML SIP recuperato da sessione.getDatiDaSalvareIndiceSip (viene restituito l'xml in
      * formato prittyPrint se unPrettyPrint a true)
-     * 
-     * 
+     *
+     *
      * @param sessione
      *            di tipo {@link SyncFakeSessn}
      * @param unPrettyPrint
      *            deprecato il valore true in quanto, l'xml restituito, deve essere il prodotto della trasformazione
      *            attuata dalla canonicalizzazione
-     * 
+     *
      * @return RispostaControlli con indice sip canonicalizzato
      */
     private RispostaControlli canonicalizzaDaSalvareIndiceSip(SyncFakeSessn sessione, boolean unPrettyPrint) {
@@ -125,10 +125,10 @@ public class RapportoVersBuilder {
     /**
      * Canonicalizzazione dell'XML Indice MM recuperato da sessione.getDatiPackInfoSipXml (viene restituito l'xml
      * secondo transformazione e secondo il "formato" comunicato dal client)
-     * 
+     *
      * @param sessione
      *            di tipo {@link SyncFakeSessn}
-     * 
+     *
      * @return RispostaControlli con indice sip canonicalizzato
      */
     public RispostaControlli canonicalizzaPackInfoSipXml(SyncFakeSessn sessione) {
@@ -139,12 +139,12 @@ public class RapportoVersBuilder {
     /**
      * Canonicalizzazione dell'XML Indice MM recuperato da sessione.getDatiPackInfoSipXml (viene restituito l'xml in
      * formato prittyPrint se unPrettyPrint a true)
-     * 
+     *
      * @param sessione
      *            di tipo {@link SyncFakeSessn}
      * @param unPrettyPrint
      *            true/false per ottenere l'xml in formato "pretty print"
-     * 
+     *
      * @return RispostaControlli con indice sip canonicalizzato
      */
     public RispostaControlli canonicalizzaPackInfoSipXml(SyncFakeSessn sessione, boolean unPrettyPrint) {

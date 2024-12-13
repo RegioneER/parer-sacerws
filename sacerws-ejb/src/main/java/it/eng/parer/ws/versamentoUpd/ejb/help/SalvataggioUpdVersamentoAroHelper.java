@@ -22,6 +22,7 @@
  */
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityGraph;
-import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +59,8 @@ import it.eng.parer.entity.VrsSessioneVers;
 import it.eng.parer.entity.VrsXmlModelloSessioneVers;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiEntitaAroUpdDatiSpecUnitaDoc;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiUsoXsdAroUpdDatiSpecUnitaDoc;
+import it.eng.parer.util.Constants;
+import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.view_entity.FasVLisFascByUpdUdId;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -71,9 +73,13 @@ import it.eng.parer.ws.versamentoUpd.dto.UpdComponenteVers;
 import it.eng.parer.ws.versamentoUpd.dto.UpdDocumentoVers;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.versamentoUpd.utils.UpdDocumentiUtils;
-import javax.persistence.TypedQuery;
 
 import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;
+import it.eng.parer.ws.versamento.ejb.SalvataggioSync;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -85,8 +91,18 @@ import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;
 public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoBaseHelper {
     public static final String JAVAX_PERSISTENCE_FETCHGRAPH = "javax.persistence.fetchgraph";
 
+    // MEV #31162
+    @Resource
+    private SessionContext context;
+    @EJB
+    private ConfigurationHelper configurationHelper;
+    @EJB
+    private SalvataggioSync salvataggioSync;
+    // end MEV #31162
+
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public RispostaControlli aggiornaStatoConservazione(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers strutturaUpdVers) {
+    public RispostaControlli aggiornaStatoConservazione(AroUnitaDoc tmpAroUnitaDoc, StrutturaUpdVers strutturaUpdVers,
+            String nomeAgente) {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
 
@@ -109,6 +125,25 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                 // AIP_IN_AGGIORNAMENTO
                 tmpAroUnitaDoc
                         .setTiStatoConservazione(CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name());
+
+                // MEV #31162
+                // context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(),
+                // nomeAgente, Constants.AGGIORNAMENTO_UD,
+                // CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
+                // Constants.WS_AGGIORNAMENTO_UD);
+                salvataggioSync.insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
+                        Constants.AGGIORNAMENTO_UD, CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
+                        Constants.WS_AGGIORNAMENTO_UD);
+                // end MEV #31162
+
+            }
+            // MEV #31162 - sono in modifica ud, non cambio lo stato, ma registro lo stesso stato in
+            // ARO_LOG_STATO_CONSERV_UD
+            else {
+                // context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(),
+                // nomeAgente, Constants.AGGIORNAMENTO_UD, scud.name(), Constants.WS_AGGIORNAMENTO_UD);
+                salvataggioSync.insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
+                        Constants.AGGIORNAMENTO_UD, scud.name(), Constants.WS_AGGIORNAMENTO_UD);
             }
 
             entityManager.flush();
@@ -798,7 +833,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
      * DA_FIRMARE o FIRMATA o IN_CUSTODIA, oppure con stato = DA_CONTROLLARE e contenuto effettivo con stato =
      * CONTROLLO_CONSIST_IN_CORSO, nel cui contenuto di tipo EFFETTIVO sia presente l�unit� documentaria in
      * aggiornamento
-     * 
+     *
      * return list of idVerSerie
      */
     public List<BigDecimal> retrieveSerVLisVerserByUpdUd(long idUnitaDoc) {
@@ -813,7 +848,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
      * il sistema determina i fascicoli con stato nell�elenco = IN_ELENCO_IN_CODA_CREAZIONE_AIP o
      * IN_ELENCO_CON_AIP_CREATO o IN_ELENCO_CON_ELENCO_INDICI_AIP_CREATO o IN_ELENCO_COMPLETATO nel cui contenuto e�
      * presente l�unit� documentaria in aggiornamento
-     * 
+     *
      * return list of FasVLisFascByUpdUdId
      */
     public List<FasVLisFascByUpdUdId> retrieveFasVLisFascByUpdUdId(long idUnitaDoc) {

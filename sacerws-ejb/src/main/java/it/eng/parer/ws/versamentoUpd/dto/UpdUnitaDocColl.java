@@ -36,7 +36,7 @@ import it.eng.parer.ws.xml.versUpdReq.ChiaveType;
 public class UpdUnitaDocColl extends UnitaDocColl {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5321793990793683759L;
 

@@ -352,7 +352,7 @@ public class ControlliFascicoli {
 
     /*
      * ######## FASE II ########
-     * 
+     *
      */
 
     public RispostaControlli verificaSIPTitolario(StrutturaVersFascicolo svf) {

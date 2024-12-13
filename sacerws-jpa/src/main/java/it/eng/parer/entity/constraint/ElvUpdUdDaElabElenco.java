@@ -29,7 +29,7 @@ public final class ElvUpdUdDaElabElenco {
 
     /**
      * Stato elenco
-     * 
+     *
      * ti_stato_upd_elenco_vers IN ('IN_ATTESA_SCHED', 'NON_SELEZ_SCHED')
      */
     public enum ElvUpdUdDaElabTiStatoUpdElencoVers {

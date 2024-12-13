@@ -83,10 +83,6 @@ public class UpdVersamentoSrvlt extends HttpServlet {
     @EJB(mappedName = "java:app/sacerws-ejb/XmlUpdVersCache")
     private XmlUpdVersCache xmlUpdVersCache;
 
-    // @EJB(mappedName = "java:app/sacerws-ejb/RequestPrsr")
-    @EJB
-    private RequestPrsr myRequestPrsr;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -116,16 +112,16 @@ public class UpdVersamentoSrvlt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RispostaWSUpdVers rispostaWs;
-        UpdVersamentoExt myVersamentoExt;
-        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
         Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
         List<FileItem> fileItems = null;
         AvanzamentoWs tmpAvanzamento;
 
-        rispostaWs = new RispostaWSUpdVers();
-        myVersamentoExt = new UpdVersamentoExt();
+        RequestPrsr myRequestPrsr = new RequestPrsr();
+        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
+        RispostaWSUpdVers rispostaWs = new RispostaWSUpdVers();
+        UpdVersamentoExt myVersamentoExt = new UpdVersamentoExt();
+
         myVersamentoExt.setDescrizione(new WSDescUpdVers());
         tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName, AvanzamentoWs.Funzioni.AggiornamentoVersamento);
         tmpAvanzamento.logAvanzamento();

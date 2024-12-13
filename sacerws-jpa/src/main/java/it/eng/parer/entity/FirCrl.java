@@ -18,7 +18,6 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -61,7 +60,7 @@ public class FirCrl implements Serializable {
 
     private Date dtScadCrl;
 
-    private BigDecimal niSerialCrl;
+    private String dsSerialCrl;
 
     private FirCertifCa firCertifCa;
 
@@ -104,13 +103,13 @@ public class FirCrl implements Serializable {
         this.dtScadCrl = dtScadCrl;
     }
 
-    @Column(name = "NI_SERIAL_CRL")
-    public BigDecimal getNiSerialCrl() {
-        return this.niSerialCrl;
+    @Column(name = "DS_SERIAL_CRL")
+    public String getDsSerialCrl() {
+        return this.dsSerialCrl;
     }
 
-    public void setNiSerialCrl(BigDecimal niSerialCrl) {
-        this.niSerialCrl = niSerialCrl;
+    public void setDsSerialCrl(String dsSerialCrl) {
+        this.dsSerialCrl = dsSerialCrl;
     }
 
     // bi-directional many-to-one association to FirCertifCa

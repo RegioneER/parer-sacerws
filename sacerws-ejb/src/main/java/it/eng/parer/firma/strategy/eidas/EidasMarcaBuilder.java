@@ -125,7 +125,7 @@ public class EidasMarcaBuilder extends EidasBaseWrapperResult implements IEidasB
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateTsa, "serialNumber",
                 Optional.ofNullable(ts.getSigningCertificate().getId()));
-        certifCaType.setNiSerialCertifCa(new BigDecimal(xmlcertificateTsa.getSerialNumber()));
+        certifCaType.setDsSerialCertifCa(xmlcertificateTsa.getSerialNumber());
 
         // test
         EidasWrapperResultControl.fieldCannotBeNull(xmlcertificateTsa, "notAfter",

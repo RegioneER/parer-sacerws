@@ -26,7 +26,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the ORG_V_CHK_PARTITION_UPD_ERR database table.
- * 
+ *
  */
 @Entity
 @Table(name = "ORG_V_CHK_PARTITION_UPD_ERR")

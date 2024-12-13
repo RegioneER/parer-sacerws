@@ -40,14 +40,14 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 public class SrvltHandlingException {
 
     /**
-     * 
+     *
      * @param ws
      *            nome del webservice {@link NomeWebServiceRest}
      * @param e1
      *            errore generico
      * @param rispostaWs
      *            interfaccia risposta ws {@link IRispostaWS}
-     * 
+     *
      *            //All Socket Exceptions problems like java.net.SocketException, java.net.SocketTimeoutException, etc.
      */
 

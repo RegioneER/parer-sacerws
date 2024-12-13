@@ -51,12 +51,12 @@ public class HashCalculator {
 
     /**
      * @deprecated Vedi MEV#https://redmine.ente.regione.emr.it/issues/17493
-     * 
+     *
      * @param str
      *            valore
-     * 
+     *
      * @return HashCalculator oggetto wrapped con calcolo dell'hash {@link HashCalculator}
-     * 
+     *
      * @throws NoSuchAlgorithmException
      *             errore generico
      * @throws IOException
@@ -81,9 +81,9 @@ public class HashCalculator {
      *
      * @param buf
      *            file buffer
-     * 
+     *
      * @return HashCalculator oggetto wrapped con calcolo dell'hash {@link HashCalculator}
-     * 
+     *
      * @throws NoSuchAlgorithmException
      *             errore generico
      * @throws IOException
@@ -105,17 +105,17 @@ public class HashCalculator {
 
     /**
      * @deprecated Vedi MEV#https://redmine.ente.regione.emr.it/issues/17493
-     * 
+     *
      * @param is
      *            valore su inputstream {@link InputStream}
-     * 
+     *
      * @return HashCalculator oggetto wrapped con calcolo dell'hash {@link HashCalculator}
-     * 
+     *
      * @throws NoSuchAlgorithmException
      *             errore generico
      * @throws IOException
      *             errore generico di tipo IO
-     * 
+     *
      */
     @Deprecated
     private HashCalculator calculateSHA1(InputStream is) throws NoSuchAlgorithmException, IOException {
@@ -125,14 +125,14 @@ public class HashCalculator {
     /**
      * Note: aggiunto metodo "generico" e per non creare impatti negativi è stato lasciato anche il precedente con SHA-1
      * di base
-     * 
+     *
      * @param is
      *            valore su inputstream {@link InputStream}
      * @param tipiHash
      *            tipo hash (vedi enum {@link TipiHash})
-     * 
+     *
      * @return HashCalculator oggetto wrapped con calcolo dell'hash {@link HashCalculator}
-     * 
+     *
      * @throws NoSuchAlgorithmException
      *             errore generico
      * @throws IOException

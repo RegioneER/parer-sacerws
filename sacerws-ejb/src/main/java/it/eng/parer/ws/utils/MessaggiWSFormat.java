@@ -317,7 +317,7 @@ public class MessaggiWSFormat {
     /*
      * Nota importante : la regola scelta si basa sulle dinaniche previste per gli URN ma a differenza di quest'ultime
      * anziché riportare il numero (che può contentere caratteri speciali) utilizza di base l'ID del componete
-     * 
+     *
      * Su extra si possono aggiungere ulteriori parametri (in coda) sulla base del formatter (fmtUsed) che viene passato
      * al metodo.
      */

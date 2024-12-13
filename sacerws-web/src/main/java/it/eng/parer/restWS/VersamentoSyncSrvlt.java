@@ -86,9 +86,6 @@ public class VersamentoSyncSrvlt extends HttpServlet {
     @EJB(mappedName = "java:app/sacerws-ejb/XmlVersCache")
     private XmlVersCache xmlVersCache;
 
-    @EJB
-    private RequestPrsr myRequestPrsr;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -116,19 +113,18 @@ public class VersamentoSyncSrvlt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RispostaWS rispostaWs;
-        VersamentoExt myVersamentoExt;
-        EsitoVersamento myEsito = new EsitoVersamento();
-        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
         Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
         List<FileItem> fileItems = null;
-        AvanzamentoWs tmpAvanzamento;
 
-        rispostaWs = new RispostaWS();
-        myVersamentoExt = new VersamentoExt();
+        EsitoVersamento myEsito = new EsitoVersamento();
+        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
+        RequestPrsr myRequestPrsr = new RequestPrsr();
+        RispostaWS rispostaWs = new RispostaWS();
+        VersamentoExt myVersamentoExt = new VersamentoExt();
         myVersamentoExt.setDescrizione(new WSDescVersamento());
-        tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName, AvanzamentoWs.Funzioni.VersamentoSync);
+        AvanzamentoWs tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName,
+                AvanzamentoWs.Funzioni.VersamentoSync);
         tmpAvanzamento.logAvanzamento();
 
         tmpAvanzamento.setFase("EJB recuperato").logAvanzamento();

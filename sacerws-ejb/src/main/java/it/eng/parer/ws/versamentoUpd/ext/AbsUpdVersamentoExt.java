@@ -54,7 +54,7 @@ import it.eng.spagoLite.security.User;
 public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControlliWsMultipli, IAggiornamentiWsMultipli {
 
     /**
-     * 
+     *
      */
     static final long serialVersionUID = -3946879392676891033L;
 
@@ -125,7 +125,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.dto.IRestWSBase#getLoginName()
      */
     @Override
@@ -135,7 +135,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.dto.IRestWSBase#setLoginName(java.lang.String)
      */
     @Override
@@ -145,7 +145,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IUpdVersExt#getUtente()
      */
     @Override
@@ -155,7 +155,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IUpdVersExt#setUtente(it.eng.spagoLite. security.User)
      */
     @Override
@@ -165,7 +165,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.dto.IRestWSBase#getVersioneWsChiamata()
      */
     @Override
@@ -175,7 +175,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.dto.IRestWSBase#setVersioneWsChiamata(java.lang.String)
      */
     @Override
@@ -193,7 +193,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IUpdVersExt#getStrutturaUpdVers()
      */
     @Override
@@ -206,7 +206,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IUpdVersExt#setStrutturaUpdVers(it.eng.
      * parer.ws.versamentoUpd.dto.StrutturaUpdVers)
      */
@@ -219,7 +219,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnGenerali(it.eng.parer.ws.versamentoUpd.dto.ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -245,7 +245,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnGenerali(it.eng.parer.ws.versamentoUpd.dto.ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -261,7 +261,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnFallitiUlteriori(it.eng.parer.ws.versamentoUpd.dto. ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -289,7 +289,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliUnitaDocumentaria(it.eng.parer.ws.versamentoUpd. dto.ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -318,7 +318,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliDocPrincipale(it.eng.parer.ws.versamentoUpd.dto. ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -348,7 +348,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliAllegati(it.eng.parer.ws.versamentoUpd.dto. ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -400,7 +400,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliAnnotazioni(it.eng.parer.ws.versamentoUpd.dto. ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -430,7 +430,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliComponentiDocPrincipale(it.eng.parer.ws. versamentoUpd.dto.ControlloWSResp,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -461,7 +461,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliComponentiDocPrincipale(it.eng.parer.ws. versamentoUpd.dto.ControlloWSResp,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -492,7 +492,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliComponentiDocPrincipale(it.eng.parer.ws. versamentoUpd.dto.ControlloWSResp,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -523,7 +523,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliComponentiDocPrincipale(it.eng.parer.ws. versamentoUpd.dto.ControlloWSResp,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -553,7 +553,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#
      * addEsitoControlloOnControlliCollegamento(it.eng.parer.ws.versamentoUpd.dto. ControlloWS,
      * it.eng.parer.ws.dto.IRispostaWS.SeverityEnum, it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore,
@@ -571,7 +571,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#addControlloOnWarnings(
      * it.eng.parer.ws.versamentoUpd.dto.ControlloWS, java.lang.String, java.lang.String, java.lang.Object[])
      */
@@ -661,7 +661,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliGenerali()
      */
     @Override
@@ -672,7 +672,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliGenerali()
      */
     @Override
@@ -683,7 +683,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliFallitiUlteriori()
      */
     @Override
@@ -694,7 +694,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliCollegamenti ()
      */
     @Override
@@ -704,7 +704,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliCollegamento (it.eng.parer.ws.dto.CSChiave)
      */
     @Override
@@ -715,7 +715,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliDocPrincipale()
      */
     @Override
@@ -725,7 +725,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliDocPrincipale(java.lang.String)
      */
     @Override
@@ -736,7 +736,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAllegati()
      */
     @Override
@@ -746,7 +746,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAllegato( java.lang.String)
      */
     @Override
@@ -757,7 +757,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAnnessi()
      */
     @Override
@@ -767,7 +767,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAnnesso(java .lang.String)
      */
     @Override
@@ -778,7 +778,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAnnotazioni( )
      */
     @Override
@@ -788,7 +788,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getControlliAnnotazione( java.lang.String)
      */
     @Override
@@ -799,7 +799,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponentiDocPrincipale()
      */
     @Override
@@ -809,7 +809,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponenteDocPrincipale(java.lang.String)
      */
     @Override
@@ -820,7 +820,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponentiDocPrincipale()
      */
     @Override
@@ -830,7 +830,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponenteAllegati(java.lang.String)
      */
     @Override
@@ -841,7 +841,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponentiAllegati()
      */
     @Override
@@ -851,7 +851,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponenteAnnessi(java.lang.String)
      */
     @Override
@@ -862,7 +862,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponentiAllegati()
      */
     @Override
@@ -872,7 +872,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliComponenteAnnotazioni(java.lang.String)
      */
     @Override
@@ -883,7 +883,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli# getControlliUnitaDocumentaria()
      */
     @Override
@@ -894,7 +894,7 @@ public abstract class AbsUpdVersamentoExt implements IUpdVersamentoExt, IControl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.eng.parer.ws.versamentoUpd.dto.IControlliMultipli#getWarnings()
      */
     @Override

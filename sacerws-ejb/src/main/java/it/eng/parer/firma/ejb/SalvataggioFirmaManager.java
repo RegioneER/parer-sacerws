@@ -788,7 +788,7 @@ public class SalvataggioFirmaManager {
                     certifCaType.getAdditionalInfo().getIdCertifCa().longValue());
         } else {
             /* entità inserita in ciclo precedente */
-            tmpCertificatoCa = controlliPerFirme.getFirCertifCa(certifCaType.getNiSerialCertifCa(),
+            tmpCertificatoCa = controlliPerFirme.getFirCertifCa(certifCaType.getDsSerialCertifCa(),
                     certifCaType.getDlDnIssuerCertifCa());
         }
 
@@ -800,7 +800,7 @@ public class SalvataggioFirmaManager {
             tmpCertificatoCa.setFirCertifFirmatarios(new ArrayList<>());
             tmpCertificatoCa.setFirCrls(new ArrayList<>());
 
-            tmpCertificatoCa.setNiSerialCertifCa(certifCaType.getNiSerialCertifCa());
+            tmpCertificatoCa.setDsSerialCertifCa(certifCaType.getDsSerialCertifCa());
             tmpCertificatoCa.setDsSubjectKeyId(certifCaType.getDsSubjectKeyId());
             tmpCertificatoCa
                     .setDtFinValCertifCa(XmlDateUtility.xmlGregorianCalendarToDate(certifCaType.getDtFinValCertifCa()));
@@ -890,7 +890,7 @@ public class SalvataggioFirmaManager {
             tmpFirCrl = entityManager.find(FirCrl.class, crl.getAdditionalInfo().getIdCrl().longValue());
         } else {
             /* entità inserita in ciclo precedente */
-            tmpFirCrl = controlliPerFirme.getFirCrl(tmpCertifCa, crl.getNiSerialCrl(),
+            tmpFirCrl = controlliPerFirme.getFirCrl(tmpCertifCa, crl.getDsSerialCrl(),
                     XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtIniCrl()),
                     XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtScadCrl()));
         }
@@ -899,7 +899,7 @@ public class SalvataggioFirmaManager {
             tmpFirCrl = new FirCrl();
             tmpFirCrl.setDtIniCrl(XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtIniCrl()));
             tmpFirCrl.setDtScadCrl(XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtScadCrl()));
-            tmpFirCrl.setNiSerialCrl(crl.getNiSerialCrl());
+            tmpFirCrl.setDsSerialCrl(crl.getDsSerialCrl());
             tmpFirCrl.setFirCertifCa(tmpCertifCa);
 
             // add on list parent
@@ -930,12 +930,12 @@ public class SalvataggioFirmaManager {
         } else {
             /* entità inserita in ciclo precedente */
             tmpFirCertifOcsp = controlliPerFirme.getFirCertifOcsp(tmpCertifCa,
-                    ocsp.getCertifOcsp().getNiSerialCertifOcsp());
+                    ocsp.getCertifOcsp().getDsSerialCertifOcsp());
         }
 
         if (tmpFirCertifOcsp == null) {
             tmpFirCertifOcsp = new FirCertifOcsp();
-            tmpFirCertifOcsp.setNiSerialCertifOcsp(ocsp.getCertifOcsp().getNiSerialCertifOcsp());
+            tmpFirCertifOcsp.setDsSerialCertifOcsp(ocsp.getCertifOcsp().getDsSerialCertifOcsp());
             tmpFirCertifOcsp.setDtIniValCertifOcsp(
                     XmlDateUtility.xmlGregorianCalendarToDate(ocsp.getCertifOcsp().getDtIniValCertifOcsp()));
             tmpFirCertifOcsp.setDtFinValCertifOcsp(
@@ -1006,12 +1006,12 @@ public class SalvataggioFirmaManager {
             } else {
                 /* entità inserita in ciclo precedente */
                 firCertifFirmatario = controlliPerFirme.getFirCertifFirmatario(tmpFirCertifCa,
-                        certifFirmatarioType.getNiSerialCertifFirmatario());
+                        certifFirmatarioType.getDsSerialCertifFirmatario());
             }
 
             if (firCertifFirmatario == null) {
                 firCertifFirmatario = new FirCertifFirmatario();
-                firCertifFirmatario.setNiSerialCertifFirmatario(certifFirmatarioType.getNiSerialCertifFirmatario());
+                firCertifFirmatario.setDsSerialCertifFirmatario(certifFirmatarioType.getDsSerialCertifFirmatario());
                 firCertifFirmatario.setDtIniValCertifFirmatario(
                         XmlDateUtility.xmlGregorianCalendarToDate(certifFirmatarioType.getDtIniValCertifFirmatario()));
                 firCertifFirmatario.setDtFinValCertifFirmatario(

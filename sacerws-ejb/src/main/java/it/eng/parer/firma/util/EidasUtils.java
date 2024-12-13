@@ -62,7 +62,7 @@ public class EidasUtils {
     }
 
     /**
-     * 
+     *
      * Compila l'input per la verifica firma tramite DSS. Utilizzata la versione /v2 in cui si utilizza multipart con
      * stream da file.
      *
@@ -156,10 +156,10 @@ public class EidasUtils {
     // tree no binaries
     /**
      * @deprecated
-     * 
+     *
      *             Metodo non più utilizzato in favore di una gestione votata all'I/O e all'utilizzo di stream su file
      *             anziché oggetti che occupano risorse
-     * 
+     *
      * @param dto
      *            {@link EidasWSReportsDTOTree}
      */
@@ -242,7 +242,7 @@ public class EidasUtils {
      * del metodo getSchema(). Originariamente tale metodo utilizza una factory con le direttive "secure" al fine di
      * garantire che non sia possibile la entity injection purtroppo su sacerws tali direttive al momento non sono
      * accettate e generano una eccezione di tipo SaxException (non rispettato lo standard JAXP 1.5).
-     * 
+     *
      * Nota: dalla versione 5.8 a fronte di un re-factor, è stata cambiata la visibilità delle costanti in cui viene
      * indicato il percorso con l'xsd, di conseguenza sono state replicate sulla classe figlia.
      */

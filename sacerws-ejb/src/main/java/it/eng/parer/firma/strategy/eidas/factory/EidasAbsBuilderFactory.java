@@ -37,9 +37,9 @@ import it.eng.parer.ws.utils.Costanti;
 public abstract class EidasAbsBuilderFactory<V extends Object> {
 
     /**
-     * 
+     *
      * Factory creazione e build del dto di tipo "verifica firma", che ospiterà firma o marca.
-     * 
+     *
      * @param controlliAbilitati
      *            controlli abilitati recuperti a sistema
      * @param isDataDiRiferimentoOnCompVers
@@ -58,9 +58,9 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      *            timestamp wrapper EIDAS
      * @param pgs
      *            array di progressivi busta/firma/marca
-     * 
+     *
      * @return restituitisce un oggetto di tipo {@link VFFirmaCompType} o {@link VFMarcaCompType}
-     * 
+     *
      * @throws InvocationTargetException
      *             eccezione generica
      * @throws IllegalArgumentException
@@ -83,14 +83,14 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
 
     /**
      * Creazione strategy ({@link EidasVFFirmaCompBuilder} e {@link EidasMarcaBuilder})
-     * 
+     *
      * @param controlliAbilitati
      *            controlli abilitati recuperti a sistema
      * @param isDataDiRiferimentoOnCompVers
      *            data di verifica (esplicitata su metadati o sysdate)
      * @param modificatoriWSCalc
      *            modificatori ws (dipendono dalla versione)
-     * 
+     *
      * @return implementazione stratey effettivo
      */
     protected abstract IEidasBuilderVFObj<V> init(Map<String, Boolean> controlliAbilitati,

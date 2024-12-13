@@ -18,7 +18,6 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,8 +66,6 @@ public class FirCertifCa implements Serializable {
 
     private Date dtIniValCertifCa;
 
-    private BigDecimal niSerialCertifCa;
-
     private List<FirCertifFirmatario> firCertifFirmatarios = new ArrayList<>();
 
     private List<FirCrl> firCrls = new ArrayList<>();
@@ -80,7 +77,10 @@ public class FirCertifCa implements Serializable {
     private String dsSubjectKeyId;
 
     private String dlDnIssuerCertifCa;
+
     private String dlDnSubjectCertifCa;
+
+    private String dsSerialCertifCa;
 
     public FirCertifCa() {/* Hibernate */
     }
@@ -119,13 +119,13 @@ public class FirCertifCa implements Serializable {
         this.dtIniValCertifCa = dtIniValCertifCa;
     }
 
-    @Column(name = "NI_SERIAL_CERTIF_CA")
-    public BigDecimal getNiSerialCertifCa() {
-        return this.niSerialCertifCa;
+    @Column(name = "DS_SERIAL_CERTIF_CA")
+    public String getDsSerialCertifCa() {
+        return this.dsSerialCertifCa;
     }
 
-    public void setNiSerialCertifCa(BigDecimal niSerialCertifCa) {
-        this.niSerialCertifCa = niSerialCertifCa;
+    public void setDsSerialCertifCa(String dsSerialCertifCa) {
+        this.dsSerialCertifCa = dsSerialCertifCa;
     }
 
     @Column(name = "DS_SUBJECT_KEY_ID")

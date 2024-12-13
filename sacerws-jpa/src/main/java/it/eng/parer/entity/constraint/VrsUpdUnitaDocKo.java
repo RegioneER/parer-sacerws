@@ -29,7 +29,7 @@ public final class VrsUpdUnitaDocKo {
 
     /**
      * Stato Ko
-     * 
+     *
      * ti_stato_udp_ud_ko IN ('NON_RISOLUBILE', 'NON_VERIFICATO', 'VERIFICATO')
      */
     public enum TiStatoUdpUdKo {

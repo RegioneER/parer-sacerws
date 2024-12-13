@@ -30,7 +30,7 @@ import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the VRS_V_MODIF_UPD_UD_KO database table.
- * 
+ *
  */
 @Entity
 @Table(name = "VRS_V_MODIF_UPD_UD_KO")

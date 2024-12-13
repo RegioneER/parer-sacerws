@@ -101,16 +101,16 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
         } else /* tutti gli altri casi */ {
             /*
              * Scenari:
-             * 
+             *
              * 1) EIDAS riesce ad effettuare la verifica sul file
-             * 
+             *
              * 2) EIDAS non riesce ad effettaure la verifica sul file nei seguenti casi: a) gli endpoint configurati non
              * rispondono
-             * 
+             *
              * b) l'endpoint restituisce errore
-             * 
+             *
              * c) la risposta dell'endpoint non è completa
-             * 
+             *
              * Nei casi sopra descritti si tenta di effettuare la validazione su crypto se anche questa va male verrà
              * restituito un esito negativo con codice FIRMA_006_001
              */
@@ -132,7 +132,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
                     Boolean.FALSE/* default */, in.getUuid(), versamento);
         } catch (VerificaFirmaConnectionException ex) {
             /* Errore su invocazione (GRAVE) */
-            LOG.error("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
+            LOG.warn("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
             /* Si passa ad invocazione CRYPTO..... */
         } catch (VerificaFirmaGenericInvokeException epex) {
             /* Errore restituito da endpoint (gestito) */
@@ -265,7 +265,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
     private FirCertifCa getFirCertifCa(VFCertifCaType ca) throws VerificaFirmaException {
         FirCertifCa firCertifCa = null;
         if (ca != null) {
-            firCertifCa = controlliPerFirme.getFirCertifCa(ca.getNiSerialCertifCa(), ca.getDlDnIssuerCertifCa());
+            firCertifCa = controlliPerFirme.getFirCertifCa(ca.getDsSerialCertifCa(), ca.getDlDnIssuerCertifCa());
         }
         return firCertifCa;
     }
@@ -277,7 +277,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
 
             if (firCertifCa != null) {
                 FirCertifFirmatario firCertifFirmatario = controlliPerFirme.getFirCertifFirmatario(firCertifCa,
-                        certifFirmatarioType.getNiSerialCertifFirmatario());
+                        certifFirmatarioType.getDsSerialCertifFirmatario());
                 if (firCertifFirmatario != null) {
                     certifFirmatarioType.setAdditionalInfo(new VFAdditionalInfoCertifFirmatarioType());
 
@@ -297,7 +297,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
                 ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
                 ca.getAdditionalInfo().setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
 
-                FirCrl firCrl = controlliPerFirme.getFirCrl(firCertifCa, crl.getNiSerialCrl(),
+                FirCrl firCrl = controlliPerFirme.getFirCrl(firCertifCa, crl.getDsSerialCrl(),
                         XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtIniCrl()),
                         XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtScadCrl()));
                 if (firCrl != null) {
@@ -319,7 +319,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
                 ca.getAdditionalInfo().setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
 
                 FirCertifOcsp firCertifOcsp = controlliPerFirme.getFirCertifOcsp(firCertifCa,
-                        ocsp.getCertifOcsp().getNiSerialCertifOcsp());
+                        ocsp.getCertifOcsp().getDsSerialCertifOcsp());
                 if (firCertifOcsp != null) {
                     ocsp.getCertifOcsp().setAdditionalInfo(new VFAdditionalInfoCertifOcspType());
                     ocsp.getCertifOcsp().getAdditionalInfo()

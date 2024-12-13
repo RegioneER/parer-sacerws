@@ -138,7 +138,7 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
         /*
          * Vedi EidasUtils.buildEidasMetadata: l'odine dell'array di file da passare su originalFiles sarà
          * posizionalmente la medesima passata all'oggetto EidasMetadataToValidate.setOriginalDocumentNames
-         * 
+         *
          */
         if (original != null) {
             body.add("originalFiles", new FileSystemResource(original));

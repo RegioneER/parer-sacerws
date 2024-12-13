@@ -145,7 +145,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      *
      * @param resultCrypto
      *            output del ws crypto
-     * 
+     *
      * @return lista delle firme modificata
      */
     private List<CryptoAroFirmaComp> normalizzaFirmeConControfirme(CryptoAroCompDoc resultCrypto) {
@@ -248,7 +248,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      *
      * @param resultVerificaCrypto
      *            wrapper
-     * 
+     *
      * @return insieme non nullo.
      */
     private Set<String> componentiVersati(CryptoAroCompDoc resultVerificaCrypto) {
@@ -278,7 +278,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      * Costruiisci l'oggetto "firma"
      *
      * @param cryptoFirma
-     * 
+     *
      * @return firmacomptype
      */
     private VFFirmaCompType buildFirma(CryptoAroFirmaComp cryptoFirma) {
@@ -390,7 +390,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      * Popola le informazioni relative alla marca temporale.
      *
      * @param cryptoMarca
-     * 
+     *
      * @return marcacomptype
      */
     private VFMarcaCompType buildMarca(CryptoAroMarcaComp cryptoMarca) {
@@ -469,7 +469,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      *
      * @param cryptoFirmatario
      *            modello del firmatario per la crypto
-     * 
+     *
      * @return modello del firmatario per il wrapper.
      */
     private VFCertifFirmatarioType buildFirmatario(CryptoFirCertifFirmatario cryptoFirmatario) {
@@ -478,7 +478,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
                 dateToXMLGregorianCalendar(cryptoFirmatario.getDtIniValCertifFirmatario()));
         certifFirmatario.setDtFinValCertifFirmatario(
                 dateToXMLGregorianCalendar(cryptoFirmatario.getDtFinValCertifFirmatario()));
-        certifFirmatario.setNiSerialCertifFirmatario(cryptoFirmatario.getNiSerialCertifFirmatario());
+        certifFirmatario.setDsSerialCertifFirmatario(String.valueOf(cryptoFirmatario.getNiSerialCertifFirmatario()));
 
         if (cryptoFirmatario.getFirCertifCa() != null) {
             VFCertifCaType certifCA = buildCertifCA(cryptoFirmatario.getFirCertifCa());
@@ -493,7 +493,7 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      *
      * @param cryptoCa
      *            Oggetto proveniente dalla Vecchia cryptolibrary.
-     * 
+     *
      * @return Oggetto del wrapper contentente
      */
     private VFCertifCaType buildCertifCA(CryptoFirCertifCa cryptoCa) {
@@ -502,7 +502,8 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
         certifCA.setDsSubjectKeyId(cryptoCa.getDsSubjectKeyId());
         certifCA.setDtIniValCertifCa(dateToXMLGregorianCalendar(cryptoCa.getDtIniValCertifCa()));
         certifCA.setDtFinValCertifCa(dateToXMLGregorianCalendar(cryptoCa.getDtFinValCertifCa()));
-        certifCA.setNiSerialCertifCa(cryptoCa.getNiSerialCertifCa());
+        certifCA.setDsSerialCertifCa(String.valueOf(cryptoCa.getNiSerialCertifCa())); // integer->string (needed for db
+                                                                                      // representation)
         certifCA.setDlDnIssuerCertifCa(cryptoCa.getFirIssuer().getDlDnIssuerCertifCa());
         certifCA.setDlDnSubjectCertifCa(cryptoCa.getFirIssuer().getDlDnSubjectCertifCa());
 
@@ -523,14 +524,14 @@ public class CryptoWrapperResultStrategy implements IVerificaFirmaWrapperResultS
      *
      * @param cryptoCrl
      *            Modello di crl restituito da crypto
-     * 
+     *
      * @return modello di crl del Wrapper.
      */
     private VFCrlType buildCrl(CryptoFirCrl cryptoCrl) {
         VFCrlType crl = new VFCrlType();
         crl.setDtIniCrl(dateToXMLGregorianCalendar(cryptoCrl.getDtIniCrl()));
         crl.setDtScadCrl(dateToXMLGregorianCalendar(cryptoCrl.getDtScadCrl()));
-        crl.setNiSerialCrl(cryptoCrl.getNiSerialCrl());
+        crl.setDsSerialCrl(String.valueOf(cryptoCrl.getNiSerialCrl()));
 
         CryptoFirCertifCa firCertifCa = cryptoCrl.getFirCertifCa();
         VFCertifCaType buildCertifCA = buildCertifCA(firCertifCa);

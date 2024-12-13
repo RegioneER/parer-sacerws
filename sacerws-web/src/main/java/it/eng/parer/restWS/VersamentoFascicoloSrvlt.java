@@ -83,10 +83,6 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
     @EJB(mappedName = "java:app/sacerws-ejb/XmlFascCache")
     private XmlFascCache xmlFascCache;
 
-    // @EJB(mappedName = "java:app/sacerws-ejb/RequestPrsr")
-    @EJB
-    private RequestPrsr myRequestPrsr;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -116,18 +112,17 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RispostaWSFascicolo rispostaWs;
-        VersFascicoloExt myVersamentoExt;
-        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
         Iterator<FileItem> tmpIterator = null;
         DiskFileItem tmpFileItem = null;
         List<FileItem> fileItems = null;
-        AvanzamentoWs tmpAvanzamento;
 
-        rispostaWs = new RispostaWSFascicolo();
-        myVersamentoExt = new VersFascicoloExt();
+        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
+        RequestPrsr myRequestPrsr = new RequestPrsr();
+        RispostaWSFascicolo rispostaWs = new RispostaWSFascicolo();
+        VersFascicoloExt myVersamentoExt = new VersFascicoloExt();
         myVersamentoExt.setDescrizione(new WSDescVersFascicolo());
-        tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName, AvanzamentoWs.Funzioni.VersamentoFascicolo);
+        AvanzamentoWs tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName,
+                AvanzamentoWs.Funzioni.VersamentoFascicolo);
         tmpAvanzamento.logAvanzamento();
 
         // in questo punto non ho elementi per salvare la sessione di versamento, per quanto errata
