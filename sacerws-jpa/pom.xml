@@ -3,7 +3,7 @@
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>sacerws</artifactId>
-        <version>6.1.1-SNAPSHOT</version>
+        <version>6.2.0</version>
     </parent>
     <artifactId>sacerws-jpa</artifactId>
     <name>sacerws-jpa</name>
@@ -77,10 +77,17 @@
             <artifactId>hibernate-jpamodelgen</artifactId>
             <scope>compile</scope>
         </dependency>
-	<dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+		<!-- jboss-jaxb-api_2.3_spec -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.xml.bind</groupId>
+			<artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>   
     </dependencies>
     <build>
         <resources>
@@ -90,15 +97,15 @@
             </resource>
         </resources>
         <plugins>
-            <!-- metamodel generator -->
+			<!-- metamodel generator -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <!-- disabilito la generazione automatica dei metamodel, la voglio gestire puntualmente -->
+					<!-- disabilito la generazione automatica dei metamodel, la voglio gestire puntualmente -->
                     <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
-            <!-- configurazione del metamodel generator -->
+			<!-- configurazione del metamodel generator -->
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>

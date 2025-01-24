@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sacerws</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>6.2.0</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
@@ -18,7 +18,7 @@
         <sacer.xmlmodule.version>2.12.0</sacer.xmlmodule.version>
         <!-- spagofat bom -->
         <spagofat.version>6.16.0</spagofat.version>
-        <verificafirma-eidas-beans.version>1.10.0</verificafirma-eidas-beans.version>
+        <verificafirma-eidas-beans.version>1.11.0</verificafirma-eidas-beans.version>
         <verificafirma-crypto-beans.version>1.6.0</verificafirma-crypto-beans.version>
         <parer-retry.version>2.2.0</parer-retry.version>
         <idp-jaas-rdbms.version>0.0.9</idp-jaas-rdbms.version>
@@ -26,6 +26,7 @@
         <software.amazon.awssdk.version>2.27.7</software.amazon.awssdk.version>
         <netty.version>4.1.112.Final</netty.version>
         <xadisk.version>1.2.2.5</xadisk.version>
+        <jakarta.xml-bind.version>3.0.1</jakarta.xml-bind.version>
     </properties>
 
 <distributionManagement>
@@ -76,6 +77,12 @@
                 <artifactId>verificafirma-eidas-beans</artifactId>
                 <version>${verificafirma-eidas-beans.version}</version>
             </dependency>
+            <!-- DSS from 6.x - Jakarta XML-BIND (3.x needed)-->
+			<dependency>
+			    <groupId>jakarta.xml.bind</groupId>
+			    <artifactId>jakarta.xml.bind-api</artifactId>
+			    <version>${jakarta.xml-bind.version}</version>
+			</dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
