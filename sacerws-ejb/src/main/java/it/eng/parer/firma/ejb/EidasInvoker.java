@@ -45,9 +45,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import it.eng.parer.eidas.model.EidasDataToValidateMetadata;
-import it.eng.parer.eidas.model.EidasWSReportsDTOTree;
 import it.eng.parer.eidas.model.EidasValidationResponse;
+import it.eng.parer.eidas.model.EidasWSReportsDTOTree;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
+import it.eng.parer.firma.converter.EidasJaxb3HttpMessageConverter;
 import it.eng.parer.firma.exception.VerificaFirmaConnectionException;
 import it.eng.parer.firma.exception.VerificaFirmaGenericInvokeException;
 import it.eng.parer.firma.exception.VerificaFirmaWrapperGenericException;
@@ -175,6 +176,8 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
             throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
 
         RestTemplate restTemplate = buildRestTemplateWithRetry();
+        // add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a jakarta.*)
+        restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
 
         String preferredUrl = restInvoker.preferredEndpoint();
         String urlEidas = preferredUrl + FIRMA_API_PATH;
