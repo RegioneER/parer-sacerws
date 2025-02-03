@@ -3,7 +3,7 @@
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>sacerws</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <version>6.3.0</version>
     </parent>
     <artifactId>sacerws-jpa</artifactId>
     <name>sacerws-jpa</name>
