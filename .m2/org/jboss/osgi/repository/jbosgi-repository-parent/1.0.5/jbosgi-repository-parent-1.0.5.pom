@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!-- JBoss, the OpenSource J2EE webOS                                       -->
+<!--                                                                        -->
+<!-- Distributable under LGPL license.                                      -->
+<!-- See terms of license at http://www.gnu.org.                            -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.osgi</groupId>
+        <artifactId>jboss-osgi-parent</artifactId>
+        <version>1.0.15</version>
+    </parent>
+
+    <name>JBossOSGi Repository</name>
+
+    <groupId>org.jboss.osgi.repository</groupId>
+    <artifactId>jbosgi-repository-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <version>1.0.5</version>
+
+    <!-- Source -->
+    <scm>
+        <connection>scm:git:git://github.com/jbosgi/jbosgi-repository.git</connection>
+        <developerConnection>scm:git:git@github.com:jbosgi/jbosgi-repository.git</developerConnection>
+        <url>http://github.com/jbosgi/jbosgi-repository</url>
+    </scm>
+
+    <!-- Properties -->
+    <properties>
+        <version.jboss.arquillian.core>1.0.0.CR7</version.jboss.arquillian.core>
+        <version.jboss.arquillian.osgi>1.0.0.CR5</version.jboss.arquillian.osgi>
+        <version.jboss.logmanager>1.2.0.GA</version.jboss.logmanager>
+        <version.jboss.osgi.resolver>2.0.0.Beta2</version.jboss.osgi.resolver>
+        <version.jboss.osgi.framework>1.1.6</version.jboss.osgi.framework>
+        <version.jboss.shrinkwrap>1.0.0-cr-1</version.jboss.shrinkwrap>
+        <version.jboss.shrinkwrap.resolver>1.0.0-beta-5</version.jboss.shrinkwrap.resolver>
+        <version.junit>4.10</version.junit>
+        <version.mockito>1.8.4</version.mockito>
+        <version.osgi>4.2.0</version.osgi>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian.junit</groupId>
+                <artifactId>arquillian-junit-container</artifactId>
+                <version>${version.jboss.arquillian.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-osgi-embedded</artifactId>
+                <version>${version.jboss.arquillian.osgi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logmanager</groupId>
+                <artifactId>jboss-logmanager</artifactId>
+                <version>${version.jboss.logmanager}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.osgi.framework</groupId>
+                <artifactId>jbosgi-framework-core</artifactId>
+                <version>${version.jboss.osgi.framework}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.osgi.resolver</groupId>
+                <artifactId>jbosgi-resolver-api-v2</artifactId>
+                <version>${version.jboss.osgi.resolver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+                <version>${version.jboss.shrinkwrap.resolver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${version.osgi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.enterprise</artifactId>
+                <version>${version.osgi}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Modules -->
+    <modules>
+        <module>api</module>
+        <module>core</module>
+        <module>bundle</module>
+        <module>plugins</module>
+        <module>itests</module>
+    </modules>
+
+</project>

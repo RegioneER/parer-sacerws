@@ -22,7 +22,6 @@
  */
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
