@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>JBossOSGi Parent</name>
+
+    <groupId>org.jboss.osgi</groupId>
+    <artifactId>jboss-osgi-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <version>1.0.15</version>
+
+    <url>http://www.jboss.org/jbossas/osgi</url>
+    <description>JBossOSGi</description>
+
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <name>JBOSGi committers</name>
+        </developer>
+    </developers>
+
+    <!-- Properties -->
+    <properties>
+        <version.aqute.bnd>0.0.356</version.aqute.bnd>
+
+        <!-- core plugins from maven-3.0.3 -->
+        <version.clean.plugin>2.4.1</version.clean.plugin>
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
+        <version.deploy.plugin>2.7</version.deploy.plugin>
+        <version.install.plugin>2.3.1</version.install.plugin>
+        <version.resources.plugin>2.5</version.resources.plugin>
+        <version.surefire.plugin>2.11</version.surefire.plugin>
+        <!-- packaging types -->
+        <version.bundle.plugin>2.3.6</version.bundle.plugin>
+        <version.jar.plugin>2.3.2</version.jar.plugin>
+        <!-- reporting plugins -->
+        <version.javadoc.plugin>2.8</version.javadoc.plugin>
+        <!-- tools -->
+        <version.antrun.plugin>1.7</version.antrun.plugin>
+        <version.assembly.plugin>2.2.2</version.assembly.plugin>
+        <!-- [MRELEASE-730] release:prepare cannot find dependent artefact 
+             http://jira.codehaus.org/browse/MRELEASE-730
+        -->
+        <version.release.plugin>2.2.1</version.release.plugin>
+        <version.source.plugin>2.1.2</version.source.plugin>
+        <!-- codehaus -->
+        <version.build.helper.plugin>1.7</version.build.helper.plugin>
+
+        <!-- Cross plugins settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Distribution Management settings -->
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
+    </properties>
+
+    <!-- Source -->
+    <scm>
+        <connection>scm:git:git://github.com/jbosgi/jbosgi-parent.git</connection>
+        <developerConnection>scm:git:git@github.com:jbosgi/jbosgi-parent.git</developerConnection>
+        <url>http://github.com/jbosgi/jbosgi-parent</url>
+    </scm>
+
+    <!-- DependencyManagement -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>biz.aQute</groupId>
+                <artifactId>bnd</artifactId>
+                <version>${version.aqute.bnd}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Build -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${version.bundle.plugin}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${version.antrun.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${version.assembly.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${version.clean.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${version.compiler.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${version.deploy.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${version.install.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${version.jar.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${version.release.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${version.resources.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${version.source.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.surefire.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${version.build.helper.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <optimize>true</optimize>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-URL>${project.url}</Implementation-URL>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <failIfNoTests>false</failIfNoTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>lgpl</name>
+            <url>http://repository.jboss.com/licenses/lgpl.txt
+            </url>
+        </license>
+    </licenses>
+
+    <!-- Distribution Management -->
+    <distributionManagement>
+        <repository>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>${jboss.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshots Repository</name>
+            <url>${jboss.snapshots.repo.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

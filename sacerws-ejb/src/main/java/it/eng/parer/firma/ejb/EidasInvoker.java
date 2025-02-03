@@ -124,6 +124,8 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
             File original) throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
 
         RestTemplate restTemplate = buildRestTemplateWithRetry();
+        // add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a jakarta.*)
+        restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
 
         String preferredUrl = restInvoker.preferredEndpoint();
         String urlEidas = preferredUrl + FIRMA_API_PATH;
