@@ -1088,9 +1088,6 @@ Tutti i dettagli sulla composizione dei SIP, le modalità di invocazione dei ser
 |software.amazon.awssdk|third-party-jackson-core|2.20.87|
 |software.amazon.awssdk|utils|2.20.87|
 |software.amazon.eventstream|eventstream|1.0.1|
-|xalan|serializer|2.7.2|
-|xalan|xalan|2.7.2|
-|xerces|xercesImpl|2.12.0|
 |xml-apis|xml-apis|1.4.01|
 
 

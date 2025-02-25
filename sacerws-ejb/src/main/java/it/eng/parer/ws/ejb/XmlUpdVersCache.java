@@ -83,6 +83,8 @@ public class XmlUpdVersCache {
 
             //
             SchemaFactory schemaFctry = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             aggVersReqSchema = schemaFctry.newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_REQ_XSD));
             aggVersRespSchema = schemaFctry.newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_RESP_XSD));
 

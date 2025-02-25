@@ -43,6 +43,7 @@ import org.xml.sax.InputSource;
 
 import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 import it.eng.parer.exception.SacerWsException;
+import javax.xml.XMLConstants;
 
 /**
  *
@@ -56,7 +57,10 @@ public class XmlUtils {
 
     public static Charset getXmlEcondingDeclaration(String xmlSip)
             throws XMLStreamException, FactoryConfigurationError {
-        XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xmlSip));
+        // XXE (disabled external entity access)
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        XMLStreamReader xmlStreamReader = factory.createXMLStreamReader(new StringReader(xmlSip));
         String encodingFromXMLDeclaration = xmlStreamReader.getCharacterEncodingScheme();
         return StringUtils.isNotBlank(encodingFromXMLDeclaration) ? Charset.forName(encodingFromXMLDeclaration)
                 : StandardCharsets.UTF_8;
@@ -86,10 +90,23 @@ public class XmlUtils {
             // almost all XML entity attacks are prevented
             final String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
             dbf.setFeature(FEATURE, true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             // ... and these as well, per Timothy Morgan's 2014 paper:
             // "XML Schema, DTD, and Entity Attacks" (see reference below)
             dbf.setXIncludeAware(false);
             dbf.setExpandEntityReferences(false);
+            // As stated in the documentation, "Feature for Secure Processing (FSP)" is the
+            // central mechanism that will
+            // help you safeguard XML processing. It instructs XML processors, such as
+            // parsers, validators,
+            // and transformers, to try and process XML securely, and the FSP can be used as
+            // an alternative to
+            // dbf.setExpandEntityReferences(false); to allow some safe level of Entity
+            // Expansion
+            // Exists from JDK6.
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             // ... and, per Timothy Morgan:
             // "If for some reason support for inline DOCTYPEs are a requirement, then
             // ensure the entity settings are disabled (as shown above) and beware that SSRF

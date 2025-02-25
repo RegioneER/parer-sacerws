@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sacerws</artifactId>
-    <version>6.3.1-SNAPSHOT</version>
+    <version>6.4.0</version>
     <packaging>pom</packaging>
     <name>sacerws</name>
     <description>Progetto SACERWS</description>
@@ -22,6 +22,7 @@
         <verificafirma-crypto-beans.version>1.6.0</verificafirma-crypto-beans.version>
         <parer-retry.version>2.2.0</parer-retry.version>
         <idp-jaas-rdbms.version>0.0.9</idp-jaas-rdbms.version>
+        <jaxp-jdk11.version>0.0.3</jaxp-jdk11.version>
         <!-- third party lib -->
         <software.amazon.awssdk.version>2.27.7</software.amazon.awssdk.version>
         <netty.version>4.1.112.Final</netty.version>
@@ -92,26 +93,7 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
-            </dependency>
-            <!-- Xerces & co -->
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>${xerces.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>serializer</artifactId>
-				<version>${xalan.version}</version>
-				<scope>runtime</scope>
-			</dependency>         
+            </dependency>     
             <dependency>
                 <groupId>it.eng.parer</groupId>
                 <artifactId>parer-retry</artifactId>

@@ -90,6 +90,7 @@ import it.eng.parer.ws.versFascicoli.dto.StrutturaVersFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VoceDiErrore;
+import javax.xml.*;
 
 /**
  *
@@ -677,6 +678,8 @@ public class SalvataggioFascicoliHelper {
     private String generaXmlProfilo(Node profilo) throws TransformerException {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(profilo);
         StreamResult result = new StreamResult(new StringWriter());
