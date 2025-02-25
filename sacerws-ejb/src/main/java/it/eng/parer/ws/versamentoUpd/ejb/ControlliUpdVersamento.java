@@ -795,8 +795,9 @@ public class ControlliUpdVersamento {
 
         try {
             Node xml = pNormType.getAny();
-            String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-            SchemaFactory factory = SchemaFactory.newInstance(language);
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Schema schema = factory.newSchema(new StreamSource(new StringReader(xsd)));
             Validator validator = schema.newValidator();
             validator.validate(new DOMSource(xml));
@@ -811,6 +812,8 @@ public class ControlliUpdVersamento {
     private String generaXmlProfilo(Node profilo) throws TransformerException {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(profilo);
         StreamResult result = new StreamResult(new StringWriter());

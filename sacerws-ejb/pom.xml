@@ -3,7 +3,7 @@
     <parent>
         <artifactId>sacerws</artifactId>
         <groupId>it.eng.parer</groupId>
-    	<version>6.3.1-SNAPSHOT</version>
+    	<version>6.4.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>sacerws-ejb</artifactId>

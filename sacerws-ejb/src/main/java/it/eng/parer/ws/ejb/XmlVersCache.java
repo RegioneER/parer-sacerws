@@ -89,6 +89,8 @@ public class XmlVersCache {
             versRespCtx_EsitoVersamentoAggAllegati = JAXBContext.newInstance(EsitoVersAggAllegati.class);
 
             SchemaFactory schemaFctry = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             versReqSchema = schemaFctry.newSchema(FileXSDUtil.getURLFileXSD(FileXSD.VERS_REQ_XSD));
             versRespSchema = schemaFctry.newSchema(FileXSDUtil.getURLFileXSD(FileXSD.VERS_RESP_XSD));
 

@@ -280,10 +280,6 @@ public class FirmeFormatiVers {
             this.bustaWrapper = bustaWrapper;
         }
 
-        public String getIdComponenteVersato() {
-            return idComponenteVersato;
-        }
-
         @Override
         public VFAdditionalInfoBustaType getAdditionalInfo() {
             return bustaWrapper.getAdditionalInfo();
@@ -389,6 +385,10 @@ public class FirmeFormatiVers {
                 mock.setIdDecFormatoFileStandard(BigDecimal.valueOf(formatoStd.getIdFormatoFileStandard()));
             }
 
+            // init default msg
+            formatoRapprBuilder.put(busta.getPgBusta().intValue(), StringUtils.EMPTY);
+            builderMessaggio.put(busta.getPgBusta().intValue(), StringUtils.EMPTY);
+            //
             if (formatoStd == null) {
                 formatoRapprBuilder.put(busta.getPgBusta().intValue(),
                         VerificaFormatiEnums.SEPARATORE_FORMATI + VerificaFormatiEnums.FORMATO_SCONOSCIUTO);

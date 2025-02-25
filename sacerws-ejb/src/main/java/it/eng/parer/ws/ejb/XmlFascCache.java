@@ -75,6 +75,8 @@ public class XmlFascCache {
             ClassLoader tmpClassLoader = getClass().getClassLoader();
             tmpInputStream = tmpClassLoader.getResourceAsStream(URL_SCHEMA_REQUEST_FASCICOLO);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             versReqFascicoloSchema = sf.newSchema(new StreamSource(tmpInputStream));
             log.info("Inizializzazione singleton XmlFascCache... completata.");
         } catch (Exception ex) {

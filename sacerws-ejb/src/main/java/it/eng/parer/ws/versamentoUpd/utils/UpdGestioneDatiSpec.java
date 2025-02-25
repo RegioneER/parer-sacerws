@@ -56,6 +56,9 @@ import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.xml.versUpdReq.DatiSpecificiType;
 import java.util.EnumSet;
 import it.eng.parer.ws.utils.Costanti.ModificatoriWS;
+import java.util.logging.Level;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class UpdGestioneDatiSpec {
 
@@ -213,6 +216,12 @@ public class UpdGestioneDatiSpec {
                 // compilazione schema
                 // 1. Lookup a factory for the W3C XML Schema language
                 tmpSchemaFactoryValidazSpec = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                } catch (SAXException ex) {
+                    java.util.logging.Logger.getLogger(UpdGestioneDatiSpec.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 // anche in questo caso l'eccezione non deve mai verificarsi, a meno di non aver
                 // caricato
                 // nel database un xsd danneggiato...
@@ -449,6 +458,12 @@ public class UpdGestioneDatiSpec {
                 // compilazione schema
                 // 1. Lookup a factory for the W3C XML Schema language
                 tmpSchemaFactoryValidazSpec = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                } catch (SAXException ex) {
+                    java.util.logging.Logger.getLogger(UpdGestioneDatiSpec.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 // anche in questo caso l'eccezione non deve mai verificarsi, a meno di non aver
                 // caricato
                 // nel database un xsd danneggiato...

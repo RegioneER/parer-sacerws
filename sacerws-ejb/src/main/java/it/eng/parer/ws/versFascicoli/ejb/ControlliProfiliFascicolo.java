@@ -994,8 +994,9 @@ public class ControlliProfiliFascicolo {
         rispostaControlli.setrBoolean(false);
 
         try {
-            String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-            SchemaFactory factory = SchemaFactory.newInstance(language);
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Schema schema = factory.newSchema(new StreamSource(new StringReader(xsd)));
             Validator validator = schema.newValidator();
             validator.validate(new DOMSource(xml));

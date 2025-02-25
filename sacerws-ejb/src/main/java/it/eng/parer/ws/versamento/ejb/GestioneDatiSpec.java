@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-
 package it.eng.parer.ws.versamento.ejb;
 
 import java.io.StringReader;
@@ -50,6 +49,9 @@ import it.eng.parer.ws.utils.XmlValidationEventHandler;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.RispostaControlliAttSpec;
 import it.eng.parer.ws.xml.versReq.DatiSpecificiType;
+import java.util.logging.Level;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 @Stateless(mappedName = "GestioneDatiSpec")
 @LocalBean
@@ -68,6 +70,7 @@ public class GestioneDatiSpec {
     public RispostaControlliAttSpec parseDatiSpec(TipiEntitaSacer tipoEntita,
             JAXBElement<DatiSpecificiType> datiSpecificiElement, long idTipoElemento, String desElemento,
             String desTipoElemento, String sistemaMig, long idOrgStrutt, IRispostaWS rispostaWs) {
+
         DatiSpecificiType datiSpecifici;
         DatoSpecifico tmpAttSpecAtteso;
         SchemaFactory tmpSchemaFactoryValidazSpec = null;
@@ -148,6 +151,12 @@ public class GestioneDatiSpec {
             // compilazione schema
             // 1. Lookup a factory for the W3C XML Schema language
             tmpSchemaFactoryValidazSpec = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            try {
+                tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            } catch (SAXException ex) {
+                java.util.logging.Logger.getLogger(GestioneDatiSpec.class.getName()).log(Level.SEVERE, null, ex);
+            }
             // anche in questo caso l'eccezione non deve mai verificarsi, a meno di non aver caricato
             // nel database un xsd danneggiato...
             try {
@@ -351,6 +360,12 @@ public class GestioneDatiSpec {
                 // compilazione schema
                 // 1. Lookup a factory for the W3C XML Schema language
                 tmpSchemaFactoryValidazSpec = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                try {
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                    tmpSchemaFactoryValidazSpec.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                } catch (SAXNotRecognizedException | SAXNotSupportedException ex) {
+                    java.util.logging.Logger.getLogger(GestioneDatiSpec.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 // anche in questo caso l'eccezione non deve mai verificarsi, a meno di non aver caricato
                 // nel database un xsd danneggiato...
                 try {

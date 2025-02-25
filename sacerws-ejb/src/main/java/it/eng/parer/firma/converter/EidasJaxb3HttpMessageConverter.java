@@ -46,6 +46,10 @@ import jakarta.xml.bind.UnmarshalException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 public class EidasJaxb3HttpMessageConverter extends EidasAbstractJaxb3HttpMessageConverter<Object> {
 
@@ -113,13 +117,19 @@ public class EidasJaxb3HttpMessageConverter extends EidasAbstractJaxb3HttpMessag
         }
     }
 
-    @SuppressWarnings("deprecation") // on JDK 9
     protected Source processSource(Source source) {
         if (source instanceof StreamSource) {
             StreamSource streamSource = (StreamSource) source;
             InputSource inputSource = new InputSource(streamSource.getInputStream());
             try {
-                XMLReader xmlReader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
+                /*
+                 * XMLReader istanziato con una SAXParserFactory in modo da settare a true la property namespaceAware,
+                 * al fine di rendere il reader consapevole dei namespaces necessari alla lettura della response secondo
+                 * la versione 1.5 di jaxb
+                 */
+                final SAXParserFactory sax = SAXParserFactory.newInstance();
+                sax.setNamespaceAware(true);
+                final XMLReader xmlReader = sax.newSAXParser().getXMLReader();
                 xmlReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", !isSupportDtd());
                 String featureName = "http://xml.org/sax/features/external-general-entities";
                 xmlReader.setFeature(featureName, isProcessExternalEntities());
@@ -129,6 +139,9 @@ public class EidasJaxb3HttpMessageConverter extends EidasAbstractJaxb3HttpMessag
                 return new SAXSource(xmlReader, inputSource);
             } catch (SAXException ex) {
                 logger.warn("Processing of external entities could not be disabled", ex);
+                return source;
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(EidasJaxb3HttpMessageConverter.class.getName()).log(Level.SEVERE, null, ex);
                 return source;
             }
         } else {

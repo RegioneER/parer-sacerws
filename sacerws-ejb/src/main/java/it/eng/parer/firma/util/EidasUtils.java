@@ -261,6 +261,8 @@ public class EidasUtils {
             try (InputStream inputStream = SimpleReportXmlDefiner.class
                     .getResourceAsStream(SIMPLE_REPORT_SCHEMA_LOCATION)) {
                 SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
                 schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
             }
 
@@ -284,6 +286,8 @@ public class EidasUtils {
             try (InputStream inputStream = DetailedReportXmlDefiner.class
                     .getResourceAsStream(DETAILED_REPORT_SCHEMA_LOCATION)) {
                 SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
                 schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
             }
 
@@ -307,6 +311,8 @@ public class EidasUtils {
             try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class
                     .getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
                 SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
                 schema = sf.newSchema(new Source[] { new StreamSource(isXSDDiagnosticData) });
             }
 
