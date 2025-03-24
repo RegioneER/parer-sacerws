@@ -598,6 +598,15 @@ Di seguito il contenuto XML prodotto dalla configurazione precedente:
 </logging-profile>
 ```
 
+### JAXP and Security 
+
+Come da guida ufficiale Oracle https://docs.oracle.com/javase/8/docs/technotes/guides/security/jaxp/jaxp.html#maxOccurLimit sono state aggiunte le opportune system properties in cui vengono ridefiniti alcuni default di Java:
+
+```bash
+/system-property=jdk.xml.maxOccurLimit:add(value="9999")
+```
+
+
 ### Custom JDBC handler
 
 Per consentire una migliore gestione dei log delle query fatte tramite Hibernate è stato implementato il modulo custom **jboss-module-application-logger**. 

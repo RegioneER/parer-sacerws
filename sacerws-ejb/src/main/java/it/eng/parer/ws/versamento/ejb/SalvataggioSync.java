@@ -116,6 +116,7 @@ import it.eng.parer.ws.utils.HashCalculator;
 import it.eng.parer.ws.utils.JAXBUtils;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
+import it.eng.parer.ws.utils.ParametroApplDB;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
 import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
@@ -138,6 +139,8 @@ import it.eng.parer.ws.xml.versReq.CamiciaFascicoloType;
 import it.eng.parer.ws.xml.versReq.ChiaveType;
 import it.eng.parer.ws.xml.versReq.UnitaDocAggAllegati;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
+import java.sql.Timestamp;
+import java.time.Instant;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 
@@ -2698,12 +2701,16 @@ public class SalvataggioSync {
         long idStrut = unitaDoc.getOrgStrut().getIdStrut();
         long idTipoUnitaDoc = unitaDoc.getDecTipoUnitaDoc().getIdTipoUnitaDoc();
         // Recupero il parametro per verificare se procedere o meno al log
-        boolean flAbilitaLogStatoConserv = Boolean.parseBoolean(configurationHelper
-                .getValoreParamApplicByTipoUd("FL_ABILITA_LOG_STATO_CONSERV", idAmbiente, idStrut, idTipoUnitaDoc));
+        boolean flAbilitaLogStatoConserv = Boolean.parseBoolean(configurationHelper.getValoreParamApplicByTipoUd(
+                ParametroApplDB.ParametroApplFl.FL_ABILITA_LOG_STATO_CONSERV, idAmbiente, idStrut, idTipoUnitaDoc));
         if (flAbilitaLogStatoConserv) {
             AroLogStatoConservUd logStatoConservUd = new AroLogStatoConservUd();
             logStatoConservUd.setAroUnitaDoc(unitaDoc);
-            logStatoConservUd.setDtStato(new Date());
+            // Ottieni l'istante corrente
+            Instant now = Instant.now();
+            // Crea un Timestamp dall'Instant
+            Timestamp istante = Timestamp.from(now);
+            logStatoConservUd.setDtStato(istante);
             logStatoConservUd.setOrgSubStrut(unitaDoc.getOrgSubStrut());
             logStatoConservUd.setNmAgente(nmAgente);
             logStatoConservUd.setTiEvento(tiEvento);

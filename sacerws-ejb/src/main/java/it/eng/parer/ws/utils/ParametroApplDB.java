@@ -226,6 +226,9 @@ public class ParametroApplDB {
         public static final String FL_EIDAS_INCLUDI_FILEBASE64 = "FL_EIDAS_INCLUDI_FILEBASE64";
         public static final String FL_CRYPTO_INCLUDI_FILEBASE64 = "FL_CRYPTO_INCLUDI_FILEBASE64";
 
+        // Abilitazione log stato conservazione ud
+        public static final String FL_ABILITA_LOG_STATO_CONSERV = "FL_ABILITA_LOG_STATO_CONSERV";
+
     }
 
     /**
