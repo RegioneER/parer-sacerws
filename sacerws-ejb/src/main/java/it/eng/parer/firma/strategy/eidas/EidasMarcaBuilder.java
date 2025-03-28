@@ -610,11 +610,11 @@ public class EidasMarcaBuilder extends EidasBaseWrapperResult implements IEidasB
 
                 }
             } else /* scenario 2 : solo ocsp */ if (onlyOcsp) {
-                SacerIndication esito = SacerIndication.CRL_NON_SCARICABILE;
+                SacerIndication esito = SacerIndication.NON_NECESSARIO;
                 //
                 contrMarcaCompType.setTiEsitoContrMarca(esito.name());
-                contrMarcaCompType.setDsMsgEsitoContrMarca(esito.message()
-                        + ": non scaricabile dal server perché il controllo sulla revoca avviene tramite OCSP");
+                contrMarcaCompType.setDsMsgEsitoContrMarca(
+                        esito.message() + ": controllo non necessario in quanto avviene tramite OCSP");
             } /* scenario 3 : solo CRL disponibile */ else {
                 if (!bbbFounded || bbb.getXCV().getSubXCV().stream()
                         .noneMatch(c -> c.getId().equals(xmlcertificateTsa.getId()))) {
