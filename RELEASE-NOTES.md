@@ -1,5 +1,4 @@
-## 6.5.0 (24-03-2025)
+## 6.6.0 (31-03-2025)
 
-### Novità: 2
-- [#37560](https://parermine.regione.emilia-romagna.it/issues/37560) Modifica gestione controllo delle revoche su marche temporali 
-- [#37529](https://parermine.regione.emilia-romagna.it/issues/37529) Adeguamento salvataggio timestamp log stato conservazione UD
+### Bugfix: 1
+- [#37578](https://parermine.regione.emilia-romagna.it/issues/37578) Correzione per la mancata chiusura dei file e protocollo NFS

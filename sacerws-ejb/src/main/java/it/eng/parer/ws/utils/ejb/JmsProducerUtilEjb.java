@@ -56,15 +56,10 @@ public class JmsProducerUtilEjb {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
 
-        MessageProducer messageProducer = null;
-        TextMessage textMessage = null;
-        Connection connection = null;
-        Session session = null;
-        try {
-            connection = connectionFactory.createConnection();
-            session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-            messageProducer = session.createProducer(queue);
-            textMessage = session.createTextMessage();
+        try (Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                MessageProducer messageProducer = session.createProducer(queue)) {
+            TextMessage textMessage = session.createTextMessage();
             // app selector
             textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
             textMessage.setStringProperty("tipoPayload", tipoPayload);
@@ -76,35 +71,27 @@ public class JmsProducerUtilEjb {
             tmpRispostaControlli.setrBoolean(true);
         } catch (JMSException ex) {
             tmpRispostaControlli.setCodErr("ERR");
-            tmpRispostaControlli.setDsErr("Errore nell'invio del messaggio in coda: " + ex.getMessage());
-            log.error("Errore nell'invio del messaggio in coda: ", ex);
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append(String.format("Errore nell'invio del messaggio in coda: ")).append(ex.getMessage());
+            log.error(errorMessage.toString(), ex);
+            tmpRispostaControlli.setDsErr(errorMessage.toString());
             tmpRispostaControlli.setrBoolean(false);
+
+            // Gestione degli errori sulle close()
+            for (Throwable suppressed : ex.getSuppressed()) {
+                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
+                errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
+                        .append(suppressed.getMessage());
+                tmpRispostaControlli.setDsErr(errorMessage.toString());
+                tmpRispostaControlli.setrBoolean(false);
+            }
         } catch (JsonProcessingException ex) {
             tmpRispostaControlli.setCodErr("ERR");
             tmpRispostaControlli
                     .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: " + ex.getMessage());
             log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
             tmpRispostaControlli.setrBoolean(false);
-        } finally {
-            try {
-                if (messageProducer != null) {
-                    messageProducer.close();
-                }
-                if (session != null) {
-                    session.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (JMSException ex) {
-                tmpRispostaControlli.setCodErr("ERR");
-                tmpRispostaControlli
-                        .setDsErr("Errore (trappato) JMS durante la chiusura delle risorse: " + ex.getMessage());
-                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", ex);
-                tmpRispostaControlli.setrBoolean(false);
-            }
         }
-
         return tmpRispostaControlli;
     }
 
@@ -114,15 +101,10 @@ public class JmsProducerUtilEjb {
         RispostaControlli tmpRispostaControlli = new RispostaControlli();
         tmpRispostaControlli.setrBoolean(false);
 
-        MessageProducer messageProducer = null;
-        TextMessage textMessage = null;
-        Connection connection = null;
-        Session session = null;
-        try {
-            connection = connectionFactory.createConnection();
-            session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-            messageProducer = session.createProducer(queue);
-            textMessage = session.createTextMessage();
+        try (Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                MessageProducer messageProducer = session.createProducer(queue)) {
+            TextMessage textMessage = session.createTextMessage();
             textMessage.setStringProperty("JMSXGroupID", groupId);
             // app selector
             textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
@@ -135,35 +117,28 @@ public class JmsProducerUtilEjb {
             tmpRispostaControlli.setrBoolean(true);
         } catch (JMSException ex) {
             tmpRispostaControlli.setCodErr("ERR");
-            tmpRispostaControlli
-                    .setDsErr(String.format("Errore nell'invio del messaggio con groupId %s in coda: ", groupId)
-                            + ex.getMessage());
-            log.error(String.format("Errore nell'invio del messaggio con groupId %s in coda: ", groupId), ex);
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append(String.format("Errore nell'invio del messaggio con groupId %s in coda: ", groupId))
+                    .append(ex.getMessage());
+            log.error(errorMessage.toString(), ex);
+            tmpRispostaControlli.setDsErr(errorMessage.toString());
             tmpRispostaControlli.setrBoolean(false);
+
+            // Gestione degli errori sulle close()
+            for (Throwable suppressed : ex.getSuppressed()) {
+                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
+                errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
+                        .append(suppressed.getMessage());
+                tmpRispostaControlli.setDsErr(errorMessage.toString());
+                tmpRispostaControlli.setrBoolean(false);
+            }
+
         } catch (JsonProcessingException ex) {
             tmpRispostaControlli.setCodErr("ERR");
             tmpRispostaControlli
                     .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: " + ex.getMessage());
             log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
             tmpRispostaControlli.setrBoolean(false);
-        } finally {
-            try {
-                if (messageProducer != null) {
-                    messageProducer.close();
-                }
-                if (session != null) {
-                    session.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (JMSException ex) {
-                tmpRispostaControlli.setCodErr("ERR");
-                tmpRispostaControlli
-                        .setDsErr("Errore (trappato) JMS durante la chiusura delle risorse: " + ex.getMessage());
-                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", ex);
-                tmpRispostaControlli.setrBoolean(false);
-            }
         }
 
         return tmpRispostaControlli;

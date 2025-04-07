@@ -331,17 +331,14 @@ public class IndiceMMPrsr {
     private boolean verificaPresenzaFileInZip(String zipPathName, String fileInZip) throws IOException {
         boolean tmpResult = false;
         log.debug("verifica presenza file in zip. Inizio. {}", fileInZip);
-        ZipArchiveEntry tmpZipArchiveEntry;
-        ZipFile tmpFile = null;
-        try {
-            tmpFile = new ZipFile(zipPathName);
-            tmpZipArchiveEntry = tmpFile.getEntry(fileInZip);
+
+        try (ZipFile tmpFile = new ZipFile(zipPathName)) {
+            ZipArchiveEntry tmpZipArchiveEntry = tmpFile.getEntry(fileInZip);
             if (tmpZipArchiveEntry != null) {
                 tmpResult = true;
             }
-        } finally {
-            ZipFile.closeQuietly(tmpFile);
         }
+
         log.debug("verifica presenza file in zip. Fine. {}", fileInZip);
         return tmpResult;
     }
