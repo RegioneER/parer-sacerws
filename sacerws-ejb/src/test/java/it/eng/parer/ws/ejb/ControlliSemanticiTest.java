@@ -17,26 +17,30 @@
 
 package it.eng.parer.ws.ejb;
 
+import static it.eng.ArquillianTestUtils.assertNoErr;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Date;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.versamento.dto.RispostaControlliAttSpec;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.util.Arrays;
-import java.util.Date;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class ControlliSemanticiTest {
 
     @Deployment
@@ -51,20 +55,20 @@ public class ControlliSemanticiTest {
     private ControlliSemantici controlliSemantici;
 
     @Test
-    public void caricaDefaultDaDB_string_queryIsOk() {
+    void caricaDefaultDaDB_string_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.caricaDefaultDaDB("Applicazione");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void caricaDefaultDaDB_list_queryIsOk() {
+    void caricaDefaultDaDB_list_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici
                 .caricaDefaultDaDB(new String[] { "Applicazione", "Paginazione risultati" });
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkIdStrut_queryIsOk() {
+    void checkIdStrut_queryIsOk() {
         for (Costanti.TipiWSPerControlli aggiornamentoVersamento : Costanti.TipiWSPerControlli.values()) {
             final RispostaControlli rispostaControlli = controlliSemantici.checkIdStrut(mockCsVersatore(),
                     aggiornamentoVersamento, new Date());
@@ -82,13 +86,13 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkSistemaMigraz_queryIsOk() {
+    void checkSistemaMigraz_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkSistemaMigraz("sistemaMigr");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkChiave_queryIsOk() {
+    void checkChiave_queryIsOk() {
         for (ControlliSemantici.TipiGestioneUDAnnullate tipiGestioneUDAnnullate : ControlliSemantici.TipiGestioneUDAnnullate
                 .values()) {
             final RispostaControlli rispostaControlli = controlliSemantici.checkChiave(mockCsChiave(), 0l,
@@ -106,54 +110,54 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkTipologiaUD_queryIsOk() {
+    void checkTipologiaUD_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkTipologiaUD("tipologiaUd", "descKey", 0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkTipoRegistro_queryIsOk() {
+    void checkTipoRegistro_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkTipoRegistro("nomeTipoRegistro", "descKey",
                 0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkTipoRegistro_descKeyUdColl_queryIsOk() {
+    void checkTipoRegistro_descKeyUdColl_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkTipoRegistro("nomeTipoRegistro", "descKey",
                 0L, "descKeyUdColl");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkTipoRegistroTipoUD_queryIsOk() {
+    void checkTipoRegistroTipoUD_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkTipoRegistroTipoUD("nomeTipoRegistro",
                 "descKey", "tipologiaUd", 0L, 0l);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void caricaRegistroAnno_queryIsOk() {
+    void caricaRegistroAnno_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.caricaRegistroAnno("nomeTipoRegistro", "descKey",
                 2021L, 0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void caricaRegistroAnno_descKeyUdColl_queryIsOk() {
+    void caricaRegistroAnno_descKeyUdColl_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.caricaRegistroAnno("nomeTipoRegistro", "descKey",
                 2021L, 0L, "descKeyUdColl");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void caricaPartiAARegistro_queryIsOk() {
+    void caricaPartiAARegistro_queryIsOk() {
         controlliSemantici.caricaPartiAARegistro(2021L);
         assertTrue(true);
     }
 
     @Test
-    public void checkTipoDocumento_queryIsOk() {
+    void checkTipoDocumento_queryIsOk() {
         RispostaControlli rispostaControlli = controlliSemantici.checkTipoDocumento("nomeTipoDoc", 0L, true,
                 "descChiaveDoc");
         assertNoErr(rispostaControlli);
@@ -163,14 +167,14 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkTipoStruttura_queryIsOk() {
+    void checkTipoStruttura_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkTipoStruttura("nomeTipoStruttura", 0L,
                 "descChiaveDoc");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkTipoComponente_queryIsOk() {
+    void checkTipoComponente_queryIsOk() {
         for (ControlliSemantici.TipologieComponente tipologieComponente : ControlliSemantici.TipologieComponente
                 .values()) {
             final RispostaControlli rispostaControlli = controlliSemantici.checkTipoComponente("nomeTipoComponente", 0l,
@@ -180,14 +184,14 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkTipoRappComponente_queryIsOk() {
+    void checkTipoRappComponente_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici
                 .checkTipoRappComponente("nomeTipoRapprComponente", 0L, "descChiaveComp");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkPresenzaDatiSpec_queryIsOk() {
+    void checkPresenzaDatiSpec_queryIsOk() {
         for (CostantiDB.TipiUsoDatiSpec tipiUsoDatiSpec : CostantiDB.TipiUsoDatiSpec.values()) {
             for (CostantiDB.TipiEntitaSacer tipoEntitySacer : CostantiDB.TipiEntitaSacer.values()) {
                 final RispostaControlli rispostaControlli = controlliSemantici.checkPresenzaDatiSpec(tipiUsoDatiSpec,
@@ -199,7 +203,7 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkXSDDatiSpec_queryIsOk() {
+    void checkXSDDatiSpec_queryIsOk() {
         for (CostantiDB.TipiUsoDatiSpec tipiUsoDatiSpec : CostantiDB.TipiUsoDatiSpec.values()) {
             for (CostantiDB.TipiEntitaSacer tipoEntitySacer : CostantiDB.TipiEntitaSacer.values()) {
                 final RispostaControlli rispostaControlli = controlliSemantici.checkXSDDatiSpec(tipiUsoDatiSpec,
@@ -210,7 +214,7 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkPresenzaVersioneDatiSpec_queryIsOk() {
+    void checkPresenzaVersioneDatiSpec_queryIsOk() {
         for (CostantiDB.TipiUsoDatiSpec tipiUsoDatiSpec : CostantiDB.TipiUsoDatiSpec.values()) {
             for (CostantiDB.TipiEntitaSacer tipoEntitySacer : CostantiDB.TipiEntitaSacer.values()) {
                 final RispostaControlli rispostaControlli = controlliSemantici.checkPresenzaVersioneDatiSpec(
@@ -221,7 +225,7 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkDatiSpecifici_queryIsOk() {
+    void checkDatiSpecifici_queryIsOk() {
         for (CostantiDB.TipiUsoDatiSpec tipiUsoDatiSpec : CostantiDB.TipiUsoDatiSpec.values()) {
             for (CostantiDB.TipiEntitaSacer tipoEntitySacer : CostantiDB.TipiEntitaSacer.values()) {
                 final RispostaControlliAttSpec rispostaControlli = controlliSemantici
@@ -233,7 +237,7 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkRiferimentoUD_queryIsOk() {
+    void checkRiferimentoUD_queryIsOk() {
         for (ControlliSemantici.TipologieComponente tipologieComponente : ControlliSemantici.TipologieComponente
                 .values()) {
             final RispostaControlli rispostaControlli = controlliSemantici.checkRiferimentoUD(mockCsChiave(), 0L,
@@ -243,52 +247,52 @@ public class ControlliSemanticiTest {
     }
 
     @Test
-    public void checkFormatoFileVersato_queryIsOk() {
+    void checkFormatoFileVersato_queryIsOk() {
         controlliSemantici.checkFormatoFileVersato("PDF", 0L, 0L);
         assertTrue(true);
     }
 
     @Test
-    public void checkDocumentoInUd_queryIsOk() {
+    void checkDocumentoInUd_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkDocumentoInUd(0L, "idDocumento", "descUd");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void trovaNuovoProgDocumento_queryIsOk() {
+    void trovaNuovoProgDocumento_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.trovaNuovoProgDocumento(0L,
                 "categoriaDocumento");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void trovaNuovoNiOrdDocumento_queryIsOk() {
+    void trovaNuovoNiOrdDocumento_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.trovaNuovoNiOrdDocumento(0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkFormatoFileStandard_queryIsOk() {
+    void checkFormatoFileStandard_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkFormatoFileStandard("PDF");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void calcAndcheckCdKeyNormalized_queryIsOk() {
+    void calcAndcheckCdKeyNormalized_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.calcAndcheckCdKeyNormalized(0L, mockCsChiave(),
                 "cdKeyUnitaDocNormaliz");
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void checkUniqueCdKeyNormalized_queryIsOk() {
+    void checkUniqueCdKeyNormalized_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.checkUniqueCdKeyNormalized(mockCsChiave(), 0l,
                 113l, "cdKeyNomarlized", new Date());
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void getDtCalcInizioNuoviUrn_queryIsOk() {
+    void getDtCalcInizioNuoviUrn_queryIsOk() {
         final RispostaControlli rispostaControlli = controlliSemantici.getDtCalcInizioNuoviUrn();
         assertNoErr(rispostaControlli);
     }

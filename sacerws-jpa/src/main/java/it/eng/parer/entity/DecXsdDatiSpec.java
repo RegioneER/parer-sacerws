@@ -41,7 +41,6 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -205,7 +204,6 @@ public class DecXsdDatiSpec implements Serializable {
     // bi-directional many-to-one association to DecTipoCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_COMP_DOC")
-    @XmlInverseReference(mappedBy = "decXsdDatiSpecs")
     public DecTipoCompDoc getDecTipoCompDoc() {
         return this.decTipoCompDoc;
     }
@@ -217,7 +215,6 @@ public class DecXsdDatiSpec implements Serializable {
     // bi-directional many-to-one association to DecTipoDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC")
-    @XmlInverseReference(mappedBy = "decXsdDatiSpecs")
     public DecTipoDoc getDecTipoDoc() {
         return this.decTipoDoc;
     }
@@ -229,7 +226,6 @@ public class DecXsdDatiSpec implements Serializable {
     // bi-directional many-to-one association to DecTipoUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_UNITA_DOC")
-    @XmlInverseReference(mappedBy = "decXsdDatiSpecs")
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
         return this.decTipoUnitaDoc;
     }
@@ -241,7 +237,6 @@ public class DecXsdDatiSpec implements Serializable {
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
-    @XmlInverseReference(mappedBy = "decXsdDatiSpecs")
     public OrgStrut getOrgStrut() {
         return this.orgStrut;
     }

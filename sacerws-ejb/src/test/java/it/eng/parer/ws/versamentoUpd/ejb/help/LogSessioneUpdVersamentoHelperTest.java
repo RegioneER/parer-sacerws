@@ -17,30 +17,38 @@
 
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
-import it.eng.parer.entity.*;
-import it.eng.parer.ws.dto.CSChiave;
-import it.eng.parer.ws.dto.RispostaControlli;
-import it.eng.parer.ws.utils.MessaggiWSBundle;
-import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
-import it.eng.parer.ws.versamento.ejb.LogSessioneSyncTest;
-import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
-import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.ejb.EJB;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.*;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
+import it.eng.parer.entity.DecRegistroUnitaDoc;
+import it.eng.parer.entity.DecTipoDoc;
+import it.eng.parer.entity.DecTipoUnitaDoc;
+import it.eng.parer.entity.MonKeyTotalUdKo;
+import it.eng.parer.entity.OrgStrut;
+import it.eng.parer.entity.VrsSesUpdUnitaDocKo;
+import it.eng.parer.entity.VrsUpdUnitaDocKo;
+import it.eng.parer.ws.dto.CSChiave;
+import it.eng.parer.ws.dto.RispostaControlli;
+import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
+import it.eng.parer.ws.versamento.ejb.LogSessioneSyncTest;
+import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
+import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
+
+@ArquillianTest
 public class LogSessioneUpdVersamentoHelperTest {
     @Test
     public void itWorks() {

@@ -21,7 +21,7 @@
 
     <servlet>
         <servlet-name>ConfigServlet</servlet-name>
-        <servlet-class>it.eng.spagoCore.configuration.ConfigServlet</servlet-class>
+        <servlet-class>it.eng.spagoCore.ConfigServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     

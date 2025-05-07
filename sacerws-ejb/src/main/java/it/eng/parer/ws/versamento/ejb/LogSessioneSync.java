@@ -100,10 +100,8 @@ public class LogSessioneSync {
     //
     @EJB
     private WriteCompBlbOracle writeCompBlbOracle;
-
     @EJB
     private ObjectStorageService objectStorageService;
-
     @EJB
     private ControlliSemantici controlliSemantici;
     @EJB
@@ -532,10 +530,10 @@ public class LogSessioneSync {
             if (isOkOrWarningResponse(rispostaWS)) /* sessione OK */ {
                 if (documentoVersIn != null) {
                     res = objectStorageService.createResourcesInSipDocumento(backendMetadata.getBackendName(), sipBlob,
-                            documentoVersIn.getIdRecDocumentoDB());
+                            versamento.getStrutturaComponenti(), documentoVersIn.getIdRecDocumentoDB());
                 } else {
                     res = objectStorageService.createResourcesInSipUnitaDoc(backendMetadata.getBackendName(), sipBlob,
-                            versamento.getStrutturaComponenti().getIdUnitaDoc());
+                            versamento.getStrutturaComponenti());
                 }
             } else /* sessione KO */ {
                 res = objectStorageService.createSipInStaging(backendMetadata.getBackendName(), sipBlob,
@@ -670,13 +668,11 @@ public class LogSessioneSync {
                         if (backendStaging.isDataBase()) {
                             tmpControlli = writeCompBlbOracle.salvaStreamSuBlobComp(datiAccessori, tmpFb);
                         } else {
-                            // tagging object
-                            objectStorageService.tagComponenteInStaging(tmpFb.getObjectStorageResource(),
-                                    backendStaging.getBackendName());
-                            // saving on db
-                            objectStorageService.saveLinkFileSessFromObjectStorage(tmpFb.getObjectStorageResource(),
-                                    backendStaging.getBackendName(), vrsFileSessioneKo.getIdFileSessioneKo(),
-                                    getIdStrut(versamento));
+                            // copy componente tmp and create new one in staging
+                            ObjectStorageResource osResource = objectStorageService.copyTmpResourceToCompUdInStaging(
+                                    backendStaging.getBackendName(), tmpFb.getObjectStorageResource(),
+                                    vrsFileSessioneKo.getIdFileSessioneKo(), getIdStrut(versamento));
+                            tmpFb.setObjectStorageResource(osResource);
                             // ho già detto che odio l'oggetto RispostaControlli?
                             tmpControlli = new RispostaControlli();
                             tmpControlli.setrBoolean(true);
@@ -1087,7 +1083,7 @@ public class LogSessioneSync {
         String getUrnNormalizzato();
     }
 
-    public List<VrsDocNonVer> getVrsDocNonVers(long idStruttura, String tipoRegistro, BigDecimal value, String numero,
+    private List<VrsDocNonVer> getVrsDocNonVers(long idStruttura, String tipoRegistro, BigDecimal value, String numero,
             String idDocumento) {
         String queryStr;
         javax.persistence.Query query;
@@ -1103,7 +1099,7 @@ public class LogSessioneSync {
         return query.getResultList();
     }
 
-    public List<VrsUnitaDocNonVer> getVrsUnitaDocNonVers(long idStruttura, String tipoRegistro,
+    private List<VrsUnitaDocNonVer> getVrsUnitaDocNonVers(long idStruttura, String tipoRegistro,
             BigDecimal aaKeyUnitaDoc, String numero) {
         String queryStr;
         javax.persistence.Query query;

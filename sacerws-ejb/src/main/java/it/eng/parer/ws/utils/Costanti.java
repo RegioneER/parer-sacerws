@@ -178,22 +178,38 @@ public class Costanti {
     }
 
     // AWS
-    public class AwsFormatter {
+    public class S3UrnFormatter {
 
-        private AwsFormatter() {
+        private S3UrnFormatter() {
             throw new IllegalStateException("AwsFormatter Utility class");
         }
 
-        public static final String COMP_CD_KEY_FILE_FMT = "{0}/{1}/{2}/{3}/{4}/{5}";
+        // S3 KEYS formatter
+        public static final String S3_KEY_UD_FMT = "{0}/{1}/{2}-{3}-{4}"; // ente/struttura/registro-anno-numero
+        public static final String S3_KEY_COMP_FMT = "{0}/{1}";
+        public static final String S3_KEY_DOC_FMT = "{0}{1}"; // DOCxxxxx
+        public static final String S3_KEY_DOC_COMP_FMT = "{0}-{1}";
+        public static final String S3_KEY_REPORTVF_FMT = "{0}_REPORTVF";
+        public static final String S3_KEY_SIPUD_FMT = "{0}_SIPUD";
+        public static final String S3_KEY_SIPDOC_FMT = "{0}_SIPDOC";
 
-        public static final String COMP_REPORTVF_CD_KEY_FILE_FMT = COMP_CD_KEY_FILE_FMT + "/{6}";
+        public static final String S3_KEY_DOC_PREFIX = "DOC";
+        public static final String S3_KEY_PAD5DIGITS_FMT = "%05d";
 
+        // MAC#37222
+        // ente_normalizzato/struttura_normalizzata, es.: Ente_test_di_carico/test_di_carico_00
+        public static final String S3_KEY_VERSATORE_FMT = "{0}/{1}";
+        // registro_normalizzato-anno-numero_normalizzato, es.: SALVATAGGIO_OS_DB-2023-Test44_1675443130871_9446
+        public static final String S3_KEY_CHIAVE_FMT = "{0}-{1}-{2}";
+        // ente_normalizzato/struttura_normalizzata/registro_normalizzato-anno-numero_normalizzato_AGGMD00001
+        public static final String S3_KEY_AGG_MD_FMT = "{0}/{1}_AGGMD{2}"; //
+        // end MAC#37222
     }
 
     //
-    public class AwsConstants {
+    public class S3Constants {
 
-        private AwsConstants() {
+        private S3Constants() {
             throw new IllegalStateException("AwsS3Constants Utility class");
         }
 
@@ -209,6 +225,11 @@ public class Costanti {
         // custom metadata
         public static final String MEATADATA_INGEST_NODE = "ingest-node";
         public static final String MEATADATA_INGEST_TIME = "ingest-time";
+
+        // object key prefix
+        public static final String KEY_PREFIX_TMP = "tmp";
+        public static final String KEY_PREFIX_SIPPUD = "sipud";
+        public static final String KEY_PREFIX_COMPUD = "compud";
 
     }
 

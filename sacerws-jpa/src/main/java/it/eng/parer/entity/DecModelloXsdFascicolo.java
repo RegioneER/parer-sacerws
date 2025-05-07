@@ -18,19 +18,34 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiModelloXsd;
-import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiUsoModelloXsd;
 
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
+import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiModelloXsd;
+import it.eng.parer.entity.constraint.DecModelloXsdFascicolo.TiUsoModelloXsd;
 
 /**
  * The persistent class for the DEC_MODELLO_XSD_FASCICOLO database table.
@@ -188,7 +203,6 @@ public class DecModelloXsdFascicolo implements Serializable {
         this.orgAmbiente = orgAmbiente;
     }
 
-    @XmlInverseReference(mappedBy = "decModelloXsdFascicolo")
     // bi-directional many-to-one association to DecUsoModelloXsdFasc
     @OneToMany(mappedBy = "decModelloXsdFascicolo")
     public List<DecUsoModelloXsdFasc> getDecUsoModelloXsdFascs() {

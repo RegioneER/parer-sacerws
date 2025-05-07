@@ -17,20 +17,19 @@
 
 package it.eng.parer.ws.versamento.ejb;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
 
-import javax.ejb.EJB;
-import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertTrue;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+
+@ArquillianTest
 public class LogSessioneSyncTest {
 
     @Deployment
@@ -58,15 +57,11 @@ public class LogSessioneSyncTest {
     @EJB
     private LogSessioneSync logSessioneSync;
 
-    @Test
-    public void getVrsDocNonVers() {
-        logSessioneSync.getVrsDocNonVers(0l, "tipoRegistro", BigDecimal.ZERO, "numero", "idDocumento");
-        assertTrue(true);
-    }
-
-    @Test
-    public void getVrsUnitaDocNonVers() {
-        logSessioneSync.getVrsUnitaDocNonVers(0l, "tipoRegistro", BigDecimal.ZERO, "numero");
-        assertTrue(true);
-    }
+    /*
+     * @Test public void getVrsDocNonVers() { logSessioneSync.getVrsDocNonVers(0l, "tipoRegistro", BigDecimal.ZERO,
+     * "numero", "idDocumento"); assertTrue(true); }
+     *
+     * @Test public void getVrsUnitaDocNonVers() { logSessioneSync.getVrsUnitaDocNonVers(0l, "tipoRegistro",
+     * BigDecimal.ZERO, "numero"); assertTrue(true); }
+     */
 }

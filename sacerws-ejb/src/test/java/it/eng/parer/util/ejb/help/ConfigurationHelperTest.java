@@ -21,8 +21,8 @@ import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
 import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
 import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
 import static it.eng.ArquillianTestUtils.exceptionMessageContains;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +32,7 @@ import javax.ejb.EJB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import it.eng.parer.exception.ParamApplicNotFoundException;
 import it.eng.parer.ws.utils.ParametroApplDB;
@@ -50,7 +50,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getConfiguration_queryIsOk() {
+    void getConfiguration_queryIsOk() {
         try {
             Map<String, String> configuration = helper.getConfiguration();
             assertFalse(configuration.isEmpty());
@@ -62,7 +62,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValue_queryIsOk() {
+    void getParamApplicValue_queryIsOk() {
         try {
             helper.getValoreParamApplicByApplic("NON_ESISTE");
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValueStrutAmbiente_queryIsOk() {
+    void getParamApplicValueStrutAmbiente_queryIsOk() {
         try {
             helper.getValoreParamApplicByStrut("NON_ESISTE", 0l, 0L);
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValueTipoUD_queryIsOk() {
+    void getParamApplicValueTipoUD_queryIsOk() {
         try {
             helper.getValoreParamApplicByTipoUd("NON_ESISTE", 0L, 0L, 0L);
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValueAATipoFascicolo_queryIsOk() {
+    void getParamApplicValueAATipoFascicolo_queryIsOk() {
         try {
             helper.getValoreParamApplicByAaTipoFasc("NON_ESISTE", 0L, 0L, 0L);
         } catch (Exception e) {
@@ -98,14 +98,14 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getValoreParamApplicByTiParamApplicAsMap_queryIsOk() {
+    void getValoreParamApplicByTiParamApplicAsMap_queryIsOk() {
         Map<String, String> map = helper
                 .getValoreParamApplicByTiParamApplicAsMap(Arrays.asList(ParametroApplDB.TipoParametroAppl.IAM));
         assertFalse(map.isEmpty());
     }
 
     @Test
-    public void getParamApplicValueAsFl_queryIsOk() {
+    void getParamApplicValueAsFl_queryIsOk() {
         try {
             helper.getValoreParamApplicByApplicAsFl("NON_ESISTE");
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValueAsFlTipoUD_queryIsOk() {
+    void getParamApplicValueAsFlTipoUD_queryIsOk() {
         try {
             helper.getValoreParamApplicByTipoUdAsFl("NON_ESISTE", 0L, 0L, 0L);
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void getParamApplicValueAsFlAAFascicolo_queryIsOk() {
+    void getParamApplicValueAsFlAAFascicolo_queryIsOk() {
         try {
             helper.getValoreParamApplicByAaTipoFascAsFl("NON_ESISTE", 0L, 0l, 0L);
         } catch (Exception e) {

@@ -18,14 +18,23 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import javax.persistence.*;
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 /**
  * The persistent class for the DEC_USO_MODELLO_XSD_FASC database table.
@@ -77,7 +86,6 @@ public class DecUsoModelloXsdFasc implements Serializable {
     // bi-directional many-to-one association to DecAaTipoFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_AA_TIPO_FASCICOLO")
-    @XmlInverseReference(mappedBy = "decUsoModelloXsdFascs")
     public DecAaTipoFascicolo getDecAaTipoFascicolo() {
         return this.decAaTipoFascicolo;
     }

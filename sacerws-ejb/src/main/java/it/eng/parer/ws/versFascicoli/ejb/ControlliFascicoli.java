@@ -57,7 +57,6 @@ import it.eng.parer.entity.IamAbilTipoDato;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.constraint.FasFascicolo.TiStatoConservazione;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
-import it.eng.parer.view_entity.OrgVChkPartitionFascByAa;
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -94,43 +93,6 @@ public class ControlliFascicoli {
     }
 
     static final String NOME_FASCICOLO_SCONOSCIUTO = "Tipo fascicolo sconosciuto";
-
-    public RispostaControlli verificaPartizioniStruttAnnoFascicoli(String descKey, long idStruttura, long anno) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-
-        List<OrgVChkPartitionFascByAa> ovcspfs = null;
-
-        try {
-            String queryStr = "select t from OrgVChkPartitionFascByAa t " + "where t.idStrut = :idStrutIn "
-                    + "and t.anno = :annoIn ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr, OrgVChkPartitionFascByAa.class);
-            query.setParameter("idStrutIn", new BigDecimal(idStruttura));
-            query.setParameter("annoIn", new BigDecimal(anno));
-            ovcspfs = query.getResultList();
-
-            /*
-             * trovata una struttura ben partizionata. se ci sono problemi il versamento è sempre e comunque errato
-             */
-            if (ovcspfs.size() == 1 && ovcspfs.get(0).getFlPartFascOk().equals("1")) {
-
-                rispostaControlli.setrBoolean(true);
-            }
-            if (!rispostaControlli.isrBoolean()) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P, "Fascicolo " + descKey
-                        + ": La struttura non è correttamente partizionata. " + "Impossibile salvare il fascicolo"));
-            }
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliFascicoli.verificaPartizioniStruttFascicoli: " + e.getMessage()));
-            log.error(ERRORE_TABELLA_DECODIFICA, e);
-        }
-
-        return rispostaControlli;
-    }
 
     public RispostaControlli checkTipoFascicolo(String nomeTipoFascicolo, String descKey, long idStruttura) {
         RispostaControlli rispostaControlli;

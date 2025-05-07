@@ -17,8 +17,8 @@
 
 package it.eng.parer.restWS;
 
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
 import it.eng.parer.ws.versamentoUpd.ejb.AggiornamentoVersamentoSync;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.versamentoUpd.utils.WSDescUpdVers;
-import it.eng.spagoCore.configuration.ConfigSingleton;
+import it.eng.spagoCore.ConfigSingleton;
 
 /**
  *
@@ -93,7 +93,11 @@ public class UpdVersamentoSrvlt extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Response405.fancy405(resp, Response405.NomeWebServiceRest.AGGIORNAMENTO_VERSAMENTO);
+        try {
+            Response405.fancy405(resp, Response405.NomeWebServiceRest.AGGIORNAMENTO_VERSAMENTO);
+        } catch (IOException e) {
+            log.error("Errore generico", e);
+        }
     }
 
     /**

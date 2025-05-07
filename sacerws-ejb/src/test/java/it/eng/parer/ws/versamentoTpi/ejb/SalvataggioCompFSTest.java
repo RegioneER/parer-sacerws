@@ -17,27 +17,30 @@
 
 package it.eng.parer.ws.versamentoTpi.ejb;
 
-import it.eng.ArquillianTestUtils;
-import it.eng.parer.ws.dto.RispostaControlli;
-import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.xadisk.bridge.proxies.interfaces.XADiskBasicIOOperations;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.ejb.EJB;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.xadisk.bridge.proxies.interfaces.XADiskBasicIOOperations;
+
+import it.eng.ArquillianTestUtils;
+import it.eng.parer.ws.dto.RispostaControlli;
+import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
+
+@ArquillianTest
 public class SalvataggioCompFSTest {
 
     @Deployment
@@ -56,13 +59,13 @@ public class SalvataggioCompFSTest {
     private SalvataggioCompFS salvataggioCompFS;
 
     @Test
-    public void injectOk() {
+    void injectOk() {
         assertNotNull(salvataggioCompFS);
     }
 
     @Test
-    @Ignore("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
-    public void verificaDirTPIDataViaDb_queryIsOk() {
+    @Disabled("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
+    void verificaDirTPIDataViaDb_queryIsOk() {
         final StrutturaVersamento versamento = mockStrutturaVersamento();
         final RispostaControlli rispostaControlli = salvataggioCompFS.verificaDirTPIDataViaDb(versamento,
                 new StatoCreaCartelle(), 1);
@@ -81,27 +84,24 @@ public class SalvataggioCompFSTest {
     }
 
     @Test
-    @Ignore("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
-
-    public void verificaDirTPIVersatoreViaDb_queryIsOk() {
+    @Disabled("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
+    void verificaDirTPIVersatoreViaDb_queryIsOk() {
         final RispostaControlli rispostaControlli = salvataggioCompFS
                 .verificaDirTPIVersatoreViaDb(mockStrutturaVersamento(), new StatoCreaCartelle(), 1);
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    @Ignore("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
-
-    public void generaDirDataTPIBlock_queryIsOk() {
+    @Disabled("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
+    void generaDirDataTPIBlock_queryIsOk() {
         final RispostaControlli rispostaControlli = salvataggioCompFS
                 .generaDirVersatoreTPIBlock(mockStrutturaVersamento(), new StatoCreaCartelle());
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    @Ignore("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
-
-    public void generaDirVersatoreTPIBlock_queryIsOk() {
+    @Disabled("java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl")
+    void generaDirVersatoreTPIBlock_queryIsOk() {
         final RispostaControlli rispostaControlli = salvataggioCompFS
                 .generaDirVersatoreTPIBlock(mockStrutturaVersamento(), new StatoCreaCartelle());
         assertTrue(rispostaControlli.isrBoolean());

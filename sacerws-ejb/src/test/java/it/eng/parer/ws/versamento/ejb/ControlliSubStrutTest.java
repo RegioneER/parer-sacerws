@@ -17,23 +17,27 @@
 
 package it.eng.parer.ws.versamento.ejb;
 
-import it.eng.parer.ws.dto.RispostaControlli;
-import it.eng.parer.ws.versamento.dto.DocumentoVers;
-import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.assertNoErr;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
 
-import javax.ejb.EJB;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static it.eng.ArquillianTestUtils.*;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
+import it.eng.parer.ws.dto.RispostaControlli;
+import it.eng.parer.ws.versamento.dto.DocumentoVers;
+import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
+
+@ArquillianTest
 public class ControlliSubStrutTest {
 
     @Deployment

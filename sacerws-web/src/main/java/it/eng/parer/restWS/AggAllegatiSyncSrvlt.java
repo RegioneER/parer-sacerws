@@ -17,11 +17,11 @@
 
 package it.eng.parer.restWS;
 
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_FILE_SIZE;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_REQUEST_SIZE;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.AGG_ALLEGATI_SAVE_LOG_SESSION;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_FILE_SIZE;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_REQUEST_SIZE;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_SAVE_LOG_SESSION;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ import it.eng.parer.ws.versamento.dto.VersamentoExtAggAll;
 import it.eng.parer.ws.versamento.dto.WSDescVersamentoAggAll;
 import it.eng.parer.ws.versamento.ejb.AggiuntaAllSync;
 import it.eng.parer.ws.xml.versResp.EsitoVersAggAllegati;
-import it.eng.spagoCore.configuration.ConfigSingleton;
+import it.eng.spagoCore.ConfigSingleton;
 
 /**
  * Servlet implementation class VersamentoSyncSrvlt
@@ -97,7 +97,11 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Response405.fancy405(resp, Response405.NomeWebServiceRest.AGGIUNTA_ALLEGATI_SYNC);
+        try {
+            Response405.fancy405(resp, Response405.NomeWebServiceRest.AGGIUNTA_ALLEGATI_SYNC);
+        } catch (IOException e) {
+            log.error("Errore generico", e);
+        }
     }
 
     /**

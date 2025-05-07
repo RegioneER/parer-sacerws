@@ -17,21 +17,23 @@
 
 package it.eng.parer.ws.utils;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static it.eng.ArquillianTestUtils.exceptionMessageContains;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.ejb.EJB;
 import java.util.Collections;
 
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
 
+@ArquillianTest
 public class MessaggiWSHelperTest {
     @EJB
     private MessaggiWSHelper helper;
@@ -44,12 +46,12 @@ public class MessaggiWSHelperTest {
     }
 
     @Test
-    public void caricaListaErrori() {
+    void caricaListaErrori() {
         assertNotNull(helper.caricaListaErrori());
     }
 
     @Test
-    public void caricaDecErrore() {
+    void caricaDecErrore() {
         try {
             helper.caricaDecErrore("NON ESISTE");
         } catch (Exception e) {

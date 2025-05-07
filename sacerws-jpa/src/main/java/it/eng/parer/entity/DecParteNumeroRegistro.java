@@ -30,7 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -178,7 +177,6 @@ public class DecParteNumeroRegistro implements Serializable {
     // bi-directional many-to-one association to DecAaRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_AA_REGISTRO_UNITA_DOC")
-    @XmlInverseReference(mappedBy = "decParteNumeroRegistros")
     public DecAaRegistroUnitaDoc getDecAaRegistroUnitaDoc() {
         return this.decAaRegistroUnitaDoc;
     }

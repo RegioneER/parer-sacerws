@@ -38,7 +38,6 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -147,7 +146,6 @@ public class DecTipoRapprComp implements Serializable {
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
-    @XmlInverseReference(mappedBy = "decTipoRapprComps")
     public OrgStrut getOrgStrut() {
         return this.orgStrut;
     }
@@ -177,7 +175,6 @@ public class DecTipoRapprComp implements Serializable {
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_CONTENUTO")
-    @XmlInverseReference(mappedBy = "decTipoRapprCompConts")
     public DecFormatoFileDoc getDecFormatoFileDocCont() {
         return this.decFormatoFileDocCont;
     }
@@ -189,7 +186,6 @@ public class DecTipoRapprComp implements Serializable {
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_CONVERTIT")
-    @XmlInverseReference(mappedBy = "decTipoRapprCompConvs")
     public DecFormatoFileDoc getDecFormatoFileDocConv() {
         return this.decFormatoFileDocConv;
     }

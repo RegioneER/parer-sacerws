@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.FactoryConfigurationError;
@@ -43,7 +44,6 @@ import org.xml.sax.InputSource;
 
 import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 import it.eng.parer.exception.SacerWsException;
-import javax.xml.XMLConstants;
 
 /**
  *
@@ -121,8 +121,7 @@ public class XmlUtils {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(in);
 
-            org.apache.xml.security.c14n.Canonicalizer canonicalizer = Canonicalizer
-                    .getInstance(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+            Canonicalizer canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
             canonicalizer.canonicalizeSubtree(doc, baos);
             xmlOut = new String(baos.toByteArray(), StandardCharsets.UTF_8);
             if (unPrettyPrint) {

@@ -17,6 +17,20 @@
 
 package it.eng.parer.ws.versamentoUpd.ejb;
 
+import static it.eng.ArquillianTestUtils.assertNoErr;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+
+import java.util.Arrays;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.ControlliSemantici;
@@ -25,18 +39,8 @@ import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.xml.versUpdReq.AggiornamentoProfiloArchivisticoType;
 import it.eng.parer.ws.xml.versUpdReq.AggiornamentoUnitaDocumentariaType;
 import it.eng.parer.ws.xml.versUpdReq.IndiceSIPAggiornamentoUnitaDocumentaria;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.util.Arrays;
-
-import static it.eng.ArquillianTestUtils.*;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class ControlliUpdVersamentoTest {
 
     @Deployment

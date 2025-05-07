@@ -17,6 +17,23 @@
 
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static it.eng.ArquillianTestUtils.exceptionMessageContains;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Date;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
 import it.eng.parer.entity.OrgSubStrut;
@@ -24,21 +41,8 @@ import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.versamento.ejb.LogSessioneSyncTest;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.util.Arrays;
-import java.util.Date;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class SalvataggioUpdVersamentoUpdHelperTest {
 
     @Deployment
@@ -77,13 +81,13 @@ public class SalvataggioUpdVersamentoUpdHelperTest {
     private SalvataggioUpdVersamentoUpdHelper helper;
 
     @Test
-    public void getNextPgAroUpdUnitaDoc_queryIsOk() {
+    void getNextPgAroUpdUnitaDoc_queryIsOk() {
         final RispostaControlli rispostaControlli = helper.getNextPgAroUpdUnitaDoc(0L);
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    public void scriviMonKeyTotalUd_queryIsOk() {
+    void scriviMonKeyTotalUd_queryIsOk() {
         final AroUnitaDoc tmpAroUnitaDoc = new AroUnitaDoc();
         tmpAroUnitaDoc.setOrgSubStrut(new OrgSubStrut());
         tmpAroUnitaDoc.getOrgSubStrut().setIdSubStrut(0L);

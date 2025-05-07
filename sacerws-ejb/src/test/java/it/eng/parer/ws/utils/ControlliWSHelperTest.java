@@ -17,22 +17,26 @@
 
 package it.eng.parer.ws.utils;
 
-import it.eng.parer.entity.DecControlloWs;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static it.eng.ArquillianTestUtils.exceptionMessageContains;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.ejb.EJB;
 import java.util.Collections;
 import java.util.List;
 
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
+import it.eng.parer.entity.DecControlloWs;
+
+@ArquillianTest
 public class ControlliWSHelperTest {
     @EJB
     private ControlliWSHelper helper;
@@ -45,13 +49,13 @@ public class ControlliWSHelperTest {
     }
 
     @Test
-    public void caricaListaControlli_queryIsOk() {
+    void caricaListaControlli_queryIsOk() {
         final List<DecControlloWs> listaControlli = helper.caricaListaControlli();
         assertFalse(listaControlli.isEmpty());
     }
 
     @Test
-    public void caricaCdControlloWs_queryIsOk() {
+    void caricaCdControlloWs_queryIsOk() {
         try {
             helper.caricaCdControlloWs("NON_ESISTE");
         } catch (Exception e) {
@@ -60,7 +64,7 @@ public class ControlliWSHelperTest {
     }
 
     @Test
-    public void caricaCdControlloFamiglia_queryIsOk() {
+    void caricaCdControlloFamiglia_queryIsOk() {
         try {
             helper.caricaCdControlloFamiglia("NON_ESISTE");
         } catch (Exception e) {

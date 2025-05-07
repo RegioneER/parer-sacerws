@@ -37,7 +37,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlID;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -114,7 +113,6 @@ public class OrgRegolaValSubStrut implements Serializable {
     // bi-directional many-to-one association to DecTipoDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC")
-    @XmlInverseReference(mappedBy = "orgRegolaValSubStruts")
     public DecTipoDoc getDecTipoDoc() {
         return this.decTipoDoc;
     }
@@ -126,7 +124,6 @@ public class OrgRegolaValSubStrut implements Serializable {
     // bi-directional many-to-one association to DecTipoUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_UNITA_DOC")
-    @XmlInverseReference(mappedBy = "orgRegolaValSubStruts")
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
         return this.decTipoUnitaDoc;
     }

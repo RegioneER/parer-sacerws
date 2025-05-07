@@ -1111,11 +1111,11 @@ public class SalvataggioFirmaManager {
                 buildFirUrnReport(tmpFirReport, compUrnOrig, compUrnNorm);
                 BackendStorage backendVerificaFirme = objectStorageService
                         .lookupBackendByServiceName(strutV.getIdTipologiaUnitaDocumentaria(), nomeWs);
+                //
                 if (backendVerificaFirme.isObjectStorage()) {
 
                     ObjectStorageResource savedReport = objectStorageService.createResourceInRerportvf(
-                            backendVerificaFirme.getBackendName(), tmpVerificaAroCompDoc.getIdCompDoc(),
-                            tmpFirReport.getIdFirReport(), strutV, servizioFirma, tmpFirReport.getFirUrnReports(),
+                            backendVerificaFirme.getBackendName(), tmpVerificaAroCompDoc, strutV, servizioFirma,
                             reportZip);
                     if (savedReport == null) {
                         // Caso 1: il salvataggio su object storage non è andato a buon fine

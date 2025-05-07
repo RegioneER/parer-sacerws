@@ -17,6 +17,12 @@
 
 package it.eng.parer.sacer.ejb.retry;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,12 +36,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -79,16 +84,16 @@ public class RetryTest {
     public RetryTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         restTemplateCrypto = new RestTemplate();
         restTemplateEidas = new RestTemplate();
 
@@ -142,12 +147,12 @@ public class RetryTest {
         restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryConfiguration));
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
     }
 
     @Test
-    public void testVerificaCrypto() throws FileNotFoundException {
+    void testVerificaCrypto() throws FileNotFoundException {
 
         File fileFirmato = ResourceUtils.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
@@ -170,7 +175,7 @@ public class RetryTest {
         CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v2/report-verifica", entity,
                 CryptoAroCompDoc.class);
 
-        Assert.assertNotNull(componente);
+        assertNotNull(componente);
     }
 
     /**
@@ -192,8 +197,8 @@ public class RetryTest {
      *
      * @throws FileNotFoundException
      */
-    @Test(expected = RestClientException.class)
-    public void testVerificaCryptoEnpointNonValido() throws FileNotFoundException {
+    @Test
+    void testVerificaCryptoEnpointNonValido() throws FileNotFoundException {
 
         File fileFirmato = ResourceUtils.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
@@ -215,18 +220,25 @@ public class RetryTest {
         List<URI> badEndPoints = Arrays.asList(URI.create(preferredEndpointCrypto));
         configureInterceptor(restTemplateCrypto, badEndPoints);
 
-        CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v0/report-verifica", entity,
-                CryptoAroCompDoc.class);
+        CryptoAroCompDoc componente = null;
+        try {
+            componente = restTemplateCrypto.postForObject("/v0/report-verifica", entity, CryptoAroCompDoc.class);
+            fail("Expected an RestClientException to be thrown");
+        } catch (RestClientException e) {
+            // Test exception message...
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().contains("404 Not Found"));
+        }
 
-        Assert.assertNull(componente);
+        assertNull(componente);
     }
 
     /**
      *
      * @throws FileNotFoundException
      */
-    @Test(expected = RestClientException.class)
-    public void testVerificaCryptoEnpointInesistente() throws FileNotFoundException {
+    @Test
+    void testVerificaCryptoEnpointInesistente() throws FileNotFoundException {
 
         File fileFirmato = ResourceUtils.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
@@ -249,10 +261,17 @@ public class RetryTest {
 
         configureInterceptor(restTemplateCrypto, badEndPoints);
 
-        CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v2/report-verifica", entity,
-                CryptoAroCompDoc.class);
+        CryptoAroCompDoc componente = null;
+        try {
+            componente = restTemplateCrypto.postForObject("/v2/report-verifica", entity, CryptoAroCompDoc.class);
+            fail("Expected an RestClientException to be thrown");
+        } catch (RestClientException e) {
+            // Test exception message...
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().contains("404 Not Found"));
+        }
 
-        Assert.assertNull(componente);
+        assertNull(componente);
     }
 
     private static Date getDate(int giorno, int mese, int anno) {
@@ -263,7 +282,7 @@ public class RetryTest {
     }
 
     @Test
-    public void testVerificaCryptoConTimestamp() throws FileNotFoundException {
+    void testVerificaCryptoConTimestamp() throws FileNotFoundException {
 
         File fileFirmato = ResourceUtils.getFile("classpath:firme/cades_T_1.pdf.p7m");
 
@@ -295,14 +314,14 @@ public class RetryTest {
         // CryptoAroCompDoc.class);
         CryptoAroCompDoc componente = restTemplateCrypto.postForObject(url, entity, CryptoAroCompDoc.class);
 
-        Assert.assertNotNull(componente);
+        assertNotNull(componente);
 
         /*
          * Se non passo i metadati il valore predefinito è il seguente: - contenuto per il file principale - firma_0 ...
          * firma_n-1 per le firme detached - marca_0 ... marca_n-1 per le marche detached
          */
-        Assert.assertEquals("cades_t1.p7m", componente.getAroMarcaComps().get(1).getIdMarca());
-        Assert.assertEquals("cades_t1.tsr", componente.getAroMarcaComps().get(0).getIdMarca());
+        assertEquals("cades_t1.p7m", componente.getAroMarcaComps().get(1).getIdMarca());
+        assertEquals("cades_t1.tsr", componente.getAroMarcaComps().get(0).getIdMarca());
 
     }
 

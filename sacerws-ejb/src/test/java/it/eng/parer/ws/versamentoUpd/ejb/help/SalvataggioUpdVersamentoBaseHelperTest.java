@@ -17,23 +17,26 @@
 
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.versamento.ejb.LogSessioneSyncTest;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.util.Arrays;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.*;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class SalvataggioUpdVersamentoBaseHelperTest {
 
     @Deployment
@@ -73,7 +76,7 @@ public class SalvataggioUpdVersamentoBaseHelperTest {
     private SalvataggioUpdVersamentoAroHelper helper;
 
     @Test
-    public void checkUsoXsdDatiSpecifici() {
+    void checkUsoXsdDatiSpecifici() {
 
         for (CostantiDB.TipiUsoDatiSpec tiUsoXsd : CostantiDB.TipiUsoDatiSpec.values()) {
             for (CostantiDB.TipiEntitaSacer tiEntitaSacer : CostantiDB.TipiEntitaSacer.values()) {
@@ -85,7 +88,7 @@ public class SalvataggioUpdVersamentoBaseHelperTest {
     }
 
     @Test
-    public void getAroValoreAttribDatiSpecs() {
+    void getAroValoreAttribDatiSpecs() {
         final RispostaControlli rispostaControlli = helper.getAroValoreAttribDatiSpecs(0L, 0L, 0L);
         assertTrue(rispostaControlli.isrBoolean());
     }
