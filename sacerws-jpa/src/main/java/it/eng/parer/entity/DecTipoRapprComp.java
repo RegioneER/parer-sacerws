@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -38,7 +34,6 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -84,118 +79,115 @@ public class DecTipoRapprComp implements Serializable {
     @Column(name = "ID_TIPO_RAPPR_COMP")
     @XmlID
     @GenericGenerator(name = "SDEC_TIPO_RAPPR_COMP_ID_TIPO_RAPPR_COMP_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_RAPPR_COMP"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_RAPPR_COMP"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_TIPO_RAPPR_COMP_ID_TIPO_RAPPR_COMP_GENERATOR")
     public Long getIdTipoRapprComp() {
-        return this.idTipoRapprComp;
+	return this.idTipoRapprComp;
     }
 
     public void setIdTipoRapprComp(Long idTipoRapprComp) {
-        this.idTipoRapprComp = idTipoRapprComp;
+	this.idTipoRapprComp = idTipoRapprComp;
     }
 
     @Column(name = "DS_TIPO_RAPPR_COMP")
     public String getDsTipoRapprComp() {
-        return this.dsTipoRapprComp;
+	return this.dsTipoRapprComp;
     }
 
     public void setDsTipoRapprComp(String dsTipoRapprComp) {
-        this.dsTipoRapprComp = dsTipoRapprComp;
+	this.dsTipoRapprComp = dsTipoRapprComp;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ISTITUZ")
     public Date getDtIstituz() {
-        return this.dtIstituz;
+	return this.dtIstituz;
     }
 
     public void setDtIstituz(Date dtIstituz) {
-        this.dtIstituz = dtIstituz;
+	this.dtIstituz = dtIstituz;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SOPPRES")
     public Date getDtSoppres() {
-        return this.dtSoppres;
+	return this.dtSoppres;
     }
 
     public void setDtSoppres(Date dtSoppres) {
-        this.dtSoppres = dtSoppres;
+	this.dtSoppres = dtSoppres;
     }
 
     @Column(name = "NM_TIPO_RAPPR_COMP")
     public String getNmTipoRapprComp() {
-        return this.nmTipoRapprComp;
+	return this.nmTipoRapprComp;
     }
 
     public void setNmTipoRapprComp(String nmTipoRapprComp) {
-        this.nmTipoRapprComp = nmTipoRapprComp;
+	this.nmTipoRapprComp = nmTipoRapprComp;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @OneToMany(mappedBy = "decTipoRapprComp")
     @XmlTransient
     public List<AroCompDoc> getAroCompDocs() {
-        return this.aroCompDocs;
+	return this.aroCompDocs;
     }
 
     public void setAroCompDocs(List<AroCompDoc> aroCompDocs) {
-        this.aroCompDocs = aroCompDocs;
+	this.aroCompDocs = aroCompDocs;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
-    @XmlInverseReference(mappedBy = "decTipoRapprComps")
     public OrgStrut getOrgStrut() {
-        return this.orgStrut;
+	return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-        this.orgStrut = orgStrut;
+	this.orgStrut = orgStrut;
     }
 
     @Column(name = "TI_ALGO_RAPPR")
     public String getTiAlgoRappr() {
-        return this.tiAlgoRappr;
+	return this.tiAlgoRappr;
     }
 
     public void setTiAlgoRappr(String tiAlgoRappr) {
-        this.tiAlgoRappr = tiAlgoRappr;
+	this.tiAlgoRappr = tiAlgoRappr;
     }
 
     @Column(name = "TI_OUTPUT_RAPPR")
     public String getTiOutputRappr() {
-        return this.tiOutputRappr;
+	return this.tiOutputRappr;
     }
 
     public void setTiOutputRappr(String tiOutputRappr) {
-        this.tiOutputRappr = tiOutputRappr;
+	this.tiOutputRappr = tiOutputRappr;
     }
 
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_CONTENUTO")
-    @XmlInverseReference(mappedBy = "decTipoRapprCompConts")
     public DecFormatoFileDoc getDecFormatoFileDocCont() {
-        return this.decFormatoFileDocCont;
+	return this.decFormatoFileDocCont;
     }
 
     public void setDecFormatoFileDocCont(DecFormatoFileDoc decFormatoFileDoc) {
-        this.decFormatoFileDocCont = decFormatoFileDoc;
+	this.decFormatoFileDocCont = decFormatoFileDoc;
     }
 
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_CONVERTIT")
-    @XmlInverseReference(mappedBy = "decTipoRapprCompConvs")
     public DecFormatoFileDoc getDecFormatoFileDocConv() {
-        return this.decFormatoFileDocConv;
+	return this.decFormatoFileDocConv;
     }
 
     public void setDecFormatoFileDocConv(DecFormatoFileDoc decFormatoFileDoc) {
-        this.decFormatoFileDocConv = decFormatoFileDoc;
+	this.decFormatoFileDocConv = decFormatoFileDoc;
     }
 
     // bi-directional many-to-one association to DecFormatoFileStandard
@@ -203,10 +195,10 @@ public class DecTipoRapprComp implements Serializable {
     @JoinColumn(name = "ID_FORMATO_OUTPUT_RAPPR")
     public // @XmlInverseReference(mappedBy = "decTipoRapprComps")
     DecFormatoFileStandard getDecFormatoFileStandard() {
-        return this.decFormatoFileStandard;
+	return this.decFormatoFileStandard;
     }
 
     public void setDecFormatoFileStandard(DecFormatoFileStandard decFormatoFileStandard) {
-        this.decFormatoFileStandard = decFormatoFileStandard;
+	this.decFormatoFileStandard = decFormatoFileStandard;
     }
 }

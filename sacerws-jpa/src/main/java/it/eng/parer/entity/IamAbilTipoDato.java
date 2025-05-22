@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -57,44 +53,44 @@ public class IamAbilTipoDato implements Serializable {
     @Id
     @Column(name = "ID_ABIL_TIPO_DATO")
     @GenericGenerator(name = "SIAM_ABIL_TIPO_DATO_ID_ABIL_TIPO_DATO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SIAM_ABIL_TIPO_DATO"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SIAM_ABIL_TIPO_DATO"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SIAM_ABIL_TIPO_DATO_ID_ABIL_TIPO_DATO_GENERATOR")
     public Long getIdAbilTipoDato() {
-        return this.idAbilTipoDato;
+	return this.idAbilTipoDato;
     }
 
     public void setIdAbilTipoDato(Long idAbilTipoDato) {
-        this.idAbilTipoDato = idAbilTipoDato;
+	this.idAbilTipoDato = idAbilTipoDato;
     }
 
     @Column(name = "ID_TIPO_DATO_APPLIC")
     public BigDecimal getIdTipoDatoApplic() {
-        return this.idTipoDatoApplic;
+	return this.idTipoDatoApplic;
     }
 
     public void setIdTipoDatoApplic(BigDecimal idTipoDatoApplic) {
-        this.idTipoDatoApplic = idTipoDatoApplic;
+	this.idTipoDatoApplic = idTipoDatoApplic;
     }
 
     @Column(name = "NM_CLASSE_TIPO_DATO")
     public String getNmClasseTipoDato() {
-        return this.nmClasseTipoDato;
+	return this.nmClasseTipoDato;
     }
 
     public void setNmClasseTipoDato(String nmClasseTipoDato) {
-        this.nmClasseTipoDato = nmClasseTipoDato;
+	this.nmClasseTipoDato = nmClasseTipoDato;
     }
 
     // bi-directional many-to-one association to IamAbilOrganiz
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ABIL_ORGANIZ")
     public IamAbilOrganiz getIamAbilOrganiz() {
-        return this.iamAbilOrganiz;
+	return this.iamAbilOrganiz;
     }
 
     public void setIamAbilOrganiz(IamAbilOrganiz iamAbilOrganiz) {
-        this.iamAbilOrganiz = iamAbilOrganiz;
+	this.iamAbilOrganiz = iamAbilOrganiz;
     }
 
 }

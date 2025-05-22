@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -30,7 +26,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -57,36 +52,35 @@ public class DecEstensioneFile implements Serializable {
     @Id
     @Column(name = "ID_ESTENSIONE_FILE")
     @GenericGenerator(name = "SDEC_ESTENSIONE_FILE_ID_ESTENSIONE_FILE_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_ESTENSIONE_FILE"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_ESTENSIONE_FILE"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_ESTENSIONE_FILE_ID_ESTENSIONE_FILE_GENERATOR")
     public Long getIdEstensioneFile() {
-        return this.idEstensioneFile;
+	return this.idEstensioneFile;
     }
 
     public void setIdEstensioneFile(Long idEstensioneFile) {
-        this.idEstensioneFile = idEstensioneFile;
+	this.idEstensioneFile = idEstensioneFile;
     }
 
     @Column(name = "CD_ESTENSIONE_FILE")
     public String getCdEstensioneFile() {
-        return this.cdEstensioneFile;
+	return this.cdEstensioneFile;
     }
 
     public void setCdEstensioneFile(String cdEstensioneFile) {
-        this.cdEstensioneFile = cdEstensioneFile;
+	this.cdEstensioneFile = cdEstensioneFile;
     }
 
     // bi-directional many-to-one association to DecFormatoFileStandard
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_STANDARD")
-    @XmlInverseReference(mappedBy = "decEstensioneFiles")
     public DecFormatoFileStandard getDecFormatoFileStandard() {
-        return this.decFormatoFileStandard;
+	return this.decFormatoFileStandard;
     }
 
     public void setDecFormatoFileStandard(DecFormatoFileStandard decFormatoFileStandard) {
-        this.decFormatoFileStandard = decFormatoFileStandard;
+	this.decFormatoFileStandard = decFormatoFileStandard;
     }
 
 }

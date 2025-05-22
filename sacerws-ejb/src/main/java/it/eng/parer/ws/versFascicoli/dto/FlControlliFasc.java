@@ -1,24 +1,19 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * To change this license header, choose License Headers in Project Properties. To change this
+ * template file, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.versFascicoli.dto;
 
@@ -39,75 +34,75 @@ public class FlControlliFasc {
     boolean flForzaContrNumero;
 
     public boolean isFlAbilitaContrClassif() {
-        return flAbilitaContrClassif;
+	return flAbilitaContrClassif;
     }
 
     public void setFlAbilitaContrClassif(boolean flAbilitaContrClassif) {
-        this.flAbilitaContrClassif = flAbilitaContrClassif;
+	this.flAbilitaContrClassif = flAbilitaContrClassif;
     }
 
     public boolean isFlAbilitaContrColleg() {
-        return flAbilitaContrColleg;
+	return flAbilitaContrColleg;
     }
 
     public void setFlAbilitaContrColleg(boolean flAbilitaContrColleg) {
-        this.flAbilitaContrColleg = flAbilitaContrColleg;
+	this.flAbilitaContrColleg = flAbilitaContrColleg;
     }
 
     public boolean isFlAbilitaContrNumero() {
-        return flAbilitaContrNumero;
+	return flAbilitaContrNumero;
     }
 
     public void setFlAbilitaContrNumero(boolean flAbilitaContrNumero) {
-        this.flAbilitaContrNumero = flAbilitaContrNumero;
+	this.flAbilitaContrNumero = flAbilitaContrNumero;
     }
 
     public boolean isFlAccettaContrClassifNeg() {
-        return flAccettaContrClassifNeg;
+	return flAccettaContrClassifNeg;
     }
 
     public void setFlAccettaContrClassifNeg(boolean flAccettaContrClassifNeg) {
-        this.flAccettaContrClassifNeg = flAccettaContrClassifNeg;
+	this.flAccettaContrClassifNeg = flAccettaContrClassifNeg;
     }
 
     public boolean isFlAccettaContrCollegNeg() {
-        return flAccettaContrCollegNeg;
+	return flAccettaContrCollegNeg;
     }
 
     public void setFlAccettaContrCollegNeg(boolean flAccettaContrCollegNeg) {
-        this.flAccettaContrCollegNeg = flAccettaContrCollegNeg;
+	this.flAccettaContrCollegNeg = flAccettaContrCollegNeg;
     }
 
     public boolean isFlAccettaContrNumeroNeg() {
-        return flAccettaContrNumeroNeg;
+	return flAccettaContrNumeroNeg;
     }
 
     public void setFlAccettaContrNumeroNeg(boolean flAccettaContrNumeroNeg) {
-        this.flAccettaContrNumeroNeg = flAccettaContrNumeroNeg;
+	this.flAccettaContrNumeroNeg = flAccettaContrNumeroNeg;
     }
 
     public boolean isFlForzaContrFlassif() {
-        return flForzaContrFlassif;
+	return flForzaContrFlassif;
     }
 
     public void setFlForzaContrFlassif(boolean flForzaContrFlassif) {
-        this.flForzaContrFlassif = flForzaContrFlassif;
+	this.flForzaContrFlassif = flForzaContrFlassif;
     }
 
     public boolean isFlForzaContrColleg() {
-        return flForzaContrColleg;
+	return flForzaContrColleg;
     }
 
     public void setFlForzaContrColleg(boolean flForzaContrColleg) {
-        this.flForzaContrColleg = flForzaContrColleg;
+	this.flForzaContrColleg = flForzaContrColleg;
     }
 
     public boolean isFlForzaContrNumero() {
-        return flForzaContrNumero;
+	return flForzaContrNumero;
     }
 
     public void setFlForzaContrNumero(boolean flForzaContrNumero) {
-        this.flForzaContrNumero = flForzaContrNumero;
+	this.flForzaContrNumero = flForzaContrNumero;
     }
 
 }

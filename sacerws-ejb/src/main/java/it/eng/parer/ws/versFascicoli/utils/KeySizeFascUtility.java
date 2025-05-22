@@ -1,24 +1,19 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * To change this license header, choose License Headers in Project Properties. To change this
+ * template file, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.versFascicoli.utils;
 
@@ -45,63 +40,67 @@ public class KeySizeFascUtility {
 
     public KeySizeFascUtility(CSVersatore csv, CSChiaveFasc csc, String sistema) {
 
-        int numKeyOrd = this.calcolaMaxLenNumeroKeyOrd(csc);
-        int numUrn = this.calcolaMaxLenNumeroURN(csv, csc, sistema);
-        maxLenNumero = numKeyOrd < numUrn ? numKeyOrd : numUrn;
+	int numKeyOrd = this.calcolaMaxLenNumeroKeyOrd(csc);
+	int numUrn = this.calcolaMaxLenNumeroURN(csv, csc, sistema);
+	maxLenNumero = numKeyOrd < numUrn ? numKeyOrd : numUrn;
 
-        lenURN = this.calcolaURN(csv, csc, sistema).length();
+	lenURN = this.calcolaURN(csv, csc, sistema).length();
 
     }
 
     public int getMaxLenNumero() {
-        return maxLenNumero;
+	return maxLenNumero;
     }
 
     public int getLenURN() {
-        return lenURN;
+	return lenURN;
     }
 
     public int getLenPath() {
-        return lenPath;
+	return lenPath;
     }
 
     private int calcolaMaxLenNumeroKeyOrd(CSChiaveFasc chiave) {
-        String tmpChiaveOrd;
-        if (chiave.getNumero().length() <= MAX_LEN_NUMERO_IN_CHIAVEORD) {
-            tmpChiaveOrd = +chiave.getAnno() + "-" + chiave.getNumero();
-        } else {
-            /*
-             * prova a rifare il controllo troncando il <codice fascicolo> a 75 caratteri. codice fascicolo???
-             */
-            tmpChiaveOrd = chiave.getAnno() + "-" + chiave.getNumero().substring(0, MAX_LEN_NUMERO_IN_CHIAVEORD);
-        }
+	String tmpChiaveOrd;
+	if (chiave.getNumero().length() <= MAX_LEN_NUMERO_IN_CHIAVEORD) {
+	    tmpChiaveOrd = +chiave.getAnno() + "-" + chiave.getNumero();
+	} else {
+	    /*
+	     * prova a rifare il controllo troncando il <codice fascicolo> a 75 caratteri. codice
+	     * fascicolo???
+	     */
+	    tmpChiaveOrd = chiave.getAnno() + "-"
+		    + chiave.getNumero().substring(0, MAX_LEN_NUMERO_IN_CHIAVEORD);
+	}
 
-        return MAX_LEN_CHIAVEORD - tmpChiaveOrd.length();
+	return MAX_LEN_CHIAVEORD - tmpChiaveOrd.length();
     }
 
     private int calcolaMaxLenNumeroURN(CSVersatore versatore, CSChiaveFasc chiave, String sistema) {
-        return MAX_LEN_URN - this.calcolaURN(versatore, chiave, sistema).length();
+	return MAX_LEN_URN - this.calcolaURN(versatore, chiave, sistema).length();
     }
 
     private String calcolaURN(CSVersatore versatore, CSChiaveFasc chiave, String sistema) {
-        String chiaveComp = MessaggiWSFormat.formattaChiaveFascicolo(versatore, chiave, sistema);
-        String chiaveSIP = MessaggiWSFormat.formattaUrnIndiceSipFasc(chiaveComp,
-                Costanti.UrnFormatter.URN_INDICE_SIP_V2);
-        return chiaveSIP.toString();
+	String chiaveComp = MessaggiWSFormat.formattaChiaveFascicolo(versatore, chiave, sistema);
+	String chiaveSIP = MessaggiWSFormat.formattaUrnIndiceSipFasc(chiaveComp,
+		Costanti.UrnFormatter.URN_INDICE_SIP_V2);
+	return chiaveSIP.toString();
     }
 
     // TODO: serve????
     /*
-     * private int calcolaMaxLenNumeroPathTivoli(CSVersatore versatore, CSChiave chiave) { return MAX_LEN_FILENAME_ARK -
-     * this.calcolaPathTivoli(versatore, chiave, tc).length(); }
+     * private int calcolaMaxLenNumeroPathTivoli(CSVersatore versatore, CSChiave chiave) { return
+     * MAX_LEN_FILENAME_ARK - this.calcolaPathTivoli(versatore, chiave, tc).length(); }
      *
      *
-     * private String calcolaPathTivoli(CSVersatore versatore, CSChiave chiave, TpiConfig tc) { String spData =
-     * MessaggiWSFormat.formattaSubPathData(new Date()); // la data vera non conta; una volta formattate sono tutte
-     * grandi uguali String spVersatore = MessaggiWSFormat.formattaSubPathVersatoreArk(versatore); String spUnitaDoc =
-     * MessaggiWSFormat.formattaSubPathUnitaDocArk(chiave); String spNomeFile = MessaggiWSFormat.formattaNomeFileArk(
-     * Costanti.CategoriaDocumento.Annotazione, 99, 1, 99); String tmpString = MessaggiWSFormat.formattaFilePathArk(
-     * tc.getTpiRootTpi(), tc.getTpiRootArkVers(), spData, spVersatore, spUnitaDoc, spNomeFile);
+     * private String calcolaPathTivoli(CSVersatore versatore, CSChiave chiave, TpiConfig tc) {
+     * String spData = MessaggiWSFormat.formattaSubPathData(new Date()); // la data vera non conta;
+     * una volta formattate sono tutte grandi uguali String spVersatore =
+     * MessaggiWSFormat.formattaSubPathVersatoreArk(versatore); String spUnitaDoc =
+     * MessaggiWSFormat.formattaSubPathUnitaDocArk(chiave); String spNomeFile =
+     * MessaggiWSFormat.formattaNomeFileArk( Costanti.CategoriaDocumento.Annotazione, 99, 1, 99);
+     * String tmpString = MessaggiWSFormat.formattaFilePathArk( tc.getTpiRootTpi(),
+     * tc.getTpiRootArkVers(), spData, spVersatore, spUnitaDoc, spNomeFile);
      *
      * return ""; }
      */

@@ -1,23 +1,18 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.versamento.dto;
 
@@ -35,12 +30,12 @@ public class VoceDiErrore implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum ResponsabilitaErrore {
-        NON_APPLICABILE, UNI_DOC, DOC
+	NON_APPLICABILE, UNI_DOC, DOC
     }
 
     //
     public enum TipiEsitoErrore {
-        POSITIVO, NEGATIVO, WARNING, NON_ATTIVATO
+	POSITIVO, NEGATIVO, WARNING, NON_ATTIVATO
     }
 
     //
@@ -57,66 +52,66 @@ public class VoceDiErrore implements Serializable {
     private boolean elementoPrincipale;
 
     public SeverityEnum getSeverity() {
-        return severity;
+	return severity;
     }
 
     public void setSeverity(SeverityEnum severity) {
-        this.severity = severity;
+	this.severity = severity;
     }
 
     public ResponsabilitaErrore getElementoResponsabile() {
-        return elementoResponsabile;
+	return elementoResponsabile;
     }
 
     public void setElementoResponsabile(ResponsabilitaErrore elementoResp) {
-        this.elementoResponsabile = elementoResp;
+	this.elementoResponsabile = elementoResp;
     }
 
     public TipiEsitoErrore getCodiceEsito() {
-        return codiceEsito;
+	return codiceEsito;
     }
 
     public void setCodiceEsito(TipiEsitoErrore severity) {
-        this.codiceEsito = severity;
+	this.codiceEsito = severity;
     }
 
     public String getErrorCode() {
-        return errorCode;
+	return errorCode;
     }
 
     public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+	this.errorCode = errorCode;
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+	return errorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+	this.errorMessage = errorMessage;
     }
 
     public String getDescElementoErr() {
-        return descElementoErr;
+	return descElementoErr;
     }
 
     public void setDescElementoErr(String descElementoErr) {
-        this.descElementoErr = descElementoErr;
+	this.descElementoErr = descElementoErr;
     }
 
     public DocumentoVers getRifDocumentoVers() {
-        return rifDocumentoVers;
+	return rifDocumentoVers;
     }
 
     public void setRifDocumentoVers(DocumentoVers rifDocumentoVers) {
-        this.rifDocumentoVers = rifDocumentoVers;
+	this.rifDocumentoVers = rifDocumentoVers;
     }
 
     public boolean isElementoPrincipale() {
-        return elementoPrincipale;
+	return elementoPrincipale;
     }
 
     public void setElementoPrincipale(boolean elementoPrincipale) {
-        this.elementoPrincipale = elementoPrincipale;
+	this.elementoPrincipale = elementoPrincipale;
     }
 }

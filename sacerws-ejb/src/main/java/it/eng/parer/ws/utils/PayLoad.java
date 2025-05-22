@@ -1,24 +1,19 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * To change this license header, choose License Headers in Project Properties. To change this
+ * template file, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.utils;
 
@@ -45,55 +40,55 @@ public class PayLoad implements Serializable {
     private long dtCreazione;
 
     public PayLoad() {
-        // default
+	// default
     }
 
     public long getId() {
-        return id;
+	return id;
     }
 
     public void setId(long id) {
-        this.id = id;
+	this.id = id;
     }
 
     public long getIdStrut() {
-        return idStrut;
+	return idStrut;
     }
 
     public void setIdStrut(long idStrut) {
-        this.idStrut = idStrut;
+	this.idStrut = idStrut;
     }
 
     public String getTipoEntitaSacer() {
-        return tipoEntitaSacer;
+	return tipoEntitaSacer;
     }
 
     public void setTipoEntitaSacer(String tipoEntitaSacer) {
-        this.tipoEntitaSacer = tipoEntitaSacer;
+	this.tipoEntitaSacer = tipoEntitaSacer;
     }
 
     public String getStato() {
-        return stato;
+	return stato;
     }
 
     public void setStato(String stato) {
-        this.stato = stato;
+	this.stato = stato;
     }
 
     public long getAaKeyUnitaDoc() {
-        return aaKeyUnitaDoc;
+	return aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(long aaKeyUnitaDoc) {
-        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     public long getDtCreazione() {
-        return dtCreazione;
+	return dtCreazione;
     }
 
     public void setDtCreazione(long dtCreazione) {
-        this.dtCreazione = dtCreazione;
+	this.dtCreazione = dtCreazione;
     }
 
 }

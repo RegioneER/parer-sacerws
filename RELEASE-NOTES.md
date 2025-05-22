@@ -1,4 +1,7 @@
-## 6.6.0 (31-03-2025)
+## 6.8.0 (22-05-2025)
 
 ### Bugfix: 1
-- [#37578](https://parermine.regione.emilia-romagna.it/issues/37578) Correzione per la mancata chiusura dei file e protocollo NFS
+- [#37455](https://parermine.regione.emilia-romagna.it/issues/37455) Introduzione controllo aggiuntivo esistenza di UD versata correttamente
+
+### Novità: 1
+- [#37442](https://parermine.regione.emilia-romagna.it/issues/37442) Estensione informazioni log durante il processo di versamento con aggiunta dei riferimento al file versato

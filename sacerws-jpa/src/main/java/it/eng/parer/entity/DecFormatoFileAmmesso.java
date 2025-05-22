@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -31,7 +27,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlID;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -59,39 +54,37 @@ public class DecFormatoFileAmmesso implements Serializable {
     @Column(name = "ID_FORMATO_FILE_AMMESSO")
     @XmlID
     @GenericGenerator(name = "SDEC_FORMATO_FILE_AMMESSO_ID_FORMATO_FILE_AMMESSO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_FORMATO_FILE_AMMESSO"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_FORMATO_FILE_AMMESSO"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_FORMATO_FILE_AMMESSO_ID_FORMATO_FILE_AMMESSO_GENERATOR")
     public Long getIdFormatoFileAmmesso() {
-        return this.idFormatoFileAmmesso;
+	return this.idFormatoFileAmmesso;
     }
 
     public void setIdFormatoFileAmmesso(Long idFormatoFileAmmesso) {
-        this.idFormatoFileAmmesso = idFormatoFileAmmesso;
+	this.idFormatoFileAmmesso = idFormatoFileAmmesso;
     }
 
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_DOC")
-    @XmlInverseReference(mappedBy = "decFormatoFileAmmessos")
     public DecFormatoFileDoc getDecFormatoFileDoc() {
-        return this.decFormatoFileDoc;
+	return this.decFormatoFileDoc;
     }
 
     public void setDecFormatoFileDoc(DecFormatoFileDoc decFormatoFileDoc) {
-        this.decFormatoFileDoc = decFormatoFileDoc;
+	this.decFormatoFileDoc = decFormatoFileDoc;
     }
 
     // bi-directional many-to-one association to DecTipoCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_COMP_DOC")
-    @XmlInverseReference(mappedBy = "decFormatoFileAmmessos")
     public DecTipoCompDoc getDecTipoCompDoc() {
-        return this.decTipoCompDoc;
+	return this.decTipoCompDoc;
     }
 
     public void setDecTipoCompDoc(DecTipoCompDoc decTipoCompDoc) {
-        this.decTipoCompDoc = decTipoCompDoc;
+	this.decTipoCompDoc = decTipoCompDoc;
     }
 
 }
