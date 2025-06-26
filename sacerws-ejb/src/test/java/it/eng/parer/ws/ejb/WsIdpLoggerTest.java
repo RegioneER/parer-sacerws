@@ -17,20 +17,21 @@
 
 package it.eng.parer.ws.ejb;
 
-import it.eng.ArquillianTestUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.ejb.EJB;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import it.eng.ArquillianTestUtils;
+
+@ArquillianTest
 public class WsIdpLoggerTest {
 
     @Deployment
@@ -51,7 +52,7 @@ public class WsIdpLoggerTest {
     }
 
     @Test
-    @Ignore("è complicato creare il caso su DB per tetare la parte di query")
+    @Disabled("è complicato creare il caso su DB per tetare la parte di query")
     public void scriviLog() {
         assertTrue(true);
     }

@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -313,25 +312,62 @@ public class MessaggiWSFormat {
         return MessageFormat.format(fmtUsed, urnBase, pgBusta);
     }
 
-    /* AWS : RULES FOR CD_KEY_FILE SU COMPONENTE */
-    /*
-     * Nota importante : la regola scelta si basa sulle dinaniche previste per gli URN ma a differenza di quest'ultime
-     * anziché riportare il numero (che può contentere caratteri speciali) utilizza di base l'ID del componete
-     *
-     * Su extra si possono aggiungere ulteriori parametri (in coda) sulla base del formatter (fmtUsed) che viene passato
-     * al metodo.
-     */
-    public static String formattaComponenteCdKeyFile(CSVersatore versatore, CSChiave chiave, long idComponente,
-            Optional<Object> extra, String fmtUsed) {
-        return MessageFormat.format(fmtUsed,
-                StringUtils.isNotBlank(versatore.getSistemaConservazione())
-                        ? MessaggiWSFormat.normalizingKey(versatore.getSistemaConservazione())
-                        : MessaggiWSFormat.normalizingKey(versatore.getAmbiente()),
+    /* S3 KEY OBJECT: UD base formatter */
+    /*-----------------------------------*/
+    public static String formattaS3UrnPartUd(CSVersatore versatore, CSChiave chiave) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_UD_FMT,
                 MessaggiWSFormat.normalizingKey(versatore.getEnte()),
                 MessaggiWSFormat.normalizingKey(versatore.getStruttura()),
                 MessaggiWSFormat.normalizingKey(chiave.getTipoRegistro()), chiave.getAnno().toString(),
-                String.valueOf(idComponente), extra.isPresent() ? String.valueOf(extra.get()) : StringUtils.EMPTY);
+                MessaggiWSFormat.normalizingKey(chiave.getNumero()));
     }
+
+    public static String formattaS3UrnPartDoc(int progressivo, boolean pgpad) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_DOC_FMT, Costanti.S3UrnFormatter.S3_KEY_DOC_PREFIX,
+                pgpad ? String.format(Costanti.S3UrnFormatter.S3_KEY_PAD5DIGITS_FMT, progressivo) : progressivo);
+    }
+
+    public static String formattaS3UrnPartComp(String urnBase, long ordinePresentazione) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_DOC_COMP_FMT, urnBase,
+                String.format(Costanti.S3UrnFormatter.S3_KEY_PAD5DIGITS_FMT, ordinePresentazione));
+    }
+
+    public static String formattaS3CompleteUrnDoc(String urnPartUd, String urnPartComp) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_COMP_FMT, urnPartUd, urnPartComp);
+    }
+
+    public static String formattaS3CompleteUrnReportvf(String urnComp) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_REPORTVF_FMT, urnComp);
+    }
+
+    public static String formattaS3CompleteUrnSipUd(String urnUd) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_SIPUD_FMT, urnUd);
+    }
+
+    public static String formattaS3CompleteUrnSipDoc(String urnUd) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_SIPDOC_FMT, urnUd);
+    }
+    /*-----------------------------------*/
+
+    // MAC#37223
+    public static String formattaS3UrnPartVersAggMd(CSVersatore versatore) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_VERSATORE_FMT,
+                MessaggiWSFormat.normalizingKey(versatore.getEnte()),
+                MessaggiWSFormat.normalizingKey(versatore.getStruttura()));
+    }
+
+    public static String formattaS3UrnPartKeyAggMd(CSChiave chiave) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_CHIAVE_FMT,
+                MessaggiWSFormat.normalizingKey(chiave.getTipoRegistro()), chiave.getAnno().toString(),
+                MessaggiWSFormat.normalizingKey(chiave.getNumero()));
+    }
+
+    public static String formattaS3CompleteUrnAggMd(String versatore, String chiave, long progressivo, boolean pgpad,
+            String padFmtUsed) {
+        return MessageFormat.format(Costanti.S3UrnFormatter.S3_KEY_AGG_MD_FMT, versatore, chiave,
+                pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
+    }
+    // end MAC#37223
 
     /*
      * Restituisce una stringa normalizzata secondo le regole cel codice UD normalizzato sostituendo tutti i caratteri

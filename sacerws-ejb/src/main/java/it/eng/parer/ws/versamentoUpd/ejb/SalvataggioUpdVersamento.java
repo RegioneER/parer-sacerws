@@ -800,38 +800,29 @@ public class SalvataggioUpdVersamento {
              * Se backendMetadata di tipo O.S. si effettua il salvataggio (con link su apposita entity)
              */
             if (backendMetadata.isObjectStorage()) {
-                // calculate normalized URN
-                final String urn = MessaggiWSFormat.formattaBaseUrnUpdUnitaDoc(
-                        MessaggiWSFormat.formattaUrnPartVersatore(
-                                versamento.getStrutturaUpdVers().getVersatoreNonverificato(), true,
-                                Costanti.UrnFormatter.VERS_FMT_STRING),
-                        MessaggiWSFormat.formattaUrnPartUnitaDoc(
-                                versamento.getStrutturaUpdVers().getChiaveNonVerificata(), true,
-                                Costanti.UrnFormatter.UD_FMT_STRING),
-                        tmpAroUpdUnitaDoc.getPgUpdUnitaDoc().longValue(), true, Costanti.UrnFormatter.UPD_FMT_STRING_V3,
-                        Costanti.UrnFormatter.PAD5DIGITS_FMT);
-                ObjectStorageResource res = objectStorageService.createResourcesInSipAggMd(urn,
-                        backendMetadata.getBackendName(), sipBlob, tmpAroUpdUnitaDoc.getIdUpdUnitaDoc(),
+                // Salvataggio SIP
+                ObjectStorageResource res = objectStorageService.createResourcesInSipAggMd(
+                        backendMetadata.getBackendName(), sipBlob, versamento.getStrutturaUpdVers(), tmpAroUpdUnitaDoc,
                         getIdStrut(versamento));
                 log.debug("Salvati i SIP nel bucket {} con chiave {} ", res.getBucket(), res.getKey());
                 // Salvataggio Dati Specifici realtivi ai metadati iniziali
                 for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlobEntry : versIniDatiSpecBlob
                         .entrySet()) {
-                    res = objectStorageService.createResourcesInVersIniDatiSpecAggMd(urn,
-                            backendMetadata.getBackendName(), versIniDatiSpecBlobEntry.getValue(),
-                            versIniDatiSpecBlobEntry.getKey().getIdEntitySacer(), TiEntitaSacerAroVersIniDatiSpec
+                    res = objectStorageService.createResourcesInVersIniDatiSpecAggMd(backendMetadata.getBackendName(),
+                            versIniDatiSpecBlobEntry.getValue(), versIniDatiSpecBlobEntry.getKey().getIdEntitySacer(),
+                            TiEntitaSacerAroVersIniDatiSpec
                                     .valueOf(versIniDatiSpecBlobEntry.getKey().getTipiEntitaSacer()),
-                            getIdStrut(versamento));
+                            versamento.getStrutturaUpdVers(), tmpAroUpdUnitaDoc, getIdStrut(versamento));
                     log.debug("Salvati i Dati Specifici relativi ai metadati iniziali nel bucket {} con chiave {} ",
                             res.getBucket(), res.getKey());
                 }
                 // Salvataggio Dati Specifici
                 for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> updDatiSpecBlobEntry : updDatiSpecBlob
                         .entrySet()) {
-                    res = objectStorageService.createResourcesInUpdDatiSpecAggMd(urn, backendMetadata.getBackendName(),
+                    res = objectStorageService.createResourcesInUpdDatiSpecAggMd(backendMetadata.getBackendName(),
                             updDatiSpecBlobEntry.getValue(), updDatiSpecBlobEntry.getKey().getIdEntitySacer(),
                             TiEntitaAroUpdDatiSpecUnitaDoc.valueOf(updDatiSpecBlobEntry.getKey().getTipiEntitaSacer()),
-                            getIdStrut(versamento));
+                            versamento.getStrutturaUpdVers(), tmpAroUpdUnitaDoc, getIdStrut(versamento));
                     log.debug("Salvati i Dati Specifici dell'aggiornamento metadati nel bucket {} con chiave {} ",
                             res.getBucket(), res.getKey());
                 }

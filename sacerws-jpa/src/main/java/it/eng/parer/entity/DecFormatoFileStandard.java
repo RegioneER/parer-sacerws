@@ -33,7 +33,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -189,7 +188,6 @@ public class DecFormatoFileStandard implements Serializable {
 
     // bi-directional many-to-one association to DecUsoFormatoFileStandard
     @OneToMany(mappedBy = "decFormatoFileStandard", cascade = { CascadeType.ALL })
-    @XmlInverseReference(mappedBy = "decFormatoFileStandard")
     public List<DecUsoFormatoFileStandard> getDecUsoFormatoFileStandards() {
         return this.decUsoFormatoFileStandards;
     }

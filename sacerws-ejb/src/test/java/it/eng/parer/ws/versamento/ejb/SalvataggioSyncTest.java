@@ -17,35 +17,38 @@
 
 package it.eng.parer.ws.versamento.ejb;
 
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Arrays;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+import org.xadisk.bridge.proxies.interfaces.XADiskBasicIOOperations;
+import org.xadisk.connector.outbound.XADiskConnectionFactory;
+
 import it.eng.ArquillianTestUtils;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
 import it.eng.parer.firma.ejb.VerificaFirmaReportHelper;
 import it.eng.parer.ws.versamento.ejb.oracleBlb.WriteCompBlbOracle;
 import it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS;
 import it.eng.parer.ws.versamentoTpi.ejb.StatoCreaCartelle;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.xadisk.bridge.proxies.interfaces.XADiskBasicIOOperations;
-import org.xadisk.connector.outbound.XADiskConnectionFactory;
 
-import javax.ejb.EJB;
-import java.util.Arrays;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertNotNull;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class SalvataggioSyncTest {
 
     @EJB
     private SalvataggioSync salvataggioSync;
 
     @Test
-    public void inject_ok() {
+    void inject_ok() {
         assertNotNull(salvataggioSync);
     }
 
@@ -69,34 +72,34 @@ public class SalvataggioSyncTest {
      * "java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl"
      * )
      *
-     * @Test public void salvaDatiVersamento() { }
+     * @Test void salvaDatiVersamento() { }
      *
-     * @Test public void testSalvaDatiVersamento() { }
+     * @Test void testSalvaDatiVersamento() { }
      *
-     * @Test public void salvaWarningAARegistroUd() { }
+     * @Test void salvaWarningAARegistroUd() { }
      *
-     * @Test public void aggiornaRegistriFiscaliUd() { }
+     * @Test void aggiornaRegistriFiscaliUd() { }
      *
-     * @Test public void riparaCollegamentiUdNonRisolti() { }
+     * @Test void riparaCollegamentiUdNonRisolti() { }
      *
-     * @Test public void rimuoviUdNonVersate() { }
+     * @Test void rimuoviUdNonVersate() { }
      *
-     * @Test public void retrieveVrsVLisXmlUdUrnDaCalcByUd() { }
+     * @Test void retrieveVrsVLisXmlUdUrnDaCalcByUd() { }
      *
-     * @Test public void retrieveVrsVLisXmlDocUrnDaCalcByDoc() { }
+     * @Test void retrieveVrsVLisXmlDocUrnDaCalcByDoc() { }
      *
-     * @Test public void retrieveAroUpdUnitaDocByUd() { }
+     * @Test void retrieveAroUpdUnitaDocByUd() { }
      *
-     * @Test public void retrieveVrsVLisXmlUpdUrnDaCalcByUpd() { }
+     * @Test void retrieveVrsVLisXmlUpdUrnDaCalcByUpd() { }
      *
-     * @Test public void rimuoviSessVersDocErrate() { }
+     * @Test void rimuoviSessVersDocErrate() { }
      *
-     * @Test public void salvaDatiWarning() { }
+     * @Test void salvaDatiWarning() { }
      *
-     * @Test public void retrieveSerVLisVerserByUpdUd() { }
+     * @Test void retrieveSerVLisVerserByUpdUd() { }
      *
-     * @Test public void retrieveFasVLisFascByUpdUd() { }
+     * @Test void retrieveFasVLisFascByUpdUd() { }
      *
-     * @Test public void recuperaProgressivoVersione() { }
+     * @Test void recuperaProgressivoVersione() { }
      */
 }

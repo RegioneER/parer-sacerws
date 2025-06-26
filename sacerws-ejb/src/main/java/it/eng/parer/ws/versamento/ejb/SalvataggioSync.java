@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -49,6 +50,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import it.eng.parer.util.DateUtilsConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -1112,6 +1114,91 @@ public class SalvataggioSync {
         }
 
         return tmpReturn;
+    }
+
+    public boolean aggiornaDataCreazione(StrutturaVersamento strutV, ZonedDateTime tmChiusura, RispostaWS rispostaWS) {
+        boolean tmpReturn = true;
+        try {
+            Date dataChiusura = DateUtilsConverter.convert(tmChiusura);
+            //
+            AroUnitaDoc tmpTabUD = entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc());
+            tmpTabUD.setDtCreazione(dataChiusura);
+
+            ElvUdVersDaElabElenco tmpElv = retrieveElvUdVersDaElabElenco(strutV.getIdUnitaDoc());
+            if (tmpElv != null) {
+                tmpElv.setDtCreazione(dataChiusura);
+            }
+
+            for (DocumentoVers valueDocVers : strutV.getDocumentiAttesi()) {
+                AroDoc tmpTabDoc = entityManager.find(AroDoc.class, valueDocVers.getIdRecDocumentoDB());
+                tmpTabDoc.setDtCreazione(dataChiusura);
+            }
+
+            // aggiorno la tabella nel db
+            entityManager.flush();
+        } catch (Exception e) {
+            tmpReturn = false;
+            rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+            rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                    "Eccezione nella persistenza della data di creazione versamento UD: " + e.getMessage());
+            log.error("Eccezione nella persistenza della data di creazione versamento UD ", e);
+        } finally {
+            entityManager.clear();
+        }
+
+        return tmpReturn;
+    }
+
+    public boolean aggiornaDataCreazioneAggDoc(StrutturaVersamento strutV, ZonedDateTime tmChiusura,
+            RispostaWSAggAll rispostaWS) {
+        boolean tmpReturn = true;
+
+        try {
+            Date dataChiusura = DateUtilsConverter.convert(tmChiusura);
+            for (DocumentoVers valueDocVers : strutV.getDocumentiAttesi()) {
+                ElvDocAggDaElabElenco tmpElv = retrieveElvDocAggDaElabElenco(valueDocVers.getIdRecDocumentoDB());
+                if (tmpElv != null) {
+                    tmpElv.setDtCreazione(dataChiusura);
+                }
+
+                AroDoc tmpTabDoc = entityManager.find(AroDoc.class, valueDocVers.getIdRecDocumentoDB());
+                tmpTabDoc.setDtCreazione(dataChiusura);
+            }
+
+            // aggiorno la tabella nel db
+            entityManager.flush();
+        } catch (Exception e) {
+            tmpReturn = false;
+            rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+            rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                    "Eccezione nella persistenza della data di creazione aggiunta documento: " + e.getMessage());
+            log.error("Eccezione nella persistenza della data di creazione aggiunta documento ", e);
+        } finally {
+            entityManager.clear();
+        }
+
+        return tmpReturn;
+    }
+
+    private ElvUdVersDaElabElenco retrieveElvUdVersDaElabElenco(long idUnitaDoc) {
+        Query q = entityManager
+                .createQuery("SELECT e FROM ElvUdVersDaElabElenco e WHERE e.aroUnitaDoc.idUnitaDoc = :idUnitaDoc");
+        q.setParameter("idUnitaDoc", idUnitaDoc);
+        List<ElvUdVersDaElabElenco> lista = q.getResultList();
+        if (!lista.isEmpty()) {
+            return lista.get(0);
+        }
+        return null;
+    }
+
+    private ElvDocAggDaElabElenco retrieveElvDocAggDaElabElenco(long idDoc) {
+        Query q = entityManager.createQuery("SELECT e FROM ElvDocAggDaElabElenco e WHERE e.aroDoc.idDoc = :idDoc");
+        q.setParameter("idDoc", idDoc);
+        List<ElvDocAggDaElabElenco> lista = q.getResultList();
+        if (!lista.isEmpty()) {
+            return lista.get(0);
+        }
+        return null;
     }
 
     /*
@@ -2353,8 +2440,8 @@ public class SalvataggioSync {
                         tmpReturn = false;
                     }
                 } else { // Backend Object storage
-                    ObjectStorageResource componenteSuOS = objectStorageService.createOrCopyResourceInComponenti(
-                            backendComponenti.getBackendName(), compntEntity.getIdCompDoc().longValue(), tmpFb);
+                    ObjectStorageResource componenteSuOS = objectStorageService.createOrCopyResourceInComponenti(strutV,
+                            compntEntity, backendComponenti.getBackendName(), tmpFb);
                     log.debug("Salvato il componente su Object storage nel bucket {} con chiave {}! ",
                             componenteSuOS.getBucket(), componenteSuOS.getKey());
 

@@ -29,10 +29,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 
 import it.eng.parer.ws.dto.CSChiaveFasc;
 import it.eng.parer.ws.dto.RispostaControlli;
@@ -43,7 +42,7 @@ import it.eng.parer.ws.xml.versfascicolo.IndiceSIPFascicolo;
 import it.eng.parer.ws.xml.versfascicolo.ProfiloArchivisticoType;
 import it.eng.parer.ws.xml.versfascicoloresp.ECFascicoloType;
 
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class ControlliProfiliFascicoloTest {
 
     @Deployment

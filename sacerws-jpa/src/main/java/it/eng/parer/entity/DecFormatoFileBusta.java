@@ -30,7 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -80,7 +79,6 @@ public class DecFormatoFileBusta implements Serializable {
     // bi-directional many-to-one association to DecFormatoFileStandard
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_STANDARD")
-    @XmlInverseReference(mappedBy = "decFormatoFileBustas")
     public DecFormatoFileStandard getDecFormatoFileStandard() {
         return this.decFormatoFileStandard;
     }

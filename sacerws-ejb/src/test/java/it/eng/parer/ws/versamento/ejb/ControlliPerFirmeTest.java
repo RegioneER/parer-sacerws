@@ -20,8 +20,8 @@ package it.eng.parer.ws.versamento.ejb;
 import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
 import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
 import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -32,10 +32,9 @@ import javax.ejb.EJB;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 
 import it.eng.parer.entity.FirCertifCa;
 import it.eng.parer.entity.FirCertifOcsp;
@@ -45,7 +44,7 @@ import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc;
 import it.eng.parer.firma.exception.VerificaFirmaException;
 import it.eng.parer.ws.dto.RispostaControlli;
 
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class ControlliPerFirmeTest {
     public static final long ID_FORMATO_DOC_PDF = 1L;
     public static final long ID_FORMATO_STD_PDF = 1L;
@@ -63,49 +62,49 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    public void getOrgStrutt_queryIsOk() {
+    void getOrgStrutt_queryIsOk() {
         final RispostaControlli rispostaControlli = helper.getOrgStrutt(2L);
         assertNotNull(rispostaControlli.getrObject());
     }
 
     @Test
-    public void getOrgStruttAsEntity_queryIsOk() throws VerificaFirmaException {
+    void getOrgStruttAsEntity_queryIsOk() throws VerificaFirmaException {
         helper.getOrgStruttAsEntity(0L);
         assertTrue(true);
     }
 
     @Test
-    public void getDecFormatoFileStandardAsEntity_queryIsOk() throws VerificaFirmaException {
+    void getDecFormatoFileStandardAsEntity_queryIsOk() throws VerificaFirmaException {
         helper.getDecFormatoFileStandardAsEntity(0L);
         assertTrue(true);
     }
 
     @Test
-    public void confrontaFormati_queryIsOk() {
+    void confrontaFormati_queryIsOk() {
         final RispostaControlli rispostaControlli = helper.confrontaFormati(ID_FORMATO_STD_PDF, ID_FORMATO_DOC_PDF);
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    public void getDecEstensioneFiles_queryIsOk() throws VerificaFirmaException {
+    void getDecEstensioneFiles_queryIsOk() throws VerificaFirmaException {
         helper.getDecEstensioneFiles("PDF");
         assertTrue(true);
     }
 
     @Test
-    public void getDecFmtFileStdFromEstensioneFiles_queryIsOk() throws VerificaFirmaException {
+    void getDecFmtFileStdFromEstensioneFiles_queryIsOk() throws VerificaFirmaException {
         helper.getDecFmtFileStdFromEstensioneFiles("PDF");
         assertTrue(true);
     }
 
     @Test
-    public void getDecFmtFileStandardFromTikaMimes_queryIsOk() throws VerificaFirmaException {
+    void getDecFmtFileStandardFromTikaMimes_queryIsOk() throws VerificaFirmaException {
         helper.getDecFmtFileStandardFromTikaMimes("application/pdf");
         assertTrue(true);
     }
 
     @Test
-    public void getDecFmtFileStandardFromFmtMarcas_queryIsOk() throws VerificaFirmaException {
+    void getDecFmtFileStandardFromFmtMarcas_queryIsOk() throws VerificaFirmaException {
         final HashSet<String> tiFormatoFirmaMarca = new HashSet<>();
         tiFormatoFirmaMarca.add("pades");
         helper.getDecFmtFileStandardFromFmtMarcas(tiFormatoFirmaMarca);
@@ -113,25 +112,25 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    public void getDecFmtFileStandardFromFmtDocs_queryIsOk() throws VerificaFirmaException {
+    void getDecFmtFileStandardFromFmtDocs_queryIsOk() throws VerificaFirmaException {
         helper.getDecFmtFileStandardFromFmtDocs(ID_FORMATO_DOC_PDF, "chiaveComp", "nmFormatoFileDoc");
         assertTrue(true);
     }
 
     @Test
-    public void getDecFormatoFileDoc_queryIsOk() throws VerificaFirmaException {
+    void getDecFormatoFileDoc_queryIsOk() throws VerificaFirmaException {
         helper.getDecFormatoFileDoc(0L);
         assertTrue(true);
     }
 
     @Test
-    public void getFirCertifCa_queryIsOk() throws VerificaFirmaException {
+    void getFirCertifCa_queryIsOk() throws VerificaFirmaException {
         helper.getFirCertifCa(StringUtils.EMPTY, "dlDnIssuerCertifCa");
         assertTrue(true);
     }
 
     @Test
-    public void getFirCrl_queryIsOk() throws VerificaFirmaException {
+    void getFirCrl_queryIsOk() throws VerificaFirmaException {
         final FirCertifCa firCertifCa = aFirCertifCa();
         final String niSerialCrl = StringUtils.EMPTY;
         final Date dtIniCrl = new Date();
@@ -147,13 +146,13 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    public void getFirCertifOcsp_queryIsOk() throws VerificaFirmaException {
+    void getFirCertifOcsp_queryIsOk() throws VerificaFirmaException {
         helper.getFirCertifOcsp(aFirCertifCa(), StringUtils.EMPTY);
         assertTrue(true);
     }
 
     @Test
-    public void getFirOcsp_queryIsOk() throws VerificaFirmaException {
+    void getFirOcsp_queryIsOk() throws VerificaFirmaException {
         final FirCertifOcsp firCertifOcsp = new FirCertifOcsp();
         firCertifOcsp.setIdCertifOcsp(0l);
         helper.getFirOcsp(firCertifOcsp, "dsCertifIssuerName", "dsCertifSerialBase64", "dsCertifSkiBase64");
@@ -161,19 +160,19 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    public void getFirCertifFirmatario_queryIsOk() throws VerificaFirmaException {
+    void getFirCertifFirmatario_queryIsOk() throws VerificaFirmaException {
         helper.getFirCertifFirmatario(aFirCertifCa(), StringUtils.EMPTY);
         assertTrue(true);
     }
 
     @Test
-    public void getFirCertifFirmatarioIds_queryIsOk() throws VerificaFirmaException {
+    void getFirCertifFirmatarioIds_queryIsOk() throws VerificaFirmaException {
         helper.getFirCertifFirmatarioIds(BigDecimal.ZERO, aFirCertifCa());
         assertTrue(true);
     }
 
     @Test
-    public void getDecServizioVerificaCompDoc_queryIsOk() throws VerificaFirmaException {
+    void getDecServizioVerificaCompDoc_queryIsOk() throws VerificaFirmaException {
         for (DecServizioVerificaCompDoc.CdServizioVerificaCompDoc cdService : DecServizioVerificaCompDoc.CdServizioVerificaCompDoc
                 .values()) {
             helper.getDecServizioVerificaCompDoc(cdService.name(), "cdLibrary");
@@ -182,7 +181,7 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    public void retrieveOrgEnteFor_queryIsOk() {
+    void retrieveOrgEnteFor_queryIsOk() {
         final OrgStrut os = new OrgStrut();
         os.setIdStrut(0L);
         os.setOrgEnte(new OrgEnte());

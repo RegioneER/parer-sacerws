@@ -98,8 +98,6 @@ public abstract class VersamentoSyncBase {
     @EJB
     protected RapportoVersBuilder myRapportoVersBuilder;
     @EJB
-    protected ControlliPartizioni mycontrolliPartizioni;
-    @EJB
     protected ControlliSubStrut myControlliSubStrut;
     @EJB
     protected ControlliSemantici myControlliSemantici;
@@ -237,19 +235,6 @@ public abstract class VersamentoSyncBase {
             }
         }
 
-        // verifica il partizionamento per la substruttura
-        if (versamento.getXmlDefaults().get(ParametroApplDB.VERIFICA_PARTIZIONI) != null && versamento.getXmlDefaults()
-                .get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().equalsIgnoreCase("TRUE")) {
-            if (rispostaWs.getSeverity() != IRispostaWS.SeverityEnum.ERROR) {
-                RispostaControlli tmpRispostaControlli;
-                tmpRispostaControlli = mycontrolliPartizioni.verificaPartizioniSubStrutt(versamento);
-                if (tmpRispostaControlli.getCodErr() != null) {
-                    rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWs.setEsitoWsError(tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
-                }
-            }
-        }
-
         if (rispostaWs.getSeverity() == IRispostaWS.SeverityEnum.ERROR) {
             if (rispostaWs.isErroreElementoDoppio()) {
                 RispostaControlli tmpRispostaControlli;
@@ -376,7 +361,7 @@ public abstract class VersamentoSyncBase {
             for (FileBinario rifFileBinario : sessioneFinta.getFileBinari()) {
                 logger.debug("Sto per salvare {} su OS", rifFileBinario.getFileName());
                 ObjectStorageResource componenteStaging = objectStorageService
-                        .createComponenteInStaging(backendStaging.getBackendName(), rifFileBinario.getFileSuDisco());
+                        .createTmpResourceInStaging(backendStaging.getBackendName(), rifFileBinario.getFileSuDisco());
                 rifFileBinario.setObjectStorageResource(componenteStaging);
             }
         }
@@ -441,30 +426,6 @@ public abstract class VersamentoSyncBase {
         //
         myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
         myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
-        //
-        if (versamento.getXmlDefaults().get(ParametroApplDB.VERIFICA_PARTIZIONI) != null && versamento.getXmlDefaults()
-                .get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().equalsIgnoreCase("TRUE")) {
-            String tmpDescStrut;
-            if (versamento.getStrutturaComponenti() != null
-                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpDescStrut = versamento.getVersamento().getIntestazione().getVersatore().getStruttura();
-            } else {
-                tmpDescStrut = "NON DETERMINABILE";
-            }
-            tmpRispostaControlli = mycontrolliPartizioni.verificaPartizioniVers(versamento.getStrutturaComponenti(),
-                    sessione, tmpDescStrut);
-            if (tmpRispostaControlli.getCodErr() != null) {
-                rispostaWs.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                rispostaWs.setEsitoWsError(tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
-                versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
-                        myEsito.getEsitoGenerale().getMessaggioErrore());
-                // rigenera la lista errori e warning secondari - forse cambiata in caso di
-                // errore
-                myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
-                myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
-                prosegui = false;
-            }
-        }
 
         if (prosegui && !versamento.isSimulaScrittura()) {
             this.beginTrans(rispostaWs);
@@ -487,7 +448,23 @@ public abstract class VersamentoSyncBase {
             }
 
             // marca il timestamp della chiusura sessione di versamento
-            sessione.setTmChiusura(ZonedDateTime.now());
+            ZonedDateTime tmChiusura = ZonedDateTime.now();
+            sessione.setTmChiusura(tmChiusura);
+
+            // MAC #37372 - Data creazione versamento valorizzata con dt_chiusura sessione di versamento
+            if (rispostaWs.getSeverity() != IRispostaWS.SeverityEnum.ERROR) {
+                if (!mySalvataggioSync.aggiornaDataCreazione(versamento.getStrutturaComponenti(), tmChiusura,
+                        rispostaWs)) {
+                    this.rollback(rispostaWs);
+                    this.beginTrans(rispostaWs);
+                    versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
+                            myEsito.getEsitoGenerale().getMessaggioErrore());
+                    // rigenera la lista errori e warning secondari - forse cambiata in caso di
+                    // errore di persistenza
+                    myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
+                    myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
+                }
+            }
 
             if (rispostaWs.getSeverity() != IRispostaWS.SeverityEnum.ERROR) {
                 tmpRispostaControlli = myRapportoVersBuilder.produciEsitoNuovoRapportoVers(versamento, sessione,
@@ -508,6 +485,7 @@ public abstract class VersamentoSyncBase {
                 }
             }
 
+            // Salvo la sessione di versamento (andata a buon fine o KO) basta che non sia un errore DB_FATAL
             if (prosegui && sessione.isSalvaSessione()
                     && rispostaWs.getErrorType() != IRispostaWS.ErrorTypeEnum.DB_FATAL) {
                 tmpAvanzamentoWs.setCheckPoint(AvanzamentoWs.CheckPoints.SalvataggioSessioneWS).setFase("inizio")

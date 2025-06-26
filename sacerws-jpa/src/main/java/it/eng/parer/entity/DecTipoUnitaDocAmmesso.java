@@ -32,7 +32,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -74,7 +73,6 @@ public class DecTipoUnitaDocAmmesso implements Serializable {
     // bi-directional many-to-one association to DecRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGISTRO_UNITA_DOC")
-    @XmlInverseReference(mappedBy = "decTipoUnitaDocAmmessos")
     public DecRegistroUnitaDoc getDecRegistroUnitaDoc() {
         return this.decRegistroUnitaDoc;
     }

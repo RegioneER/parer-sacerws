@@ -17,6 +17,23 @@
 
 package it.eng.parer.ws.versFascicoli.ejb;
 
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Date;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.entity.DecTipoFascicolo;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.VrsFascicoloKo;
@@ -26,22 +43,8 @@ import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.XmlFascCache;
 import it.eng.parer.ws.versFascicoli.dto.StrutturaVersFascicolo;
 import it.eng.parer.ws.versFascicoli.dto.VersFascicoloExt;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Date;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class LogSessioneFascicoliHelperTest {
     @EJB
     private LogSessioneFascicoliHelper helper;
@@ -58,26 +61,26 @@ public class LogSessioneFascicoliHelperTest {
     }
 
     @Test
-    public void verificaPartizioneFascicoloErr_queryIsOk() {
+    void verificaPartizioneFascicoloErr_queryIsOk() {
         final RispostaControlli rispostaControlli = helper.verificaPartizioneFascicoloErr();
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    public void verificaPartizioneFascicoloByAaStrutKo_queryIsOk() {
+    void verificaPartizioneFascicoloByAaStrutKo_queryIsOk() {
         final RispostaControlli rispostaControlli = helper
                 .verificaPartizioneFascicoloByAaStrutKo(getVersFascicoloExt());
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    public void cercaFascicoloKo_queryIsOk() {
+    void cercaFascicoloKo_queryIsOk() {
         final RispostaControlli rispostaControlli = helper.cercaFascicoloKo(getVersFascicoloExt());
         assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
-    public void aggiornaConteggioMonContaFasKo_queryIsOk() {
+    void aggiornaConteggioMonContaFasKo_queryIsOk() {
         VrsFascicoloKo vrsFascicoloKo = new VrsFascicoloKo();
         vrsFascicoloKo.setOrgStrut(new OrgStrut());
         vrsFascicoloKo.getOrgStrut().setIdStrut(0L);

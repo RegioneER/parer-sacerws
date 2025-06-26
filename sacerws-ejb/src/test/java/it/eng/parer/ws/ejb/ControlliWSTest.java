@@ -17,6 +17,23 @@
 
 package it.eng.parer.ws.ejb;
 
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import javax.ejb.EJB;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+
 import it.eng.parer.idpjaas.logutils.LogDto;
 import it.eng.parer.util.ejb.AppServerInstance;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
@@ -30,22 +47,8 @@ import it.eng.spagoLite.security.auth.PwdUtil;
 import it.eng.spagoLite.security.auth.WSLoginHandler;
 import it.eng.spagoLite.security.menu.MenuEntry;
 import it.eng.spagoLite.security.menu.impl.Menu;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.ejb.EJB;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import static it.eng.ArquillianTestUtils.*;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(Arquillian.class)
+@ArquillianTest
 public class ControlliWSTest {
 
     @Deployment

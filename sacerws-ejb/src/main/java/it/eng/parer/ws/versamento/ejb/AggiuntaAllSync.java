@@ -41,7 +41,6 @@ import it.eng.parer.ws.utils.AvanzamentoWs;
 import it.eng.parer.ws.utils.Costanti.TipiWSPerControlli;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
-import it.eng.parer.ws.utils.ParametroApplDB;
 import it.eng.parer.ws.utils.PayLoad;
 import it.eng.parer.ws.utils.XmlDateUtility;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
@@ -337,30 +336,6 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
         //
         myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
         myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
-        //
-        if (versamento.getXmlDefaults().get(ParametroApplDB.VERIFICA_PARTIZIONI) != null && versamento.getXmlDefaults()
-                .get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().equalsIgnoreCase("TRUE")) {
-            String tmpDescStrut;
-            if (versamento.getStrutturaComponenti() != null
-                    && versamento.getStrutturaComponenti().getIdStruttura() != 0) {
-                tmpDescStrut = versamento.getVersamento().getIntestazione().getVersatore().getStruttura();
-            } else {
-                tmpDescStrut = "NON DETERMINABILE";
-            }
-            tmpRispostaControlli = mycontrolliPartizioni.verificaPartizioniVers(versamento.getStrutturaComponenti(),
-                    sessione, tmpDescStrut);
-            if (tmpRispostaControlli.getCodErr() != null) {
-                rispostaWs.setSeverity(SeverityEnum.ERROR);
-                rispostaWs.setEsitoWsError(tmpRispostaControlli.getCodErr(), tmpRispostaControlli.getDsErr());
-                versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
-                        myEsito.getEsitoGenerale().getMessaggioErrore());
-                // rigenera la lista errori e warning secondari - forse cambiata in caso di
-                // errore
-                myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
-                myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
-                prosegui = false;
-            }
-        }
 
         if (prosegui && !versamento.isSimulaScrittura()) {
             this.beginTrans(rispostaWs);
@@ -383,7 +358,23 @@ public class AggiuntaAllSync extends VersamentoSyncBase {
             }
 
             // marca il timestamp della chiusura sessione di versamento
-            sessione.setTmChiusura(ZonedDateTime.now());
+            ZonedDateTime tmChiusura = ZonedDateTime.now();
+            sessione.setTmChiusura(tmChiusura);
+
+            // MAC #37372 - Data creazione versamento valorizzata con dt_chiusura sessione di versamento
+            if (rispostaWs.getSeverity() != IRispostaWS.SeverityEnum.ERROR) {
+                if (!mySalvataggioSync.aggiornaDataCreazioneAggDoc(versamento.getStrutturaComponenti(), tmChiusura,
+                        rispostaWs)) {
+                    this.rollback(rispostaWs);
+                    this.beginTrans(rispostaWs);
+                    versamento.aggiungErroreFatale(myEsito.getEsitoGenerale().getCodiceErrore(),
+                            myEsito.getEsitoGenerale().getMessaggioErrore());
+                    // rigenera la lista errori e warning secondari - forse cambiata in caso di
+                    // errore di persistenza
+                    myEsito.setErroriUlteriori(versamento.produciEsitoErroriSec());
+                    myEsito.setWarningUlteriori(versamento.produciEsitoWarningSec());
+                }
+            }
 
             if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
                 tmpRispostaControlli = myRapportoVersBuilder.produciEsitoNuovoRapportoVers(versamento, sessione,

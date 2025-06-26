@@ -20,24 +20,22 @@ package it.eng.parer.firma.crypto.helper;
 import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
 import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
 import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 
 import javax.ejb.EJB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 
 import it.eng.parer.firma.helper.EidasRestConfiguratorHelper;
 
-@RunWith(Arquillian.class)
-
+@ArquillianTest
 public class EidasRestConfiguratorHelperTest {
     @EJB
     private EidasRestConfiguratorHelper helper;
@@ -53,54 +51,54 @@ public class EidasRestConfiguratorHelperTest {
     }
 
     @Test
-    public void getRetryTimeoutParam_queryIsOk() {
+    void getRetryTimeoutParam_queryIsOk() {
         helper.getRetryTimeoutParam();
         assertTrue(true);
     }
 
     @Test
-    public void getMaxRetryParam_queryIsOk() {
+    void getMaxRetryParam_queryIsOk() {
         helper.getMaxRetryParam();
         assertTrue(true);
     }
 
     @Test
-    public void getCircuitBreakerOpenTimeoutParam_queryIsOk() {
+    void getCircuitBreakerOpenTimeoutParam_queryIsOk() {
         helper.getCircuitBreakerOpenTimeoutParam();
         assertTrue(true);
     }
 
     @Test
-    public void getCircuitBreakerResetTimeoutParam_queryIsOk() {
+    void getCircuitBreakerResetTimeoutParam_queryIsOk() {
         helper.getCircuitBreakerResetTimeoutParam();
         assertTrue(true);
     }
 
     @Test
-    public void getPeriodoBackOffParam_queryIsOk() {
+    void getPeriodoBackOffParam_queryIsOk() {
         helper.getPeriodoBackOffParam();
         assertTrue(true);
     }
 
     @Test
-    public void getClientTimeoutInMinutesParam_queryIsOk() {
+    void getClientTimeoutInMinutesParam_queryIsOk() {
         helper.getClientTimeoutInMinutesParam();
         assertTrue(true);
     }
 
     @Test
-    public void isCompositePolicyOptimisticParam_queryIsOk() {
+    void isCompositePolicyOptimisticParam_queryIsOk() {
         assertNotNull(helper.isCompositePolicyOptimisticParam());
     }
 
     @Test
-    public void endPoints_queryIsOk() {
+    void endPoints_queryIsOk() {
         helper.endPoints();
         assertTrue(true);
     }
 
     @Test
-    public void preferredEndpoint_queryIsOk() {
+    void preferredEndpoint_queryIsOk() {
         helper.preferredEndpoint();
         assertTrue(true);
     }

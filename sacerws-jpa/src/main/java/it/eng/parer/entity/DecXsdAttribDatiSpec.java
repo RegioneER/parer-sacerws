@@ -32,7 +32,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlID;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -85,7 +84,6 @@ public class DecXsdAttribDatiSpec implements Serializable {
     // bi-directional many-to-one association to DecAttribDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ATTRIB_DATI_SPEC")
-    @XmlInverseReference(mappedBy = "decXsdAttribDatiSpecs")
     public DecAttribDatiSpec getDecAttribDatiSpec() {
         return this.decAttribDatiSpec;
     }
@@ -97,7 +95,6 @@ public class DecXsdAttribDatiSpec implements Serializable {
     // bi-directional many-to-one association to DecXsdDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_XSD_DATI_SPEC", nullable = false)
-    @XmlInverseReference(mappedBy = "decXsdAttribDatiSpecs")
     public DecXsdDatiSpec getDecXsdDatiSpec() {
         return this.decXsdDatiSpec;
     }

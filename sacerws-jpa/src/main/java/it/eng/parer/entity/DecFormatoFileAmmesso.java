@@ -31,7 +31,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlID;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -73,7 +72,6 @@ public class DecFormatoFileAmmesso implements Serializable {
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_DOC")
-    @XmlInverseReference(mappedBy = "decFormatoFileAmmessos")
     public DecFormatoFileDoc getDecFormatoFileDoc() {
         return this.decFormatoFileDoc;
     }
@@ -85,7 +83,6 @@ public class DecFormatoFileAmmesso implements Serializable {
     // bi-directional many-to-one association to DecTipoCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_COMP_DOC")
-    @XmlInverseReference(mappedBy = "decFormatoFileAmmessos")
     public DecTipoCompDoc getDecTipoCompDoc() {
         return this.decTipoCompDoc;
     }

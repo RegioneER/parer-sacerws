@@ -30,7 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlID;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -95,7 +94,6 @@ public class OrgCampoValSubStrut implements Serializable {
     // bi-directional many-to-one association to DecAttribDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ATTRIB_DATI_SPEC")
-    @XmlInverseReference(mappedBy = "orgCampoValSubStruts")
     public DecAttribDatiSpec getDecAttribDatiSpec() {
         return this.decAttribDatiSpec;
     }
@@ -107,7 +105,6 @@ public class OrgCampoValSubStrut implements Serializable {
     // bi-directional many-to-one association to OrgRegolaValSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGOLA_VAL_SUB_STRUT")
-    @XmlInverseReference(mappedBy = "orgCampoValSubStruts")
     public OrgRegolaValSubStrut getOrgRegolaValSubStrut() {
         return this.orgRegolaValSubStrut;
     }
@@ -119,7 +116,6 @@ public class OrgCampoValSubStrut implements Serializable {
     // bi-directional many-to-one association to OrgSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SUB_STRUT")
-    @XmlInverseReference(mappedBy = "orgCampoValSubStruts")
     public OrgSubStrut getOrgSubStrut() {
         return this.orgSubStrut;
     }

@@ -17,19 +17,23 @@
 
 package it.eng.parer.ws.versamento.ejb;
 
-import it.eng.parer.ws.dto.RispostaControlli;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static it.eng.ArquillianTestUtils.assertNoErr;
+import static it.eng.ArquillianTestUtils.createEnterpriseArchive;
+import static it.eng.ArquillianTestUtils.createSacerLogJavaArchive;
+import static it.eng.ArquillianTestUtils.createSacerWSJavaArchive;
 
-import javax.ejb.EJB;
 import java.util.Arrays;
 
-import static it.eng.ArquillianTestUtils.*;
+import javax.ejb.EJB;
 
-@RunWith(Arquillian.class)
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit5.container.annotation.ArquillianTest;
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.jupiter.api.Test;
+
+import it.eng.parer.ws.dto.RispostaControlli;
+
+@ArquillianTest
 public class ControlliRappVersTest {
     @Deployment
     public static Archive<?> createTestArchive() {
@@ -42,25 +46,25 @@ public class ControlliRappVersTest {
     private ControlliRappVers controlliRappVers;
 
     @Test
-    public void trovaVersSessUd() {
+    void trovaVersSessUd() {
         final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessUd(0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void trovaVersSessDoc() {
+    void trovaVersSessDoc() {
         final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessDoc(0L, 0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void leggiXmlRappVersFromUd() {
+    void leggiXmlRappVersFromUd() {
         final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromUd(0L, 0L);
         assertNoErr(rispostaControlli);
     }
 
     @Test
-    public void leggiXmlRappVersFromDoc() {
+    void leggiXmlRappVersFromDoc() {
         final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromDoc(0L, 0L);
         assertNoErr(rispostaControlli);
     }

@@ -133,9 +133,6 @@ public class RecupSessDubbieFasc {
                 if (!this.recuperaStrutturaDaVersatore(versamento)) {
                     return;
                 }
-                if (!this.verificaPartizionamentoStruttura(versamento)) {
-                    return;
-                }
                 if (!this.recuperaTipoFascicolo(versamento)) {
                     return;
                 }
@@ -149,9 +146,6 @@ public class RecupSessDubbieFasc {
                 if (!this.recuperaStrutturaDaVersatore(versamento)) {
                     return;
                 }
-                if (!this.verificaPartizionamentoStruttura(versamento)) {
-                    return;
-                }
                 if (!this.recuperaTipoFascicolo(versamento)) {
                     return;
                 }
@@ -160,9 +154,6 @@ public class RecupSessDubbieFasc {
             // avviene se versatore e/o versione xml non coincidono con la chiamata ws
             if (versamento.getVersamento() != null && versamento.getStrutturaComponenti().getIdStruttura() < 1) {
                 if (!this.recuperaStrutturaDaVersatore(versamento)) {
-                    return;
-                }
-                if (!this.verificaPartizionamentoStruttura(versamento)) {
                     return;
                 }
                 if (!this.recuperaTipoFascicolo(versamento)) {
@@ -174,9 +165,6 @@ public class RecupSessDubbieFasc {
             // (avviene se la struttura è template o se il versatore non è autorizzato ad usarla)
             if (versamento.getVersamento() != null && versamento.getStrutturaComponenti().getIdStruttura() > 0
                     && !versamento.getStrutturaComponenti().isVersatoreVerificato()) {
-                if (!this.verificaPartizionamentoStruttura(versamento)) {
-                    return;
-                }
                 if (!this.recuperaTipoFascicolo(versamento)) {
                     return;
                 }
@@ -331,20 +319,6 @@ public class RecupSessDubbieFasc {
             }
         }
         return trovato;
-    }
-
-    private boolean verificaPartizionamentoStruttura(VersFascicoloExt versamento) {
-        boolean controlloOk = true;
-
-        CSChiaveFasc tagCSChiave = versamento.getStrutturaComponenti().getChiaveNonVerificata();
-        RispostaControlli rispostaControlli = controlliFascicoli.verificaPartizioniStruttAnnoFascicoli("dummy",
-                versamento.getStrutturaComponenti().getIdStruttura(), tagCSChiave.getAnno());
-        if (!rispostaControlli.isrBoolean()) {
-            // se il partizionamento è scorretto, la sessione di versamento è errata senza
-            // possibilità di recupero (anche le sessioni fallite sono partizionate sul db)
-            controlloOk = false;
-        }
-        return controlloOk;
     }
 
     private boolean recuperaTipoFascicolo(VersFascicoloExt versamento) {

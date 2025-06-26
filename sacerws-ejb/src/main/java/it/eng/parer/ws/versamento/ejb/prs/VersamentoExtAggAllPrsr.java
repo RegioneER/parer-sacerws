@@ -66,7 +66,6 @@ import it.eng.parer.ws.versamento.dto.DocumentoVers;
 import it.eng.parer.ws.versamento.dto.RispostaWSAggAll;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VersamentoExtAggAll;
-import it.eng.parer.ws.versamento.ejb.ControlliPartizioni;
 import it.eng.parer.ws.versamento.ejb.ControlliPerFirme;
 import it.eng.parer.ws.versamento.ejb.RapportoVersBuilder;
 import it.eng.parer.ws.versamento.utils.Conteggi;
@@ -96,10 +95,6 @@ public class VersamentoExtAggAllPrsr {
     // stateless ejb per verifica autorizzazione ws
     @EJB
     private ControlliWS controlliEjb;
-    // stateless ejb per verifica del corretto partizionamento in funzione della
-    // struttura da versare
-    @EJB
-    private ControlliPartizioni controlliPartizioni;
     // singleton ejb di gestione cache dei parser Castor
     @EJB
     private XmlVersCache xmlVersCache;
@@ -761,27 +756,6 @@ public class VersamentoExtAggAllPrsr {
                     setRispostaWsError(rispostaWs, rispostaControlli);
                     rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
                 }
-            }
-        }
-
-        /*
-         * verifica della presenza di partizioni del database coerenti con: la struttura, il tipo di salvataggio del
-         * blob (file o blob) l'anno
-         */
-        if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            if (xmlDefaults.get(ParametroApplDB.VERIFICA_PARTIZIONI) != null
-                    && xmlDefaults.get(ParametroApplDB.VERIFICA_PARTIZIONI).trim().equalsIgnoreCase("TRUE")) {
-                rispostaControlli.reset();
-                rispostaControlli = controlliPartizioni.verificaPartizioniBlob(versamento.getStrutturaComponenti(),
-                        tmpCSVersatore);
-                if (!rispostaControlli.isrBoolean()) {
-                    setRispostaWsError(rispostaWs, rispostaControlli);
-                    myEsito.getUnitaDocumentaria().getEsitoUnitaDocumentaria()
-                            .setCodiceEsito(ECEsitoPosNegWarType.NEGATIVO);
-                    rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-                }
-            } else {
-                log.info("Il controllo delle partizioni è stato disabilitato.");
             }
         }
 

@@ -3,23 +3,17 @@
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>sacerws</artifactId>
-        <version>6.6.1-SNAPSHOT</version>
+        <version>6.7.1-SNAPSHOT</version>
     </parent>
     <artifactId>sacerws-jpa</artifactId>
     <name>sacerws-jpa</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.eclipse.persistence.moxy.version>2.3.2</org.eclipse.persistence.moxy.version>
         <!-- resource filter -->
         <hibernate.show_sql>false</hibernate.show_sql>
 		<hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>${org.eclipse.persistence.moxy.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>

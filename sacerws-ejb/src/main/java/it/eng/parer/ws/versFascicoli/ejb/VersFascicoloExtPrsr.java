@@ -318,8 +318,7 @@ public class VersFascicoloExtPrsr {
         // se ho passato la verifica strutturale...
         // verifica la struttura versante
         if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-            this.controllaStruttura(myControlliFascicolo, versamento, rispostaWs, tagCSVersatore, tagCSChiave,
-                    descChiaveFasc);
+            this.controllaStruttura(myControlliFascicolo, versamento, rispostaWs, tagCSVersatore);
         }
 
         // se il versatore alla fine è ok e la struttura è utilizzabile, lo scrivo
@@ -904,8 +903,7 @@ public class VersFascicoloExtPrsr {
     }
 
     private void controllaStruttura(ECFascicoloType.EsitoControlliFascicolo myControlliFascicolo,
-            VersFascicoloExt versamento, RispostaWSFascicolo rispostaWs, CSVersatore tagCSVersatore,
-            CSChiaveFasc tagCSChiave, String descChiaveFasc) {
+            VersFascicoloExt versamento, RispostaWSFascicolo rispostaWs, CSVersatore tagCSVersatore) {
         // verifica la struttura versante
         RispostaControlli rispostaControlli = controlliSemantici.checkIdStrut(tagCSVersatore,
                 TipiWSPerControlli.VERSAMENTO_FASCICOLO, versamento.getStrutturaComponenti().getDataVersamento());
@@ -951,21 +949,6 @@ public class VersFascicoloExtPrsr {
                 // tentare di riscostruire la chiave ed il tipo fascicolo
                 // e trasformare la sessione errata in una sessione fallita
                 rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.DUBBIA);
-            }
-        }
-
-        // verifica il partizionamento corretto della struttura
-        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-            rispostaControlli = controlliFascicoli.verificaPartizioniStruttAnnoFascicoli(descChiaveFasc,
-                    versamento.getStrutturaComponenti().getIdStruttura(), tagCSChiave.getAnno());
-            if (!rispostaControlli.isrBoolean()) {
-                myControlliFascicolo.setCodiceEsito(ECEsitoPosNegWarType.NEGATIVO);
-                myControlliFascicolo.setIdentificazioneVersatore(ECEsitoPosNegType.NEGATIVO);
-                // se il partizionamento è scorretto, la sessione di versamento è errata senza
-                // possibilità di recupero (anche le sessioni fallite sono partizionate sul db)
-                rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ERRATA);
-                rispostaWs.setSeverity(SeverityEnum.ERROR);
-                rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
             }
         }
     }

@@ -17,16 +17,13 @@
 
 package it.eng.parer.ws.versamento.ejb.help;
 
+import static it.eng.parer.ws.utils.Costanti.WS_AGGIORNAMENTO_VERS_NOME;
 import static it.eng.parer.ws.utils.Costanti.WS_AGGIUNTA_DOC_NOME;
 import static it.eng.parer.ws.utils.Costanti.WS_VERSAMENTO_MM_NOME;
 import static it.eng.parer.ws.utils.Costanti.WS_VERSAMENTO_NOME;
-import static it.eng.parer.ws.utils.Costanti.WS_AGGIORNAMENTO_VERS_NOME;
-import static it.eng.parer.ws.utils.Costanti.AwsConstants.MEATADATA_INGEST_NODE;
-import static it.eng.parer.ws.utils.Costanti.AwsConstants.MEATADATA_INGEST_TIME;
+import static it.eng.parer.ws.utils.Costanti.S3Constants.MEATADATA_INGEST_NODE;
+import static it.eng.parer.ws.utils.Costanti.S3Constants.MEATADATA_INGEST_TIME;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -99,7 +96,6 @@ import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest.Builder;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -239,44 +235,12 @@ public class SalvataggioBackendHelper {
      *            chiave dell'oggetto
      * @param configuration
      *            configurazione dell'object storage in cui aggiungere l'oggetto
-     *
-     * @return riferimento alla risorsa appena inserita
-     *
-     * @throws ObjectStorageException
-     *             in caso di errore
-     */
-    public ObjectStorageResource putObject(InputStream blob, long blobLength, final String key,
-            ObjectStorageBackend configuration) throws ObjectStorageException {
-        checkFullConfiguration(configuration);
-        try {
-            return putObject(blob, blobLength, key, configuration, Optional.empty(), Optional.empty(),
-                    Optional.empty());
-        } catch (Exception e) {
-            throw ObjectStorageException.builder()
-                    .message("Impossibile salvare oggetto {0} sul bucket {1}", key, configuration.getBucket()).cause(e)
-                    .build();
-        }
-
-    }
-
-    /**
-     * Salva lo stream di dati sull'object storage della configurazione identificandolo con la chiave passata come
-     * parametro.
-     *
-     * @param blob
-     *            stream di dati
-     * @param blobLength
-     *            dimensione dello stream di dati
-     * @param key
-     *            chiave dell'oggetto
-     * @param configuration
-     *            configurazione dell'object storage in cui aggiungere l'oggetto
      * @param metadata
      *            eventuali metadati (nel caso non vengano passati vengono utilizzati quelli predefiniti)
      * @param tags
      *            eventuali tag (nel caso non vengano passati non vengnono apposti)
-     * @param base64md5
-     *            eventuale base64-encoded MD5 del file per data integrity check
+     * @param base64crc32c
+     *            eventuale base64-encoded CRC32 del file per data integrity check
      *
      * @return riferimento alla risorsa appena inserita
      *
@@ -285,7 +249,7 @@ public class SalvataggioBackendHelper {
      */
     public ObjectStorageResource putObject(InputStream blob, long blobLength, final String key,
             ObjectStorageBackend configuration, Optional<Map<String, String>> metadata, Optional<Set<Tag>> tags,
-            Optional<String> base64md5) throws ObjectStorageException {
+            Optional<String> base64crc32c) throws ObjectStorageException {
 
         checkFullConfiguration(configuration);
 
@@ -309,8 +273,8 @@ public class SalvataggioBackendHelper {
             if (tags.isPresent()) {
                 putObjectBuilder.tagging(Tagging.builder().tagSet(tags.get()).build());
             }
-            if (base64md5.isPresent()) {
-                putObjectBuilder.contentMD5(base64md5.get());
+            if (base64crc32c.isPresent()) {
+                putObjectBuilder.checksumCRC32C(base64crc32c.get());
             }
 
             PutObjectRequest objectRequest = putObjectBuilder.build();
@@ -376,7 +340,14 @@ public class SalvataggioBackendHelper {
     }
 
     /**
-     * Copia dal bucket di staging l'oggetto sul bucket definitivo.
+     *
+     * Copia oggetto dal bucket sorgente al bucket destinazione
+     *
+     * Nota: la copia è pilotata manualmente ossia si recupera l'oggetto (get-object) con il client S3 sorgente +
+     * put-object con client S3 destinatzione
+     *
+     * Si dovrebbe passare alla metodologia con S3 api di copia MA con un client+SA con permessi di lettura / scrittura
+     * su entrambi i bucket coinvolti.
      *
      * @param sourceKey
      *            chiave del bucket sorgente
@@ -392,8 +363,9 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException
      *             in caso di errore
      */
-    public ObjectStorageResource createObjectComponenti(String sourceKey, ObjectStorageBackend sourceConfiguration,
-            String destKey, ObjectStorageBackend destConfiguration) throws ObjectStorageException {
+    public ObjectStorageResource getObjectFromSrcAndPutObjectOnDest(String sourceKey,
+            ObjectStorageBackend sourceConfiguration, String destKey, ObjectStorageBackend destConfiguration)
+            throws ObjectStorageException {
 
         checkFullConfiguration(sourceConfiguration);
         checkFullConfiguration(destConfiguration);
@@ -414,43 +386,16 @@ public class SalvataggioBackendHelper {
         }
         try (ResponseInputStream<GetObjectResponse> objectStream = s3SourceClient.getObject(getObjectRequest);) {
             long objectLength = objectStream.response().contentLength();
-            return putObject(objectStream, objectLength, destKey, destConfiguration);
+            // if present
+            String crc32c = objectStream.response().checksumCRC32C();
+            return putObject(objectStream, objectLength, destKey, destConfiguration, Optional.empty(), Optional.empty(),
+                    Optional.ofNullable(crc32c));
 
         } catch (Exception e) {
             throw ObjectStorageException.builder().message(
                     "{0}: impossibile creare / copiare oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
                     sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(), sourceKey,
                     destConfiguration.getBucket(), destKey).cause(e).build();
-        }
-
-    }
-
-    /**
-     * Copia il file memorizzato nel filesystem sul un oggetto nel bucket definitivo.
-     *
-     * @param componente
-     *            file del componente
-     * @param destKey
-     *            chiave del bucket destinazione
-     * @param destConfiguration
-     *            configurazione del bucket di destinazione
-     *
-     * @return riferimento della risorsa caricata
-     *
-     * @throws ObjectStorageException
-     *             in caso di errore
-     */
-    public ObjectStorageResource createObjectComponenti(File componente, String destKey,
-            ObjectStorageBackend destConfiguration) throws ObjectStorageException {
-        checkFullConfiguration(destConfiguration);
-
-        try (FileInputStream fis = new FileInputStream(componente)) {
-            return putObject(fis, componente.length(), destKey, destConfiguration);
-        } catch (IOException e) {
-            throw ObjectStorageException.builder()
-                    .message("Impossibile caricare il file {0} sul bucket {1} con chiave {2}", componente.getName(),
-                            destConfiguration.getBucket(), destKey)
-                    .cause(e).build();
         }
 
     }
@@ -865,18 +810,24 @@ public class SalvataggioBackendHelper {
      * @param destConfiguration
      *            configurazione dell'Object storage destinazione
      *
+     * @return restituisce oggetto copiato da sorgente a destinazione {@link ObjectStorageResource}
+     *
      * @throws ObjectStorageException
      *             in caso di eccezione
+     *
      */
-    public void copyObjectFromStaging(String sourceKey, ObjectStorageBackend sourceConfiguration, String destKey,
-            ObjectStorageBackend destConfiguration) throws ObjectStorageException {
+    public ObjectStorageResource copyObjectFromSrcToDest(String sourceKey, ObjectStorageBackend sourceConfiguration,
+            String destKey, ObjectStorageBackend destConfiguration) throws ObjectStorageException {
 
         checkFullConfiguration(sourceConfiguration);
         checkFullConfiguration(destConfiguration);
 
         // non è lo stesso Object storage, non posso effettuare la copia tra bucket.
         if (!sameServiceAccount(destConfiguration, destConfiguration)) {
-            return;
+            throw ObjectStorageException.builder().message(
+                    "Impossibile effettuare copia source key = {0} bucket {1} / dest key = {2} bucket = {3} per istanze diverse di Object Storage {4} verso {5}",
+                    sourceKey, sourceConfiguration.getBucket(), destKey, destConfiguration.getBucket(),
+                    sourceConfiguration.getBackendName(), destConfiguration.getBackendName()).build();
         }
 
         final URI storageAddress = sourceConfiguration.getAddress();
@@ -885,13 +836,10 @@ public class SalvataggioBackendHelper {
 
         try {
             S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
-            GetUrlRequest request = GetUrlRequest.builder().bucket(sourceConfiguration.getBucket()).key(sourceKey)
+
+            CopyObjectRequest copyReq = CopyObjectRequest.builder().sourceBucket(sourceConfiguration.getBucket())
+                    .sourceKey(sourceKey).destinationBucket(destConfiguration.getBucket()).destinationKey(destKey)
                     .build();
-
-            URL sourceUrl = s3Client.utilities().getUrl(request);
-
-            CopyObjectRequest copyReq = CopyObjectRequest.builder().copySourceIfMatch(sourceUrl.toExternalForm())
-                    .destinationBucket(destConfiguration.getBucket()).destinationKey(destKey).build();
 
             CopyObjectResponse copyRes = s3Client.copyObject(copyReq);
             if (log.isDebugEnabled()) {
@@ -900,6 +848,41 @@ public class SalvataggioBackendHelper {
                         sourceKey, sourceConfiguration.getBucket(), destConfiguration.getBucket(), destKey,
                         copyRes.copyObjectResult().eTag());
             }
+            final String tenant = getDefaultTenant();
+            final URL presignedUrl = presigner.getPresignedUrl(destConfiguration, destKey);
+            final URI presignedURLasURI = presignedUrl.toURI();
+
+            return new ObjectStorageResource() {
+                @Override
+                public String getBucket() {
+                    return destConfiguration.getBucket();
+                }
+
+                @Override
+                public String getKey() {
+                    return destKey;
+                }
+
+                @Override
+                public String getETag() {
+                    return copyRes.copyObjectResult().eTag();
+                }
+
+                @Override
+                public String getExpiration() {
+                    return copyRes.expiration();
+                }
+
+                @Override
+                public URI getPresignedURL() {
+                    return presignedURLasURI;
+                }
+
+                @Override
+                public String getTenant() {
+                    return tenant;
+                }
+            };
 
         } catch (Exception e) {
             throw ObjectStorageException.builder().message("Impossibile copiare tra staging e componenti").cause(e)
@@ -1059,51 +1042,9 @@ public class SalvataggioBackendHelper {
 
     }
 
-    /**
-     * Genera la chiave del componente da salvare sull'object storage.
-     *
-     * @param idComponente
-     *            identificativo del componente di cui salvare il contenuto
-     *
-     * @return chiave che verrà utilizzata sul bucket componenti
-     *
-     * @throws ObjectStorageException
-     *             in caso di errore.
-     */
-    public String generateKeyComponente(long idComponente) throws ObjectStorageException {
-        try {
-
-            AroCompDoc compDoc = entityManager.find(AroCompDoc.class, idComponente);
-
-            // la devo "pescare" l'UD passando dalla ARO_STRUT_DOC
-            AroUnitaDoc unitaDoc = compDoc.getAroStrutDoc().getAroDoc().getAroUnitaDoc();
-
-            String nmStrutNorm = unitaDoc.getOrgStrut().getCdStrutNormaliz();
-
-            String nmEnteNorm = unitaDoc.getOrgStrut().getOrgEnte().getCdEnteNormaliz();
-
-            String cdRegistroNorm = unitaDoc.getDecRegistroUnitaDoc().getCdRegistroNormaliz();
-            int anno = unitaDoc.getAaKeyUnitaDoc().intValue();
-
-            return createKeyComponenti(nmEnteNorm, nmStrutNorm, cdRegistroNorm, anno, idComponente);
-
-        } catch (Exception e) {
-            throw ObjectStorageException.builder().message("Impossibile generare la chiave del componente").cause(e)
-                    .build();
-        }
-    }
-
     private String getDefaultTenant() {
         return configurationHelper.getValoreParamApplicByApplic(ParametroApplDB.TENANT_OBJECT_STORAGE);
 
-    }
-
-    private String createKeyComponenti(String nmEnteNorm, String nmStrutNorm, String cdRegistroNorm, int anno,
-            long idCompDoc) {
-        // Non serve a nulla
-        String nmTenant = getDefaultTenant();
-
-        return nmTenant + "/" + nmEnteNorm + "/" + nmStrutNorm + "/" + cdRegistroNorm + "/" + anno + "/" + idCompDoc;
     }
 
     /*
@@ -1224,8 +1165,10 @@ public class SalvataggioBackendHelper {
     }
 
     /**
-     * Effettua il tagging di un oggetto esistente su bucket con chiave e nell'object storage indicato (su base
-     * configurazioni)
+     * @deprecated deprecato, api S3 (object-tagging) not implemented on GCP
+     *
+     *             Effettua il tagging di un oggetto esistente su bucket con chiave e nell'object storage indicato (su
+     *             base configurazioni)
      *
      * @param osResource
      *            risorsa salvata su object storage
@@ -1237,6 +1180,7 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException
      *             eccezzione generica (S3 error code / varie)
      */
+    @Deprecated(since = "Integrazione GCP (tagging not implemented)", forRemoval = true)
     public void taggingObject(ObjectStorageResource osResource, ObjectStorageBackend configuration, Set<Tag> tags)
             throws ObjectStorageException {
 

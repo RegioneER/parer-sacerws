@@ -17,8 +17,8 @@
 
 package it.eng.parer.restWS;
 
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
-import static it.eng.spagoCore.configuration.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import it.eng.parer.ws.versFascicoli.ejb.VersFascicoloSync;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.xml.versfascicoloresp.ECEsitoPosNegType;
 import it.eng.parer.ws.xml.versfascicoloresp.ECEsitoXSDType;
-import it.eng.spagoCore.configuration.ConfigSingleton;
+import it.eng.spagoCore.ConfigSingleton;
 
 /**
  *
@@ -93,7 +93,11 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Response405.fancy405(resp, Response405.NomeWebServiceRest.VERSAMENTO_FASCICOLO);
+        try {
+            Response405.fancy405(resp, Response405.NomeWebServiceRest.VERSAMENTO_FASCICOLO);
+        } catch (IOException e) {
+            log.error("Errore generico", e);
+        }
     }
 
     /**
@@ -125,7 +129,8 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
                 AvanzamentoWs.Funzioni.VersamentoFascicolo);
         tmpAvanzamento.logAvanzamento();
 
-        // in questo punto non ho elementi per salvare la sessione di versamento, per quanto errata
+        // in questo punto non ho elementi per salvare la sessione di versamento, per
+        // quanto errata
         // (mi serve almeno l'user id definito nella chiamata del ws)
         rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ASSENTE);
 
@@ -176,9 +181,9 @@ public class VersamentoFascicoloSrvlt extends HttpServlet {
                             .setFase("completata").logAvanzamento();
 
                     /*
-                     * ******************************************************************************** fine della
+                     * ***************************************************************************** *** fine della
                      * verifica della struttura/signature del web service. Verifica dei dati effettivamente versati
-                     * ********************************************************************************
+                     * ***************************************************************************** ***
                      */
                     if (rispostaWs.getSeverity() == SeverityEnum.OK) {
                         // dopo questo punto posso tentare di salvare la sessione di versamento
