@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.ws.versamento.ejb;
@@ -49,24 +45,26 @@ public class SalvataggioSyncTest {
 
     @Test
     void inject_ok() {
-        assertNotNull(salvataggioSync);
+	assertNotNull(salvataggioSync);
     }
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
-                Arrays.asList("it.eng.parer.eidas.model", "it.eng.parer.firma.exception", "it.eng.parer.firma.xml",
-                        "org.apache.commons.compress.archivers", "org.apache.commons.compress.archivers.zip",
-                        "eu.europa.esig.dss.ws.validation.dto", "it.eng.parer.ws.xml.versReq",
-                        "it.eng.parer.ws.versamento.ejb.oracleBlb"),
-                SalvataggioSyncTest.class, SalvataggioSync.class, SalvataggioCompFS.class,
-                XADiskBasicIOOperations.class, XADiskConnectionFactory.class, StatoCreaCartelle.class,
-                WriteCompBlbOracle.class, SalvataggioFirmaManager.class, ControlliPerFirme.class,
-                VerificaFirmaReportHelper.class, ObjectStorageService.class).addPackages(true, "com.amazonaws")
-                        .addAsResource(ArquillianTestUtils.class.getClassLoader().getResource("jboss-ejb3.xml"),
-                                "META-INF/jboss-ejb3.xml");
-        return createEnterpriseArchive(SalvataggioSyncTest.class.getSimpleName(), sacerWSJavaArchive,
-                createSacerLogJavaArchive());
+	final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
+		Arrays.asList("it.eng.parer.eidas.model", "it.eng.parer.firma.exception",
+			"it.eng.parer.firma.xml", "org.apache.commons.compress.archivers",
+			"org.apache.commons.compress.archivers.zip",
+			"eu.europa.esig.dss.ws.validation.dto", "it.eng.parer.ws.xml.versReq",
+			"it.eng.parer.ws.versamento.ejb.oracleBlb"),
+		SalvataggioSyncTest.class, SalvataggioSync.class, SalvataggioCompFS.class,
+		XADiskBasicIOOperations.class, XADiskConnectionFactory.class,
+		StatoCreaCartelle.class, WriteCompBlbOracle.class, SalvataggioFirmaManager.class,
+		ControlliPerFirme.class, VerificaFirmaReportHelper.class,
+		ObjectStorageService.class).addPackages(true, "com.amazonaws").addAsResource(
+			ArquillianTestUtils.class.getClassLoader().getResource("jboss-ejb3.xml"),
+			"META-INF/jboss-ejb3.xml");
+	return createEnterpriseArchive(SalvataggioSyncTest.class.getSimpleName(),
+		sacerWSJavaArchive, createSacerLogJavaArchive());
     }
     /*
      * "java.lang.IllegalArgumentException: Can not set org.xadisk.connector.outbound.XADiskConnectionFactory field it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS.xadCf to org.xadisk.connector.outbound.XADiskConnectionFactoryImpl"

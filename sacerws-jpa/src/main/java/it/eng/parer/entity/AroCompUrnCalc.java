@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -60,44 +56,44 @@ public class AroCompUrnCalc implements Serializable {
     @Id
     @Column(name = "ID_COMP_URN_CALC")
     @GenericGenerator(name = "SARO_COMP_URN_CALC_ID_COMP_URN_CALC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_COMP_URN_CALC"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_COMP_URN_CALC"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_COMP_URN_CALC_ID_COMP_URN_CALC_GENERATOR")
     public Long getIdCompUrnCalc() {
-        return this.idCompUrnCalc;
+	return this.idCompUrnCalc;
     }
 
     public void setIdCompUrnCalc(Long idCompUrnCalc) {
-        this.idCompUrnCalc = idCompUrnCalc;
+	this.idCompUrnCalc = idCompUrnCalc;
     }
 
     @Column(name = "DS_URN")
     public String getDsUrn() {
-        return this.dsUrn;
+	return this.dsUrn;
     }
 
     public void setDsUrn(String dsUrn) {
-        this.dsUrn = dsUrn;
+	this.dsUrn = dsUrn;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_URN")
     public TiUrn getTiUrn() {
-        return this.tiUrn;
+	return this.tiUrn;
     }
 
     public void setTiUrn(TiUrn tiUrn) {
-        this.tiUrn = tiUrn;
+	this.tiUrn = tiUrn;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_COMP_DOC")
     public AroCompDoc getAroCompDoc() {
-        return this.aroCompDoc;
+	return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-        this.aroCompDoc = aroCompDoc;
+	this.aroCompDoc = aroCompDoc;
     }
 }

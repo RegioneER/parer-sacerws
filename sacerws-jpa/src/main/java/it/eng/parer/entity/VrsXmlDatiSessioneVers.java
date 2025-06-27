@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -69,123 +65,123 @@ public class VrsXmlDatiSessioneVers implements Serializable {
     private List<VrsUrnXmlSessioneVers> vrsUrnXmlSessioneVers = new ArrayList<>();
 
     public VrsXmlDatiSessioneVers() {
-        // hibernate
+	// hibernate
     }
 
     @Id
     @Column(name = "ID_XML_DATI_SESSIONE_VERS")
     @GenericGenerator(name = "SVRS_XML_DATI_SESSIONE_VERS_ID_XML_DATI_SESSIONE_VERS_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_DATI_SESSIONE_VERS"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_DATI_SESSIONE_VERS"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_XML_DATI_SESSIONE_VERS_ID_XML_DATI_SESSIONE_VERS_GENERATOR")
     public Long getIdXmlDatiSessioneVers() {
-        return this.idXmlDatiSessioneVers;
+	return this.idXmlDatiSessioneVers;
     }
 
     public void setIdXmlDatiSessioneVers(Long idXmlDatiSessioneVers) {
-        this.idXmlDatiSessioneVers = idXmlDatiSessioneVers;
+	this.idXmlDatiSessioneVers = idXmlDatiSessioneVers;
     }
 
     @Lob()
     @Column(name = "BL_XML")
     public String getBlXml() {
-        return this.blXml;
+	return this.blXml;
     }
 
     public void setBlXml(String blXml) {
-        this.blXml = blXml;
+	this.blXml = blXml;
     }
 
     @Column(name = "CD_ENCODING_HASH_XML_VERS")
     public String getCdEncodingHashXmlVers() {
-        return this.cdEncodingHashXmlVers;
+	return this.cdEncodingHashXmlVers;
     }
 
     public void setCdEncodingHashXmlVers(String cdEncodingHashXmlVers) {
-        this.cdEncodingHashXmlVers = cdEncodingHashXmlVers;
+	this.cdEncodingHashXmlVers = cdEncodingHashXmlVers;
     }
 
     @Column(name = "CD_VERSIONE_XML")
     public String getCdVersioneXml() {
-        return this.cdVersioneXml;
+	return this.cdVersioneXml;
     }
 
     public void setCdVersioneXml(String cdVersioneXml) {
-        this.cdVersioneXml = cdVersioneXml;
+	this.cdVersioneXml = cdVersioneXml;
     }
 
     @Column(name = "DS_ALGO_HASH_XML_VERS")
     public String getDsAlgoHashXmlVers() {
-        return this.dsAlgoHashXmlVers;
+	return this.dsAlgoHashXmlVers;
     }
 
     public void setDsAlgoHashXmlVers(String dsAlgoHashXmlVers) {
-        this.dsAlgoHashXmlVers = dsAlgoHashXmlVers;
+	this.dsAlgoHashXmlVers = dsAlgoHashXmlVers;
     }
 
     @Column(name = "DS_HASH_XML_VERS")
     public String getDsHashXmlVers() {
-        return this.dsHashXmlVers;
+	return this.dsHashXmlVers;
     }
 
     public void setDsHashXmlVers(String dsHashXmlVers) {
-        this.dsHashXmlVers = dsHashXmlVers;
+	this.dsHashXmlVers = dsHashXmlVers;
     }
 
     @Column(name = "DS_URN_XML_VERS")
     public String getDsUrnXmlVers() {
-        return this.dsUrnXmlVers;
+	return this.dsUrnXmlVers;
     }
 
     public void setDsUrnXmlVers(String dsUrnXmlVers) {
-        this.dsUrnXmlVers = dsUrnXmlVers;
+	this.dsUrnXmlVers = dsUrnXmlVers;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-        return this.idStrut;
+	return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-        this.idStrut = idStrut;
+	this.idStrut = idStrut;
     }
 
     @Column(name = "TI_XML_DATI")
     public String getTiXmlDati() {
-        return this.tiXmlDati;
+	return this.tiXmlDati;
     }
 
     public void setTiXmlDati(String tiXmlDati) {
-        this.tiXmlDati = tiXmlDati;
+	this.tiXmlDati = tiXmlDati;
     }
 
     // bi-directional many-to-one association to VrsDatiSessioneVers
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DATI_SESSIONE_VERS")
     public VrsDatiSessioneVers getVrsDatiSessioneVers() {
-        return this.vrsDatiSessioneVers;
+	return this.vrsDatiSessioneVers;
     }
 
     public void setVrsDatiSessioneVers(VrsDatiSessioneVers vrsDatiSessioneVers) {
-        this.vrsDatiSessioneVers = vrsDatiSessioneVers;
+	this.vrsDatiSessioneVers = vrsDatiSessioneVers;
     }
 
     @Column(name = "FL_CANONICALIZED", columnDefinition = "CHAR")
     public String getFlCanonicalized() {
-        return this.flCanonicalized;
+	return this.flCanonicalized;
     }
 
     public void setFlCanonicalized(String flCanonicalized) {
-        this.flCanonicalized = flCanonicalized;
+	this.flCanonicalized = flCanonicalized;
     }
 
     // bi-directional many-to-one association to VrsXmlDatiSessioneVers
     @OneToMany(mappedBy = "vrsXmlDatiSessioneVers")
     public List<VrsUrnXmlSessioneVers> getVrsUrnXmlSessioneVers() {
-        return this.vrsUrnXmlSessioneVers;
+	return this.vrsUrnXmlSessioneVers;
     }
 
     public void setVrsUrnXmlSessioneVers(List<VrsUrnXmlSessioneVers> vrsUrnXmlSessioneVers) {
-        this.vrsUrnXmlSessioneVers = vrsUrnXmlSessioneVers;
+	this.vrsUrnXmlSessioneVers = vrsUrnXmlSessioneVers;
     }
 }

@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.ws.utils;
@@ -22,10 +18,11 @@ import it.eng.parer.entity.AplParamApplic;
 //
 public class ParametroApplDB {
 
-    private static final IllegalStateException UTILITY_CLASS_EXCP = new IllegalStateException("Classi di utilità");
+    private static final IllegalStateException UTILITY_CLASS_EXCP = new IllegalStateException(
+	    "Classi di utilità");
 
     private ParametroApplDB() {
-        throw UTILITY_CLASS_EXCP;
+	throw UTILITY_CLASS_EXCP;
     }
 
     public static final String NM_APPLIC = "NM_APPLIC";
@@ -147,87 +144,87 @@ public class ParametroApplDB {
      */
     public class ParametroApplFl {
 
-        private ParametroApplFl() {
-            throw UTILITY_CLASS_EXCP;
-        }
+	private ParametroApplFl() {
+	    throw UTILITY_CLASS_EXCP;
+	}
 
-        public static final String FL_GEST_FASCICOLI = "FL_GEST_FASCICOLI";
-        public static final String FL_ACCETTA_CONTR_CRL_NOVAL = "FL_ACCETTA_CONTR_CRL_NOVAL";
-        public static final String FL_ACCETTA_CONTR_CRL_SCAD = "FL_ACCETTA_CONTR_CRL_SCAD";
-        public static final String FL_ACCETTA_FIRMA_NOCONOS = "FL_ACCETTA_FIRMA_NOCONOS";
-        public static final String FL_ACCETTA_FIRMA_NOCONF = "FL_ACCETTA_FIRMA_NOCONF";
-        public static final String FL_ACCETTA_CONTR_CRL_NEG = "FL_ACCETTA_CONTR_CRL_NEG";
-        public static final String FL_ACCETTA_MARCA_NOCONOS = "FL_ACCETTA_MARCA_NOCONOS";
-        public static final String FL_ACCETTA_CONTR_CERTIF_SCAD = "FL_ACCETTA_CONTR_CERTIF_SCAD";
-        public static final String FL_ACCETTA_CONTR_CERTIF_NOVAL = "FL_ACCETTA_CONTR_CERTIF_NOVAL";
-        public static final String FL_ACCETTA_CONTR_CERTIF_NOCERT = "FL_ACCETTA_CONTR_CERTIF_NOCERT";
-        public static final String FL_ACCETTA_CONTR_CRITTOG_NEG = "FL_ACCETTA_CONTR_CRITTOG_NEG";
-        public static final String FL_ACCETTA_CONTR_TRUST_NEG = "FL_ACCETTA_CONTR_TRUST_NEG";
-        public static final String FL_ACCETTA_CONTR_CRL_NOSCAR = "FL_ACCETTA_CONTR_CRL_NOSCAR";
-        public static final String FL_ACCETTA_FIRMA_GIUGNO_2011 = "FL_ACCETTA_FIRMA_GIUGNO_2011";
-        public static final String FL_ACCETTA_CONTR_FMT_NEG = "FL_ACCETTA_CONTR_FMT_NEG";
-        public static final String FL_FORZA_FMT = "FL_FORZA_FMT";
-        public static final String FL_ABILITA_CONTR_FMT = "FL_ABILITA_CONTR_FMT";
-        public static final String FL_ABILITA_CONTR_FMT_NUM = "FL_ABILITA_CONTR_FMT_NUM";
-        public static final String FL_ACCETTA_FMT_NUM_NEG = "FL_ACCETTA_FMT_NUM_NEG";
-        public static final String FL_FORZA_FMT_NUM = "FL_FORZA_FMT_NUM";
-        public static final String FL_ABILITA_CONTR_HASH_VERS = "FL_ABILITA_CONTR_HASH_VERS";
-        public static final String FL_ACCETTA_CONTR_HASH_NEG = "FL_ACCETTA_CONTR_HASH_NEG";
-        public static final String FL_FORZA_HASH_VERS = "FL_FORZA_HASH_VERS";
-        public static final String FL_ABILITA_UPD_META = "FL_ABILITA_UPD_META";
-        public static final String FL_ACCETTA_UPD_META_INARK = "FL_ACCETTA_UPD_META_INARK";
-        public static final String FL_FORZA_UPD_META_INARK = "FL_FORZA_UPD_META_INARK";
-        public static final String FL_ABILITA_CONTR_REVOCA_VERS = "FL_ABILITA_CONTR_REVOCA_VERS";
-        public static final String FL_ABILITA_CONTR_CERTIF_VERS = "FL_ABILITA_CONTR_CERTIF_VERS";
-        public static final String FL_ABILITA_CONTR_CRITTOG_VERS = "FL_ABILITA_CONTR_CRITTOG_VERS";
-        public static final String FL_ABILITA_CONTR_TRUST_VERS = "FL_ABILITA_CONTR_TRUST_VERS";
-        public static final String FL_ABILITA_CONTR_CLASSIF = "FL_ABILITA_CONTR_CLASSIF";
-        public static final String FL_FORZA_CONTR_CLASSIF = "FL_FORZA_CONTR_CLASSIF";
-        public static final String FL_ACCETTA_CONTR_CLASSIF_NEG = "FL_ACCETTA_CONTR_CLASSIF_NEG";
-        public static final String FL_FORZA_CONTR_COLLEG = "FL_FORZA_CONTR_COLLEG";
-        public static final String FL_FORZA_COLLEG = "FL_FORZA_COLLEG";
-        public static final String FL_ACCETTA_CONTR_COLLEG_NEG = "FL_ACCETTA_CONTR_COLLEG_NEG";
-        public static final String FL_ABILITA_CONTR_COLLEG = "FL_ABILITA_CONTR_COLLEG";
-        public static final String FL_ABILITA_CONTR_NUMERO = "FL_ABILITA_CONTR_NUMERO";
-        public static final String FL_ACCETTA_CONTR_NUMERO_NEG = "FL_ACCETTA_CONTR_NUMERO_NEG";
-        public static final String FL_FORZA_CONTR_NUMERO = "FL_FORZA_CONTR_NUMERO";
-        public static final String FL_OBBL_OGGETTO = "FL_OBBL_OGGETTO";
-        public static final String FL_OBBL_DATA = "FL_OBBL_DATA";
-        //
-        public static final String FL_ABILITA_FORZA_DOC_AGG = "FL_ABILITA_FORZA_DOC_AGG";
-        public static final String FL_FORZA_DOC_AGG = "FL_FORZA_DOC_AGG";
-        public static final String FL_ACCETTA_DOC_AGG_NEG = "FL_ACCETTA_DOC_AGG_NEG";
-        //
-        public static final String FL_ACCETTA_CONTR_COLLEG_NEG_FAS = "FL_ACCETTA_CONTR_COLLEG_NEG_FAS";
-        //
-        public static final String FL_ABILITA_CONTR_COLLEG_UD = "FL_ABILITA_CONTR_COLLEG_UD";
-        //
-        public static final String FL_ABILITA_VERIFICA_FIRMA = "FL_ABILITA_VERIFICA_FIRMA";
-        public static final String FL_ABILITA_VERIFICA_FIRMA_SOLO_CRYPTO = "FL_ABILITA_VERIFICA_FIRMA_SOLO_CRYPTO";
-        //
-        public static final String GENERAZIONE_REPORT_VERIFICA_FIRMA = "GENERAZIONE_REPORT_VERIFICA_FIRMA";
-        //
-        public static final String FL_ABILITA_CONTR_NON_FIRMATI = "FL_ABILITA_CONTR_NON_FIRMATI";
-        public static final String FL_ACCETTA_CONTR_NON_FIRMATI_NEG = "FL_ACCETTA_CONTR_NON_FIRMATI_NEG";
-        public static final String FL_FORZA_CONTR_NON_FIRMATI_NEG = "FL_FORZA_CONTR_NON_FIRMATI_NEG";
+	public static final String FL_GEST_FASCICOLI = "FL_GEST_FASCICOLI";
+	public static final String FL_ACCETTA_CONTR_CRL_NOVAL = "FL_ACCETTA_CONTR_CRL_NOVAL";
+	public static final String FL_ACCETTA_CONTR_CRL_SCAD = "FL_ACCETTA_CONTR_CRL_SCAD";
+	public static final String FL_ACCETTA_FIRMA_NOCONOS = "FL_ACCETTA_FIRMA_NOCONOS";
+	public static final String FL_ACCETTA_FIRMA_NOCONF = "FL_ACCETTA_FIRMA_NOCONF";
+	public static final String FL_ACCETTA_CONTR_CRL_NEG = "FL_ACCETTA_CONTR_CRL_NEG";
+	public static final String FL_ACCETTA_MARCA_NOCONOS = "FL_ACCETTA_MARCA_NOCONOS";
+	public static final String FL_ACCETTA_CONTR_CERTIF_SCAD = "FL_ACCETTA_CONTR_CERTIF_SCAD";
+	public static final String FL_ACCETTA_CONTR_CERTIF_NOVAL = "FL_ACCETTA_CONTR_CERTIF_NOVAL";
+	public static final String FL_ACCETTA_CONTR_CERTIF_NOCERT = "FL_ACCETTA_CONTR_CERTIF_NOCERT";
+	public static final String FL_ACCETTA_CONTR_CRITTOG_NEG = "FL_ACCETTA_CONTR_CRITTOG_NEG";
+	public static final String FL_ACCETTA_CONTR_TRUST_NEG = "FL_ACCETTA_CONTR_TRUST_NEG";
+	public static final String FL_ACCETTA_CONTR_CRL_NOSCAR = "FL_ACCETTA_CONTR_CRL_NOSCAR";
+	public static final String FL_ACCETTA_FIRMA_GIUGNO_2011 = "FL_ACCETTA_FIRMA_GIUGNO_2011";
+	public static final String FL_ACCETTA_CONTR_FMT_NEG = "FL_ACCETTA_CONTR_FMT_NEG";
+	public static final String FL_FORZA_FMT = "FL_FORZA_FMT";
+	public static final String FL_ABILITA_CONTR_FMT = "FL_ABILITA_CONTR_FMT";
+	public static final String FL_ABILITA_CONTR_FMT_NUM = "FL_ABILITA_CONTR_FMT_NUM";
+	public static final String FL_ACCETTA_FMT_NUM_NEG = "FL_ACCETTA_FMT_NUM_NEG";
+	public static final String FL_FORZA_FMT_NUM = "FL_FORZA_FMT_NUM";
+	public static final String FL_ABILITA_CONTR_HASH_VERS = "FL_ABILITA_CONTR_HASH_VERS";
+	public static final String FL_ACCETTA_CONTR_HASH_NEG = "FL_ACCETTA_CONTR_HASH_NEG";
+	public static final String FL_FORZA_HASH_VERS = "FL_FORZA_HASH_VERS";
+	public static final String FL_ABILITA_UPD_META = "FL_ABILITA_UPD_META";
+	public static final String FL_ACCETTA_UPD_META_INARK = "FL_ACCETTA_UPD_META_INARK";
+	public static final String FL_FORZA_UPD_META_INARK = "FL_FORZA_UPD_META_INARK";
+	public static final String FL_ABILITA_CONTR_REVOCA_VERS = "FL_ABILITA_CONTR_REVOCA_VERS";
+	public static final String FL_ABILITA_CONTR_CERTIF_VERS = "FL_ABILITA_CONTR_CERTIF_VERS";
+	public static final String FL_ABILITA_CONTR_CRITTOG_VERS = "FL_ABILITA_CONTR_CRITTOG_VERS";
+	public static final String FL_ABILITA_CONTR_TRUST_VERS = "FL_ABILITA_CONTR_TRUST_VERS";
+	public static final String FL_ABILITA_CONTR_CLASSIF = "FL_ABILITA_CONTR_CLASSIF";
+	public static final String FL_FORZA_CONTR_CLASSIF = "FL_FORZA_CONTR_CLASSIF";
+	public static final String FL_ACCETTA_CONTR_CLASSIF_NEG = "FL_ACCETTA_CONTR_CLASSIF_NEG";
+	public static final String FL_FORZA_CONTR_COLLEG = "FL_FORZA_CONTR_COLLEG";
+	public static final String FL_FORZA_COLLEG = "FL_FORZA_COLLEG";
+	public static final String FL_ACCETTA_CONTR_COLLEG_NEG = "FL_ACCETTA_CONTR_COLLEG_NEG";
+	public static final String FL_ABILITA_CONTR_COLLEG = "FL_ABILITA_CONTR_COLLEG";
+	public static final String FL_ABILITA_CONTR_NUMERO = "FL_ABILITA_CONTR_NUMERO";
+	public static final String FL_ACCETTA_CONTR_NUMERO_NEG = "FL_ACCETTA_CONTR_NUMERO_NEG";
+	public static final String FL_FORZA_CONTR_NUMERO = "FL_FORZA_CONTR_NUMERO";
+	public static final String FL_OBBL_OGGETTO = "FL_OBBL_OGGETTO";
+	public static final String FL_OBBL_DATA = "FL_OBBL_DATA";
+	//
+	public static final String FL_ABILITA_FORZA_DOC_AGG = "FL_ABILITA_FORZA_DOC_AGG";
+	public static final String FL_FORZA_DOC_AGG = "FL_FORZA_DOC_AGG";
+	public static final String FL_ACCETTA_DOC_AGG_NEG = "FL_ACCETTA_DOC_AGG_NEG";
+	//
+	public static final String FL_ACCETTA_CONTR_COLLEG_NEG_FAS = "FL_ACCETTA_CONTR_COLLEG_NEG_FAS";
+	//
+	public static final String FL_ABILITA_CONTR_COLLEG_UD = "FL_ABILITA_CONTR_COLLEG_UD";
+	//
+	public static final String FL_ABILITA_VERIFICA_FIRMA = "FL_ABILITA_VERIFICA_FIRMA";
+	public static final String FL_ABILITA_VERIFICA_FIRMA_SOLO_CRYPTO = "FL_ABILITA_VERIFICA_FIRMA_SOLO_CRYPTO";
+	//
+	public static final String GENERAZIONE_REPORT_VERIFICA_FIRMA = "GENERAZIONE_REPORT_VERIFICA_FIRMA";
+	//
+	public static final String FL_ABILITA_CONTR_NON_FIRMATI = "FL_ABILITA_CONTR_NON_FIRMATI";
+	public static final String FL_ACCETTA_CONTR_NON_FIRMATI_NEG = "FL_ACCETTA_CONTR_NON_FIRMATI_NEG";
+	public static final String FL_FORZA_CONTR_NON_FIRMATI_NEG = "FL_FORZA_CONTR_NON_FIRMATI_NEG";
 
-        //
-        public static final String FL_FORZA_CONTR_REVOCA_VERS = "FL_FORZA_CONTR_REVOCA_VERS";
-        public static final String FL_FORZA_CONTR_TRUST_VERS = "FL_FORZA_CONTR_TRUST_VERS";
-        public static final String FL_FORZA_CONTR_CRITTOG_VERS = "FL_FORZA_CONTR_CRITTOG_VERS";
-        public static final String FL_FORZA_CONTR_CERTIF_VERS = "FL_FORZA_CONTR_CERTIF_VERS";
-        public static final String FL_FORZA_CONTR_NOCONF = "FL_FORZA_CONTR_NOCONF";
+	//
+	public static final String FL_FORZA_CONTR_REVOCA_VERS = "FL_FORZA_CONTR_REVOCA_VERS";
+	public static final String FL_FORZA_CONTR_TRUST_VERS = "FL_FORZA_CONTR_TRUST_VERS";
+	public static final String FL_FORZA_CONTR_CRITTOG_VERS = "FL_FORZA_CONTR_CRITTOG_VERS";
+	public static final String FL_FORZA_CONTR_CERTIF_VERS = "FL_FORZA_CONTR_CERTIF_VERS";
+	public static final String FL_FORZA_CONTR_NOCONF = "FL_FORZA_CONTR_NOCONF";
 
-        //
-        public static final String FL_ACCETTA_CONTR_OCSP_NEG = "FL_ACCETTA_CONTR_OCSP_NEG";
-        public static final String FL_ACCETTA_CONTR_OCSP_NOSCAR = "FL_ACCETTA_CONTR_OCSP_NOSCAR";
-        public static final String FL_ACCETTA_CONTR_OCSP_NOVAL = "FL_ACCETTA_CONTR_OCSP_NOVAL";
-        //
-        public static final String FL_EIDAS_INCLUDI_FILEBASE64 = "FL_EIDAS_INCLUDI_FILEBASE64";
-        public static final String FL_CRYPTO_INCLUDI_FILEBASE64 = "FL_CRYPTO_INCLUDI_FILEBASE64";
+	//
+	public static final String FL_ACCETTA_CONTR_OCSP_NEG = "FL_ACCETTA_CONTR_OCSP_NEG";
+	public static final String FL_ACCETTA_CONTR_OCSP_NOSCAR = "FL_ACCETTA_CONTR_OCSP_NOSCAR";
+	public static final String FL_ACCETTA_CONTR_OCSP_NOVAL = "FL_ACCETTA_CONTR_OCSP_NOVAL";
+	//
+	public static final String FL_EIDAS_INCLUDI_FILEBASE64 = "FL_EIDAS_INCLUDI_FILEBASE64";
+	public static final String FL_CRYPTO_INCLUDI_FILEBASE64 = "FL_CRYPTO_INCLUDI_FILEBASE64";
 
-        // Abilitazione log stato conservazione ud
-        public static final String FL_ABILITA_LOG_STATO_CONSERV = "FL_ABILITA_LOG_STATO_CONSERV";
+	// Abilitazione log stato conservazione ud
+	public static final String FL_ABILITA_LOG_STATO_CONSERV = "FL_ABILITA_LOG_STATO_CONSERV";
 
     }
 
@@ -237,40 +234,40 @@ public class ParametroApplDB {
      */
     public class TipoParametroAppl {
 
-        private TipoParametroAppl() {
-            throw UTILITY_CLASS_EXCP;
-        }
+	private TipoParametroAppl() {
+	    throw UTILITY_CLASS_EXCP;
+	}
 
-        public static final String VERSAMENTO_DEFAULT = "Default di versamento";
-        public static final String MAX_RESULT = "Paginazione risultati";
-        public static final String PATH = "Gestione servizi asincroni";
-        public static final String TPI = "Salvataggio su nastro";
-        public static final String IMAGE = "Trasformazione componenti";
-        public static final String LOG_APPLIC = "Log accessi";
-        public static final String IAM = "Gestione utenti";
-        public static final String TSA = "Firma e Marca";
-        public static final String VERSIONI_WS = "Versioni servizi";
+	public static final String VERSAMENTO_DEFAULT = "Default di versamento";
+	public static final String MAX_RESULT = "Paginazione risultati";
+	public static final String PATH = "Gestione servizi asincroni";
+	public static final String TPI = "Salvataggio su nastro";
+	public static final String IMAGE = "Trasformazione componenti";
+	public static final String LOG_APPLIC = "Log accessi";
+	public static final String IAM = "Gestione utenti";
+	public static final String TSA = "Firma e Marca";
+	public static final String VERSIONI_WS = "Versioni servizi";
 
     }
 
     // vista da cui recuperare i valori
     public enum TipoAplVGetValAppart {
-        AATIPOFASCICOLO, TIPOUNITADOC, STRUT, AMBIENTE, APPLIC;
+	AATIPOFASCICOLO, TIPOUNITADOC, STRUT, AMBIENTE, APPLIC;
 
-        public static TipoAplVGetValAppart next(TipoAplVGetValAppart last) {
-            switch (last) {
-            case AATIPOFASCICOLO:
-                return STRUT;
-            case TIPOUNITADOC:
-                return STRUT;
-            case STRUT:
-                return AMBIENTE;
-            case AMBIENTE:
-                return APPLIC;
-            default:
-                return null;
-            }
-        }
+	public static TipoAplVGetValAppart next(TipoAplVGetValAppart last) {
+	    switch (last) {
+	    case AATIPOFASCICOLO:
+		return STRUT;
+	    case TIPOUNITADOC:
+		return STRUT;
+	    case STRUT:
+		return AMBIENTE;
+	    case AMBIENTE:
+		return APPLIC;
+	    default:
+		return null;
+	    }
+	}
     }
 
 }

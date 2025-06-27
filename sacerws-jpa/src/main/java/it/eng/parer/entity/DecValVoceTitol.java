@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -68,82 +64,82 @@ public class DecValVoceTitol implements Serializable {
     @Id
     @Column(name = "ID_VAL_VOCE_TITOL")
     @GenericGenerator(name = "SDEC_VAL_VOCE_TITOL_ID_VAL_VOCE_TITOL_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_VAL_VOCE_TITOL"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_VAL_VOCE_TITOL"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_VAL_VOCE_TITOL_ID_VAL_VOCE_TITOL_GENERATOR")
     public Long getIdValVoceTitol() {
-        return this.idValVoceTitol;
+	return this.idValVoceTitol;
     }
 
     public void setIdValVoceTitol(Long idValVoceTitol) {
-        this.idValVoceTitol = idValVoceTitol;
+	this.idValVoceTitol = idValVoceTitol;
     }
 
     @Column(name = "DL_NOTE")
     public String getDlNote() {
-        return this.dlNote;
+	return this.dlNote;
     }
 
     public void setDlNote(String dlNote) {
-        this.dlNote = dlNote;
+	this.dlNote = dlNote;
     }
 
     @Column(name = "DS_VOCE_TITOL")
     public String getDsVoceTitol() {
-        return this.dsVoceTitol;
+	return this.dsVoceTitol;
     }
 
     public void setDsVoceTitol(String dsVoceTitol) {
-        this.dsVoceTitol = dsVoceTitol;
+	this.dsVoceTitol = dsVoceTitol;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_FIN_VAL")
     public Date getDtFinVal() {
-        return this.dtFinVal;
+	return this.dtFinVal;
     }
 
     public void setDtFinVal(Date dtFinVal) {
-        this.dtFinVal = dtFinVal;
+	this.dtFinVal = dtFinVal;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_INI_VAL")
     public Date getDtIniVal() {
-        return this.dtIniVal;
+	return this.dtIniVal;
     }
 
     public void setDtIniVal(Date dtIniVal) {
-        this.dtIniVal = dtIniVal;
+	this.dtIniVal = dtIniVal;
     }
 
     @Column(name = "FL_USO_CLASSIF", columnDefinition = "char(1)")
     public String getFlUsoClassif() {
-        return this.flUsoClassif;
+	return this.flUsoClassif;
     }
 
     public void setFlUsoClassif(String flUsoClassif) {
-        this.flUsoClassif = flUsoClassif;
+	this.flUsoClassif = flUsoClassif;
     }
 
     @Column(name = "NI_ANNI_CONSERV")
     public BigDecimal getNiAnniConserv() {
-        return this.niAnniConserv;
+	return this.niAnniConserv;
     }
 
     public void setNiAnniConserv(BigDecimal niAnniConserv) {
-        this.niAnniConserv = niAnniConserv;
+	this.niAnniConserv = niAnniConserv;
     }
 
     // bi-directional many-to-one association to DecVoceTitol
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VOCE_TITOL")
     public DecVoceTitol getDecVoceTitol() {
-        return this.decVoceTitol;
+	return this.decVoceTitol;
     }
 
     public void setDecVoceTitol(DecVoceTitol decVoceTitol) {
-        this.decVoceTitol = decVoceTitol;
+	this.decVoceTitol = decVoceTitol;
     }
 
 }

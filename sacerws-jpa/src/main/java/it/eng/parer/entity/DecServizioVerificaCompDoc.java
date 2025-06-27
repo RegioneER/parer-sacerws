@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -51,7 +47,7 @@ public class DecServizioVerificaCompDoc implements Serializable {
     private List<DecReportServizioVerificaCompDoc> decReportServizioCompDocs = new ArrayList<>();
 
     public DecServizioVerificaCompDoc() {
-        // hibernate
+	// hibernate
     }
 
     @Id
@@ -59,48 +55,49 @@ public class DecServizioVerificaCompDoc implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEC_SERVIZIO_VERIFICA_COMP_DOC_ID_SERVIZIO_VERIFICA_COMP_DOC_GENERATOR")
     @Column(name = "ID_SERVIZIO_VERIFICA_COMP_DOC")
     public Long getIdServizioVerificaCompDoc() {
-        return this.idServizioVerificaCompDoc;
+	return this.idServizioVerificaCompDoc;
     }
 
     public void setIdServizioVerificaCompDoc(Long idServizioVerificaCompDoc) {
-        this.idServizioVerificaCompDoc = idServizioVerificaCompDoc;
+	this.idServizioVerificaCompDoc = idServizioVerificaCompDoc;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "CD_SERVIZIO")
     public CdServizioVerificaCompDoc getCdServizio() {
-        return cdServizio;
+	return cdServizio;
     }
 
     public void setCdServizio(CdServizioVerificaCompDoc cdServizio) {
-        this.cdServizio = cdServizio;
+	this.cdServizio = cdServizio;
     }
 
     @Column(name = "NM_VERSIONE")
     public String getNmVersione() {
-        return nmVersione;
+	return nmVersione;
     }
 
     public void setNmVersione(String nmVersione) {
-        this.nmVersione = nmVersione;
+	this.nmVersione = nmVersione;
     }
 
     @Column(name = "DS_SERVIZIO_VERIFICA_COMP_DOC")
     public String getDsServizioVerificaCompDoc() {
-        return dsServizioVerificaCompDoc;
+	return dsServizioVerificaCompDoc;
     }
 
     public void setDsServizioVerificaCompDoc(String dsServizioVerificaCompDoc) {
-        this.dsServizioVerificaCompDoc = dsServizioVerificaCompDoc;
+	this.dsServizioVerificaCompDoc = dsServizioVerificaCompDoc;
     }
 
     // bi-directional many-to-one association to DecReportServizioVerificaCompDoc
     @OneToMany(mappedBy = "decServizioVerificaCompDoc")
     public List<DecReportServizioVerificaCompDoc> getDecReportServizioVerificaCompDocs() {
-        return decReportServizioCompDocs;
+	return decReportServizioCompDocs;
     }
 
-    public void setDecReportServizioVerificaCompDocs(List<DecReportServizioVerificaCompDoc> decReportServizioCompDocs) {
-        this.decReportServizioCompDocs = decReportServizioCompDocs;
+    public void setDecReportServizioVerificaCompDocs(
+	    List<DecReportServizioVerificaCompDoc> decReportServizioCompDocs) {
+	this.decReportServizioCompDocs = decReportServizioCompDocs;
     }
 }

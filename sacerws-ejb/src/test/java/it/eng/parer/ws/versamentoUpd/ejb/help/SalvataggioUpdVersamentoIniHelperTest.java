@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.ws.versamentoUpd.ejb.help;
@@ -40,35 +36,40 @@ public class SalvataggioUpdVersamentoIniHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
-                Arrays.asList("it.eng.parer.ws.versamentoUpd.ext", "it.eng.parer.ws.versamentoUpd.ext",
-                        "it.eng.parer.ws.xml.versUpdReq", "it.eng.parer.ws.xml.versUpdResp",
-                        "it.eng.parer.ws.xml.versReq", "it.eng.parer.ws.xml.versReqMultiMedia",
-                        "it.eng.parer.ws.xml.versResp"),
-                SalvataggioUpdVersamentoIniHelper.class, SalvataggioUpdVersamentoIniHelperTest.class,
-                it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoBaseHelper.class,
-                it.eng.parer.ws.ejb.XmlUpdVersCache.class, it.eng.parer.ws.ejb.XmlVersCache.class,
-                it.eng.parer.util.ejb.AppServerInstance.class,
-                it.eng.parer.ws.versamentoUpd.ejb.help.LogSessioneUpdVersamentoHelper.class,
-                it.eng.parer.ws.ejb.ControlliSemantici.class, it.eng.parer.util.ejb.help.ConfigurationHelper.class,
-                it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
-                it.eng.parer.util.DateUtilsConverter.class, it.eng.parer.ws.xml.versReqMultiMedia.IndiceMM.class)
-                        .addAsResource(
-                                LogSessioneSyncTest.class.getClassLoader()
-                                        .getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
-                                "/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5.xsd")
-                        .addAsResource(
-                                LogSessioneSyncTest.class.getClassLoader()
-                                        .getResource("WSResponseAggiornamentoVersamento_1.5.xsd"),
-                                "it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd")
-                        .addAsResource(
-                                LogSessioneSyncTest.class.getClassLoader().getResource("WSRequestVersamento.xsd"),
-                                "/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
-                        .addAsResource(
-                                LogSessioneSyncTest.class.getClassLoader().getResource("WSResponseVersamento.xsd"),
-                                "/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd");
-        return createEnterpriseArchive(SalvataggioUpdVersamentoIniHelperTest.class.getSimpleName(), sacerWSJavaArchive,
-                createSacerLogJavaArchive());
+	final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
+		Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
+			"it.eng.parer.ws.versamentoUpd.ext", "it.eng.parer.ws.xml.versUpdReq",
+			"it.eng.parer.ws.xml.versUpdResp", "it.eng.parer.ws.xml.versReq",
+			"it.eng.parer.ws.xml.versReqMultiMedia", "it.eng.parer.ws.xml.versResp"),
+		SalvataggioUpdVersamentoIniHelper.class,
+		SalvataggioUpdVersamentoIniHelperTest.class,
+		it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoBaseHelper.class,
+		it.eng.parer.ws.ejb.XmlUpdVersCache.class, it.eng.parer.ws.ejb.XmlVersCache.class,
+		it.eng.parer.util.ejb.AppServerInstance.class,
+		it.eng.parer.ws.versamentoUpd.ejb.help.LogSessioneUpdVersamentoHelper.class,
+		it.eng.parer.ws.ejb.ControlliSemantici.class,
+		it.eng.parer.util.ejb.help.ConfigurationHelper.class,
+		it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
+		it.eng.parer.util.DateUtilsConverter.class,
+		it.eng.parer.ws.xml.versReqMultiMedia.IndiceMM.class)
+		.addAsResource(
+			LogSessioneSyncTest.class.getClassLoader()
+				.getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
+			"/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5.xsd")
+		.addAsResource(
+			LogSessioneSyncTest.class.getClassLoader()
+				.getResource("WSResponseAggiornamentoVersamento_1.5.xsd"),
+			"it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd")
+		.addAsResource(
+			LogSessioneSyncTest.class.getClassLoader()
+				.getResource("WSRequestVersamento.xsd"),
+			"/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
+		.addAsResource(
+			LogSessioneSyncTest.class.getClassLoader()
+				.getResource("WSResponseVersamento.xsd"),
+			"/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd");
+	return createEnterpriseArchive(SalvataggioUpdVersamentoIniHelperTest.class.getSimpleName(),
+		sacerWSJavaArchive, createSacerLogJavaArchive());
     }
 
     @EJB
@@ -76,19 +77,19 @@ public class SalvataggioUpdVersamentoIniHelperTest {
 
     @Test
     public void getAroVersIniUnitaDoc() {
-        final RispostaControlli rispostaControlli = helper.getAroVersIniUnitaDoc(0L);
-        assertTrue(rispostaControlli.isrBoolean());
+	final RispostaControlli rispostaControlli = helper.getAroVersIniUnitaDoc(0L);
+	assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void getAroVersIniDoc() {
-        final RispostaControlli rispostaControlli = helper.getAroVersIniDoc(0L, 0L);
-        assertTrue(rispostaControlli.isrBoolean());
+	final RispostaControlli rispostaControlli = helper.getAroVersIniDoc(0L, 0L);
+	assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void getAroVersIniComp() {
-        final RispostaControlli rispostaControlli = helper.getAroVersIniComp(0L, 0L);
-        assertTrue(rispostaControlli.isrBoolean());
+	final RispostaControlli rispostaControlli = helper.getAroVersIniComp(0L, 0L);
+	assertTrue(rispostaControlli.isrBoolean());
     }
 }

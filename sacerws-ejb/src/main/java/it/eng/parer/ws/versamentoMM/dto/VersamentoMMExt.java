@@ -1,23 +1,18 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.versamentoMM.dto;
 
@@ -43,58 +38,58 @@ public class VersamentoMMExt extends VersamentoExt {
     //
 
     public String getDatiXmlIndice() {
-        return datiXmlIndice;
+	return datiXmlIndice;
     }
 
     public void setDatiXmlIndice(String datiXmlIndice) {
-        this.datiXmlIndice = datiXmlIndice;
+	this.datiXmlIndice = datiXmlIndice;
     }
 
     public IndiceMM getIndiceMM() {
-        return indiceMM;
+	return indiceMM;
     }
 
     public void setIndiceMM(IndiceMM indiceMM) {
-        this.indiceMM = indiceMM;
+	this.indiceMM = indiceMM;
     }
 
     public StrutturaIndiceMM getStrutturaIndiceMM() {
-        return strutturaIndiceMM;
+	return strutturaIndiceMM;
     }
 
     public void setStrutturaIndiceMM(StrutturaIndiceMM strutturaIndiceMM) {
-        this.strutturaIndiceMM = strutturaIndiceMM;
+	this.strutturaIndiceMM = strutturaIndiceMM;
     }
 
     public boolean isContainerZip() {
-        return containerZip;
+	return containerZip;
     }
 
     public void setContainerZip(boolean containerZip) {
-        this.containerZip = containerZip;
+	this.containerZip = containerZip;
     }
 
     public String getPathContainerZip() {
-        return pathContainerZip;
+	return pathContainerZip;
     }
 
     public void setPathContainerZip(String pathContainerZip) {
-        this.pathContainerZip = pathContainerZip;
+	this.pathContainerZip = pathContainerZip;
     }
 
     public String getPathLocaleContenutoZip() {
-        return pathLocaleContenutoZip;
+	return pathLocaleContenutoZip;
     }
 
     public void setPathLocaleContenutoZip(String pathLocaleContenutoZip) {
-        this.pathLocaleContenutoZip = pathLocaleContenutoZip;
+	this.pathLocaleContenutoZip = pathLocaleContenutoZip;
     }
 
     public String getPrefissoPathPerApp() {
-        return prefissoPathPerApp;
+	return prefissoPathPerApp;
     }
 
     public void setPrefissoPathPerApp(String prefissoPathPerApp) {
-        this.prefissoPathPerApp = prefissoPathPerApp;
+	this.prefissoPathPerApp = prefissoPathPerApp;
     }
 }

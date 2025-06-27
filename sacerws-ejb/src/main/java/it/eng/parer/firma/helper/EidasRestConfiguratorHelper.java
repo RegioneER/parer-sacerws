@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.firma.helper;
@@ -32,8 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Stateless bean che (auto) configura il comportamento della modalità "Retry" di un metodo. Questo helper include la
- * funzionalità di retry applicato a delle chiamate a endpoint RESTful.
+ * Stateless bean che (auto) configura il comportamento della modalità "Retry" di un metodo. Questo
+ * helper include la funzionalità di retry applicato a delle chiamate a endpoint RESTful.
  *
  * @author Snidero_L
  */
@@ -70,99 +66,104 @@ public class EidasRestConfiguratorHelper implements RestConfiguratorHelper {
     protected ConfigurationHelper configurationHelper;
 
     private Long getLongParameter(final String name) {
-        Long paramValue = null;
-        try {
-            final String longParameterString = configurationHelper.getValoreParamApplicByApplic(name);
-            paramValue = Long.parseLong(longParameterString);
+	Long paramValue = null;
+	try {
+	    final String longParameterString = configurationHelper
+		    .getValoreParamApplicByApplic(name);
+	    paramValue = Long.parseLong(longParameterString);
 
-        } catch (ParamApplicNotFoundException | NumberFormatException ignore) {
-            LOG.debug(PARAMETRO_NON_TROVATO, name);
+	} catch (ParamApplicNotFoundException | NumberFormatException ignore) {
+	    LOG.debug(PARAMETRO_NON_TROVATO, name);
 
-        }
-        return paramValue;
+	}
+	return paramValue;
     }
 
     private Integer getIntParameter(final String name) {
-        Integer paramValue = null;
-        try {
-            final String intParameterString = configurationHelper.getValoreParamApplicByApplic(name);
-            paramValue = Integer.parseInt(intParameterString);
+	Integer paramValue = null;
+	try {
+	    final String intParameterString = configurationHelper
+		    .getValoreParamApplicByApplic(name);
+	    paramValue = Integer.parseInt(intParameterString);
 
-        } catch (ParamApplicNotFoundException | NumberFormatException ignore) {
-            LOG.debug(PARAMETRO_NON_TROVATO, name);
+	} catch (ParamApplicNotFoundException | NumberFormatException ignore) {
+	    LOG.debug(PARAMETRO_NON_TROVATO, name);
 
-        }
-        return paramValue;
+	}
+	return paramValue;
     }
 
     private Boolean getBooleanParameter(final String name) {
-        Boolean paramValue = true;
-        try {
-            final String boolParameterString = configurationHelper.getValoreParamApplicByApplic(name);
-            paramValue = Boolean.parseBoolean(boolParameterString);
+	Boolean paramValue = true;
+	try {
+	    final String boolParameterString = configurationHelper
+		    .getValoreParamApplicByApplic(name);
+	    paramValue = Boolean.parseBoolean(boolParameterString);
 
-        } catch (ParamApplicNotFoundException ignore) {
-            LOG.debug(PARAMETRO_NON_TROVATO, name);
+	} catch (ParamApplicNotFoundException ignore) {
+	    LOG.debug(PARAMETRO_NON_TROVATO, name);
 
-        }
-        return paramValue;
+	}
+	return paramValue;
     }
 
     @Override
     public Long getRetryTimeoutParam() {
-        return getLongParameter(EIDAS_RETRY_TIMEOUT);
+	return getLongParameter(EIDAS_RETRY_TIMEOUT);
     }
 
     @Override
     public Integer getMaxRetryParam() {
-        return getIntParameter(EIDAS_MAX_TENTATIVI);
+	return getIntParameter(EIDAS_MAX_TENTATIVI);
     }
 
     @Override
     public Long getCircuitBreakerOpenTimeoutParam() {
-        return getLongParameter(EIDAS_CIRCUIT_BREAKER_OPEN_TIMEOUT);
+	return getLongParameter(EIDAS_CIRCUIT_BREAKER_OPEN_TIMEOUT);
     }
 
     @Override
     public Long getCircuitBreakerResetTimeoutParam() {
-        return getLongParameter(EIDAS_CIRCUIT_BREAKER_RESET_TIMEOUT);
+	return getLongParameter(EIDAS_CIRCUIT_BREAKER_RESET_TIMEOUT);
     }
 
     @Override
     public Long getPeriodoBackOffParam() {
-        return getLongParameter(EIDAS_PERIODO_BACKOFF);
+	return getLongParameter(EIDAS_PERIODO_BACKOFF);
     }
 
     @Override
     public Long getClientTimeoutInMinutesParam() {
-        return getLongParameter(EIDAS_CLIENT_TIMEOUT);
+	return getLongParameter(EIDAS_CLIENT_TIMEOUT);
 
     }
 
     @Override
     public Boolean isCompositePolicyOptimisticParam() {
-        return getBooleanParameter(EIDAS_COMPOSITE_POLICY_OPTIMISTIC);
+	return getBooleanParameter(EIDAS_COMPOSITE_POLICY_OPTIMISTIC);
     }
 
     public Boolean isEnableMultipartRequest() {
-        return getBooleanParameter(FL_EIDAS_ENABLE_REQUEST_MULTIPART_FORMDATA);
+	return getBooleanParameter(FL_EIDAS_ENABLE_REQUEST_MULTIPART_FORMDATA);
     }
 
     /**
-     * Lista degli endpoint per i servizi REST. Tendenzialmente questa verrà trattata come una lista circolare.
+     * Lista degli endpoint per i servizi REST. Tendenzialmente questa verrà trattata come una lista
+     * circolare.
      *
      * @return lista di endpoint
      */
     @Override
     public List<String> endPoints() {
-        final String endPointsString = configurationHelper.getValoreParamApplicByApplic(EIDAS_ENDPOINT);
-        return Pattern.compile(ENDPOINT_SEPARATOR).splitAsStream(endPointsString).map(String::trim)
-                .collect(Collectors.toCollection(LinkedList::new));
+	final String endPointsString = configurationHelper
+		.getValoreParamApplicByApplic(EIDAS_ENDPOINT);
+	return Pattern.compile(ENDPOINT_SEPARATOR).splitAsStream(endPointsString).map(String::trim)
+		.collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
     public String preferredEndpoint() {
-        return endPoints().get(0);
+	return endPoints().get(0);
     }
 
 }

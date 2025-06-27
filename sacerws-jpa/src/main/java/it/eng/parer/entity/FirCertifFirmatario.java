@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -67,66 +63,67 @@ public class FirCertifFirmatario implements Serializable {
     @Id
     @Column(name = "ID_CERTIF_FIRMATARIO")
     @GenericGenerator(name = "SFIR_CERTIF_FIRMATARIO_ID_CERTIF_FIRMATARIO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CERTIF_FIRMATARIO"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CERTIF_FIRMATARIO"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFIR_CERTIF_FIRMATARIO_ID_CERTIF_FIRMATARIO_GENERATOR")
     public Long getIdCertifFirmatario() {
-        return this.idCertifFirmatario;
+	return this.idCertifFirmatario;
     }
 
     public void setIdCertifFirmatario(Long idCertifFirmatario) {
-        this.idCertifFirmatario = idCertifFirmatario;
+	this.idCertifFirmatario = idCertifFirmatario;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_FIN_VAL_CERTIF_FIRMATARIO")
     public Date getDtFinValCertifFirmatario() {
-        return this.dtFinValCertifFirmatario;
+	return this.dtFinValCertifFirmatario;
     }
 
     public void setDtFinValCertifFirmatario(Date dtFinValCertifFirmatario) {
-        this.dtFinValCertifFirmatario = dtFinValCertifFirmatario;
+	this.dtFinValCertifFirmatario = dtFinValCertifFirmatario;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_INI_VAL_CERTIF_FIRMATARIO")
     public Date getDtIniValCertifFirmatario() {
-        return this.dtIniValCertifFirmatario;
+	return this.dtIniValCertifFirmatario;
     }
 
     public void setDtIniValCertifFirmatario(Date dtIniValCertifFirmatario) {
-        this.dtIniValCertifFirmatario = dtIniValCertifFirmatario;
+	this.dtIniValCertifFirmatario = dtIniValCertifFirmatario;
     }
 
     @Column(name = "DS_SERIAL_CERTIF_FIRMATARIO")
     public String getDsSerialCertifFirmatario() {
-        return this.dsSerialCertifFirmatario;
+	return this.dsSerialCertifFirmatario;
     }
 
     public void setDsSerialCertifFirmatario(String dsSerialCertifFirmatario) {
-        this.dsSerialCertifFirmatario = dsSerialCertifFirmatario;
+	this.dsSerialCertifFirmatario = dsSerialCertifFirmatario;
     }
 
     // bi-directional many-to-one association to FirCertifCa
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {
+	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CERTIF_CA")
     public FirCertifCa getFirCertifCa() {
-        return this.firCertifCa;
+	return this.firCertifCa;
     }
 
     public void setFirCertifCa(FirCertifCa firCertifCa) {
-        this.firCertifCa = firCertifCa;
+	this.firCertifCa = firCertifCa;
     }
 
     // bi-directional one-to-one association to FirFilePerFirma
-    @OneToOne(mappedBy = "firCertifFirmatario", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "firCertifFirmatario", cascade = {
+	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     public FirFilePerFirma getFirFilePerFirma() {
-        return this.firFilePerFirma;
+	return this.firFilePerFirma;
     }
 
     public void setFirFilePerFirma(FirFilePerFirma firFilePerFirma) {
-        this.firFilePerFirma = firFilePerFirma;
+	this.firFilePerFirma = firFilePerFirma;
     }
 
 }

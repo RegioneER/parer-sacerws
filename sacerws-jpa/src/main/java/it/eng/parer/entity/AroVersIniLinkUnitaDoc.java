@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -63,73 +59,73 @@ public class AroVersIniLinkUnitaDoc implements Serializable {
     @Id
     @Column(name = "ID_VERS_INI_LINK_UNITA_DOC")
     @GenericGenerator(name = "SARO_VERS_INI_LINK_UNITA_DOC_ID_VERS_INI_LINK_UNITA_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_VERS_INI_LINK_UNITA_DOC"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_VERS_INI_LINK_UNITA_DOC"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_VERS_INI_LINK_UNITA_DOC_ID_VERS_INI_LINK_UNITA_DOC_GENERATOR")
     public Long getIdVersIniLinkUnitaDoc() {
-        return this.idVersIniLinkUnitaDoc;
+	return this.idVersIniLinkUnitaDoc;
     }
 
     public void setIdVersIniLinkUnitaDoc(Long idVersIniLinkUnitaDoc) {
-        this.idVersIniLinkUnitaDoc = idVersIniLinkUnitaDoc;
+	this.idVersIniLinkUnitaDoc = idVersIniLinkUnitaDoc;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC_LINK")
     public BigDecimal getAaKeyUnitaDocLink() {
-        return this.aaKeyUnitaDocLink;
+	return this.aaKeyUnitaDocLink;
     }
 
     public void setAaKeyUnitaDocLink(BigDecimal aaKeyUnitaDocLink) {
-        this.aaKeyUnitaDocLink = aaKeyUnitaDocLink;
+	this.aaKeyUnitaDocLink = aaKeyUnitaDocLink;
     }
 
     @Column(name = "CD_KEY_UNITA_DOC_LINK")
     public String getCdKeyUnitaDocLink() {
-        return this.cdKeyUnitaDocLink;
+	return this.cdKeyUnitaDocLink;
     }
 
     public void setCdKeyUnitaDocLink(String cdKeyUnitaDocLink) {
-        this.cdKeyUnitaDocLink = cdKeyUnitaDocLink;
+	this.cdKeyUnitaDocLink = cdKeyUnitaDocLink;
     }
 
     @Column(name = "CD_REGISTRO_KEY_UNITA_DOC_LINK")
     public String getCdRegistroKeyUnitaDocLink() {
-        return this.cdRegistroKeyUnitaDocLink;
+	return this.cdRegistroKeyUnitaDocLink;
     }
 
     public void setCdRegistroKeyUnitaDocLink(String cdRegistroKeyUnitaDocLink) {
-        this.cdRegistroKeyUnitaDocLink = cdRegistroKeyUnitaDocLink;
+	this.cdRegistroKeyUnitaDocLink = cdRegistroKeyUnitaDocLink;
     }
 
     @Column(name = "DS_LINK_UNITA_DOC")
     public String getDsLinkUnitaDoc() {
-        return this.dsLinkUnitaDoc;
+	return this.dsLinkUnitaDoc;
     }
 
     public void setDsLinkUnitaDoc(String dsLinkUnitaDoc) {
-        this.dsLinkUnitaDoc = dsLinkUnitaDoc;
+	this.dsLinkUnitaDoc = dsLinkUnitaDoc;
     }
 
     // bi-directional many-to-one association to AroVersIniUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC_LINK")
     public AroUnitaDoc getAroVersUnitaDocLink() {
-        return this.aroVersUnitaDocLink;
+	return this.aroVersUnitaDocLink;
     }
 
     public void setAroVersUnitaDocLink(AroUnitaDoc aroVersUnitaDocLink) {
-        this.aroVersUnitaDocLink = aroVersUnitaDocLink;
+	this.aroVersUnitaDocLink = aroVersUnitaDocLink;
     }
 
     // bi-directional many-to-one association to AroVersIniUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VERS_INI_UNITA_DOC")
     public AroVersIniUnitaDoc getAroVersIniUnitaDoc() {
-        return this.aroVersIniUnitaDoc;
+	return this.aroVersIniUnitaDoc;
     }
 
     public void setAroVersIniUnitaDoc(AroVersIniUnitaDoc aroVersIniUnitaDoc) {
-        this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
+	this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
     }
 
 }

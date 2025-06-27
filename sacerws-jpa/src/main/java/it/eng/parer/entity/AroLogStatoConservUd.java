@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -49,87 +45,87 @@ public class AroLogStatoConservUd implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_LOG_STATO_CONSERV_UD")
     public long getIdLogStatoConservUd() {
-        return this.idLogStatoConservUd;
+	return this.idLogStatoConservUd;
     }
 
     public void setIdLogStatoConservUd(long idLogStatoConservUd) {
-        this.idLogStatoConservUd = idLogStatoConservUd;
+	this.idLogStatoConservUd = idLogStatoConservUd;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-        return this.aaKeyUnitaDoc;
+	return this.aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     @Column(name = "DT_STATO")
     public Timestamp getDtStato() {
-        return this.dtStato;
+	return this.dtStato;
     }
 
     public void setDtStato(Timestamp dtStato) {
-        this.dtStato = dtStato;
+	this.dtStato = dtStato;
     }
 
     // bi-directional many-to-one association to OrgSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SUB_STRUT")
     public OrgSubStrut getOrgSubStrut() {
-        return this.orgSubStrut;
+	return this.orgSubStrut;
     }
 
     public void setOrgSubStrut(OrgSubStrut orgSubStrut) {
-        this.orgSubStrut = orgSubStrut;
+	this.orgSubStrut = orgSubStrut;
     }
 
     @Column(name = "NM_AGENTE")
     public String getNmAgente() {
-        return this.nmAgente;
+	return this.nmAgente;
     }
 
     public void setNmAgente(String nmAgente) {
-        this.nmAgente = nmAgente;
+	this.nmAgente = nmAgente;
     }
 
     @Column(name = "TI_EVENTO")
     public String getTiEvento() {
-        return this.tiEvento;
+	return this.tiEvento;
     }
 
     public void setTiEvento(String tiEvento) {
-        this.tiEvento = tiEvento;
+	this.tiEvento = tiEvento;
     }
 
     @Column(name = "TI_MOD")
     public String getTiMod() {
-        return this.tiMod;
+	return this.tiMod;
     }
 
     public void setTiMod(String tiMod) {
-        this.tiMod = tiMod;
+	this.tiMod = tiMod;
     }
 
     @Column(name = "TI_STATO_CONSERVAZIONE")
     public String getTiStatoConservazione() {
-        return this.tiStatoConservazione;
+	return this.tiStatoConservazione;
     }
 
     public void setTiStatoConservazione(String tiStatoConservazione) {
-        this.tiStatoConservazione = tiStatoConservazione;
+	this.tiStatoConservazione = tiStatoConservazione;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-        return this.aroUnitaDoc;
+	return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-        this.aroUnitaDoc = aroUnitaDoc;
+	this.aroUnitaDoc = aroUnitaDoc;
     }
 
 }

@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -59,26 +55,26 @@ public class DecTipoUnitaDocAmmesso implements Serializable {
     @Column(name = "ID_TIPO_UNITA_DOC_AMMESSO")
     @XmlID
     @GenericGenerator(name = "SDEC_TIPO_UNITA_DOC_AMMESSO_ID_TIPO_UNITA_DOC_AMMESSO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_UNITA_DOC_AMMESSO"),
-            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_UNITA_DOC_AMMESSO"),
+	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_TIPO_UNITA_DOC_AMMESSO_ID_TIPO_UNITA_DOC_AMMESSO_GENERATOR")
     public Long getIdTipoUnitaDocAmmesso() {
-        return this.idTipoUnitaDocAmmesso;
+	return this.idTipoUnitaDocAmmesso;
     }
 
     public void setIdTipoUnitaDocAmmesso(Long idTipoUnitaDocAmmesso) {
-        this.idTipoUnitaDocAmmesso = idTipoUnitaDocAmmesso;
+	this.idTipoUnitaDocAmmesso = idTipoUnitaDocAmmesso;
     }
 
     // bi-directional many-to-one association to DecRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGISTRO_UNITA_DOC")
     public DecRegistroUnitaDoc getDecRegistroUnitaDoc() {
-        return this.decRegistroUnitaDoc;
+	return this.decRegistroUnitaDoc;
     }
 
     public void setDecRegistroUnitaDoc(DecRegistroUnitaDoc decRegistroUnitaDoc) {
-        this.decRegistroUnitaDoc = decRegistroUnitaDoc;
+	this.decRegistroUnitaDoc = decRegistroUnitaDoc;
     }
 
     // bi-directional many-to-one association to DecTipoUnitaDoc
@@ -87,10 +83,10 @@ public class DecTipoUnitaDocAmmesso implements Serializable {
     // @XmlInverseReference(mappedBy = "decTipoUnitaDocAmmessos")
     @XmlIDREF
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
-        return this.decTipoUnitaDoc;
+	return this.decTipoUnitaDoc;
     }
 
     public void setDecTipoUnitaDoc(DecTipoUnitaDoc decTipoUnitaDoc) {
-        this.decTipoUnitaDoc = decTipoUnitaDoc;
+	this.decTipoUnitaDoc = decTipoUnitaDoc;
     }
 }

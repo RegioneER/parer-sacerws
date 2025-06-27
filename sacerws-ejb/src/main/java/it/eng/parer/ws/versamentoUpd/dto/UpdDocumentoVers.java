@@ -1,23 +1,18 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package it.eng.parer.ws.versamentoUpd.dto;
 
@@ -51,83 +46,84 @@ public class UpdDocumentoVers extends DocumentoVers {
     private String tipoStrutturaNonverificato;
 
     public it.eng.parer.ws.xml.versUpdReq.DocumentoType getRifUpdDocumento() {
-        return rifUpdDocumento;
+	return rifUpdDocumento;
     }
 
     public void setRifUpdDocumento(it.eng.parer.ws.xml.versUpdReq.DocumentoType rifAggDocumento) {
-        this.rifUpdDocumento = rifAggDocumento;
+	this.rifUpdDocumento = rifAggDocumento;
     }
 
     public it.eng.parer.ws.xml.versUpdResp.DocumentoType getRifUpdDocumentoResp() {
-        return rifUpdDocumentoResp;
+	return rifUpdDocumentoResp;
     }
 
-    public void setRifUpdDocumentoResp(it.eng.parer.ws.xml.versUpdResp.DocumentoType rifAggDocumentoResp) {
-        this.rifUpdDocumentoResp = rifAggDocumentoResp;
+    public void setRifUpdDocumentoResp(
+	    it.eng.parer.ws.xml.versUpdResp.DocumentoType rifAggDocumentoResp) {
+	this.rifUpdDocumentoResp = rifAggDocumentoResp;
     }
 
     public List<UpdComponenteVers> getUpdComponentiAttesi() {
-        return updComponentiAttesi;
+	return updComponentiAttesi;
     }
 
     public void setUpdComponentiAttesi(List<UpdComponenteVers> updComponentiAttesi) {
-        this.updComponentiAttesi = updComponentiAttesi;
+	this.updComponentiAttesi = updComponentiAttesi;
     }
 
     public List<UpdComponenteVers> getUpdSottoComponentiAttesi() {
-        return updSottoComponentiAttesi;
+	return updSottoComponentiAttesi;
     }
 
     public void setUpdSottoComponentiAttesi(List<UpdComponenteVers> updSottoComponentiAttesi) {
-        this.updSottoComponentiAttesi = updSottoComponentiAttesi;
+	this.updSottoComponentiAttesi = updSottoComponentiAttesi;
     }
 
     public long getIdAbilTipoDocumentoDB() {
-        return idAbilTipoDocumentoDB;
+	return idAbilTipoDocumentoDB;
     }
 
     public void setIdAbilTipoDocumentoDB(long idAbilTipoDocumentoDB) {
-        this.idAbilTipoDocumentoDB = idAbilTipoDocumentoDB;
+	this.idAbilTipoDocumentoDB = idAbilTipoDocumentoDB;
     }
 
     public String getTipoDocNonverificato() {
-        return tipoDocNonverificato;
+	return tipoDocNonverificato;
     }
 
     public void setTipoDocNonverificato(String tipoDocNonverificato) {
-        this.tipoDocNonverificato = tipoDocNonverificato;
+	this.tipoDocNonverificato = tipoDocNonverificato;
     }
 
     public String getTipoStrutturaNonverificato() {
-        return tipoStrutturaNonverificato;
+	return tipoStrutturaNonverificato;
     }
 
     public void setTipoStrutturaNonverificato(String tipoStrutturaNonverificato) {
-        this.tipoStrutturaNonverificato = tipoStrutturaNonverificato;
+	this.tipoStrutturaNonverificato = tipoStrutturaNonverificato;
     }
 
     public String getCatDocNonverificato() {
-        return catDocNonverificato;
+	return catDocNonverificato;
     }
 
     public void setCatDocNonverificato(String catDocNonverificato) {
-        this.catDocNonverificato = catDocNonverificato;
+	this.catDocNonverificato = catDocNonverificato;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecifici() {
-        if (super.getDatiSpecifici() == null) {
-            super.datiSpecifici = new HashMap<String, DatoSpecifico>();
-        }
-        return super.getDatiSpecifici();
+	if (super.getDatiSpecifici() == null) {
+	    super.datiSpecifici = new HashMap<String, DatoSpecifico>();
+	}
+	return super.getDatiSpecifici();
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
-        if (super.getDatiSpecificiMigrazione() == null) {
-            super.datiSpecificiMigrazione = new HashMap<String, DatoSpecifico>();
-        }
-        return super.getDatiSpecificiMigrazione();
+	if (super.getDatiSpecificiMigrazione() == null) {
+	    super.datiSpecificiMigrazione = new HashMap<String, DatoSpecifico>();
+	}
+	return super.getDatiSpecificiMigrazione();
     }
 
 }

@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.entity;
@@ -58,60 +54,61 @@ public class FirOcsp implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FIR_OCSP_IDOCSP_GENERATOR")
     @Column(name = "ID_OCSP")
     public Long getIdOcsp() {
-        return this.idOcsp;
+	return this.idOcsp;
     }
 
     public void setIdOcsp(Long idOcsp) {
-        this.idOcsp = idOcsp;
+	this.idOcsp = idOcsp;
     }
 
     @Column(name = "DS_CERTIF_ISSUERNAME")
     public String getDsCertifIssuername() {
-        return this.dsCertifIssuername;
+	return this.dsCertifIssuername;
     }
 
     public void setDsCertifIssuername(String dsCertifIssuername) {
-        this.dsCertifIssuername = dsCertifIssuername;
+	this.dsCertifIssuername = dsCertifIssuername;
     }
 
     @Column(name = "DS_CERTIF_SERIAL_BASE64")
     public String getDsCertifSerialBase64() {
-        return this.dsCertifSerialBase64;
+	return this.dsCertifSerialBase64;
     }
 
     public void setDsCertifSerialBase64(String dsCertifSerialBase64) {
-        this.dsCertifSerialBase64 = dsCertifSerialBase64;
+	this.dsCertifSerialBase64 = dsCertifSerialBase64;
     }
 
     @Column(name = "DS_CERTIF_SKI_BASE64")
     public String getDsCertifSkiBase64() {
-        return this.dsCertifSkiBase64;
+	return this.dsCertifSkiBase64;
     }
 
     public void setDsCertifSkiBase64(String dsCertifSkiBase64) {
-        this.dsCertifSkiBase64 = dsCertifSkiBase64;
+	this.dsCertifSkiBase64 = dsCertifSkiBase64;
     }
 
     // bi-directional many-to-one association to FirCertifCa
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {
+	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CERTIF_OCSP")
     public FirCertifOcsp getFirCertifOcsp() {
-        return this.firCertifOcsp;
+	return this.firCertifOcsp;
     }
 
     public void setFirCertifOcsp(FirCertifOcsp firCertifOcsp) {
-        this.firCertifOcsp = firCertifOcsp;
+	this.firCertifOcsp = firCertifOcsp;
     }
 
     // bi-directional one-to-one association to FirFilePerFirma
-    @OneToOne(mappedBy = "firOcsp", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.REFRESH }, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "firOcsp", cascade = {
+	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     public FirFilePerFirma getFirFilePerFirma() {
-        return this.firFilePerFirma;
+	return this.firFilePerFirma;
     }
 
     public void setFirFilePerFirma(FirFilePerFirma firFilePerFirma) {
-        this.firFilePerFirma = firFilePerFirma;
+	this.firFilePerFirma = firFilePerFirma;
     }
 
 }
