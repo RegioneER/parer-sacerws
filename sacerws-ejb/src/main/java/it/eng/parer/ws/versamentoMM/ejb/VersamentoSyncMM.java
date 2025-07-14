@@ -154,7 +154,14 @@ public class VersamentoSyncMM extends VersamentoSyncBase {
 	if (versamento.isContainerZip() && versamento.getPathLocaleContenutoZip() != null) {
 	    // rimozione dei file temporanei estratti dallo zip
 	    for (FileBinario tmpFileDaRimuovere : sessione.getFileBinari()) {
-		tmpFileDaRimuovere.getFileSuDisco().delete();
+		File file = tmpFileDaRimuovere.getFileSuDisco();
+		if (file != null && file.exists()) {
+		    boolean deleted = file.delete();
+		    if (!deleted) {
+			log.warn("Impossibile eliminare il file temporaneo: {}",
+				file.getAbsolutePath());
+		    }
+		}
 	    }
 	    try {
 		FileUtils.deleteDirectory(new File(versamento.getPathLocaleContenutoZip()));

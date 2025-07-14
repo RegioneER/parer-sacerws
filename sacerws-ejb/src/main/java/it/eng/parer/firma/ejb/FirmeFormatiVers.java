@@ -15,6 +15,7 @@ package it.eng.parer.firma.ejb;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +43,6 @@ import it.eng.parer.firma.dto.input.InvokeVerificaRule;
 import it.eng.parer.firma.exception.VerificaFirmaException;
 import it.eng.parer.firma.util.VerificaFormatiEnums;
 import it.eng.parer.firma.util.VerificaFormatiEnums.EsitoControlloFormato;
-import it.eng.parer.firma.util.VerificaFormatiEnums.FormatiStandardFirme;
 import it.eng.parer.firma.util.VerificaFormatiEnums.IdoneitaFormato;
 import it.eng.parer.firma.xml.VFAdditionalInfoBustaType;
 import it.eng.parer.firma.xml.VFFirmaCompType;
@@ -60,8 +60,6 @@ import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.ejb.ControlliPerFirme;
 import it.eng.parer.ws.versamento.ejb.DocumentoVersVFirmeHash;
-
-import java.time.ZonedDateTime;
 
 /**
  *
@@ -362,24 +360,27 @@ public class FirmeFormatiVers {
      */
     private void extractFormatInfo(ComponenteVers componenteVers, long idTipoUd,
 	    VerificaFirmaWrapper wrapper, String tikaMime) throws VerificaFirmaException {
-	CompDocMock mock = componenteVers.withAcdEntity();
-	OrgStrut struttura = null;
-	if (mock.getIdStrut() != null) {
-	    struttura = controlliPerFirme.getOrgStruttAsEntity(mock.getIdStrut().longValue());
-	}
-
+	//
 	StringBuilder formatoRapprEsteso = new StringBuilder();
 	StringBuilder formatoRappr = new StringBuilder();
 	StringBuilder listaFormatiMimeTypeTika = new StringBuilder();
 	HashMap<Integer, String> formatoRapprBuilder = new HashMap<>();
 	HashMap<Integer, String> builderMessaggio = new HashMap<>();
 	String appendEsitoNeg = "";
+
+	//
+	CompDocMock mock = componenteVers.withAcdEntity();
+	OrgStrut struttura = null;
+	if (mock.getIdStrut() != null) {
+	    struttura = controlliPerFirme.getOrgStruttAsEntity(mock.getIdStrut().longValue());
+	}
+
 	// Cerco il formato file versato (ad es DOC.P7M.P7M o .TSR)
 	DecFormatoFileDoc formatoVersato = controlliPerFirme
 		.getDecFormatoFileDoc(componenteVers.getIdFormatoFileVers());
 
 	/*
-	 * MEV#18660 : info ricavata dal wrapper Ciò significa che la detection del mime-type, verrà
+	 * MEV#18660 : info ricavata dal wrapper, ciò significa che la detection del mimetype, verrà
 	 * effettuata in fase di VERIFICA e non più come processo a parte
 	 */
 	// 1- PROCESSO LE BUSTE - Setto i formati delle buste e li aggiungo nel formato
@@ -388,9 +389,12 @@ public class FirmeFormatiVers {
 
 	    // MEV#18660
 	    List<DecFormatoFileStandard> dffs = getFormatiBusta(busta);
+	    // Se non ho trovato formati, allora il formato è sconosciuto
 	    String nomeFormato = this.buildMessage(dffs);
+	    // Formato standard da versamento SIP
 	    DecFormatoFileStandard formatoStd = this.getFormatoStdDaVersato(dffs,
 		    formatoVersato.getNmFormatoFileDoc());
+	    //
 	    if (formatoStd != null) {
 		busta.getAdditionalInfo().setIdFormatoFileStandard(
 			BigInteger.valueOf(formatoStd.getIdFormatoFileStandard()));
@@ -401,32 +405,27 @@ public class FirmeFormatiVers {
 	    // init default msg
 	    formatoRapprBuilder.put(busta.getPgBusta().intValue(), StringUtils.EMPTY);
 	    builderMessaggio.put(busta.getPgBusta().intValue(), StringUtils.EMPTY);
-	    //
+
+	    // se formatoStd è null, allora il formato è sconosciuto
+	    // altrimenti, se il formato standard determinato è diverso da quello da quello orignale
+	    // consideralo come parte del calcolo del formato esteso dato che il formato originale
+	    // verrà considerato come parte del calcolo finale
 	    if (formatoStd == null) {
 		formatoRapprBuilder.put(busta.getPgBusta().intValue(),
 			VerificaFormatiEnums.SEPARATORE_FORMATI
 				+ VerificaFormatiEnums.FORMATO_SCONOSCIUTO);
 		builderMessaggio.put(busta.getPgBusta().intValue(),
 			VerificaFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
-	    } else if (!formatoStd.getNmFormatoFileStandard()
-		    .equals(FormatiStandardFirme.XML.name())
-		    && !formatoStd.getNmFormatoFileStandard()
-			    .equals(FormatiStandardFirme.PDF.name())) {
-		// sono esclusi i formati XML e PDF altrimenti avrei XML.XML o PDF.PDF
+	    } else if ((tikaMime != null && !tikaMime.isEmpty())
+		    && !formatoStd.getNmMimetypeFile().equalsIgnoreCase(tikaMime)) {
 		formatoRapprBuilder.put(busta.getPgBusta().intValue(),
 			VerificaFormatiEnums.SEPARATORE_FORMATI
 				+ formatoStd.getNmFormatoFileStandard());
 		builderMessaggio.put(busta.getPgBusta().intValue(),
 			VerificaFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
-	    } else if (formatoStd.getNmFormatoFileStandard()
-		    .equals(FormatiStandardFirme.XML.name())) {
-		tikaMime = VerificaFormatiEnums.XML_MIME;
-	    } else if (formatoStd.getNmFormatoFileStandard()
-		    .equals(FormatiStandardFirme.PDF.name())) {
-		tikaMime = VerificaFormatiEnums.PDF_MIME;
 	    }
 	}
-	// Eventuale normalizzazione mime type xml
+	// Eventuale normalizzazione mimetype xml
 	tikaMime = normalizeTika(tikaMime);
 
 	// 2- PROCESSO I CONTENUTI
