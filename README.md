@@ -12,8 +12,6 @@ I SIP devono rispettare una determinata struttura dati e sono composti da due el
 - INDICE SIP: un documento XML che contiene i metadati descrittivi dell’entità da versare e i Parametri di versamento.
 - OGGETTO-DATI: una o più sequenze di bit (tipicamente in forma di file) da sottoporre a conservazione.
 
-
-
 # Installazione
 
 Requisiti minimi per installazione: 
@@ -23,7 +21,7 @@ Requisiti minimi per installazione:
 - JBoss 7 EAP;
 - Oracle DB (versione consigliata 19c).
 
-## Instalazione JDK 
+## Installazione JDK 
 
 Consigliata adozione della OpenJDK alla versione 8, guida all'installazione https://openjdk.org/install/.
 

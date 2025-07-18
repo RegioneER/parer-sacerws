@@ -13,10 +13,7 @@
 
 package it.eng.parer.ws.versamentoMM.ejb;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -207,30 +204,26 @@ public class AllineaFileComponenti {
 
     private File estraFileDaZip(String zipPathName, String fileInZip, File pathContenutoZip)
 	    throws IOException {
-	File tmpRetFile = null;
-	byte[] bufffer = new byte[512 * 1024]; // 1/2 megabyte di buffer
+	byte[] buffer = new byte[512 * 1024]; // 1/2 megabyte di buffer
 	ZipArchiveEntry tmpZipArchiveEntry;
-	ZipFile tmpZipFile = null;
-	FileOutputStream tmpFileOutStream = null;
-	InputStream tmpInputStream = null;
-	try {
-	    tmpZipFile = new ZipFile(zipPathName);
+
+	try (ZipFile tmpZipFile = new ZipFile(zipPathName)) {
 	    tmpZipArchiveEntry = tmpZipFile.getEntry(fileInZip);
 	    if (tmpZipArchiveEntry != null) {
-		tmpRetFile = File.createTempFile("out_", ".tmp", pathContenutoZip);
-		tmpFileOutStream = new FileOutputStream(tmpRetFile);
-		tmpInputStream = tmpZipFile.getInputStream(tmpZipArchiveEntry);
-		int numBytes;
-		while ((numBytes = tmpInputStream.read(bufffer, 0, bufffer.length)) != -1) {
-		    tmpFileOutStream.write(bufffer, 0, numBytes);
+		File tmpRetFile = File.createTempFile("out_", ".tmp", pathContenutoZip);
+		try (FileOutputStream tmpFileOutStream = new FileOutputStream(tmpRetFile);
+			InputStream tmpInputStream = tmpZipFile
+				.getInputStream(tmpZipArchiveEntry)) {
+		    int numBytes;
+		    while ((numBytes = tmpInputStream.read(buffer, 0, buffer.length)) != -1) {
+			tmpFileOutStream.write(buffer, 0, numBytes);
+		    }
 		}
+		return tmpRetFile;
+	    } else {
+		throw new FileNotFoundException(
+			"File '" + fileInZip + "' non trovato nello ZIP: " + zipPathName);
 	    }
-	} finally {
-	    IOUtils.closeQuietly(tmpFileOutStream);
-	    IOUtils.closeQuietly(tmpInputStream);
-	    ZipFile.closeQuietly(tmpZipFile);
 	}
-
-	return tmpRetFile;
     }
 }

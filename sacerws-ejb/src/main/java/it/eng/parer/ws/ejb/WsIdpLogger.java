@@ -134,7 +134,8 @@ public class WsIdpLogger {
 		    try {
 			connection.close();
 		    } catch (SQLException ex) {
-			throw new RuntimeException("WsIdpLogger: Errore: " + ex.getMessage());
+			log.error("WsIdpLogger: Errore durante la chiusura della connessione: {}",
+				ex.getMessage(), ex);
 		    }
 		}
 	    }

@@ -75,6 +75,7 @@ public class WriteCompBlbOracle {
 	    + "VALUES (?, ?, ?, ?, ?, ?)";
     //
     private static final String QRY_SVRS_CONTENUTO_FILE = "SELECT SVRS_CONTENUTO_FILE.NEXTVAL FROM DUAL";
+
     private static final String QRY_VRS_CONTENUTO_FILE_KO = "INSERT INTO VRS_CONTENUTO_FILE_KO "
 	    + "(ID_CONTENUTO_FILE_KO, ID_FILE_SESSIONE_KO, BL_CONTENUTO_FILE_SESSIONE, ID_STRUT, MM_VERS, AA_VERS) "
 	    + "VALUES (?, ?, ?, ?, ?, ?)";

@@ -1236,6 +1236,7 @@ public class LogSessioneSync {
 	query.setParameter("cdKeyUnitaDoc", cdKeyUnitaDoc);
 	Long numUd = (Long) query.getSingleResult();
 	return numUd > 0;
+
     }
 
     /*
