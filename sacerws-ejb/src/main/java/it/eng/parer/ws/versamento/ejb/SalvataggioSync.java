@@ -274,6 +274,7 @@ public class SalvataggioSync {
 		    versamento.getVersamento().getIntestazione().getChiave(),
 		    versamento.getDescrizione().getNomeWs())) {
 		rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+
 		rispostaWS.setEsitoWsErrBundle(
 			tmpRispostaControlli.getCodErr() == null ? MessaggiWSBundle.ERR_666P
 				: tmpRispostaControlli.getCodErr(),
@@ -2609,6 +2610,7 @@ public class SalvataggioSync {
 		log.error("Eccezione nel calcolo 	dell'hash del componente: il file "
 			+ tmpFb.getFileName() + " non esiste. ", ex);
 		tmpReturn = false;
+
 	    } catch (IOException | NoSuchAlgorithmException ex) {
 		// fai qualcosa per segnalare il problema...
 		/// logga l'errore e blocca tutto
@@ -2918,7 +2920,7 @@ public class SalvataggioSync {
      * Salva i dati di aggregazione settando gli opportuni indicatori
      *
      *
-     * @param strutturaVersIn
+     * @param strutV
      *
      * @return
      */
