@@ -368,6 +368,7 @@ public class FirmeFormatiVers {
 	HashMap<Integer, String> builderMessaggio = new HashMap<>();
 	String appendEsitoNeg = "";
 
+	// 0.a - Recupero la struttura di appartenenza del componente
 	//
 	CompDocMock mock = componenteVers.withAcdEntity();
 	OrgStrut struttura = null;
@@ -375,9 +376,13 @@ public class FirmeFormatiVers {
 	    struttura = controlliPerFirme.getOrgStruttAsEntity(mock.getIdStrut().longValue());
 	}
 
+	// 0.b - Cerco il formato file versato (ad es DOC.P7M.P7M o .TSR)
 	// Cerco il formato file versato (ad es DOC.P7M.P7M o .TSR)
 	DecFormatoFileDoc formatoVersato = controlliPerFirme
 		.getDecFormatoFileDoc(componenteVers.getIdFormatoFileVers());
+
+	// 0.c - Eventuale normalizzazione mimetype xml
+	tikaMime = normalizeTika(tikaMime);
 
 	/*
 	 * MEV#18660 : info ricavata dal wrapper, ciò significa che la detection del mimetype, verrà
