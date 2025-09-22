@@ -1,4 +1,9 @@
 
+## 6.10.0 (18-09-2025)
+
+### Novità: 1
+- [#38980](https://parermine.regione.emilia-romagna.it/issues/38980) Aggiornamento libreria DSS 6.3
+
 ## 6.9.1 (18-07-2025)
 
 ### Bugfix: 1

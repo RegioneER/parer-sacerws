@@ -369,7 +369,6 @@ public class FirmeFormatiVers {
 	String appendEsitoNeg = "";
 
 	// 0.a - Recupero la struttura di appartenenza del componente
-	//
 	CompDocMock mock = componenteVers.withAcdEntity();
 	OrgStrut struttura = null;
 	if (mock.getIdStrut() != null) {
@@ -377,7 +376,6 @@ public class FirmeFormatiVers {
 	}
 
 	// 0.b - Cerco il formato file versato (ad es DOC.P7M.P7M o .TSR)
-	// Cerco il formato file versato (ad es DOC.P7M.P7M o .TSR)
 	DecFormatoFileDoc formatoVersato = controlliPerFirme
 		.getDecFormatoFileDoc(componenteVers.getIdFormatoFileVers());
 
@@ -430,8 +428,6 @@ public class FirmeFormatiVers {
 			VerificaFormatiEnums.SEPARATORE_FORMATI + nomeFormato);
 	    }
 	}
-	// Eventuale normalizzazione mimetype xml
-	tikaMime = normalizeTika(tikaMime);
 
 	// 2- PROCESSO I CONTENUTI
 	// 2a- Se non si tratta di un sotto-componente di tipo FIRMA o MARCA
