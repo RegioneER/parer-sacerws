@@ -26,18 +26,18 @@ public class VerificaFirmaWrapperResNotFoundException extends Exception {
     private final String wichOne;
 
     public VerificaFirmaWrapperResNotFoundException(String message, String wichOne) {
-	super(message);
-	this.wichOne = wichOne;
+        super(message);
+        this.wichOne = wichOne;
     }
 
     public String getWichOne() {
-	return wichOne;
+        return wichOne;
     }
 
     @Override
     public String getMessage() {
-	return "Servizio di verifica firma " + wichOne
-		+ " report verifica mancante, non possibile estrarre il risultato per elaborazione successiva.";
+        return "Servizio di verifica firma " + wichOne
+                + " report verifica mancante, non possibile estrarre il risultato per elaborazione successiva.";
     }
 
 }

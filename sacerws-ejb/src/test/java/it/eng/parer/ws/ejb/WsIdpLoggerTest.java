@@ -32,14 +32,14 @@ public class WsIdpLoggerTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return ArquillianTestUtils.createEnterpriseArchive(WsIdpLoggerTest.class.getSimpleName(),
-		ArquillianTestUtils.createSacerLogJavaArchive(),
-		ArquillianTestUtils.createPaginatorJavaArchive(),
-		ArquillianTestUtils.createSacerWSJavaArchive(Arrays.asList(""),
-			WsIdpLoggerTest.class, WsIdpLogger.class,
-			it.eng.parer.ws.ejb.ControlliSemantici.class,
-			it.eng.parer.util.ejb.AppServerInstance.class,
-			it.eng.parer.idpjaas.logutils.LogDto.class));
+        return ArquillianTestUtils.createEnterpriseArchive(WsIdpLoggerTest.class.getSimpleName(),
+                ArquillianTestUtils.createSacerLogJavaArchive(),
+                ArquillianTestUtils.createPaginatorJavaArchive(),
+                ArquillianTestUtils.createSacerWSJavaArchive(Arrays.asList(""),
+                        WsIdpLoggerTest.class, WsIdpLogger.class,
+                        it.eng.parer.ws.ejb.ControlliSemantici.class,
+                        it.eng.parer.util.ejb.AppServerInstance.class,
+                        it.eng.parer.idpjaas.logutils.LogDto.class));
     }
 
     @EJB
@@ -47,12 +47,12 @@ public class WsIdpLoggerTest {
 
     @Test
     public void todo() {
-	assertTrue(true);
+        assertTrue(true);
     }
 
     @Test
     @Disabled("è complicato creare il caso su DB per tetare la parte di query")
     public void scriviLog() {
-	assertTrue(true);
+        assertTrue(true);
     }
 }

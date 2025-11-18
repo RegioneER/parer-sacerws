@@ -23,7 +23,7 @@ public final class SerUrnFileVerSerie {
     }
 
     public enum TiUrnFileVerSerie {
-	ORIGINALE, NORMALIZZATO, INIZIALE
+        ORIGINALE, NORMALIZZATO, INIZIALE
     }
 
 }

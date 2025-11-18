@@ -31,41 +31,41 @@ public class DatoSpecifico implements java.io.Serializable {
      * @return the idDatoSpec
      */
     public long getIdDatoSpec() {
-	return idDatoSpec;
+        return idDatoSpec;
     }
 
     /**
      * @param idDatoSpec the idDatoSpec to set
      */
     public void setIdDatoSpec(long idDatoSpec) {
-	this.idDatoSpec = idDatoSpec;
+        this.idDatoSpec = idDatoSpec;
     }
 
     /**
      * @return the chiave
      */
     public String getChiave() {
-	return chiave;
+        return chiave;
     }
 
     /**
      * @param chiave the chiave to set
      */
     public void setChiave(String chiave) {
-	this.chiave = chiave;
+        this.chiave = chiave;
     }
 
     /**
      * @return the valore
      */
     public String getValore() {
-	return valore;
+        return valore;
     }
 
     /**
      * @param valore the valore to set
      */
     public void setValore(String valore) {
-	this.valore = valore;
+        this.valore = valore;
     }
 }

@@ -23,7 +23,7 @@ public final class AplValoreParamApplic {
     }
 
     public enum TiAppart {
-	AMBIENTE, APPLIC, STRUT, PERIODO_TIPO_FASC, TIPO_UNITA_DOC
+        AMBIENTE, APPLIC, STRUT, PERIODO_TIPO_FASC, TIPO_UNITA_DOC
     }
 
 }

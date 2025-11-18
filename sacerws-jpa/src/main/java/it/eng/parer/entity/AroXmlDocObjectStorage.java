@@ -30,7 +30,7 @@ public class AroXmlDocObjectStorage extends AroXmlObjectStorage {
     private static final long serialVersionUID = 1L;
 
     public AroXmlDocObjectStorage() {
-	super();
+        super();
     }
 
     private Long idDoc;
@@ -39,21 +39,21 @@ public class AroXmlDocObjectStorage extends AroXmlObjectStorage {
     @Id
     @Column(name = "ID_DOC")
     public Long getIdDoc() {
-	return idDoc;
+        return idDoc;
     }
 
     public void setIdDoc(Long idDoc) {
-	this.idDoc = idDoc;
+        this.idDoc = idDoc;
     }
 
     @MapsId
     @OneToOne(mappedBy = "aroXmlDocObjectStorage")
     @JoinColumn(name = "ID_DOC")
     public AroDoc getAroDoc() {
-	return aroDoc;
+        return aroDoc;
     }
 
     public void setAroDoc(AroDoc aroDoc) {
-	this.aroDoc = aroDoc;
+        this.aroDoc = aroDoc;
     }
 }

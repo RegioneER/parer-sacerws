@@ -36,11 +36,11 @@ public class ControlliProfiliUdTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliProfiliUdTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList("it.eng.parer.ws.xml.versReq"),
-			ControlliProfiliUdTest.class, ControlliProfiliUd.class,
-			ControlliSemantici.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliProfiliUdTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList("it.eng.parer.ws.xml.versReq"),
+                        ControlliProfiliUdTest.class, ControlliProfiliUd.class,
+                        ControlliSemantici.class),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -48,25 +48,25 @@ public class ControlliProfiliUdTest {
 
     @Test
     void checkXsdProfileExistence_queryIsOk() {
-	for (CostantiDB.TipiEntitaSacer tipiEntitaSacer : CostantiDB.TipiEntitaSacer.values()) {
-	    for (DecModelloXsdUd.TiModelloXsdUd tiModelloXsd : DecModelloXsdUd.TiModelloXsdUd
-		    .values()) {
-		controlliProfiliUd.checkXsdProfileExistence(0L, tipiEntitaSacer, tiModelloXsd);
-		assertTrue(true);
-	    }
-	}
+        for (CostantiDB.TipiEntitaSacer tipiEntitaSacer : CostantiDB.TipiEntitaSacer.values()) {
+            for (DecModelloXsdUd.TiModelloXsdUd tiModelloXsd : DecModelloXsdUd.TiModelloXsdUd
+                    .values()) {
+                controlliProfiliUd.checkXsdProfileExistence(0L, tipiEntitaSacer, tiModelloXsd);
+                assertTrue(true);
+            }
+        }
 
     }
 
     @Test
     void getXsdProfileByVersion_queryIsOk() {
-	for (CostantiDB.TipiEntitaSacer tipiEntitaSacer : CostantiDB.TipiEntitaSacer.values()) {
-	    for (DecModelloXsdUd.TiModelloXsdUd tiModelloXsd : DecModelloXsdUd.TiModelloXsdUd
-		    .values()) {
-		controlliProfiliUd.getXsdProfileByVersion(Arrays.asList(0L, -1L), tipiEntitaSacer,
-			tiModelloXsd, "versione");
-	    }
-	}
-	assertTrue(true);
+        for (CostantiDB.TipiEntitaSacer tipiEntitaSacer : CostantiDB.TipiEntitaSacer.values()) {
+            for (DecModelloXsdUd.TiModelloXsdUd tiModelloXsd : DecModelloXsdUd.TiModelloXsdUd
+                    .values()) {
+                controlliProfiliUd.getXsdProfileByVersion(Arrays.asList(0L, -1L), tipiEntitaSacer,
+                        tiModelloXsd, "versione");
+            }
+        }
+        assertTrue(true);
     }
 }

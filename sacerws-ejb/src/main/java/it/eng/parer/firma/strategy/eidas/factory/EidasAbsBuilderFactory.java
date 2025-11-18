@@ -56,17 +56,17 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      * @throws NoSuchMethodException     eccezione generica
      */
     public V create(Map<String, Boolean> controlliAbilitati, boolean isDataDiRiferimentoOnCompVers,
-	    ZonedDateTime dataDiRiferimento, Set<Costanti.ModificatoriWS> modificatoriWSCalc,
-	    EidasWSReportsDTOTree eidasReportsDto, VerificaFirmaWrapper vfWrapper,
-	    SignatureWrapper signatureW, Optional<TimestampWrapper> timestampW, BigDecimal[] pgs)
-	    throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException {
+            ZonedDateTime dataDiRiferimento, Set<Costanti.ModificatoriWS> modificatoriWSCalc,
+            EidasWSReportsDTOTree eidasReportsDto, VerificaFirmaWrapper vfWrapper,
+            SignatureWrapper signatureW, Optional<TimestampWrapper> timestampW, BigDecimal[] pgs)
+            throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException {
 
-	IEidasBuilderVFObj<V> buider = init(controlliAbilitati, isDataDiRiferimentoOnCompVers,
-		modificatoriWSCalc);
+        IEidasBuilderVFObj<V> buider = init(controlliAbilitati, isDataDiRiferimentoOnCompVers,
+                modificatoriWSCalc);
 
-	return buider.build(eidasReportsDto, vfWrapper, signatureW, timestampW, dataDiRiferimento,
-		pgs);
+        return buider.build(eidasReportsDto, vfWrapper, signatureW, timestampW, dataDiRiferimento,
+                pgs);
     }
 
     /**
@@ -79,5 +79,5 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      * @return implementazione stratey effettivo
      */
     protected abstract IEidasBuilderVFObj<V> init(Map<String, Boolean> controlliAbilitati,
-	    boolean isDataDiRiferimentoOnCompVers, Set<Costanti.ModificatoriWS> modificatoriWSCalc);
+            boolean isDataDiRiferimentoOnCompVers, Set<Costanti.ModificatoriWS> modificatoriWSCalc);
 }

@@ -58,68 +58,68 @@ public class FasLinkFascicolo implements Serializable {
     @Id
     @Column(name = "ID_LINK_FASCICOLO")
     @GenericGenerator(name = "SFAS_LINK_FASCICOLO_ID_LINK_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_LINK_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_LINK_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFAS_LINK_FASCICOLO_ID_LINK_FASCICOLO_GENERATOR")
     public Long getIdLinkFascicolo() {
-	return this.idLinkFascicolo;
+        return this.idLinkFascicolo;
     }
 
     public void setIdLinkFascicolo(Long idLinkFascicolo) {
-	this.idLinkFascicolo = idLinkFascicolo;
+        this.idLinkFascicolo = idLinkFascicolo;
     }
 
     @Column(name = "AA_FASCICOLO_LINK")
     public BigDecimal getAaFascicoloLink() {
-	return this.aaFascicoloLink;
+        return this.aaFascicoloLink;
     }
 
     public void setAaFascicoloLink(BigDecimal aaFascicoloLink) {
-	this.aaFascicoloLink = aaFascicoloLink;
+        this.aaFascicoloLink = aaFascicoloLink;
     }
 
     @Column(name = "CD_KEY_FASCICOLO_LINK")
     public String getCdKeyFascicoloLink() {
-	return this.cdKeyFascicoloLink;
+        return this.cdKeyFascicoloLink;
     }
 
     public void setCdKeyFascicoloLink(String cdKeyFascicoloLink) {
-	this.cdKeyFascicoloLink = cdKeyFascicoloLink;
+        this.cdKeyFascicoloLink = cdKeyFascicoloLink;
     }
 
     @Column(name = "DS_LINK")
     public String getDsLink() {
-	return this.dsLink;
+        return this.dsLink;
     }
 
     public void setDsLink(String dsLink) {
-	this.dsLink = dsLink;
+        this.dsLink = dsLink;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO_LINK")
     public FasFascicolo getFasFascicoloLink() {
-	return this.fasFascicoloLink;
+        return this.fasFascicoloLink;
     }
 
     public void setFasFascicoloLink(FasFascicolo fasFascicoloLink) {
-	this.fasFascicoloLink = fasFascicoloLink;
+        this.fasFascicoloLink = fasFascicoloLink;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 
     @Transient
     public boolean hasLink() {
-	return this.fasFascicoloLink != null;
+        return this.fasFascicoloLink != null;
     }
 }

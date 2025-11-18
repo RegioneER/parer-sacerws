@@ -51,34 +51,34 @@ public class MonAaUnitaDocRegistro implements Serializable {
     @Id
     @Column(name = "ID_AA_UNITA_DOC_REGISTRO")
     @GenericGenerator(name = "SMON_AA_UNITA_DOC_REGISTRO_ID_AA_UNITA_DOC_REGISTRO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_AA_UNITA_DOC_REGISTRO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_AA_UNITA_DOC_REGISTRO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SMON_AA_UNITA_DOC_REGISTRO_ID_AA_UNITA_DOC_REGISTRO_GENERATOR")
     public Long getIdAaUnitaDocRegistro() {
-	return this.idAaUnitaDocRegistro;
+        return this.idAaUnitaDocRegistro;
     }
 
     public void setIdAaUnitaDocRegistro(Long idAaUnitaDocRegistro) {
-	this.idAaUnitaDocRegistro = idAaUnitaDocRegistro;
+        this.idAaUnitaDocRegistro = idAaUnitaDocRegistro;
     }
 
     @Column(name = "AA_UNITA_DOC_REGISTRO")
     public BigDecimal getAaUnitaDocRegistro() {
-	return this.aaUnitaDocRegistro;
+        return this.aaUnitaDocRegistro;
     }
 
     public void setAaUnitaDocRegistro(BigDecimal aaUnitaDocRegistro) {
-	this.aaUnitaDocRegistro = aaUnitaDocRegistro;
+        this.aaUnitaDocRegistro = aaUnitaDocRegistro;
     }
 
     // bi-directional many-to-one association to DecRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGISTRO_UNITA_DOC")
     public DecRegistroUnitaDoc getDecRegistroUnitaDoc() {
-	return this.decRegistroUnitaDoc;
+        return this.decRegistroUnitaDoc;
     }
 
     public void setDecRegistroUnitaDoc(DecRegistroUnitaDoc decRegistroUnitaDoc) {
-	this.decRegistroUnitaDoc = decRegistroUnitaDoc;
+        this.decRegistroUnitaDoc = decRegistroUnitaDoc;
     }
 }

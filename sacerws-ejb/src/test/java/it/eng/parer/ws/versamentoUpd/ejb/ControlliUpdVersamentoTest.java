@@ -41,13 +41,13 @@ public class ControlliUpdVersamentoTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliUpdVersamentoTest.class.getSimpleName(),
-		createSacerWSJavaArchive(
-			Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
-				"it.eng.parer.ws.xml.versUpdReq"),
-			ControlliUpdVersamentoTest.class, ControlliUpdVersamento.class,
-			ControlliSemantici.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliUpdVersamentoTest.class.getSimpleName(),
+                createSacerWSJavaArchive(
+                        Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
+                                "it.eng.parer.ws.xml.versUpdReq"),
+                        ControlliUpdVersamentoTest.class, ControlliUpdVersamento.class,
+                        ControlliSemantici.class),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -55,92 +55,92 @@ public class ControlliUpdVersamentoTest {
 
     @Test
     public void checkUltimoSIPWithHashBinary() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkUltimoSIPWithHashBinary("descKey", 0l, "sipxml");
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkUltimoSIPWithHashBinary("descKey", 0l, "sipxml");
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkTipoUDRegIamUserOrganizzazione() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkTipoUDRegIamUserOrganizzazione(mockCsChiave(),
-			"descTipologiaUnitaDocumentaria", 0l, 0l, 0l, 0l);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkTipoUDRegIamUserOrganizzazione(mockCsChiave(),
+                        "descTipologiaUnitaDocumentaria", 0l, 0l, 0l, 0l);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void getUpdFlagsFromTipoUDOrgStrut() {
-	RispostaControlli rispostaControlli = controlliUpdVersamento
-		.getUpdFlagsFromTipoUDOrgStrut(0l, false);
-	assertNoErr(rispostaControlli);
-	rispostaControlli = controlliUpdVersamento.getUpdFlagsFromTipoUDOrgStrut(0l, true);
-	assertNoErr(rispostaControlli);
+        RispostaControlli rispostaControlli = controlliUpdVersamento
+                .getUpdFlagsFromTipoUDOrgStrut(0l, false);
+        assertNoErr(rispostaControlli);
+        rispostaControlli = controlliUpdVersamento.getUpdFlagsFromTipoUDOrgStrut(0l, true);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkIdDocumentoInUD() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento.checkIdDocumentoInUD(0l,
-		"idDoc", "descChiaveDoc");
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento.checkIdDocumentoInUD(0l,
+                "idDoc", "descChiaveDoc");
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkTipoDocRegIamUserOrganizzazione() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkTipoDocRegIamUserOrganizzazione("tipoDoc", 0l, 0l, 0l);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkTipoDocRegIamUserOrganizzazione("tipoDoc", 0l, 0l, 0l);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkIdComponenteInDoc() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkIdComponenteInDoc(0l, 0, "descChiaveComp");
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkIdComponenteInDoc(0l, 0, "descChiaveComp");
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkAroStrutDocAndTipo() {
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkAroStrutDocAndTipo(0L);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkAroStrutDocAndTipo(0L);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkFascicoliSecondari() {
-	final UpdVersamentoExt versamento = new UpdVersamentoExt();
-	versamento.setStrutturaUpdVers(new StrutturaUpdVers());
-	versamento.getStrutturaUpdVers().setIdStruttura(0L);
-	versamento.getStrutturaUpdVers().setIdUd(0L);
-	versamento.setVersamento(new IndiceSIPAggiornamentoUnitaDocumentaria());
-	versamento.getVersamento().setUnitaDocumentaria(new AggiornamentoUnitaDocumentariaType());
-	versamento.getVersamento().getUnitaDocumentaria()
-		.setProfiloArchivistico(new AggiornamentoProfiloArchivisticoType());
-	versamento.getVersamento().getUnitaDocumentaria().getProfiloArchivistico()
-		.setFascicoliSecondari(
-			new AggiornamentoProfiloArchivisticoType.FascicoliSecondari());
-	versamento.getVersamento().getUnitaDocumentaria().getProfiloArchivistico()
-		.getFascicoliSecondari();
-	final RispostaControlli rispostaControlli = controlliUpdVersamento
-		.checkFascicoliSecondari(versamento);
-	assertNoErr(rispostaControlli);
+        final UpdVersamentoExt versamento = new UpdVersamentoExt();
+        versamento.setStrutturaUpdVers(new StrutturaUpdVers());
+        versamento.getStrutturaUpdVers().setIdStruttura(0L);
+        versamento.getStrutturaUpdVers().setIdUd(0L);
+        versamento.setVersamento(new IndiceSIPAggiornamentoUnitaDocumentaria());
+        versamento.getVersamento().setUnitaDocumentaria(new AggiornamentoUnitaDocumentariaType());
+        versamento.getVersamento().getUnitaDocumentaria()
+                .setProfiloArchivistico(new AggiornamentoProfiloArchivisticoType());
+        versamento.getVersamento().getUnitaDocumentaria().getProfiloArchivistico()
+                .setFascicoliSecondari(
+                        new AggiornamentoProfiloArchivisticoType.FascicoliSecondari());
+        versamento.getVersamento().getUnitaDocumentaria().getProfiloArchivistico()
+                .getFascicoliSecondari();
+        final RispostaControlli rispostaControlli = controlliUpdVersamento
+                .checkFascicoliSecondari(versamento);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void checkChiaveAndTipoDocPrinc() {
-	for (ControlliSemantici.TipiGestioneUDAnnullate tipiGestioneUDAnnullate : ControlliSemantici.TipiGestioneUDAnnullate
-		.values()) {
-	    final RispostaControlli rispostaControlli = controlliUpdVersamento
-		    .checkChiaveAndTipoDocPrinc(mockCsChiave(), 0l, tipiGestioneUDAnnullate);
-	    assertNoErr(rispostaControlli);
+        for (ControlliSemantici.TipiGestioneUDAnnullate tipiGestioneUDAnnullate : ControlliSemantici.TipiGestioneUDAnnullate
+                .values()) {
+            final RispostaControlli rispostaControlli = controlliUpdVersamento
+                    .checkChiaveAndTipoDocPrinc(mockCsChiave(), 0l, tipiGestioneUDAnnullate);
+            assertNoErr(rispostaControlli);
 
-	}
+        }
     }
 
     private CSChiave mockCsChiave() {
-	final CSChiave key = new CSChiave();
-	key.setNumero("2021");
-	key.setTipoRegistro("tipoRegistro");
-	key.setAnno(2021L);
-	return key;
+        final CSChiave key = new CSChiave();
+        key.setNumero("2021");
+        key.setTipoRegistro("tipoRegistro");
+        key.setAnno(2021L);
+        return key;
     }
 }

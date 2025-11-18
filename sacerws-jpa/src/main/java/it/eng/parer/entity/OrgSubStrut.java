@@ -64,76 +64,76 @@ public class OrgSubStrut implements Serializable {
     @Id
     @Column(name = "ID_SUB_STRUT")
     @GenericGenerator(name = "SORG_SUB_STRUT_ID_SUB_STRUT_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_SUB_STRUT"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_SUB_STRUT"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_SUB_STRUT_ID_SUB_STRUT_GENERATOR")
     public Long getIdSubStrut() {
-	return this.idSubStrut;
+        return this.idSubStrut;
     }
 
     public void setIdSubStrut(Long idSubStrut) {
-	this.idSubStrut = idSubStrut;
+        this.idSubStrut = idSubStrut;
     }
 
     @Column(name = "DS_SUB_STRUT")
     public String getDsSubStrut() {
-	return this.dsSubStrut;
+        return this.dsSubStrut;
     }
 
     public void setDsSubStrut(String dsSubStrut) {
-	this.dsSubStrut = dsSubStrut;
+        this.dsSubStrut = dsSubStrut;
     }
 
     @Column(name = "NM_SUB_STRUT")
     public String getNmSubStrut() {
-	return this.nmSubStrut;
+        return this.nmSubStrut;
     }
 
     public void setNmSubStrut(String nmSubStrut) {
-	this.nmSubStrut = nmSubStrut;
+        this.nmSubStrut = nmSubStrut;
     }
 
     // bi-directional many-to-one association to OrgCampoValSubStrut
     @OneToMany(mappedBy = "orgSubStrut")
     @XmlIDREF
     public List<OrgCampoValSubStrut> getOrgCampoValSubStruts() {
-	return this.orgCampoValSubStruts;
+        return this.orgCampoValSubStruts;
     }
 
     public void setOrgCampoValSubStruts(List<OrgCampoValSubStrut> orgCampoValSubStruts) {
-	this.orgCampoValSubStruts = orgCampoValSubStruts;
+        this.orgCampoValSubStruts = orgCampoValSubStruts;
     }
 
     // bi-directional many-to-one association to OrgPartitionSubStrut
     @OneToMany(mappedBy = "orgSubStrut", cascade = CascadeType.REMOVE)
     @XmlTransient
     public List<OrgPartitionSubStrut> getOrgPartitionSubStruts() {
-	return this.orgPartitionSubStruts;
+        return this.orgPartitionSubStruts;
     }
 
     public void setOrgPartitionSubStruts(List<OrgPartitionSubStrut> orgPartitionSubStruts) {
-	this.orgPartitionSubStruts = orgPartitionSubStruts;
+        this.orgPartitionSubStruts = orgPartitionSubStruts;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @OneToMany(mappedBy = "orgSubStrut")
     @XmlTransient
     public List<AroUnitaDoc> getAroUnitaDocs() {
-	return this.aroUnitaDocs;
+        return this.aroUnitaDocs;
     }
 
     public void setAroUnitaDocs(List<AroUnitaDoc> aroUnitaDocs) {
-	this.aroUnitaDocs = aroUnitaDocs;
+        this.aroUnitaDocs = aroUnitaDocs;
     }
 }

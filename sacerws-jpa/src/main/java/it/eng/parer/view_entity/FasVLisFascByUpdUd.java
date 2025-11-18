@@ -32,11 +32,11 @@ public class FasVLisFascByUpdUd implements Serializable {
 
     @EmbeddedId
     public FasVLisFascByUpdUdId getFasVLisFascByUpdUdId() {
-	return fasVLisFascByUpdUdId;
+        return fasVLisFascByUpdUdId;
     }
 
     public void setFasVLisFascByUpdUdId(FasVLisFascByUpdUdId fasVLisFascByUpdUdId) {
-	this.fasVLisFascByUpdUdId = fasVLisFascByUpdUdId;
+        this.fasVLisFascByUpdUdId = fasVLisFascByUpdUdId;
     }
 
     public FasVLisFascByUpdUd() {/* Hibernate */

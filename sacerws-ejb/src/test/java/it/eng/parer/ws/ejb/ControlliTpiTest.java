@@ -34,10 +34,10 @@ public class ControlliTpiTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliTpiTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList(""), ControlliTpiTest.class,
-			ControlliTpi.class).addPackages(true, "org.apache.commons.io"),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliTpiTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList(""), ControlliTpiTest.class,
+                        ControlliTpi.class).addPackages(true, "org.apache.commons.io"),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -45,13 +45,13 @@ public class ControlliTpiTest {
 
     @Test
     public void caricaRootPath() {
-	final RispostaControlli rispostaControlli = controlliTpi.caricaRootPath();
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = controlliTpi.caricaRootPath();
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void verificaAbilitazioneTpi() {
-	final RispostaControlli rispostaControlli = controlliTpi.verificaAbilitazioneTpi();
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = controlliTpi.verificaAbilitazioneTpi();
+        assertTrue(rispostaControlli.isrBoolean());
     }
 }

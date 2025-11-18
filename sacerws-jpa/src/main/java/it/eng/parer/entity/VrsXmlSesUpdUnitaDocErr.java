@@ -59,55 +59,55 @@ public class VrsXmlSesUpdUnitaDocErr implements Serializable {
     @Id
     @Column(name = "ID_XML_SES_UPD_UNITA_DOC_ERR")
     @GenericGenerator(name = "SVRS_XML_SES_UPD_UNITA_DOC_ERR_ID_XML_SES_UPD_UNITA_DOC_ERR_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_UPD_UNITA_DOC_ERR"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_UPD_UNITA_DOC_ERR"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_XML_SES_UPD_UNITA_DOC_ERR_ID_XML_SES_UPD_UNITA_DOC_ERR_GENERATOR")
     public Long getIdXmlSesUpdUnitaDocErr() {
-	return this.idXmlSesUpdUnitaDocErr;
+        return this.idXmlSesUpdUnitaDocErr;
     }
 
     public void setIdXmlSesUpdUnitaDocErr(Long idXmlSesUpdUnitaDocErr) {
-	this.idXmlSesUpdUnitaDocErr = idXmlSesUpdUnitaDocErr;
+        this.idXmlSesUpdUnitaDocErr = idXmlSesUpdUnitaDocErr;
     }
 
     @Lob
     @Column(name = "BL_XML")
     public String getBlXml() {
-	return this.blXml;
+        return this.blXml;
     }
 
     public void setBlXml(String blXml) {
-	this.blXml = blXml;
+        this.blXml = blXml;
     }
 
     @Column(name = "CD_VERSIONE_XML")
     public String getCdVersioneXml() {
-	return this.cdVersioneXml;
+        return this.cdVersioneXml;
     }
 
     public void setCdVersioneXml(String cdVersioneXml) {
-	this.cdVersioneXml = cdVersioneXml;
+        this.cdVersioneXml = cdVersioneXml;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SES_UPD_UD_ERR")
     public VrsSesUpdUnitaDocErr getVrsSesUpdUnitaDocErr() {
-	return this.vrsSesUpdUnitaDocErr;
+        return this.vrsSesUpdUnitaDocErr;
     }
 
     public void setVrsSesUpdUnitaDocErr(VrsSesUpdUnitaDocErr vrsSesUpdUnitaDocErr) {
-	this.vrsSesUpdUnitaDocErr = vrsSesUpdUnitaDocErr;
+        this.vrsSesUpdUnitaDocErr = vrsSesUpdUnitaDocErr;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_XML")
     public TiXmlVrsXmlSesUpdUnitaDocErr getTiXml() {
-	return this.tiXml;
+        return this.tiXml;
     }
 
     public void setTiXml(TiXmlVrsXmlSesUpdUnitaDocErr tiXml) {
-	this.tiXml = tiXml;
+        this.tiXml = tiXml;
     }
 
 }

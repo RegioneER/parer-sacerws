@@ -54,53 +54,53 @@ public class LogLockElab implements Serializable {
     @Id
     @Column(name = "ID_LOCK_ELAB")
     @GenericGenerator(name = "SLOG_LOCK_ELAB_ID_LOCK_ELAB_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SLOG_LOCK_ELAB"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SLOG_LOCK_ELAB"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SLOG_LOCK_ELAB_ID_LOCK_ELAB_GENERATOR")
     public Long getIdLockElab() {
-	return this.idLockElab;
+        return this.idLockElab;
     }
 
     public void setIdLockElab(Long idLockElab) {
-	this.idLockElab = idLockElab;
+        this.idLockElab = idLockElab;
     }
 
     @Column(name = "FL_ELAB_ATTIVA", columnDefinition = "char(1)")
     public String getFlElabAttiva() {
-	return this.flElabAttiva;
+        return this.flElabAttiva;
     }
 
     public void setFlElabAttiva(String flElabAttiva) {
-	this.flElabAttiva = flElabAttiva;
+        this.flElabAttiva = flElabAttiva;
     }
 
     @Column(name = "NM_ELAB")
     public String getNmElab() {
-	return this.nmElab;
+        return this.nmElab;
     }
 
     public void setNmElab(String nmElab) {
-	this.nmElab = nmElab;
+        this.nmElab = nmElab;
     }
 
     @Column(name = "TI_LOCK_ELAB")
     public String getTiLockElab() {
-	return this.tiLockElab;
+        return this.tiLockElab;
     }
 
     public void setTiLockElab(String tiLockElab) {
-	this.tiLockElab = tiLockElab;
+        this.tiLockElab = tiLockElab;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
 }

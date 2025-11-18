@@ -19,7 +19,7 @@ public final class DecModelloXsdUd {
     }
 
     public enum TiModelloXsdUd {
-	PROFILO_NORMATIVO_UNITA_DOC
+        PROFILO_NORMATIVO_UNITA_DOC
     }
 
 }

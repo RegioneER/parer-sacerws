@@ -20,12 +20,12 @@ public class ParerErrorCategory {
     public static final String VALIDATION_ERROR = "VALIDATION_ERROR";
 
     public static SacerWsErrorCategory asEnum(String val) {
-	return SacerWsErrorCategory.valueOf(val);
+        return SacerWsErrorCategory.valueOf(val);
     }
 
     // Enum
     public enum SacerWsErrorCategory {
 
-	INTERNAL_ERROR, USER_ERROR, VALIDATION_ERROR
+        INTERNAL_ERROR, USER_ERROR, VALIDATION_ERROR
     }
 }

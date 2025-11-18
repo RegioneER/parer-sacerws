@@ -25,8 +25,8 @@ public class EidasVFMarcaCompBuilder extends EidasAbsBuilderFactory<VFMarcaCompT
 
     @Override
     protected IEidasBuilderVFObj<VFMarcaCompType> init(Map<String, Boolean> controlliAbilitati,
-	    boolean isDataDiRiferimentoOnCompVers, Set<ModificatoriWS> modificatoriWSCalc) {
-	return new EidasMarcaBuilder(controlliAbilitati);
+            boolean isDataDiRiferimentoOnCompVers, Set<ModificatoriWS> modificatoriWSCalc) {
+        return new EidasMarcaBuilder(controlliAbilitati);
     }
 
 }

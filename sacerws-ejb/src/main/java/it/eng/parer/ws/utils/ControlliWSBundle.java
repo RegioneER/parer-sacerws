@@ -42,41 +42,41 @@ public class ControlliWSBundle {
      * della classe originale: un normalissimo Bundle con un file di properties
      */
     public static String getString(String cdControllo) {
-	// l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
-	return lookupCacheRef().getString(cdControllo);
+        // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
+        return lookupCacheRef().getString(cdControllo);
     }
 
     public static String getString(String key, Object... params) {
-	// l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
-	return lookupCacheRef().getString(key, params);
+        // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
+        return lookupCacheRef().getString(key, params);
     }
 
     // completo di tutti i campi (TODO: verificare se serve)
     public static ControlloWSResp getControllo(String cdControllo) {
-	// recupero il dto con il codice di controllo
-	return lookupCacheRef().getControllo(cdControllo);
+        // recupero il dto con il codice di controllo
+        return lookupCacheRef().getControllo(cdControllo);
     }
 
     public static List<ControlloWSResp> getControlli() {
-	// recupero il dto con il codice di controllo
-	return lookupCacheRef().getControlli();
+        // recupero il dto con il codice di controllo
+        return lookupCacheRef().getControlli();
     }
 
     public static List<ControlloWSResp> getControlliByCdFamiglia(String cdFamiglia) {
-	// recupero il dto con il codice di controllo
-	return lookupCacheRef().getControlliByCdFamiglia(cdFamiglia);
+        // recupero il dto con il codice di controllo
+        return lookupCacheRef().getControlliByCdFamiglia(cdFamiglia);
     }
 
     private static ControlliWSCache lookupCacheRef() {
-	try {
-	    return (ControlliWSCache) new InitialContext()
-		    .lookup("java:app/sacerws-ejb/ControlliWSCache");
-	} catch (NamingException ex) {
-	    throw new SacerWsRuntimeException(
-		    "Errore lookup singleton dei messaggi "
-			    + ExceptionUtils.getRootCauseMessage(ex),
-		    SacerWsErrorCategory.INTERNAL_ERROR);
-	}
+        try {
+            return (ControlliWSCache) new InitialContext()
+                    .lookup("java:app/sacerws-ejb/ControlliWSCache");
+        } catch (NamingException ex) {
+            throw new SacerWsRuntimeException(
+                    "Errore lookup singleton dei messaggi "
+                            + ExceptionUtils.getRootCauseMessage(ex),
+                    SacerWsErrorCategory.INTERNAL_ERROR);
+        }
     }
 
     // erroriSistema

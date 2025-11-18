@@ -40,7 +40,7 @@ import it.eng.parer.entity.inheritance.oop.ElvUdDocUpdDaElabElenco;
 @Table(name = "ELV_UD_VERS_DA_ELAB_ELENCO")
 @AssociationOverride(name = "udDocUpdObj", joinColumns = @JoinColumn(name = "ID_UNITA_DOC", insertable = false, updatable = false))
 public class ElvUdVersDaElabElenco extends ElvUdDocUpdDaElabElenco<AroUnitaDoc>
-	implements Serializable {
+        implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,43 +58,43 @@ public class ElvUdVersDaElabElenco extends ElvUdDocUpdDaElabElenco<AroUnitaDoc>
     @Id
     @Column(name = "ID_UD_VERS_DA_ELAB_ELENCO")
     @GenericGenerator(name = "SELV_UD_VERS_DA_ELAB_ELENCO_ID_UD_VERS_DA_ELAB_ELENCO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_UD_VERS_DA_ELAB_ELENCO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_UD_VERS_DA_ELAB_ELENCO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SELV_UD_VERS_DA_ELAB_ELENCO_ID_UD_VERS_DA_ELAB_ELENCO_GENERATOR")
     public Long getIdUdVersDaElabElenco() {
-	return this.idUdVersDaElabElenco;
+        return this.idUdVersDaElabElenco;
     }
 
     public void setIdUdVersDaElabElenco(Long idUdVersDaElabElenco) {
-	this.idUdVersDaElabElenco = idUdVersDaElabElenco;
+        this.idUdVersDaElabElenco = idUdVersDaElabElenco;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "TI_STATO_UD_DA_ELAB")
     public String getTiStatoUdDaElab() {
-	return this.tiStatoUdDaElab;
+        return this.tiStatoUdDaElab;
     }
 
     public void setTiStatoUdDaElab(String tiStatoUdDaElab) {
-	this.tiStatoUdDaElab = tiStatoUdDaElab;
+        this.tiStatoUdDaElab = tiStatoUdDaElab;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 }

@@ -38,57 +38,57 @@ public class BinEncUtility {
     private static final Logger logger = LoggerFactory.getLogger(BinEncUtility.class);
 
     private BinEncUtility() {
-	throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class");
     }
 
     public static boolean isBase64String(String utf8str) {
-	return Base64.isBase64(utf8str);
+        return Base64.isBase64(utf8str);
     }
 
     public static String encodeUTF8Base64String(byte[] barray) {
-	if (barray != null && barray.length > 0) {
-	    try {
-		return new String(Base64.encodeBase64(barray), StandardCharsets.UTF_8.name());
-	    } catch (Exception ex) {
-		/* critical error */
-		throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
-	    }
-	} else {
-	    return StringUtils.EMPTY;
-	}
+        if (barray != null && barray.length > 0) {
+            try {
+                return new String(Base64.encodeBase64(barray), StandardCharsets.UTF_8.name());
+            } catch (Exception ex) {
+                /* critical error */
+                throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
+            }
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     public static byte[] decodeUTF8Base64String(String utf8str) {
-	try {
-	    return Base64.decodeBase64(utf8str.getBytes(StandardCharsets.UTF_8.name()));
-	} catch (Exception ex) {
-	    /* managed error */
-	    logger.warn("Encoding UTF-8 non supportato", ex);
-	    return ArrayUtils.EMPTY_BYTE_ARRAY;
-	}
+        try {
+            return Base64.decodeBase64(utf8str.getBytes(StandardCharsets.UTF_8.name()));
+        } catch (Exception ex) {
+            /* managed error */
+            logger.warn("Encoding UTF-8 non supportato", ex);
+            return ArrayUtils.EMPTY_BYTE_ARRAY;
+        }
     }
 
     public static boolean isHexString(String utf8str) {
-	return (utf8str.length() > 1 && utf8str.length() % 2 == 0)
-		&& utf8str.matches("^[0-9a-fA-F]+$");
+        return (utf8str.length() > 1 && utf8str.length() % 2 == 0)
+                && utf8str.matches("^[0-9a-fA-F]+$");
     }
 
     public static String encodeUTF8HexString(byte[] barray) {
-	if (barray != null && barray.length > 0) {
-	    return Hex.encodeHexString(barray);
-	} else {
-	    return StringUtils.EMPTY;
-	}
+        if (barray != null && barray.length > 0) {
+            return Hex.encodeHexString(barray);
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     public static byte[] decodeUTF8HexString(String hexstr) {
-	try {
-	    return Hex.decodeHex(hexstr.toCharArray());
-	} catch (Exception ex) {
-	    /* managed error */
-	    logger.warn("La stringa non rappresenta un numero in base 16", ex);
-	    return ArrayUtils.EMPTY_BYTE_ARRAY;
-	}
+        try {
+            return Hex.decodeHex(hexstr.toCharArray());
+        } catch (Exception ex) {
+            /* managed error */
+            logger.warn("La stringa non rappresenta un numero in base 16", ex);
+            return ArrayUtils.EMPTY_BYTE_ARRAY;
+        }
     }
 
 }

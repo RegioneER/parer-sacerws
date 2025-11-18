@@ -76,129 +76,129 @@ public class AroXmlUpdUnitaDoc implements Serializable {
     @Id
     @Column(name = "ID_XML_UPD_UNITA_DOC")
     @GenericGenerator(name = "SARO_XML_UPD_UNITA_DOC_ID_XML_UPD_UNITA_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_XML_UPD_UNITA_DOC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_XML_UPD_UNITA_DOC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_XML_UPD_UNITA_DOC_ID_XML_UPD_UNITA_DOC_GENERATOR")
     public Long getIdXmlUpdUnitaDoc() {
-	return this.idXmlUpdUnitaDoc;
+        return this.idXmlUpdUnitaDoc;
     }
 
     public void setIdXmlUpdUnitaDoc(Long idXmlUpdUnitaDoc) {
-	this.idXmlUpdUnitaDoc = idXmlUpdUnitaDoc;
+        this.idXmlUpdUnitaDoc = idXmlUpdUnitaDoc;
     }
 
     @Lob
     @Column(name = "BL_XML")
     public String getBlXml() {
-	return this.blXml;
+        return this.blXml;
     }
 
     public void setBlXml(String blXml) {
-	this.blXml = blXml;
+        this.blXml = blXml;
     }
 
     @Column(name = "CD_ENCODING_HASH_XML")
     public String getCdEncodingHashXml() {
-	return this.cdEncodingHashXml;
+        return this.cdEncodingHashXml;
     }
 
     public void setCdEncodingHashXml(String cdEncodingHashXml) {
-	this.cdEncodingHashXml = cdEncodingHashXml;
+        this.cdEncodingHashXml = cdEncodingHashXml;
     }
 
     @Column(name = "CD_VERSIONE_XML")
     public String getCdVersioneXml() {
-	return this.cdVersioneXml;
+        return this.cdVersioneXml;
     }
 
     public void setCdVersioneXml(String cdVersioneXml) {
-	this.cdVersioneXml = cdVersioneXml;
+        this.cdVersioneXml = cdVersioneXml;
     }
 
     @Column(name = "DS_ALGO_HASH_XML")
     public String getDsAlgoHashXml() {
-	return this.dsAlgoHashXml;
+        return this.dsAlgoHashXml;
     }
 
     public void setDsAlgoHashXml(String dsAlgoHashXml) {
-	this.dsAlgoHashXml = dsAlgoHashXml;
+        this.dsAlgoHashXml = dsAlgoHashXml;
     }
 
     @Column(name = "DS_HASH_XML")
     public String getDsHashXml() {
-	return this.dsHashXml;
+        return this.dsHashXml;
     }
 
     public void setDsHashXml(String dsHashXml) {
-	this.dsHashXml = dsHashXml;
+        this.dsHashXml = dsHashXml;
     }
 
     @Column(name = "DS_URN_XML")
     public String getDsUrnXml() {
-	return this.dsUrnXml;
+        return this.dsUrnXml;
     }
 
     public void setDsUrnXml(String dsUrnXml) {
-	this.dsUrnXml = dsUrnXml;
+        this.dsUrnXml = dsUrnXml;
     }
 
     @Column(name = "DS_URN_NORMALIZ_XML")
     public String getDsUrnNormalizXml() {
-	return this.dsUrnNormalizXml;
+        return this.dsUrnNormalizXml;
     }
 
     public void setDsUrnNormalizXml(String dsUrnNormalizXml) {
-	this.dsUrnNormalizXml = dsUrnNormalizXml;
+        this.dsUrnNormalizXml = dsUrnNormalizXml;
     }
 
     @Column(name = "DT_INI_SES")
     public LocalDate getDtIniSes() {
-	return this.dtIniSes;
+        return this.dtIniSes;
     }
 
     public void setDtIniSes(LocalDate dtIniSes) {
-	this.dtIniSes = dtIniSes;
+        this.dtIniSes = dtIniSes;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to AroUpdUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UPD_UNITA_DOC")
     public AroUpdUnitaDoc getAroUpdUnitaDoc() {
-	return this.aroUpdUnitaDoc;
+        return this.aroUpdUnitaDoc;
     }
 
     public void setAroUpdUnitaDoc(AroUpdUnitaDoc aroUpdUnitaDoc) {
-	this.aroUpdUnitaDoc = aroUpdUnitaDoc;
+        this.aroUpdUnitaDoc = aroUpdUnitaDoc;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_XML_UPD_UNITA_DOC")
     public TiXmlUpdUnitaDoc getTiXmlUpdUnitaDoc() {
-	return this.tiXmlUpdUnitaDoc;
+        return this.tiXmlUpdUnitaDoc;
     }
 
     public void setTiXmlUpdUnitaDoc(TiXmlUpdUnitaDoc tiXmlUpdUnitaDoc) {
-	this.tiXmlUpdUnitaDoc = tiXmlUpdUnitaDoc;
+        this.tiXmlUpdUnitaDoc = tiXmlUpdUnitaDoc;
     }
 
     @Column(name = "AA_INI_SES")
     public Integer getAaIniSes() {
-	return aaIniSes;
+        return aaIniSes;
     }
 
     public void setAaIniSes(Integer aaIniSes) {
-	this.aaIniSes = aaIniSes;
+        this.aaIniSes = aaIniSes;
     }
 
 }

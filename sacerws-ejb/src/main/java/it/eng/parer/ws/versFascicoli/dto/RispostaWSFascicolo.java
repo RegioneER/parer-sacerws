@@ -45,147 +45,147 @@ public class RispostaWSFascicolo implements IRispostaVersWS {
     private StatiSessioneVersEnum statoSessioneVersamento = StatiSessioneVersEnum.ASSENTE;
 
     public StatiSessioneVersEnum getStatoSessioneVersamento() {
-	return statoSessioneVersamento;
+        return statoSessioneVersamento;
     }
 
     public void setStatoSessioneVersamento(StatiSessioneVersEnum statoSessioneVersamento) {
-	this.statoSessioneVersamento = statoSessioneVersamento;
+        this.statoSessioneVersamento = statoSessioneVersamento;
     }
 
     @Override
     public SeverityEnum getSeverity() {
-	return severity;
+        return severity;
     }
 
     @Override
     public void setSeverity(SeverityEnum severity) {
-	this.severity = severity;
+        this.severity = severity;
     }
 
     @Override
     public ErrorTypeEnum getErrorType() {
-	return errorType;
+        return errorType;
     }
 
     @Override
     public void setErrorType(ErrorTypeEnum errorType) {
-	this.errorType = errorType;
+        this.errorType = errorType;
     }
 
     @Override
     public String getErrorMessage() {
-	return errorMessage;
+        return errorMessage;
     }
 
     @Override
     public void setErrorMessage(String errorMessage) {
-	this.errorMessage = errorMessage;
+        this.errorMessage = errorMessage;
     }
 
     @Override
     public String getErrorCode() {
-	return errorCode;
+        return errorCode;
     }
 
     @Override
     public void setErrorCode(String errorCode) {
-	this.errorCode = errorCode;
+        this.errorCode = errorCode;
     }
 
     @Override
     public AvanzamentoWs getAvanzamento() {
-	return avanzamento;
+        return avanzamento;
     }
 
     @Override
     public void setAvanzamento(AvanzamentoWs avanzamento) {
-	this.avanzamento = avanzamento;
+        this.avanzamento = avanzamento;
     }
     //
 
     public CompRapportoVersFascicolo getCompRapportoVersFascicolo() {
-	return compRapportoVersFascicolo;
+        return compRapportoVersFascicolo;
     }
 
     public void setCompRapportoVersFascicolo(CompRapportoVersFascicolo compRapportoVersFascicolo) {
-	this.compRapportoVersFascicolo = compRapportoVersFascicolo;
+        this.compRapportoVersFascicolo = compRapportoVersFascicolo;
     }
 
     //
     @Override
     public void setEsitoWsErrBundle(String errCode, Object... params) {
-	// aggiorno entrambe le tipologie di rapporto di versamento. Alle fine restituirò quella più
-	// adatta
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale()
-		.setMessaggioErrore(MessaggiWSBundle.getString(errCode, params));
+        // aggiorno entrambe le tipologie di rapporto di versamento. Alle fine restituirò quella più
+        // adatta
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale()
+                .setMessaggioErrore(MessaggiWSBundle.getString(errCode, params));
     }
 
     @Override
     public void setEsitoWsErrBundle(String errCode) {
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale()
-		.setMessaggioErrore(MessaggiWSBundle.getString(errCode));
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale()
+                .setMessaggioErrore(MessaggiWSBundle.getString(errCode));
     }
 
     @Override
     public void setEsitoWsWarnBundle(String errCode, Object... params) {
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale()
-		.setMessaggioErrore(MessaggiWSBundle.getString(errCode, params));
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale()
+                .setMessaggioErrore(MessaggiWSBundle.getString(errCode, params));
     }
 
     @Override
     public void setEsitoWsWarnBundle(String errCode) {
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale()
-		.setMessaggioErrore(MessaggiWSBundle.getString(errCode));
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale()
+                .setMessaggioErrore(MessaggiWSBundle.getString(errCode));
     }
 
     @Override
     public void setEsitoWsError(String errCode, String errMessage) {
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale().setMessaggioErrore(errMessage);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.NEGATIVO);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale().setMessaggioErrore(errMessage);
     }
 
     @Override
     public void setEsitoWsWarning(String errCode, String errMessage) {
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
-	compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
-	compRapportoVersFascicolo.getEsitoGenerale().setMessaggioErrore(errMessage);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceEsito(CodiceEsitoType.WARNING);
+        compRapportoVersFascicolo.getEsitoGenerale().setCodiceErrore(errCode);
+        compRapportoVersFascicolo.getEsitoGenerale().setMessaggioErrore(errMessage);
     }
 
     @Override
     public boolean isErroreElementoDoppio() {
-	return erroreElementoDoppio;
+        return erroreElementoDoppio;
     }
 
     @Override
     public void setErroreElementoDoppio(boolean erroreElementoDoppio) {
-	this.erroreElementoDoppio = erroreElementoDoppio;
+        this.erroreElementoDoppio = erroreElementoDoppio;
     }
 
     @Override
     public long getIdElementoDoppio() {
-	return idElementoDoppio;
+        return idElementoDoppio;
     }
 
     @Override
     public void setIdElementoDoppio(long idElementoDoppio) {
-	this.idElementoDoppio = idElementoDoppio;
+        this.idElementoDoppio = idElementoDoppio;
     }
 
     public boolean isErroreStrutturaNonPartizionata() {
-	return erroreStrutturaNonPartizionata;
+        return erroreStrutturaNonPartizionata;
     }
 
     public void setErroreStrutturaNonPartizionata(boolean erroreStrutturaNonPartizionata) {
-	this.erroreStrutturaNonPartizionata = erroreStrutturaNonPartizionata;
+        this.erroreStrutturaNonPartizionata = erroreStrutturaNonPartizionata;
     }
 
 }

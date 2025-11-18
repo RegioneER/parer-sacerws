@@ -59,73 +59,73 @@ public class VrsErrSesFascicoloKo implements Serializable {
     @Id
     @Column(name = "ID_ERR_SES_FASCICOLO_KO")
     @GenericGenerator(name = "SVRS_ERR_SES_FASCICOLO_KO_ID_ERR_SES_FASCICOLO_KO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_ERR_SES_FASCICOLO_KO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_ERR_SES_FASCICOLO_KO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_ERR_SES_FASCICOLO_KO_ID_ERR_SES_FASCICOLO_KO_GENERATOR")
     public Long getIdErrSesFascicoloKo() {
-	return this.idErrSesFascicoloKo;
+        return this.idErrSesFascicoloKo;
     }
 
     public void setIdErrSesFascicoloKo(Long idErrSesFascicoloKo) {
-	this.idErrSesFascicoloKo = idErrSesFascicoloKo;
+        this.idErrSesFascicoloKo = idErrSesFascicoloKo;
     }
 
     @Column(name = "DS_ERR")
     public String getDsErr() {
-	return this.dsErr;
+        return this.dsErr;
     }
 
     public void setDsErr(String dsErr) {
-	this.dsErr = dsErr;
+        this.dsErr = dsErr;
     }
 
     @Column(name = "FL_ERR_PRINC", columnDefinition = "char(1)")
     public String getFlErrPrinc() {
-	return this.flErrPrinc;
+        return this.flErrPrinc;
     }
 
     public void setFlErrPrinc(String flErrPrinc) {
-	this.flErrPrinc = flErrPrinc;
+        this.flErrPrinc = flErrPrinc;
     }
 
     @Column(name = "PG_ERR")
     public BigDecimal getPgErr() {
-	return this.pgErr;
+        return this.pgErr;
     }
 
     public void setPgErr(BigDecimal pgErr) {
-	this.pgErr = pgErr;
+        this.pgErr = pgErr;
     }
 
     @Column(name = "TI_ERR")
     public String getTiErr() {
-	return this.tiErr;
+        return this.tiErr;
     }
 
     public void setTiErr(String tiErr) {
-	this.tiErr = tiErr;
+        this.tiErr = tiErr;
     }
 
     // bi-directional many-to-one association to DecErrSacer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ERR_SACER")
     public DecErrSacer getDecErrSacer() {
-	return this.decErrSacer;
+        return this.decErrSacer;
     }
 
     public void setDecErrSacer(DecErrSacer decErrSacer) {
-	this.decErrSacer = decErrSacer;
+        this.decErrSacer = decErrSacer;
     }
 
     // bi-directional many-to-one association to VrsSesFascicoloKo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SES_FASCICOLO_KO")
     public VrsSesFascicoloKo getVrsSesFascicoloKo() {
-	return this.vrsSesFascicoloKo;
+        return this.vrsSesFascicoloKo;
     }
 
     public void setVrsSesFascicoloKo(VrsSesFascicoloKo vrsSesFascicoloKo) {
-	this.vrsSesFascicoloKo = vrsSesFascicoloKo;
+        this.vrsSesFascicoloKo = vrsSesFascicoloKo;
     }
 
 }

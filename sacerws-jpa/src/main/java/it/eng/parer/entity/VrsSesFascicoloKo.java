@@ -85,174 +85,174 @@ public class VrsSesFascicoloKo implements Serializable {
     @Id
     @Column(name = "ID_SES_FASCICOLO_KO")
     @GenericGenerator(name = "SVRS_SES_FASCICOLO_KO_ID_SES_FASCICOLO_KO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_SES_FASCICOLO_KO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_SES_FASCICOLO_KO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_SES_FASCICOLO_KO_ID_SES_FASCICOLO_KO_GENERATOR")
     public Long getIdSesFascicoloKo() {
-	return this.idSesFascicoloKo;
+        return this.idSesFascicoloKo;
     }
 
     public void setIdSesFascicoloKo(Long idSesFascicoloKo) {
-	this.idSesFascicoloKo = idSesFascicoloKo;
+        this.idSesFascicoloKo = idSesFascicoloKo;
     }
 
     @Column(name = "AA_FASCICOLO")
     public BigDecimal getAaFascicolo() {
-	return this.aaFascicolo;
+        return this.aaFascicolo;
     }
 
     public void setAaFascicolo(BigDecimal aaFascicolo) {
-	this.aaFascicolo = aaFascicolo;
+        this.aaFascicolo = aaFascicolo;
     }
 
     @Column(name = "CD_VERSIONE_WS")
     public String getCdVersioneWs() {
-	return this.cdVersioneWs;
+        return this.cdVersioneWs;
     }
 
     public void setCdVersioneWs(String cdVersioneWs) {
-	this.cdVersioneWs = cdVersioneWs;
+        this.cdVersioneWs = cdVersioneWs;
     }
 
     @Column(name = "DS_ERR_PRINC")
     public String getDsErrPrinc() {
-	return this.dsErrPrinc;
+        return this.dsErrPrinc;
     }
 
     public void setDsErrPrinc(String dsErrPrinc) {
-	this.dsErrPrinc = dsErrPrinc;
+        this.dsErrPrinc = dsErrPrinc;
     }
 
     @Column(name = "TI_STATO_SES")
     public String getTiStatoSes() {
-	return this.tiStatoSes;
+        return this.tiStatoSes;
     }
 
     public void setTiStatoSes(String tiStatoSes) {
-	this.tiStatoSes = tiStatoSes;
+        this.tiStatoSes = tiStatoSes;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_FINE_SES")
     public Date getTsFineSes() {
-	return this.tsFineSes;
+        return this.tsFineSes;
     }
 
     public void setTsFineSes(Date tsFineSes) {
-	this.tsFineSes = tsFineSes;
+        this.tsFineSes = tsFineSes;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_INI_SES")
     public Date getTsIniSes() {
-	return this.tsIniSes;
+        return this.tsIniSes;
     }
 
     public void setTsIniSes(Date tsIniSes) {
-	this.tsIniSes = tsIniSes;
+        this.tsIniSes = tsIniSes;
     }
 
     @Column(name = "CD_IND_IP_CLIENT")
     public String getCdIndIpClient() {
-	return cdIndIpClient;
+        return cdIndIpClient;
     }
 
     public void setCdIndIpClient(String cdIndIpClient) {
-	this.cdIndIpClient = cdIndIpClient;
+        this.cdIndIpClient = cdIndIpClient;
     }
 
     @Column(name = "CD_IND_SERVER")
     public String getCdIndServer() {
-	return cdIndServer;
+        return cdIndServer;
     }
 
     public void setCdIndServer(String cdIndServer) {
-	this.cdIndServer = cdIndServer;
+        this.cdIndServer = cdIndServer;
     }
 
     // bi-directional many-to-one association to VrsErrSesFascicoloKo
     @OneToMany(mappedBy = "vrsSesFascicoloKo")
     public List<VrsErrSesFascicoloKo> getVrsErrSesFascicoloKos() {
-	return this.vrsErrSesFascicoloKos;
+        return this.vrsErrSesFascicoloKos;
     }
 
     public void setVrsErrSesFascicoloKos(List<VrsErrSesFascicoloKo> vrsErrSesFascicoloKos) {
-	this.vrsErrSesFascicoloKos = vrsErrSesFascicoloKos;
+        this.vrsErrSesFascicoloKos = vrsErrSesFascicoloKos;
     }
 
     // bi-directional many-to-one association to DecErrSacer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ERR_SACER_PRINC")
     public DecErrSacer getDecErrSacer() {
-	return this.decErrSacer;
+        return this.decErrSacer;
     }
 
     public void setDecErrSacer(DecErrSacer decErrSacer) {
-	this.decErrSacer = decErrSacer;
+        this.decErrSacer = decErrSacer;
     }
 
     // bi-directional many-to-one association to DecTipoFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_FASCICOLO")
     public DecTipoFascicolo getDecTipoFascicolo() {
-	return this.decTipoFascicolo;
+        return this.decTipoFascicolo;
     }
 
     public void setDecTipoFascicolo(DecTipoFascicolo decTipoFascicolo) {
-	this.decTipoFascicolo = decTipoFascicolo;
+        this.decTipoFascicolo = decTipoFascicolo;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_USER_IAM")
     public IamUser getIamUser() {
-	return this.iamUser;
+        return this.iamUser;
     }
 
     public void setIamUser(IamUser iamUser) {
-	this.iamUser = iamUser;
+        this.iamUser = iamUser;
     }
 
     // bi-directional many-to-one association to VrsFascicoloKo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO_KO")
     public VrsFascicoloKo getVrsFascicoloKo() {
-	return this.vrsFascicoloKo;
+        return this.vrsFascicoloKo;
     }
 
     public void setVrsFascicoloKo(VrsFascicoloKo vrsFascicoloKo) {
-	this.vrsFascicoloKo = vrsFascicoloKo;
+        this.vrsFascicoloKo = vrsFascicoloKo;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return orgStrut;
+        return orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to VrsXmlSesFascicoloKo
     @OneToMany(mappedBy = "vrsSesFascicoloKo")
     public List<VrsXmlSesFascicoloKo> getVrsXmlSesFascicoloKos() {
-	return this.vrsXmlSesFascicoloKos;
+        return this.vrsXmlSesFascicoloKos;
     }
 
     public void setVrsXmlSesFascicoloKos(List<VrsXmlSesFascicoloKo> vrsXmlSesFascicoloKos) {
-	this.vrsXmlSesFascicoloKos = vrsXmlSesFascicoloKos;
+        this.vrsXmlSesFascicoloKos = vrsXmlSesFascicoloKos;
     }
 }

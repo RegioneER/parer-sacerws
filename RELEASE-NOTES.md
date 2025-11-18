@@ -1,4 +1,5 @@
-## 6.10.1 (13-10-2025)
+## 6.11.0 (18-11-2025)
 
-### Bugfix: 1
-- [#39146](https://parermine.regione.emilia-romagna.it/issues/39146) Correzione logica di calcolo formato esteso nei casi di PDF/XML presenti su buste crittografate nel formato PADES_BES
+### Novità: 2
+- [#39368](https://parermine.regione.emilia-romagna.it/issues/39368) Gestione HTTP Error 404 su invocazione servizio di verifica firma digitale
+- [#39277](https://parermine.regione.emilia-romagna.it/issues/39277) Patch di sicurezza per interventi legati a CVE

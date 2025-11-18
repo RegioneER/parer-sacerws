@@ -24,42 +24,42 @@ import it.eng.parer.ws.versamentoUpd.utils.IRispostaUpdVersWS;
 public abstract class UpdBasePrsr {
 
     protected void setEsitoControlloErr(String ctrlws, String codErr, String dsErr,
-	    IRispostaUpdVersWS rispostaWs) {
-	// è un errore grave ...
-	rispostaWs.setSeverity(SeverityEnum.ERROR);
-	// esito generale
-	rispostaWs.setEsitoWsError(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
+            IRispostaUpdVersWS rispostaWs) {
+        // è un errore grave ...
+        rispostaWs.setSeverity(SeverityEnum.ERROR);
+        // esito generale
+        rispostaWs.setEsitoWsError(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
 
     }
 
     protected void setEsitoControlloErrBundle(String ctrlws, String codErr,
-	    IRispostaUpdVersWS rispostaWs) {
-	// è un errore grave ...
-	rispostaWs.setSeverity(SeverityEnum.ERROR);
-	// esito generale
-	rispostaWs.setEsitoWsErrBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
+            IRispostaUpdVersWS rispostaWs) {
+        // è un errore grave ...
+        rispostaWs.setSeverity(SeverityEnum.ERROR);
+        // esito generale
+        rispostaWs.setEsitoWsErrBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
 
     }
 
     protected void setEsitoControlloWarn(String ctrlws, String codErr, String dsErr,
-	    IRispostaUpdVersWS rispostaWs) {
-	// warning (solo se severity diverso da ERROR)
-	if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-	    rispostaWs.setSeverity(SeverityEnum.WARNING);
-	    // esito generale
-	    rispostaWs.setEsitoWsWarning(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
-	}
+            IRispostaUpdVersWS rispostaWs) {
+        // warning (solo se severity diverso da ERROR)
+        if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
+            rispostaWs.setSeverity(SeverityEnum.WARNING);
+            // esito generale
+            rispostaWs.setEsitoWsWarning(ControlliWSBundle.getControllo(ctrlws), codErr, dsErr);
+        }
 
     }
 
     protected void setEsitoControlloWarnBundle(String ctrlws, String codErr,
-	    IRispostaUpdVersWS rispostaWs) {
-	// warning (solo se severity diverso da ERROR)
-	if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-	    rispostaWs.setSeverity(SeverityEnum.WARNING);
-	    // esito generale
-	    rispostaWs.setEsitoWsWarnBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
-	}
+            IRispostaUpdVersWS rispostaWs) {
+        // warning (solo se severity diverso da ERROR)
+        if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
+            rispostaWs.setSeverity(SeverityEnum.WARNING);
+            // esito generale
+            rispostaWs.setEsitoWsWarnBundle(ControlliWSBundle.getControllo(ctrlws), codErr);
+        }
     }
 
 }

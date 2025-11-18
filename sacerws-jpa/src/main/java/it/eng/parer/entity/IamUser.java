@@ -61,170 +61,170 @@ public class IamUser implements Serializable {
     @Id
     @Column(name = "ID_USER_IAM")
     public Long getIdUserIam() {
-	return this.idUserIam;
+        return this.idUserIam;
     }
 
     public void setIdUserIam(Long idUserIam) {
-	this.idUserIam = idUserIam;
+        this.idUserIam = idUserIam;
     }
 
     @Column(name = "CD_FISC")
     public String getCdFisc() {
-	return this.cdFisc;
+        return this.cdFisc;
     }
 
     public void setCdFisc(String cdFisc) {
-	this.cdFisc = cdFisc;
+        this.cdFisc = cdFisc;
     }
 
     @Column(name = "CD_PSW")
     public String getCdPsw() {
-	return this.cdPsw;
+        return this.cdPsw;
     }
 
     public void setCdPsw(String cdPsw) {
-	this.cdPsw = cdPsw;
+        this.cdPsw = cdPsw;
     }
 
     @Column(name = "CD_SALT")
     public String getCdSalt() {
-	return this.cdSalt;
+        return this.cdSalt;
     }
 
     public void setCdSalt(String cdSalt) {
-	this.cdSalt = cdSalt;
+        this.cdSalt = cdSalt;
     }
 
     @Column(name = "DS_EMAIL")
     public String getDsEmail() {
-	return this.dsEmail;
+        return this.dsEmail;
     }
 
     public void setDsEmail(String dsEmail) {
-	this.dsEmail = dsEmail;
+        this.dsEmail = dsEmail;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_REG_PSW")
     public Date getDtRegPsw() {
-	return this.dtRegPsw;
+        return this.dtRegPsw;
     }
 
     public void setDtRegPsw(Date dtRegPsw) {
-	this.dtRegPsw = dtRegPsw;
+        this.dtRegPsw = dtRegPsw;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SCAD_PSW")
     public Date getDtScadPsw() {
-	return this.dtScadPsw;
+        return this.dtScadPsw;
     }
 
     public void setDtScadPsw(Date dtScadPsw) {
-	this.dtScadPsw = dtScadPsw;
+        this.dtScadPsw = dtScadPsw;
     }
 
     @Column(name = "FL_ATTIVO", columnDefinition = "char(1)")
     public String getFlAttivo() {
-	return this.flAttivo;
+        return this.flAttivo;
     }
 
     public void setFlAttivo(String flAttivo) {
-	this.flAttivo = flAttivo;
+        this.flAttivo = flAttivo;
     }
 
     @Column(name = "FL_CONTR_IP", columnDefinition = "char(1)")
     public String getFlContrIp() {
-	return this.flContrIp;
+        return this.flContrIp;
     }
 
     public void setFlContrIp(String flContrIp) {
-	this.flContrIp = flContrIp;
+        this.flContrIp = flContrIp;
     }
 
     @Column(name = "FL_USER_ADMIN", columnDefinition = "char(1)")
     public String getFlUserAdmin() {
-	return this.flUserAdmin;
+        return this.flUserAdmin;
     }
 
     public void setFlUserAdmin(String flUserAdmin) {
-	this.flUserAdmin = flUserAdmin;
+        this.flUserAdmin = flUserAdmin;
     }
 
     @Column(name = "NM_COGNOME_USER")
     public String getNmCognomeUser() {
-	return this.nmCognomeUser;
+        return this.nmCognomeUser;
     }
 
     public void setNmCognomeUser(String nmCognomeUser) {
-	this.nmCognomeUser = nmCognomeUser;
+        this.nmCognomeUser = nmCognomeUser;
     }
 
     @Column(name = "NM_NOME_USER")
     public String getNmNomeUser() {
-	return this.nmNomeUser;
+        return this.nmNomeUser;
     }
 
     public void setNmNomeUser(String nmNomeUser) {
-	this.nmNomeUser = nmNomeUser;
+        this.nmNomeUser = nmNomeUser;
     }
 
     @Column(name = "NM_USERID")
     public String getNmUserid() {
-	return this.nmUserid;
+        return this.nmUserid;
     }
 
     public void setNmUserid(String nmUserid) {
-	this.nmUserid = nmUserid;
+        this.nmUserid = nmUserid;
     }
 
     @Column(name = "TIPO_USER")
     public String getTipoUser() {
-	return this.tipoUser;
+        return this.tipoUser;
     }
 
     public void setTipoUser(String tipoUser) {
-	this.tipoUser = tipoUser;
+        this.tipoUser = tipoUser;
     }
 
     @Column(name = "TIPO_AUTH")
     public String getTipoAuth() {
-	return this.tipoAuth;
+        return this.tipoAuth;
     }
 
     public void setTipoAuth(String tipoAuth) {
-	this.tipoAuth = tipoAuth;
+        this.tipoAuth = tipoAuth;
     }
 
     // bi-directional many-to-one association to IamAbilOrganiz
     @OneToMany(mappedBy = "iamUser", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<IamAbilOrganiz> getIamAbilOrganizs() {
-	return this.iamAbilOrganizs;
+        return this.iamAbilOrganizs;
     }
 
     public void setIamAbilOrganizs(List<IamAbilOrganiz> iamAbilOrganizs) {
-	this.iamAbilOrganizs = iamAbilOrganizs;
+        this.iamAbilOrganizs = iamAbilOrganizs;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @OneToMany(mappedBy = "iamUser")
     public List<AroUnitaDoc> getAroUnitaDocs() {
-	return this.aroUnitaDocs;
+        return this.aroUnitaDocs;
     }
 
     public void setAroUnitaDocs(List<AroUnitaDoc> aroUnitaDocs) {
-	this.aroUnitaDocs = aroUnitaDocs;
+        this.aroUnitaDocs = aroUnitaDocs;
     }
 
     // bi-directional many-to-one association to VrsSessioneVers
     @OneToMany(mappedBy = "iamUser")
     public List<VrsSessioneVers> getVrsSessioneVers() {
-	return this.vrsSessioneVers;
+        return this.vrsSessioneVers;
     }
 
     public void setVrsSessioneVers(List<VrsSessioneVers> vrsSessioneVers) {
-	this.vrsSessioneVers = vrsSessioneVers;
+        this.vrsSessioneVers = vrsSessioneVers;
     }
 
 }

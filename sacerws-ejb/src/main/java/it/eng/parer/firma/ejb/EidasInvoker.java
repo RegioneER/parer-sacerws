@@ -88,14 +88,14 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
      * @return true se l'applicazion è su
      */
     public boolean isUp(String url) {
-	try {
-	    RestTemplate restTemplate = new RestTemplate();
-	    ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
-	    return forEntity.getStatusCode().equals(HttpStatus.OK);
-	} catch (RestClientException ex) {
-	    LOG.warn("Impossibile contattare " + url, ex);
-	}
-	return false;
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> forEntity = restTemplate.getForEntity(url, String.class);
+            return forEntity.getStatusCode().equals(HttpStatus.OK);
+        } catch (RestClientException ex) {
+            LOG.warn("Impossibile contattare " + url, ex);
+        }
+        return false;
     }
 
     /**
@@ -111,48 +111,48 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
      * @throws VerificaFirmaGenericInvokeException eccezione in caso di risposta errata
      */
     private EidasValidationResponse verificaEidasMultipart(EidasDataToValidateMetadata metadata,
-	    File signed, File original)
-	    throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
+            File signed, File original)
+            throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
 
-	RestTemplate restTemplate = buildRestTemplateWithRetry();
-	// add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a
-	// jakarta.*)
-	restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
+        RestTemplate restTemplate = buildRestTemplateWithRetry();
+        // add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a
+        // jakarta.*)
+        restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
 
-	String preferredUrl = restInvoker.preferredEndpoint();
-	String urlEidas = preferredUrl + FIRMA_API_PATH;
-	LOG.debug("post per  {}", urlEidas);
+        String preferredUrl = restInvoker.preferredEndpoint();
+        String urlEidas = preferredUrl + FIRMA_API_PATH;
+        LOG.debug("post per  {}", urlEidas);
 
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	//
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("metadata", metadata);
-	body.add("signedFile", new FileSystemResource(signed));
-	/*
-	 * Vedi EidasUtils.buildEidasMetadata: l'odine dell'array di file da passare su
-	 * originalFiles sarà posizionalmente la medesima passata all'oggetto
-	 * EidasMetadataToValidate.setOriginalDocumentNames
-	 *
-	 */
-	if (original != null) {
-	    body.add("originalFiles", new FileSystemResource(original));
-	}
+        //
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("metadata", metadata);
+        body.add("signedFile", new FileSystemResource(signed));
+        /*
+         * Vedi EidasUtils.buildEidasMetadata: l'odine dell'array di file da passare su
+         * originalFiles sarà posizionalmente la medesima passata all'oggetto
+         * EidasMetadataToValidate.setOriginalDocumentNames
+         *
+         */
+        if (original != null) {
+            body.add("originalFiles", new FileSystemResource(original));
+        }
 
-	HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
-	EidasWSReportsDTOTree resp = null;
-	try {
-	    resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
-	} catch (RestClientException rce) {
-	    throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
-		    urlEidas);
-	} catch (Exception ex) {
-	    throw new VerificaFirmaGenericInvokeException(ex,
-		    CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
-	}
-	return new EidasValidationResponse(resp);
+        EidasWSReportsDTOTree resp = null;
+        try {
+            resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
+        } catch (RestClientException rce) {
+            throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
+                    urlEidas);
+        } catch (Exception ex) {
+            throw new VerificaFirmaGenericInvokeException(ex,
+                    CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
+        }
+        return new EidasValidationResponse(resp);
 
     }
 
@@ -167,92 +167,92 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
      * @throws VerificaFirmaGenericInvokeException eccezione in caso di risposta errata
      */
     private EidasValidationResponse verificaEidasJson(EidasDataToValidateMetadata dto)
-	    throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
+            throws VerificaFirmaConnectionException, VerificaFirmaGenericInvokeException {
 
-	RestTemplate restTemplate = buildRestTemplateWithRetry();
-	// add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a
-	// jakarta.*)
-	restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
+        RestTemplate restTemplate = buildRestTemplateWithRetry();
+        // add converter (jakarta.xml.* compliant) -> (non più necessario al passaggio da javax.* a
+        // jakarta.*)
+        restTemplate.getMessageConverters().add(new EidasJaxb3HttpMessageConverter());
 
-	String preferredUrl = restInvoker.preferredEndpoint();
-	String urlEidas = preferredUrl + FIRMA_API_PATH;
-	LOG.debug("post per  {}", urlEidas);
+        String preferredUrl = restInvoker.preferredEndpoint();
+        String urlEidas = preferredUrl + FIRMA_API_PATH;
+        LOG.debug("post per  {}", urlEidas);
 
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-	HttpEntity<EidasDataToValidateMetadata> entity = new HttpEntity<>(dto, headers);
+        HttpEntity<EidasDataToValidateMetadata> entity = new HttpEntity<>(dto, headers);
 
-	EidasWSReportsDTOTree resp = null;
-	try {
-	    resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
-	} catch (RestClientException rce) {
-	    throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
-		    urlEidas);
-	} catch (Exception ex) {
-	    throw new VerificaFirmaGenericInvokeException(ex,
-		    CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
-	}
-	return new EidasValidationResponse(resp);
+        EidasWSReportsDTOTree resp = null;
+        try {
+            resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
+        } catch (RestClientException rce) {
+            throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
+                    urlEidas);
+        } catch (Exception ex) {
+            throw new VerificaFirmaGenericInvokeException(ex,
+                    CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
+        }
+        return new EidasValidationResponse(resp);
 
     }
 
     @Override
     public VerificaFirmaWrapper verificaAndWrapIt(ComponenteVers componenteVers,
-	    List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
-	    Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
-	    boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
-	    throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
-	    VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException {
+            List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
+            Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
+            boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
+            throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
+            VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException {
 
-	EidasValidationResponse esito = null;
+        EidasValidationResponse esito = null;
 
-	// create metadata
-	EidasDataToValidateMetadata dto = EidasUtils.buildDataToValidateMetadataFromCompVers(
-		componenteVers, sottoComponentiFirma, controlliAbilitati, dataDiRiferimento, uuid);
+        // create metadata
+        EidasDataToValidateMetadata dto = EidasUtils.buildDataToValidateMetadataFromCompVers(
+                componenteVers, sottoComponentiFirma, controlliAbilitati, dataDiRiferimento, uuid);
 
-	// file from o.s.
-	if (isComponenteSuObjectStorage(componenteVers)
-		&& !restInvoker.isEnableMultipartRequest().booleanValue()) {
-	    LOG.debug("Invocazione verifica firma EIDAS (application/json)");
-	    // call
-	    esito = verificaEidasJson(dto);
-	} else {
-	    LOG.debug("Invocazione verifica firma EIDAS (multipart/form-data)");
-	    // file from multipart
-	    final boolean hasFirmeDetached = sottoComponentiFirma != null
-		    && !sottoComponentiFirma.isEmpty();
-	    File signed = null;
-	    File original = null;
-	    //
-	    if (!hasFirmeDetached) {
-		signed = componenteVers.getRifFileBinario().getFileSuDisco();
-	    } else {
-		signed = sottoComponentiFirma.get(0).getRifFileBinario().getFileSuDisco();
-		original = componenteVers.getRifFileBinario().getFileSuDisco();
-	    }
-	    // call
-	    esito = verificaEidasMultipart(dto, signed, original);
-	}
-	//
-	EidasWrapperResultStrategy strategy = new EidasWrapperResultStrategy(controlliAbilitati,
-		!Objects.isNull(componenteVers.withAcdEntity().getTmRifTempVers()),
-		dataDiRiferimento, versamento.getModificatoriWSCalc());
-	VerificaFirmaWrapper wrapper = strategy.buildVFWrapper(esito,
-		CollectionUtils.isNotEmpty(sottoComponentiFirma));
-	/*
-	 * Nota : nella prima versione dei report al fine di non appesanitre l'xml persistito era
-	 * stata introdotto una gestione "skinny" del report ossia, una copia dell'oggetto
-	 * "ripulito" da alcune parti. Nella seconda versione (vedi MEV #23229) il concetto di
-	 * "report" è stato evoluto riportando su DB i singoli report eidas
-	 * (simple/detailed/diagnostic). La manipolazione dell'oggetto jaxb originale con la
-	 * modalità skinny porta a problemi in fase di validazione (marshalling) dell'oggetto, per
-	 * tale motivo si utilizza la riposta originale restituita dal microservizio.
-	 */
-	wrapper.getAdditionalInfo().setReportContent(esito.getEidasWSReportsDTOTree()); // tree
-											// object
+        // file from o.s.
+        if (isComponenteSuObjectStorage(componenteVers)
+                && !restInvoker.isEnableMultipartRequest().booleanValue()) {
+            LOG.debug("Invocazione verifica firma EIDAS (application/json)");
+            // call
+            esito = verificaEidasJson(dto);
+        } else {
+            LOG.debug("Invocazione verifica firma EIDAS (multipart/form-data)");
+            // file from multipart
+            final boolean hasFirmeDetached = sottoComponentiFirma != null
+                    && !sottoComponentiFirma.isEmpty();
+            File signed = null;
+            File original = null;
+            //
+            if (!hasFirmeDetached) {
+                signed = componenteVers.getRifFileBinario().getFileSuDisco();
+            } else {
+                signed = sottoComponentiFirma.get(0).getRifFileBinario().getFileSuDisco();
+                original = componenteVers.getRifFileBinario().getFileSuDisco();
+            }
+            // call
+            esito = verificaEidasMultipart(dto, signed, original);
+        }
+        //
+        EidasWrapperResultStrategy strategy = new EidasWrapperResultStrategy(controlliAbilitati,
+                !Objects.isNull(componenteVers.withAcdEntity().getTmRifTempVers()),
+                dataDiRiferimento, versamento.getModificatoriWSCalc());
+        VerificaFirmaWrapper wrapper = strategy.buildVFWrapper(esito,
+                CollectionUtils.isNotEmpty(sottoComponentiFirma));
+        /*
+         * Nota : nella prima versione dei report al fine di non appesanitre l'xml persistito era
+         * stata introdotto una gestione "skinny" del report ossia, una copia dell'oggetto
+         * "ripulito" da alcune parti. Nella seconda versione (vedi MEV #23229) il concetto di
+         * "report" è stato evoluto riportando su DB i singoli report eidas
+         * (simple/detailed/diagnostic). La manipolazione dell'oggetto jaxb originale con la
+         * modalità skinny porta a problemi in fase di validazione (marshalling) dell'oggetto, per
+         * tale motivo si utilizza la riposta originale restituita dal microservizio.
+         */
+        wrapper.getAdditionalInfo().setReportContent(esito.getEidasWSReportsDTOTree()); // tree
+        // object
 
-	return wrapper;
+        return wrapper;
     }
 
     /**
@@ -264,25 +264,25 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
      */
     private RestTemplate buildRestTemplateWithRetry() {
 
-	RestTemplate template = new RestTemplate();
-	int timeout = restInvoker.clientTimeout();
+        RestTemplate template = new RestTemplate();
+        int timeout = restInvoker.clientTimeout();
 
-	HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-	clientHttpRequestFactory.setReadTimeout(timeout);
-	clientHttpRequestFactory.setConnectTimeout(timeout);
-	clientHttpRequestFactory.setConnectionRequestTimeout(timeout);
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setReadTimeout(timeout);
+        clientHttpRequestFactory.setConnectTimeout(timeout);
+        clientHttpRequestFactory.setConnectionRequestTimeout(timeout);
 
-	template.setRequestFactory(clientHttpRequestFactory);
-	template.setErrorHandler(new EidasErrorHandler());
+        template.setRequestFactory(clientHttpRequestFactory);
+        template.setErrorHandler(new EidasErrorHandler());
 
-	List<String> endpoints = restInvoker.endPoints();
-	List<URI> endpointsURI = endpoints.stream().map(URI::create).collect(Collectors.toList());
+        List<String> endpoints = restInvoker.endPoints();
+        List<URI> endpointsURI = endpoints.stream().map(URI::create).collect(Collectors.toList());
 
-	ParerRetryConfiguration retryClient = restInvoker.retryClient();
+        ParerRetryConfiguration retryClient = restInvoker.retryClient();
 
-	template.getInterceptors().add(new RestRetryInterceptor(endpointsURI, retryClient));
+        template.getInterceptors().add(new RestRetryInterceptor(endpointsURI, retryClient));
 
-	return template;
+        return template;
     }
 
     /**
@@ -298,7 +298,7 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
      * @return true se il riferimento al file del componente è sull'object storage.
      */
     private boolean isComponenteSuObjectStorage(ComponenteVers componenteVers) {
-	return componenteVers.getRifFileBinario().getObjectStorageResource() != null;
+        return componenteVers.getRifFileBinario().getObjectStorageResource() != null;
     }
 
 }

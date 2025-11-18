@@ -37,8 +37,8 @@ public class AroVDtVersMaxByUnitaDoc implements Serializable {
     private Date dtVersMax;
 
     public AroVDtVersMaxByUnitaDoc(BigDecimal idUnitaDoc, Date dtVersMax) {
-	this.idUnitaDoc = idUnitaDoc;
-	this.dtVersMax = dtVersMax;
+        this.idUnitaDoc = idUnitaDoc;
+        this.dtVersMax = dtVersMax;
     }
 
     public AroVDtVersMaxByUnitaDoc() {/* Hibernate */
@@ -47,21 +47,21 @@ public class AroVDtVersMaxByUnitaDoc implements Serializable {
     @Id
     @Column(name = "ID_UNITA_DOC")
     public BigDecimal getIdUnitaDoc() {
-	return this.idUnitaDoc;
+        return this.idUnitaDoc;
     }
 
     public void setIdUnitaDoc(BigDecimal idUnitaDoc) {
-	this.idUnitaDoc = idUnitaDoc;
+        this.idUnitaDoc = idUnitaDoc;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_VERS_MAX")
     public Date getDtVersMax() {
-	return this.dtVersMax;
+        return this.dtVersMax;
     }
 
     public void setDtVersMax(Date dtVersMax) {
-	this.dtVersMax = dtVersMax;
+        this.dtVersMax = dtVersMax;
     }
 
 }

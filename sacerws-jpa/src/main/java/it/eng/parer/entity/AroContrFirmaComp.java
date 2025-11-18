@@ -57,95 +57,95 @@ public class AroContrFirmaComp implements Serializable {
     private List<AroUsoCertifCaContrComp> aroUsoCertifCaContrComps = new ArrayList<>();
 
     public AroContrFirmaComp() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @Column(name = "ID_CONTR_FIRMA_COMP")
     @GenericGenerator(name = "SARO_CONTR_FIRMA_COMP_ID_CONTR_FIRMA_COMP_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_CONTR_FIRMA_COMP"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_CONTR_FIRMA_COMP"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_CONTR_FIRMA_COMP_ID_CONTR_FIRMA_COMP_GENERATOR")
     public Long getIdContrFirmaComp() {
-	return this.idContrFirmaComp;
+        return this.idContrFirmaComp;
     }
 
     public void setIdContrFirmaComp(Long idContrFirmaComp) {
-	this.idContrFirmaComp = idContrFirmaComp;
+        this.idContrFirmaComp = idContrFirmaComp;
     }
 
     @Column(name = "DS_MSG_ESITO_CONTR_FIRMA")
     public String getDsMsgEsitoContrFirma() {
-	return this.dsMsgEsitoContrFirma;
+        return this.dsMsgEsitoContrFirma;
     }
 
     public void setDsMsgEsitoContrFirma(String dsMsgEsitoContrFirma) {
-	this.dsMsgEsitoContrFirma = dsMsgEsitoContrFirma;
+        this.dsMsgEsitoContrFirma = dsMsgEsitoContrFirma;
     }
 
     @Column(name = "TI_CONTR")
     public String getTiContr() {
-	return this.tiContr;
+        return this.tiContr;
     }
 
     public void setTiContr(String tiContr) {
-	this.tiContr = tiContr;
+        this.tiContr = tiContr;
     }
 
     @Column(name = "TI_ESITO_CONTR_FIRMA")
     public String getTiEsitoContrFirma() {
-	return this.tiEsitoContrFirma;
+        return this.tiEsitoContrFirma;
     }
 
     public void setTiEsitoContrFirma(String tiEsitoContrFirma) {
-	this.tiEsitoContrFirma = tiEsitoContrFirma;
+        this.tiEsitoContrFirma = tiEsitoContrFirma;
     }
 
     // bi-directional many-to-one association to AroFirmaComp
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ID_FIRMA_COMP", nullable = false)
     public AroFirmaComp getAroFirmaComp() {
-	return this.aroFirmaComp;
+        return this.aroFirmaComp;
     }
 
     public void setAroFirmaComp(AroFirmaComp aroFirmaComp) {
-	this.aroFirmaComp = aroFirmaComp;
+        this.aroFirmaComp = aroFirmaComp;
     }
 
     // uni-directional many-to-one association to FirCrl
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CRL_USATA")
     public FirCrl getFirCrl() {
-	return this.firCrl;
+        return this.firCrl;
     }
 
     public void setFirCrl(FirCrl firCrl) {
-	this.firCrl = firCrl;
+        this.firCrl = firCrl;
     }
 
     // uni-directional many-to-one association to FirCrl
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_OCSP_USATA")
     public FirOcsp getFirOcsp() {
-	return this.firOcsp;
+        return this.firOcsp;
     }
 
     public void setFirOcsp(FirOcsp firOcsp) {
-	this.firOcsp = firOcsp;
+        this.firOcsp = firOcsp;
     }
 
     // bi-directional many-to-one association to AroUsoCertifCaContrComp
     @OneToMany(mappedBy = "aroContrFirmaComp", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     public List<AroUsoCertifCaContrComp> getAroUsoCertifCaContrComps() {
-	return this.aroUsoCertifCaContrComps;
+        return this.aroUsoCertifCaContrComps;
     }
 
     public void setAroUsoCertifCaContrComps(
-	    List<AroUsoCertifCaContrComp> aroUsoCertifCaContrComps) {
-	this.aroUsoCertifCaContrComps = aroUsoCertifCaContrComps;
+            List<AroUsoCertifCaContrComp> aroUsoCertifCaContrComps) {
+        this.aroUsoCertifCaContrComps = aroUsoCertifCaContrComps;
     }
 
 }

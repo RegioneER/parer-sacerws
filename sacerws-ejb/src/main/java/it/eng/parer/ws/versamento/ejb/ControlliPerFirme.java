@@ -70,25 +70,25 @@ public class ControlliPerFirme {
     private EntityManager entityManager;
 
     public RispostaControlli getOrgStrutt(long idStrutVers) {
-	RispostaControlli rs;
-	rs = new RispostaControlli();
-	rs.setrLong(-1);
+        RispostaControlli rs;
+        rs = new RispostaControlli();
+        rs.setrLong(-1);
 
-	try {
-	    final TypedQuery<OrgStrut> query = entityManager.createQuery(
-		    "SELECT org FROM OrgStrut org JOIN FETCH org.orgEnte WHERE org.idStrut=:idStrut",
-		    OrgStrut.class);
-	    query.setParameter("idStrut", idStrutVers);
-	    OrgStrut os = query.getSingleResult();
-	    rs.setrLong(0);
-	    rs.setrObject(os);
-	} catch (Exception e) {
-	    rs.setCodErr(MessaggiWSBundle.ERR_666);
-	    rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-		    "ControlliPerFirme.getOrgStrutt: " + ExceptionUtils.getRootCauseMessage(e)));
-	    LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
-	}
-	return rs;
+        try {
+            final TypedQuery<OrgStrut> query = entityManager.createQuery(
+                    "SELECT org FROM OrgStrut org JOIN FETCH org.orgEnte WHERE org.idStrut=:idStrut",
+                    OrgStrut.class);
+            query.setParameter("idStrut", idStrutVers);
+            OrgStrut os = query.getSingleResult();
+            rs.setrLong(0);
+            rs.setrObject(os);
+        } catch (Exception e) {
+            rs.setCodErr(MessaggiWSBundle.ERR_666);
+            rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getOrgStrutt: " + ExceptionUtils.getRootCauseMessage(e)));
+            LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
+        }
+        return rs;
     }
 
     /**
@@ -102,15 +102,15 @@ public class ControlliPerFirme {
      */
     public OrgStrut getOrgStruttAsEntity(long idStrutVers) throws VerificaFirmaException {
 
-	try {
-	    return entityManager.find(OrgStrut.class, idStrutVers);
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getOrgStruttAsEntity: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+        try {
+            return entityManager.find(OrgStrut.class, idStrutVers);
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getOrgStruttAsEntity: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -123,56 +123,56 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public DecFormatoFileStandard getDecFormatoFileStandardAsEntity(long idDecFormatoFileStandard)
-	    throws VerificaFirmaException {
+            throws VerificaFirmaException {
 
-	try {
-	    return entityManager.find(DecFormatoFileStandard.class, idDecFormatoFileStandard);
-	} catch (Exception e) {
-	    LOG.error("Eccezione nella lettura della tabella di decodifica ", e);
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFormatoFileStandard: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+        try {
+            return entityManager.find(DecFormatoFileStandard.class, idDecFormatoFileStandard);
+        } catch (Exception e) {
+            LOG.error("Eccezione nella lettura della tabella di decodifica ", e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFormatoFileStandard: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
 
     }
 
     public RispostaControlli confrontaFormati(long idFormatoStd, long idFormatoVers) {
-	String formatoVers;
-	String formatoRappr;
-	RispostaControlli rs;
-	rs = new RispostaControlli();
-	rs.setrLong(-1);
-	rs.setrBoolean(false);
+        String formatoVers;
+        String formatoRappr;
+        RispostaControlli rs;
+        rs = new RispostaControlli();
+        rs.setrLong(-1);
+        rs.setrBoolean(false);
 
-	try {
-	    DecFormatoFileDoc formatoVersato = entityManager.find(DecFormatoFileDoc.class,
-		    idFormatoVers);
-	    formatoVers = formatoVersato.getNmFormatoFileDoc();
-	    DecFormatoFileStandard tmpFileStandard = entityManager
-		    .find(DecFormatoFileStandard.class, idFormatoStd);
-	    formatoRappr = tmpFileStandard.getNmFormatoFileStandard();
-	    rs.setrLong(0);
-	    rs.setrObject(tmpFileStandard);
-	    if (formatoRappr.equals(formatoVers)) {
-		rs.setrBoolean(true);
-	    } else {
-		StringBuilder esitoNegativo = new StringBuilder();
-		esitoNegativo.append("Il formato di rappresentazione calcolato ");
-		esitoNegativo.append(formatoRappr);
-		esitoNegativo.append(" è diverso da quello versato ");
-		esitoNegativo.append(formatoVers);
-		rs.setrString(esitoNegativo.toString());
-	    }
-	} catch (Exception e) {
-	    rs.setCodErr(MessaggiWSBundle.ERR_666);
-	    rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-		    "ControlliPerFirme.confrontaFormati: "
-			    + ExceptionUtils.getRootCauseMessage(e)));
-	    LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
-	}
-	return rs;
+        try {
+            DecFormatoFileDoc formatoVersato = entityManager.find(DecFormatoFileDoc.class,
+                    idFormatoVers);
+            formatoVers = formatoVersato.getNmFormatoFileDoc();
+            DecFormatoFileStandard tmpFileStandard = entityManager
+                    .find(DecFormatoFileStandard.class, idFormatoStd);
+            formatoRappr = tmpFileStandard.getNmFormatoFileStandard();
+            rs.setrLong(0);
+            rs.setrObject(tmpFileStandard);
+            if (formatoRappr.equals(formatoVers)) {
+                rs.setrBoolean(true);
+            } else {
+                StringBuilder esitoNegativo = new StringBuilder();
+                esitoNegativo.append("Il formato di rappresentazione calcolato ");
+                esitoNegativo.append(formatoRappr);
+                esitoNegativo.append(" è diverso da quello versato ");
+                esitoNegativo.append(formatoVers);
+                rs.setrString(esitoNegativo.toString());
+            }
+        } catch (Exception e) {
+            rs.setCodErr(MessaggiWSBundle.ERR_666);
+            rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.confrontaFormati: "
+                            + ExceptionUtils.getRootCauseMessage(e)));
+            LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
+        }
+        return rs;
     }
 
     /**
@@ -185,22 +185,22 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<DecEstensioneFile> getDecEstensioneFiles(String formato)
-	    throws VerificaFirmaException {
+            throws VerificaFirmaException {
 
-	try {
-	    String queryStr = "SELECT ext FROM DecFormatoFileStandard dec JOIN dec.decEstensioneFiles ext"
-		    + " WHERE dec.nmFormatoFileStandard = :formato ";
-	    TypedQuery<DecEstensioneFile> q = entityManager.createQuery(queryStr,
-		    DecEstensioneFile.class);
-	    q.setParameter("formato", formato);
-	    return q.getResultList();
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecEstensioneFiles: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+        try {
+            String queryStr = "SELECT ext FROM DecFormatoFileStandard dec JOIN dec.decEstensioneFiles ext"
+                    + " WHERE dec.nmFormatoFileStandard = :formato ";
+            TypedQuery<DecEstensioneFile> q = entityManager.createQuery(queryStr,
+                    DecEstensioneFile.class);
+            q.setParameter("formato", formato);
+            return q.getResultList();
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecEstensioneFiles: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -213,21 +213,21 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<DecFormatoFileStandard> getDecFmtFileStdFromEstensioneFiles(String formatoVersato)
-	    throws VerificaFirmaException {
-	try {
-	    String queryStr = "SELECT dec FROM DecFormatoFileStandard dec "
-		    + "JOIN dec.decEstensioneFiles ext "
-		    + "WHERE UPPER(ext.cdEstensioneFile) = :estensioneFile ";
-	    Query q = entityManager.createQuery(queryStr);
-	    q.setParameter("estensioneFile", formatoVersato);
-	    return q.getResultList();
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFmtFileStdFromEstensioneFiles: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+            throws VerificaFirmaException {
+        try {
+            String queryStr = "SELECT dec FROM DecFormatoFileStandard dec "
+                    + "JOIN dec.decEstensioneFiles ext "
+                    + "WHERE UPPER(ext.cdEstensioneFile) = :estensioneFile ";
+            Query q = entityManager.createQuery(queryStr);
+            q.setParameter("estensioneFile", formatoVersato);
+            return q.getResultList();
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFmtFileStdFromEstensioneFiles: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -240,21 +240,21 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<DecFormatoFileStandard> getDecFmtFileStandardFromTikaMimes(String tikaMime)
-	    throws VerificaFirmaException {
-	try {
-	    String queryStr = "SELECT ffs FROM DecFormatoFileStandard ffs "
-		    + " WHERE ffs.nmMimetypeFile = :formatoTika";
-	    TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
-		    DecFormatoFileStandard.class);
-	    q.setParameter("formatoTika", tikaMime);
-	    return q.getResultList();
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFmtFileStandardFromTikaMimes: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+            throws VerificaFirmaException {
+        try {
+            String queryStr = "SELECT ffs FROM DecFormatoFileStandard ffs "
+                    + " WHERE ffs.nmMimetypeFile = :formatoTika";
+            TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
+                    DecFormatoFileStandard.class);
+            q.setParameter("formatoTika", tikaMime);
+            return q.getResultList();
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFmtFileStandardFromTikaMimes: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -267,22 +267,22 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<DecFormatoFileStandard> getDecFmtFileStandardFromFmtMarcas(
-	    Set<String> tiFormatoFirmaMarca) throws VerificaFirmaException {
+            Set<String> tiFormatoFirmaMarca) throws VerificaFirmaException {
 
-	try {
-	    String queryStr = "SELECT DISTINCT dec FROM DecFormatoFileStandard dec JOIN dec.decFormatoFileBustas bus"
-		    + " WHERE bus.tiFormatoFirmaMarca IN :formati ";
-	    TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
-		    DecFormatoFileStandard.class);
-	    q.setParameter("formati", tiFormatoFirmaMarca);
-	    return q.getResultList();
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFmtFileStandardFromFmtMarcas: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+        try {
+            String queryStr = "SELECT DISTINCT dec FROM DecFormatoFileStandard dec JOIN dec.decFormatoFileBustas bus"
+                    + " WHERE bus.tiFormatoFirmaMarca IN :formati ";
+            TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
+                    DecFormatoFileStandard.class);
+            q.setParameter("formati", tiFormatoFirmaMarca);
+            return q.getResultList();
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFmtFileStandardFromFmtMarcas: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -297,33 +297,33 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<DecFormatoFileStandard> getDecFmtFileStandardFromFmtDocs(long idFormatoFileDoc,
-	    String chiaveComp, String nmFormatoFileDoc) throws VerificaFirmaException {
-	List<DecFormatoFileStandard> dffs = null;
-	try {
-	    String queryStr = "SELECT ffs FROM DecFormatoFileStandard ffs "
-		    + "JOIN ffs.decUsoFormatoFileStandards usoFF "
-		    + "JOIN usoFF.decFormatoFileDoc ff "
-		    + "WHERE ff.idFormatoFileDoc = :idFormatoVersato " + "AND usoFF.niOrdUso = 1";
-	    TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
-		    DecFormatoFileStandard.class);
-	    q.setParameter("idFormatoVersato", idFormatoFileDoc);
-	    dffs = q.getResultList();
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFmtFileStandardFromFmtDocs: "
-				    + ExceptionUtils.getRootCauseMessage(e)));
-	}
-	// configuration error (666 blocking error code)
-	if (dffs == null || dffs.isEmpty()) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "Componente " + chiaveComp + ": il Formato file riconosciuto come "
-				    + nmFormatoFileDoc
-				    + " non ha una associazione su registro formati standard"));
-	}
+            String chiaveComp, String nmFormatoFileDoc) throws VerificaFirmaException {
+        List<DecFormatoFileStandard> dffs = null;
+        try {
+            String queryStr = "SELECT ffs FROM DecFormatoFileStandard ffs "
+                    + "JOIN ffs.decUsoFormatoFileStandards usoFF "
+                    + "JOIN usoFF.decFormatoFileDoc ff "
+                    + "WHERE ff.idFormatoFileDoc = :idFormatoVersato " + "AND usoFF.niOrdUso = 1";
+            TypedQuery<DecFormatoFileStandard> q = entityManager.createQuery(queryStr,
+                    DecFormatoFileStandard.class);
+            q.setParameter("idFormatoVersato", idFormatoFileDoc);
+            dffs = q.getResultList();
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFmtFileStandardFromFmtDocs: "
+                                    + ExceptionUtils.getRootCauseMessage(e)));
+        }
+        // configuration error (666 blocking error code)
+        if (dffs == null || dffs.isEmpty()) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "Componente " + chiaveComp + ": il Formato file riconosciuto come "
+                                    + nmFormatoFileDoc
+                                    + " non ha una associazione su registro formati standard"));
+        }
 
-	return dffs;
+        return dffs;
     }
 
     /**
@@ -336,16 +336,16 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public DecFormatoFileDoc getDecFormatoFileDoc(long idFormatoFileDoc)
-	    throws VerificaFirmaException {
-	try {
-	    return entityManager.find(DecFormatoFileDoc.class, idFormatoFileDoc);
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecFormatoFileDoc: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+            throws VerificaFirmaException {
+        try {
+            return entityManager.find(DecFormatoFileDoc.class, idFormatoFileDoc);
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecFormatoFileDoc: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     /**
@@ -359,33 +359,33 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public FirCertifCa getFirCertifCa(String dsSerialCertifCa, String dlDnIssuerCertifCa)
-	    throws VerificaFirmaException {
+            throws VerificaFirmaException {
 
-	// result
-	FirCertifCa firCertifCa = null;
+        // result
+        FirCertifCa firCertifCa = null;
 
-	// lancio query di controllo
-	try {
-	    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-	    CriteriaQuery<FirCertifCa> criteriaQuery = criteriaBuilder
-		    .createQuery(FirCertifCa.class);
-	    Root<FirCertifCa> root = criteriaQuery.from(FirCertifCa.class);
-	    criteriaQuery.select(root).where(criteriaBuilder.and(
-		    criteriaBuilder.equal(root.get("dsSerialCertifCa"), dsSerialCertifCa),
-		    criteriaBuilder.equal(root.get("dlDnIssuerCertifCa"), dlDnIssuerCertifCa)));
-	    List<FirCertifCa> firCertifCas = entityManager.createQuery(criteriaQuery)
-		    .getResultList();
+        // lancio query di controllo
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<FirCertifCa> criteriaQuery = criteriaBuilder
+                    .createQuery(FirCertifCa.class);
+            Root<FirCertifCa> root = criteriaQuery.from(FirCertifCa.class);
+            criteriaQuery.select(root).where(criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("dsSerialCertifCa"), dsSerialCertifCa),
+                    criteriaBuilder.equal(root.get("dlDnIssuerCertifCa"), dlDnIssuerCertifCa)));
+            List<FirCertifCa> firCertifCas = entityManager.createQuery(criteriaQuery)
+                    .getResultList();
 
-	    if (firCertifCas != null && !firCertifCas.isEmpty()) {
-		firCertifCa = firCertifCas.get(0);
-	    }
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-		    MessaggiWSBundle.ERR_666,
-		    "ControlliPerFirme.getFirCertifCa: " + ExceptionUtils.getRootCauseMessage(e)));
-	}
-	// result
-	return firCertifCa;
+            if (firCertifCas != null && !firCertifCas.isEmpty()) {
+                firCertifCa = firCertifCas.get(0);
+            }
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getFirCertifCa: " + ExceptionUtils.getRootCauseMessage(e)));
+        }
+        // result
+        return firCertifCa;
 
     }
 
@@ -403,106 +403,106 @@ public class ControlliPerFirme {
      *                                                             DB
      */
     public FirCrl getFirCrl(FirCertifCa firCertifCa, String dsSerialCrl, Date dtIniCrl,
-	    Date dtScadCrl) throws VerificaFirmaException {
-	FirCrl firCrl = null;
+            Date dtScadCrl) throws VerificaFirmaException {
+        FirCrl firCrl = null;
 
-	try {
-	    String queryStr = "SELECT c FROM FirCrl c WHERE c.firCertifCa = :firCertifCa AND c.dtIniCrl = :dtIniCrl AND c.dtScadCrl = :dtScadCrl";
+        try {
+            String queryStr = "SELECT c FROM FirCrl c WHERE c.firCertifCa = :firCertifCa AND c.dtIniCrl = :dtIniCrl AND c.dtScadCrl = :dtScadCrl";
 
-	    if (dsSerialCrl != null) {
-		queryStr += " AND c.dsSerialCrl = :dsSerialCrl";
-	    } else {
-		queryStr += " AND c.dsSerialCrl is null";
-	    }
+            if (dsSerialCrl != null) {
+                queryStr += " AND c.dsSerialCrl = :dsSerialCrl";
+            } else {
+                queryStr += " AND c.dsSerialCrl is null";
+            }
 
-	    TypedQuery<FirCrl> query = entityManager.createQuery(queryStr, FirCrl.class);
-	    query.setParameter("firCertifCa", firCertifCa).setParameter("dtIniCrl", dtIniCrl)
-		    .setParameter("dtScadCrl", NeverendingDateConverter.verifyOverZoneId(dtScadCrl,
-			    TimeZone.getTimeZone("UTC").toZoneId()));
+            TypedQuery<FirCrl> query = entityManager.createQuery(queryStr, FirCrl.class);
+            query.setParameter("firCertifCa", firCertifCa).setParameter("dtIniCrl", dtIniCrl)
+                    .setParameter("dtScadCrl", NeverendingDateConverter.verifyOverZoneId(dtScadCrl,
+                            TimeZone.getTimeZone("UTC").toZoneId()));
 
-	    if (dsSerialCrl != null) {
-		query.setParameter("dsSerialCrl", dsSerialCrl);
-	    }
+            if (dsSerialCrl != null) {
+                query.setParameter("dsSerialCrl", dsSerialCrl);
+            }
 
-	    List<FirCrl> resultList = query.getResultList();
-	    if (resultList != null && !resultList.isEmpty()) {
-		firCrl = resultList.get(0);
-	    }
-	    return firCrl;
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-		    MessaggiWSBundle.ERR_666,
-		    "ControlliPerFirme.getFirCrl: " + ExceptionUtils.getRootCauseMessage(e)));
-	}
+            List<FirCrl> resultList = query.getResultList();
+            if (resultList != null && !resultList.isEmpty()) {
+                firCrl = resultList.get(0);
+            }
+            return firCrl;
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getFirCrl: " + ExceptionUtils.getRootCauseMessage(e)));
+        }
     }
 
     public FirCertifOcsp getFirCertifOcsp(FirCertifCa firCertifCa, String dsSerialCertifOcsp)
-	    throws VerificaFirmaException {
-	FirCertifOcsp firCertifOcsp = null;
-	try {
-	    final String findFirCertifOcpByAlternateKey = "Select f from FirCertifOcsp f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifOcsp = :dsSerialCertifOcsp";
-	    TypedQuery<FirCertifOcsp> query = entityManager
-		    .createQuery(findFirCertifOcpByAlternateKey, FirCertifOcsp.class)
-		    .setParameter("firCertifCa", firCertifCa)
-		    .setParameter("dsSerialCertifOcsp", dsSerialCertifOcsp);
-	    List<FirCertifOcsp> resultList = query.getResultList();
-	    if (resultList != null && !resultList.isEmpty()) {
-		firCertifOcsp = resultList.get(0);
-	    }
+            throws VerificaFirmaException {
+        FirCertifOcsp firCertifOcsp = null;
+        try {
+            final String findFirCertifOcpByAlternateKey = "Select f from FirCertifOcsp f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifOcsp = :dsSerialCertifOcsp";
+            TypedQuery<FirCertifOcsp> query = entityManager
+                    .createQuery(findFirCertifOcpByAlternateKey, FirCertifOcsp.class)
+                    .setParameter("firCertifCa", firCertifCa)
+                    .setParameter("dsSerialCertifOcsp", dsSerialCertifOcsp);
+            List<FirCertifOcsp> resultList = query.getResultList();
+            if (resultList != null && !resultList.isEmpty()) {
+                firCertifOcsp = resultList.get(0);
+            }
 
-	    return firCertifOcsp;
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getFirCertifOcsp: "
-				    + ExceptionUtils.getRootCauseMessage(e)));
-	}
+            return firCertifOcsp;
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifOcsp: "
+                                    + ExceptionUtils.getRootCauseMessage(e)));
+        }
     }
 
     public FirOcsp getFirOcsp(FirCertifOcsp firCertifOcsp, String dsCertifIssuername,
-	    String dsCertifSerialBase64, String dsCertifSkiBase64) throws VerificaFirmaException {
-	FirOcsp firOcsp = null;
+            String dsCertifSerialBase64, String dsCertifSkiBase64) throws VerificaFirmaException {
+        FirOcsp firOcsp = null;
 
-	try {
-	    String queryStr = "SELECT c FROM FirOcsp c WHERE c.firCertifOcsp = :firCertifOcsp";
+        try {
+            String queryStr = "SELECT c FROM FirOcsp c WHERE c.firCertifOcsp = :firCertifOcsp";
 
-	    if (dsCertifIssuername != null) {
-		queryStr += " AND c.dsCertifIssuername = :dsCertifIssuername";
-	    }
+            if (dsCertifIssuername != null) {
+                queryStr += " AND c.dsCertifIssuername = :dsCertifIssuername";
+            }
 
-	    if (dsCertifSerialBase64 != null) {
-		queryStr += " AND c.dsCertifSerialBase64 = :dsCertifSerialBase64";
-	    }
+            if (dsCertifSerialBase64 != null) {
+                queryStr += " AND c.dsCertifSerialBase64 = :dsCertifSerialBase64";
+            }
 
-	    if (dsCertifSkiBase64 != null) {
-		queryStr += " AND c.dsCertifSkiBase64 = :dsCertifSkiBase64";
-	    }
+            if (dsCertifSkiBase64 != null) {
+                queryStr += " AND c.dsCertifSkiBase64 = :dsCertifSkiBase64";
+            }
 
-	    TypedQuery<FirOcsp> query = entityManager.createQuery(queryStr, FirOcsp.class);
-	    query.setParameter("firCertifOcsp", firCertifOcsp);
+            TypedQuery<FirOcsp> query = entityManager.createQuery(queryStr, FirOcsp.class);
+            query.setParameter("firCertifOcsp", firCertifOcsp);
 
-	    if (dsCertifIssuername != null) {
-		query.setParameter("dsCertifIssuername", dsCertifIssuername);
-	    }
+            if (dsCertifIssuername != null) {
+                query.setParameter("dsCertifIssuername", dsCertifIssuername);
+            }
 
-	    if (dsCertifSerialBase64 != null) {
-		query.setParameter("dsCertifSerialBase64", dsCertifSerialBase64);
-	    }
+            if (dsCertifSerialBase64 != null) {
+                query.setParameter("dsCertifSerialBase64", dsCertifSerialBase64);
+            }
 
-	    if (dsCertifSkiBase64 != null) {
-		query.setParameter("dsCertifSkiBase64", dsCertifSkiBase64);
-	    }
+            if (dsCertifSkiBase64 != null) {
+                query.setParameter("dsCertifSkiBase64", dsCertifSkiBase64);
+            }
 
-	    List<FirOcsp> resultList = query.getResultList();
-	    if (resultList != null && !resultList.isEmpty()) {
-		firOcsp = resultList.get(0);
-	    }
-	    return firOcsp;
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
-		    MessaggiWSBundle.ERR_666,
-		    "ControlliPerFirme.getFirOcsp: " + ExceptionUtils.getRootCauseMessage(e)));
-	}
+            List<FirOcsp> resultList = query.getResultList();
+            if (resultList != null && !resultList.isEmpty()) {
+                firOcsp = resultList.get(0);
+            }
+            return firOcsp;
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666, MessaggiWSBundle.getString(
+                    MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getFirOcsp: " + ExceptionUtils.getRootCauseMessage(e)));
+        }
     }
 
     /**
@@ -517,27 +517,27 @@ public class ControlliPerFirme {
      *                                                             DB
      */
     public FirCertifFirmatario getFirCertifFirmatario(FirCertifCa firCertifCa,
-	    String dsSerialCertifFirmatario) throws VerificaFirmaException {
-	FirCertifFirmatario firFirCertifFirmatario = null;
-	try {
-	    final String findFirCertifFirmatarioByAlternateKey = "Select f from FirCertifFirmatario f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifFirmatario = :dsSerialCertifFirmatario";
-	    TypedQuery<FirCertifFirmatario> query = entityManager
-		    .createQuery(findFirCertifFirmatarioByAlternateKey, FirCertifFirmatario.class)
-		    .setParameter("firCertifCa", firCertifCa)
-		    .setParameter("dsSerialCertifFirmatario", dsSerialCertifFirmatario);
-	    List<FirCertifFirmatario> resultList = query.getResultList();
-	    if (resultList != null && !resultList.isEmpty()) {
-		firFirCertifFirmatario = resultList.get(0);
-	    }
+            String dsSerialCertifFirmatario) throws VerificaFirmaException {
+        FirCertifFirmatario firFirCertifFirmatario = null;
+        try {
+            final String findFirCertifFirmatarioByAlternateKey = "Select f from FirCertifFirmatario f Where f.firCertifCa = :firCertifCa And f.dsSerialCertifFirmatario = :dsSerialCertifFirmatario";
+            TypedQuery<FirCertifFirmatario> query = entityManager
+                    .createQuery(findFirCertifFirmatarioByAlternateKey, FirCertifFirmatario.class)
+                    .setParameter("firCertifCa", firCertifCa)
+                    .setParameter("dsSerialCertifFirmatario", dsSerialCertifFirmatario);
+            List<FirCertifFirmatario> resultList = query.getResultList();
+            if (resultList != null && !resultList.isEmpty()) {
+                firFirCertifFirmatario = resultList.get(0);
+            }
 
-	    return firFirCertifFirmatario;
-	} catch (Exception e) {
-	    LOG.error("Eccezione nella lettura della tabella FirCertifFirmatario ", e);
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getFirCertifFirmatario: "
-				    + ExceptionUtils.getRootCauseMessage(e)));
-	}
+            return firFirCertifFirmatario;
+        } catch (Exception e) {
+            LOG.error("Eccezione nella lettura della tabella FirCertifFirmatario ", e);
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifFirmatario: "
+                                    + ExceptionUtils.getRootCauseMessage(e)));
+        }
     }
 
     /**
@@ -551,61 +551,61 @@ public class ControlliPerFirme {
      * @throws VerificaFirmaException in caso di errore nell'accesso al DB
      */
     public List<Long> getFirCertifFirmatarioIds(BigDecimal dsSerialCertifFirmatario,
-	    FirCertifCa firCertifCa) throws VerificaFirmaException {
-	// lista entity JPA ritornate dalle Query
-	List<Long> firFirCertifFirmatarios = new ArrayList<>();
+            FirCertifCa firCertifCa) throws VerificaFirmaException {
+        // lista entity JPA ritornate dalle Query
+        List<Long> firFirCertifFirmatarios = new ArrayList<>();
 
-	// lancio query di controllo
-	try {
-	    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-	    CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-	    Root<FirCertifFirmatario> root = criteriaQuery.from(FirCertifFirmatario.class);
-	    criteriaQuery.select(root.get("idCertifFirmatario"))
-		    .where(criteriaBuilder.and(
-			    criteriaBuilder.equal(root.get("dsSerialCertifFirmatario"),
-				    dsSerialCertifFirmatario),
-			    criteriaBuilder.equal(root.get("firCertifCa"), firCertifCa)));
+        // lancio query di controllo
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            Root<FirCertifFirmatario> root = criteriaQuery.from(FirCertifFirmatario.class);
+            criteriaQuery.select(root.get("idCertifFirmatario"))
+                    .where(criteriaBuilder.and(
+                            criteriaBuilder.equal(root.get("dsSerialCertifFirmatario"),
+                                    dsSerialCertifFirmatario),
+                            criteriaBuilder.equal(root.get("firCertifCa"), firCertifCa)));
 
-	    firFirCertifFirmatarios = entityManager.createQuery(criteriaQuery).getResultList();
-	    return firFirCertifFirmatarios;
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getFirCertifFirmatarioIds: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+            firFirCertifFirmatarios = entityManager.createQuery(criteriaQuery).getResultList();
+            return firFirCertifFirmatarios;
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getFirCertifFirmatarioIds: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     public DecServizioVerificaCompDoc getDecServizioVerificaCompDoc(String cdService,
-	    String cdLibrary) throws VerificaFirmaException {
-	try {
-	    String queryStr = "SELECT s FROM DecServizioVerificaCompDoc s"
-		    + " WHERE s.nmVersione = :cdLibrary AND s.cdServizio = :cdService";
-	    TypedQuery<DecServizioVerificaCompDoc> q = entityManager.createQuery(queryStr,
-		    DecServizioVerificaCompDoc.class);
-	    q.setParameter("cdService", CdServizioVerificaCompDoc.valueOf(cdService));
-	    q.setParameter("cdLibrary", cdLibrary);
+            String cdLibrary) throws VerificaFirmaException {
+        try {
+            String queryStr = "SELECT s FROM DecServizioVerificaCompDoc s"
+                    + " WHERE s.nmVersione = :cdLibrary AND s.cdServizio = :cdService";
+            TypedQuery<DecServizioVerificaCompDoc> q = entityManager.createQuery(queryStr,
+                    DecServizioVerificaCompDoc.class);
+            q.setParameter("cdService", CdServizioVerificaCompDoc.valueOf(cdService));
+            q.setParameter("cdLibrary", cdLibrary);
 
-	    List<DecServizioVerificaCompDoc> dec = q.getResultList();
+            List<DecServizioVerificaCompDoc> dec = q.getResultList();
 
-	    // default metadati (nessuna versione)
-	    if (dec.isEmpty()) {
-		q.setParameter("cdLibrary", Costanti.VERIFICA_FIRMA_METADATI_REPORT_NOVERSION);
-		dec = q.getResultList();
-	    }
-	    return dec.get(0);
-	} catch (Exception e) {
-	    throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-			    "ControlliPerFirme.getDecServizioVerificaCompDoc: "
-				    + ExceptionUtils.getRootCauseMessage(e)),
-		    e);
-	}
+            // default metadati (nessuna versione)
+            if (dec.isEmpty()) {
+                q.setParameter("cdLibrary", Costanti.VERIFICA_FIRMA_METADATI_REPORT_NOVERSION);
+                dec = q.getResultList();
+            }
+            return dec.get(0);
+        } catch (Exception e) {
+            throw new VerificaFirmaException(MessaggiWSBundle.ERR_666,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                            "ControlliPerFirme.getDecServizioVerificaCompDoc: "
+                                    + ExceptionUtils.getRootCauseMessage(e)),
+                    e);
+        }
     }
 
     public void retrieveOrgEnteFor(OrgStrut os) {
-	OrgEnte orgEnte = entityManager.find(OrgEnte.class, os.getOrgEnte().getIdEnte());
-	os.setOrgEnte(orgEnte);
+        OrgEnte orgEnte = entityManager.find(OrgEnte.class, os.getOrgEnte().getIdEnte());
+        os.setOrgEnte(orgEnte);
     }
 }

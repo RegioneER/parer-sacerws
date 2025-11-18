@@ -66,84 +66,84 @@ public class VrsXmlSesUpdUnitaDocKo implements Serializable {
     @Id
     @Column(name = "ID_XML_SES_UPD_UNITA_DOC_KO")
     @GenericGenerator(name = "SVRS_XML_SES_UPD_UNITA_DOC_KO_ID_XML_SES_UPD_UNITA_DOC_KO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_UPD_UNITA_DOC_KO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_UPD_UNITA_DOC_KO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_XML_SES_UPD_UNITA_DOC_KO_ID_XML_SES_UPD_UNITA_DOC_KO_GENERATOR")
     public Long getIdXmlSesUpdUnitaDocKo() {
-	return this.idXmlSesUpdUnitaDocKo;
+        return this.idXmlSesUpdUnitaDocKo;
     }
 
     public void setIdXmlSesUpdUnitaDocKo(Long idXmlSesUpdUnitaDocKo) {
-	this.idXmlSesUpdUnitaDocKo = idXmlSesUpdUnitaDocKo;
+        this.idXmlSesUpdUnitaDocKo = idXmlSesUpdUnitaDocKo;
     }
 
     @Lob
     @Column(name = "BL_XML")
     public String getBlXml() {
-	return this.blXml;
+        return this.blXml;
     }
 
     public void setBlXml(String blXml) {
-	this.blXml = blXml;
+        this.blXml = blXml;
     }
 
     @Column(name = "CD_VERSIONE_XML")
     public String getCdVersioneXml() {
-	return this.cdVersioneXml;
+        return this.cdVersioneXml;
     }
 
     public void setCdVersioneXml(String cdVersioneXml) {
-	this.cdVersioneXml = cdVersioneXml;
+        this.cdVersioneXml = cdVersioneXml;
     }
 
     @Column(name = "DT_REG_XML")
     public LocalDate getDtRegXml() {
-	return this.dtRegXml;
+        return this.dtRegXml;
     }
 
     public void setDtRegXml(LocalDate dtRegXml) {
-	this.dtRegXml = dtRegXml;
+        this.dtRegXml = dtRegXml;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SES_UPD_UD_KO")
     public VrsSesUpdUnitaDocKo getVrsSesUpdUnitaDocKo() {
-	return this.vrsSesUpdUnitaDocKo;
+        return this.vrsSesUpdUnitaDocKo;
     }
 
     public void setVrsSesUpdUnitaDocKo(VrsSesUpdUnitaDocKo vrsSesUpdUnitaDocKo) {
-	this.vrsSesUpdUnitaDocKo = vrsSesUpdUnitaDocKo;
+        this.vrsSesUpdUnitaDocKo = vrsSesUpdUnitaDocKo;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_XML")
     public TiXmlVrsXmlSesUpdUnitaDocKo getTiXml() {
-	return this.tiXml;
+        return this.tiXml;
     }
 
     public void setTiXml(TiXmlVrsXmlSesUpdUnitaDocKo tiXml) {
-	this.tiXml = tiXml;
+        this.tiXml = tiXml;
     }
 
     @Column(name = "AA_REG_XML")
     public Integer getAaRegXml() {
-	return aaRegXml;
+        return aaRegXml;
     }
 
     public void setAaRegXml(Integer aaRegXml) {
-	this.aaRegXml = aaRegXml;
+        this.aaRegXml = aaRegXml;
     }
 
 }

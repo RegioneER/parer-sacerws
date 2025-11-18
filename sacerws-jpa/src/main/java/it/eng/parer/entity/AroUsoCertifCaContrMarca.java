@@ -58,71 +58,71 @@ public class AroUsoCertifCaContrMarca implements Serializable {
     @Id
     @Column(name = "ID_USO_CERTIF_CA_CONTR_MARCA")
     @GenericGenerator(name = "SARO_USO_CERTIF_CA_CONTR_MARCA_ID_USO_CERTIF_CA_CONTR_MARCA_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_USO_CERTIF_CA_CONTR_MARCA"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_USO_CERTIF_CA_CONTR_MARCA"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_USO_CERTIF_CA_CONTR_MARCA_ID_USO_CERTIF_CA_CONTR_MARCA_GENERATOR")
     public Long getIdUsoCertifCaContrMarca() {
-	return this.idUsoCertifCaContrMarca;
+        return this.idUsoCertifCaContrMarca;
     }
 
     public void setIdUsoCertifCaContrMarca(Long idUsoCertifCaContrMarca) {
-	this.idUsoCertifCaContrMarca = idUsoCertifCaContrMarca;
+        this.idUsoCertifCaContrMarca = idUsoCertifCaContrMarca;
     }
 
     @Column(name = "PG_CERTIF_CA")
     public BigDecimal getPgCertifCa() {
-	return this.pgCertifCa;
+        return this.pgCertifCa;
     }
 
     public void setPgCertifCa(BigDecimal pgCertifCa) {
-	this.pgCertifCa = pgCertifCa;
+        this.pgCertifCa = pgCertifCa;
     }
 
     // bi-directional many-to-one association to AroContrMarcaComp
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CONTR_MARCA_COMP", nullable = false)
     public AroContrMarcaComp getAroContrMarcaComp() {
-	return this.aroContrMarcaComp;
+        return this.aroContrMarcaComp;
     }
 
     public void setAroContrMarcaComp(AroContrMarcaComp aroContrMarcaComp) {
-	this.aroContrMarcaComp = aroContrMarcaComp;
+        this.aroContrMarcaComp = aroContrMarcaComp;
     }
 
     // uni-directional many-to-one association to FirCertifCa
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CERTIF_CA")
     public FirCertifCa getFirCertifCa() {
-	return this.firCertifCa;
+        return this.firCertifCa;
     }
 
     public void setFirCertifCa(FirCertifCa firCertifCa) {
-	this.firCertifCa = firCertifCa;
+        this.firCertifCa = firCertifCa;
     }
 
     // uni-directional many-to-one association to FirCrl
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CRL_USATA")
     public FirCrl getFirCrl() {
-	return this.firCrl;
+        return this.firCrl;
     }
 
     public void setFirCrl(FirCrl firCrl) {
-	this.firCrl = firCrl;
+        this.firCrl = firCrl;
     }
 
     // uni-directional many-to-one association to FirCrl
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_OCSP_USATA")
     public FirOcsp getFirOcsp() {
-	return this.firOcsp;
+        return this.firOcsp;
     }
 
     public void setFirOcsp(FirOcsp firOcsp) {
-	this.firOcsp = firOcsp;
+        this.firOcsp = firOcsp;
     }
 
 }

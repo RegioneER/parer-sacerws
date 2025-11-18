@@ -27,6 +27,6 @@ public final class ElvFascDaElabElenco {
      * Tipo stato da elaborare ti_stato_fasc_da_elab IN ('IN_ATTESA_SCHED', 'NON_SELEZ_SCHED')
      */
     public enum TiStatoFascDaElab {
-	IN_ATTESA_SCHED, NON_SELEZ_SCHED
+        IN_ATTESA_SCHED, NON_SELEZ_SCHED
     }
 }

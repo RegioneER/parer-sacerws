@@ -25,7 +25,7 @@ public class MonotonicSequenceGen implements ISequenceGen {
 
     @Override
     public long newSequenceNum(long baseSequence) {
-	return baseSequence;
+        return baseSequence;
     }
 
 }

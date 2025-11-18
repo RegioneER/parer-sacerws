@@ -33,50 +33,50 @@ public final class VrsUrnXmlSessioneVersBuilder {
     }
 
     public static VrsUrnXmlSessioneVersBuilder builder() {
-	return new VrsUrnXmlSessioneVersBuilder();
+        return new VrsUrnXmlSessioneVersBuilder();
     }
 
     public VrsUrnXmlSessioneVersBuilder dsUrn(String dsUrn) {
-	this.dsUrn = dsUrn;
-	return this;
+        this.dsUrn = dsUrn;
+        return this;
     }
 
     public VrsUrnXmlSessioneVersBuilder tiUrn(TiUrnXmlSessioneVers tiUrn) {
-	this.tiUrn = tiUrn;
-	return this;
+        this.tiUrn = tiUrn;
+        return this;
     }
 
     public VrsUrnXmlSessioneVersBuilder vrsXmlDatiSessioneVers(
-	    Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers) {
-	this.vrsXmlDatiSessioneVers = vrsXmlDatiSessioneVers;
-	return this;
+            Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers) {
+        this.vrsXmlDatiSessioneVers = vrsXmlDatiSessioneVers;
+        return this;
     }
 
     public VrsUrnXmlSessioneVersBuilder vrsXmlDatiSessioneVersKo(
-	    Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo) {
-	this.vrsXmlDatiSessioneVersKo = vrsXmlDatiSessioneVersKo;
-	return this;
+            Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo) {
+        this.vrsXmlDatiSessioneVersKo = vrsXmlDatiSessioneVersKo;
+        return this;
     }
 
     public VrsUrnXmlSessioneVersBuilder idStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
-	return this;
+        this.idStrut = idStrut;
+        return this;
     }
 
     public VrsUrnXmlSessioneVers buildVrsUrnXmlSessioneVers() {
-	VrsUrnXmlSessioneVers vrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
-	vrsUrnXmlSessioneVers.setDsUrn(dsUrn);
-	vrsUrnXmlSessioneVers.setTiUrn(tiUrn);
-	vrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(vrsXmlDatiSessioneVers.get());
-	return vrsUrnXmlSessioneVers;
+        VrsUrnXmlSessioneVers vrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
+        vrsUrnXmlSessioneVers.setDsUrn(dsUrn);
+        vrsUrnXmlSessioneVers.setTiUrn(tiUrn);
+        vrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(vrsXmlDatiSessioneVers.get());
+        return vrsUrnXmlSessioneVers;
     }
 
     public VrsUrnXmlSessioneVersKo buildVrsUrnXmlSessioneVersKo() {
-	VrsUrnXmlSessioneVersKo vrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVersKo();
-	vrsUrnXmlSessioneVers.setDsUrn(dsUrn);
-	vrsUrnXmlSessioneVers.setTiUrn(tiUrn);
-	vrsUrnXmlSessioneVers.setIdStrut(idStrut);
-	vrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVersKo(vrsXmlDatiSessioneVersKo.get());
-	return vrsUrnXmlSessioneVers;
+        VrsUrnXmlSessioneVersKo vrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVersKo();
+        vrsUrnXmlSessioneVers.setDsUrn(dsUrn);
+        vrsUrnXmlSessioneVers.setTiUrn(tiUrn);
+        vrsUrnXmlSessioneVers.setIdStrut(idStrut);
+        vrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVersKo(vrsXmlDatiSessioneVersKo.get());
+        return vrsUrnXmlSessioneVers;
     }
 }

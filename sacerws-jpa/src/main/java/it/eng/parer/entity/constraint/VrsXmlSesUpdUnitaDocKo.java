@@ -29,7 +29,7 @@ public final class VrsXmlSesUpdUnitaDocKo {
      * ti_xml IN ('RICHIESTA', 'RISPOSTA')
      */
     public enum TiXmlVrsXmlSesUpdUnitaDocKo {
-	RICHIESTA, RISPOSTA
+        RICHIESTA, RISPOSTA
     }
 
 }

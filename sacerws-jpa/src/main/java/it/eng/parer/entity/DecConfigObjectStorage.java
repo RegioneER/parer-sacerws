@@ -39,28 +39,28 @@ public class DecConfigObjectStorage implements Serializable {
     private String dsDescrizioneConfigObjectStorage;
 
     public DecConfigObjectStorage() {
-	super();
+        super();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_DEC_CONFIG_OBJECT_STORAGE")
     public Long getIdDecConfigObjectStorage() {
-	return idDecConfigObjectStorage;
+        return idDecConfigObjectStorage;
     }
 
     public void setIdDecConfigObjectStorage(Long idDecConfigObjectStorage) {
-	this.idDecConfigObjectStorage = idDecConfigObjectStorage;
+        this.idDecConfigObjectStorage = idDecConfigObjectStorage;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 
     /**
@@ -75,20 +75,20 @@ public class DecConfigObjectStorage implements Serializable {
      */
     @Column(name = "NM_CONFIG_OBJECT_STORAGE")
     public String getNmConfigObjectStorage() {
-	return nmConfigObjectStorage;
+        return nmConfigObjectStorage;
     }
 
     public void setNmConfigObjectStorage(String nmConfigObjectStorage) {
-	this.nmConfigObjectStorage = nmConfigObjectStorage;
+        this.nmConfigObjectStorage = nmConfigObjectStorage;
     }
 
     @Column(name = "DS_VALORE_CONFIG_OBJECT_STORAGE")
     public String getDsValoreConfigObjectStorage() {
-	return dsValoreConfigObjectStorage;
+        return dsValoreConfigObjectStorage;
     }
 
     public void setDsValoreConfigObjectStorage(String dsValoreConfigObjectStorage) {
-	this.dsValoreConfigObjectStorage = dsValoreConfigObjectStorage;
+        this.dsValoreConfigObjectStorage = dsValoreConfigObjectStorage;
     }
 
     /**
@@ -104,20 +104,20 @@ public class DecConfigObjectStorage implements Serializable {
      */
     @Column(name = "TI_USO_CONFIG_OBJECT_STORAGE")
     public String getTiUsoConfigObjectStorage() {
-	return tiUsoConfigObjectStorage;
+        return tiUsoConfigObjectStorage;
     }
 
     public void setTiUsoConfigObjectStorage(String tiUsoConfigObjectStorage) {
-	this.tiUsoConfigObjectStorage = tiUsoConfigObjectStorage;
+        this.tiUsoConfigObjectStorage = tiUsoConfigObjectStorage;
     }
 
     @Column(name = "DS_DESCRIZIONE_CONFIG_OBJECT_STORAGE")
     public String getDsDescrizioneConfigObjectStorage() {
-	return dsDescrizioneConfigObjectStorage;
+        return dsDescrizioneConfigObjectStorage;
     }
 
     public void setDsDescrizioneConfigObjectStorage(String dsDescrizioneConfigObjectStorage) {
-	this.dsDescrizioneConfigObjectStorage = dsDescrizioneConfigObjectStorage;
+        this.dsDescrizioneConfigObjectStorage = dsDescrizioneConfigObjectStorage;
     }
 
 }

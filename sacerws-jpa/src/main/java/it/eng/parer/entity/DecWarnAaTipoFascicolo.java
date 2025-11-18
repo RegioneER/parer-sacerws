@@ -53,44 +53,44 @@ public class DecWarnAaTipoFascicolo implements Serializable {
     @Id
     @Column(name = "ID_WARN_AA_TIPO_FASCICOLO")
     @GenericGenerator(name = "SDEC_WARN_AA_TIPO_FASCICOLO_ID_WARN_AA_TIPO_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_WARN_AA_TIPO_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_WARN_AA_TIPO_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_WARN_AA_TIPO_FASCICOLO_ID_WARN_AA_TIPO_FASCICOLO_GENERATOR")
     public Long getIdWarnAaTipoFascicolo() {
-	return this.idWarnAaTipoFascicolo;
+        return this.idWarnAaTipoFascicolo;
     }
 
     public void setIdWarnAaTipoFascicolo(Long idWarnAaTipoFascicolo) {
-	this.idWarnAaTipoFascicolo = idWarnAaTipoFascicolo;
+        this.idWarnAaTipoFascicolo = idWarnAaTipoFascicolo;
     }
 
     @Column(name = "AA_TIPO_FASCICOLO")
     public BigDecimal getAaTipoFascicolo() {
-	return this.aaTipoFascicolo;
+        return this.aaTipoFascicolo;
     }
 
     public void setAaTipoFascicolo(BigDecimal aaTipoFascicolo) {
-	this.aaTipoFascicolo = aaTipoFascicolo;
+        this.aaTipoFascicolo = aaTipoFascicolo;
     }
 
     @Column(name = "FL_WARN_AA_TIPO_FASCICOLO", columnDefinition = "char(1)")
     public String getFlWarnAaTipoFascicolo() {
-	return this.flWarnAaTipoFascicolo;
+        return this.flWarnAaTipoFascicolo;
     }
 
     public void setFlWarnAaTipoFascicolo(String flWarnAaTipoFascicolo) {
-	this.flWarnAaTipoFascicolo = flWarnAaTipoFascicolo;
+        this.flWarnAaTipoFascicolo = flWarnAaTipoFascicolo;
     }
 
     // bi-directional many-to-one association to DecAaTipoFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_AA_TIPO_FASCICOLO")
     public DecAaTipoFascicolo getDecAaTipoFascicolo() {
-	return this.decAaTipoFascicolo;
+        return this.decAaTipoFascicolo;
     }
 
     public void setDecAaTipoFascicolo(DecAaTipoFascicolo decAaTipoFascicolo) {
-	this.decAaTipoFascicolo = decAaTipoFascicolo;
+        this.decAaTipoFascicolo = decAaTipoFascicolo;
     }
 
 }

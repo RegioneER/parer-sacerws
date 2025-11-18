@@ -53,44 +53,44 @@ public class FirUrlDistribCrl implements Serializable {
     @Id
     @Column(name = "ID_URL_DISTRIB_CRL")
     @GenericGenerator(name = "SFIR_URL_DISTRIB_CRL_ID_URL_DISTRIB_CRL_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_URL_DISTRIB_CRL"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_URL_DISTRIB_CRL"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFIR_URL_DISTRIB_CRL_ID_URL_DISTRIB_CRL_GENERATOR")
     public Long getIdUrlDistribCrl() {
-	return this.idUrlDistribCrl;
+        return this.idUrlDistribCrl;
     }
 
     public void setIdUrlDistribCrl(Long idUrlDistribCrl) {
-	this.idUrlDistribCrl = idUrlDistribCrl;
+        this.idUrlDistribCrl = idUrlDistribCrl;
     }
 
     @Column(name = "DL_URL_DISTRIB_CRL")
     public String getDlUrlDistribCrl() {
-	return this.dlUrlDistribCrl;
+        return this.dlUrlDistribCrl;
     }
 
     public void setDlUrlDistribCrl(String dlUrlDistribCrl) {
-	this.dlUrlDistribCrl = dlUrlDistribCrl;
+        this.dlUrlDistribCrl = dlUrlDistribCrl;
     }
 
     @Column(name = "NI_ORD_URL_DISTRIB_CRL")
     public BigDecimal getNiOrdUrlDistribCrl() {
-	return this.niOrdUrlDistribCrl;
+        return this.niOrdUrlDistribCrl;
     }
 
     public void setNiOrdUrlDistribCrl(BigDecimal niOrdUrlDistribCrl) {
-	this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
+        this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
     }
 
     // bi-directional many-to-one association to FirCertifCa
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CERTIF_CA")
     public FirCertifCa getFirCertifCa() {
-	return this.firCertifCa;
+        return this.firCertifCa;
     }
 
     public void setFirCertifCa(FirCertifCa firCertifCa) {
-	this.firCertifCa = firCertifCa;
+        this.firCertifCa = firCertifCa;
     }
 
 }

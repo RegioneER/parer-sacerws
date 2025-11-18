@@ -30,43 +30,43 @@ public class UpdFascPrincipale {
     private String sottoOggetto;
 
     public String getClassifica() {
-	return classifica;
+        return classifica;
     }
 
     public void setClassifica(String classifica) {
-	this.classifica = classifica;
+        this.classifica = classifica;
     }
 
     public String getIdentificativo() {
-	return identificativo;
+        return identificativo;
     }
 
     public void setIdentificativo(String identificativo) {
-	this.identificativo = identificativo;
+        this.identificativo = identificativo;
     }
 
     public String getOggetto() {
-	return oggetto;
+        return oggetto;
     }
 
     public void setOggetto(String oggetto) {
-	this.oggetto = oggetto;
+        this.oggetto = oggetto;
     }
 
     public String getSottoIdentificativo() {
-	return sottoIdentificativo;
+        return sottoIdentificativo;
     }
 
     public void setSottoIdentificativo(String sottoIdentificativo) {
-	this.sottoIdentificativo = sottoIdentificativo;
+        this.sottoIdentificativo = sottoIdentificativo;
     }
 
     public String getSottoOggetto() {
-	return sottoOggetto;
+        return sottoOggetto;
     }
 
     public void setSottoOggetto(String sottoOggetto) {
-	this.sottoOggetto = sottoOggetto;
+        this.sottoOggetto = sottoOggetto;
     }
 
 }

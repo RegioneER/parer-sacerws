@@ -44,41 +44,41 @@ public interface IRispostaUpdVersWS extends IRispostaVersWS {
     // per compatibilità con precedente gestione si settano degli errori generali di tipo "generici"
 
     default void setEsitoWsErrBundle(String errCode, Object... params) {
-	setEsitoWsErrBundle(genericCtrlWsResp(errCode), errCode, params);
+        setEsitoWsErrBundle(genericCtrlWsResp(errCode), errCode, params);
     }
 
     default void setEsitoWsErrBundle(String errCode) {
-	setEsitoWsErrBundle(genericCtrlWsResp(errCode), errCode);
+        setEsitoWsErrBundle(genericCtrlWsResp(errCode), errCode);
     }
 
     default void setEsitoWsWarnBundle(String errCode, Object... params) {
-	setEsitoWsWarnBundle(genericCtrlWsResp(errCode), errCode, params);
+        setEsitoWsWarnBundle(genericCtrlWsResp(errCode), errCode, params);
     }
 
     default void setEsitoWsWarnBundle(String errCode) {
-	setEsitoWsWarnBundle(genericCtrlWsResp(errCode), errCode);
+        setEsitoWsWarnBundle(genericCtrlWsResp(errCode), errCode);
     }
 
     default void setEsitoWsError(String errCode, String errMessage) {
-	setEsitoWsError(genericCtrlWsResp(errCode), errCode, errMessage);
+        setEsitoWsError(genericCtrlWsResp(errCode), errCode, errMessage);
     }
 
     default void setEsitoWsWarning(String errCode, String errMessage) {
-	setEsitoWsWarning(genericCtrlWsResp(errCode), errCode, errMessage);
+        setEsitoWsWarning(genericCtrlWsResp(errCode), errCode, errMessage);
     }
 
     /* gestione controlli famiglia "erroriSistema" */
     default ControlloWSResp genericCtrlWsResp(String errCode) {
-	ControlloWSResp ctrlWSResp = null;
-	switch (errCode) {
-	case MessaggiWSBundle.ERR_666P:
-	    ctrlWSResp = ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_ERRORIDB);
-	    break;
+        ControlloWSResp ctrlWSResp = null;
+        switch (errCode) {
+        case MessaggiWSBundle.ERR_666P:
+            ctrlWSResp = ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_ERRORIDB);
+            break;
 
-	default:
-	    ctrlWSResp = ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_GENERIC_ERROR);
-	    break;
-	}
-	return ctrlWSResp;
+        default:
+            ctrlWSResp = ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_GENERIC_ERROR);
+            break;
+        }
+        return ctrlWSResp;
     }
 }

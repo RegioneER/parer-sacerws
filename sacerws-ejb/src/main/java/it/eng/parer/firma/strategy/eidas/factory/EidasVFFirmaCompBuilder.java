@@ -25,9 +25,9 @@ public class EidasVFFirmaCompBuilder extends EidasAbsBuilderFactory<VFFirmaCompT
 
     @Override
     protected IEidasBuilderVFObj<VFFirmaCompType> init(Map<String, Boolean> controlliAbilitati,
-	    boolean isDataDiRiferimentoOnCompVers, Set<ModificatoriWS> modificatoriWSCalc) {
-	return new EidasFirmaBuilder(controlliAbilitati, isDataDiRiferimentoOnCompVers,
-		modificatoriWSCalc);
+            boolean isDataDiRiferimentoOnCompVers, Set<ModificatoriWS> modificatoriWSCalc) {
+        return new EidasFirmaBuilder(controlliAbilitati, isDataDiRiferimentoOnCompVers,
+                modificatoriWSCalc);
     }
 
 }

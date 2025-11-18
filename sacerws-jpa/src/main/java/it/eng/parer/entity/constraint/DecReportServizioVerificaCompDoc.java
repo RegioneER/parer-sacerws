@@ -19,11 +19,11 @@ public final class DecReportServizioVerificaCompDoc {
     }
 
     public enum TiReportServizioVerificaCompDoc {
-	CRYPTO, SIMPLE, DETAILED, DIAG_DATA, ORIG
+        CRYPTO, SIMPLE, DETAILED, DIAG_DATA, ORIG
     }
 
     public enum TiFormatoServizioVerificaCompDoc {
-	XML, HTML, PDF
+        XML, HTML, PDF
     }
 
 }

@@ -44,7 +44,7 @@ import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.XmlDateUtility;
 
 public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
-	implements IVerificaFirmaWrapperResultStrategy<EidasValidationResponse> {
+        implements IVerificaFirmaWrapperResultStrategy<EidasValidationResponse> {
 
     private static final Logger LOG = LoggerFactory.getLogger(EidasWrapperResultStrategy.class);
 
@@ -64,137 +64,137 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
      * @param modificatoriWSCalc            modificatori versione SIP
      */
     public EidasWrapperResultStrategy(Map<String, Boolean> controlliAbilitati,
-	    boolean isDataDiRiferimentoOnCompVers, ZonedDateTime dataDiRiferimento,
-	    Set<Costanti.ModificatoriWS> modificatoriWSCalc) {
-	super();
-	this.controlliAbilitati = controlliAbilitati;
-	this.isDataDiRiferimentoOnCompVers = isDataDiRiferimentoOnCompVers;
-	this.dataDiRiferimento = dataDiRiferimento;
-	this.modificatoriWSCalc = modificatoriWSCalc;
+            boolean isDataDiRiferimentoOnCompVers, ZonedDateTime dataDiRiferimento,
+            Set<Costanti.ModificatoriWS> modificatoriWSCalc) {
+        super();
+        this.controlliAbilitati = controlliAbilitati;
+        this.isDataDiRiferimentoOnCompVers = isDataDiRiferimentoOnCompVers;
+        this.dataDiRiferimento = dataDiRiferimento;
+        this.modificatoriWSCalc = modificatoriWSCalc;
     }
 
     @Override
     public String getCode() {
-	return CdServizioVerificaCompDoc.EIDAS.name();
+        return CdServizioVerificaCompDoc.EIDAS.name();
     }
 
     @Override
     public void fromVerificaOutOnWrapper(EidasValidationResponse esito,
-	    VerificaFirmaWrapper wrapper) throws NoSuchMethodException, IllegalAccessException,
-	    IllegalArgumentException, InvocationTargetException {
-	/*
-	 * Nota: contatori GLOBALI
-	 */
-	BigDecimal[] pgs = new BigDecimal[] {
-		BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE };
+            VerificaFirmaWrapper wrapper) throws NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        /*
+         * Nota: contatori GLOBALI
+         */
+        BigDecimal[] pgs = new BigDecimal[] {
+                BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE };
 
-	// set service version
-	wrapper.setServiceVersion(esito.getVService());
-	// set library version
-	wrapper.setLibraryVersion(esito.getVLibrary());
-	// set self link
-	wrapper.setSelfLink(esito.getSelfLink());
-	// set start/end validation
-	wrapper.setStartDate(XmlDateUtility.dateToXMLGregorianCalendar(esito.getStartValidation()));
-	wrapper.setEndDate(XmlDateUtility.dateToXMLGregorianCalendar(esito.getEndValidation()));
-	// signatures founded (= esito principale è "signed", esiste almeno una firma)
-	wrapper.setSignsDetected(!esito.getEidasWSReportsDTOTree().isUnsigned());
-	LOG.debug("Documento firmato [{}]", wrapper.isSignsDetected());
-	// detached mimetype (verifica formato)
-	String tikaMime = null;
-	if (wrapper.getAdditionalInfo().isIsDetached()) {
-	    tikaMime = esito.getMimeType();
-	} else {
-	    tikaMime = getMimeTypeUnsigned(esito.getEidasWSReportsDTOTree(),
-		    esito.getEidasWSReportsDTOTree().getChildren());
-	}
-	wrapper.getAdditionalInfo().setTikaMime(tikaMime);
-	//
-	compileWrapper(wrapper, esito.getEidasWSReportsDTOTree(), pgs);
+        // set service version
+        wrapper.setServiceVersion(esito.getVService());
+        // set library version
+        wrapper.setLibraryVersion(esito.getVLibrary());
+        // set self link
+        wrapper.setSelfLink(esito.getSelfLink());
+        // set start/end validation
+        wrapper.setStartDate(XmlDateUtility.dateToXMLGregorianCalendar(esito.getStartValidation()));
+        wrapper.setEndDate(XmlDateUtility.dateToXMLGregorianCalendar(esito.getEndValidation()));
+        // signatures founded (= esito principale è "signed", esiste almeno una firma)
+        wrapper.setSignsDetected(!esito.getEidasWSReportsDTOTree().isUnsigned());
+        LOG.debug("Documento firmato [{}]", wrapper.isSignsDetected());
+        // detached mimetype (verifica formato)
+        String tikaMime = null;
+        if (wrapper.getAdditionalInfo().isIsDetached()) {
+            tikaMime = esito.getMimeType();
+        } else {
+            tikaMime = getMimeTypeUnsigned(esito.getEidasWSReportsDTOTree(),
+                    esito.getEidasWSReportsDTOTree().getChildren());
+        }
+        wrapper.getAdditionalInfo().setTikaMime(tikaMime);
+        //
+        compileWrapper(wrapper, esito.getEidasWSReportsDTOTree(), pgs);
     }
 
     private void compileWrapper(VerificaFirmaWrapper wrapper, EidasWSReportsDTOTree dto,
-	    BigDecimal[] pgs) throws NoSuchMethodException, IllegalAccessException,
-	    IllegalArgumentException, InvocationTargetException {
-	// root element
-	if (!dto.isParent()) {
-	    // build busta
-	    buildBusta(wrapper, dto, pgs);
-	}
-	// only signed child && at least one signature
-	List<EidasWSReportsDTOTree> childSigned = dto.getChildren().stream().filter(
-		c -> !c.isUnsigned() && c.getReport().getSimpleReport().getSignaturesCount() != 0)
-		.collect(Collectors.toList());
-	for (EidasWSReportsDTOTree child : childSigned) {
-	    // build busta
-	    buildBusta(wrapper, child, pgs);
-	    // recursive
-	    compileWrapper(wrapper, child, pgs);
-	}
+            BigDecimal[] pgs) throws NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        // root element
+        if (!dto.isParent()) {
+            // build busta
+            buildBusta(wrapper, dto, pgs);
+        }
+        // only signed child && at least one signature
+        List<EidasWSReportsDTOTree> childSigned = dto.getChildren().stream().filter(
+                c -> !c.isUnsigned() && c.getReport().getSimpleReport().getSignaturesCount() != 0)
+                .collect(Collectors.toList());
+        for (EidasWSReportsDTOTree child : childSigned) {
+            // build busta
+            buildBusta(wrapper, child, pgs);
+            // recursive
+            compileWrapper(wrapper, child, pgs);
+        }
     }
 
     private void buildBusta(VerificaFirmaWrapper wrapper, EidasWSReportsDTOTree dto,
-	    BigDecimal[] pgs) throws NoSuchMethodException, IllegalAccessException,
-	    IllegalArgumentException, InvocationTargetException {
-	// reports by dss
-	Reports reports = new Reports(dto.getReport().getDiagnosticData(),
-		dto.getReport().getDetailedReport(), dto.getReport().getSimpleReport(),
-		null /* validation report non gestito */);
+            BigDecimal[] pgs) throws NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        // reports by dss
+        Reports reports = new Reports(dto.getReport().getDiagnosticData(),
+                dto.getReport().getDetailedReport(), dto.getReport().getSimpleReport(),
+                null /* validation report non gestito */);
 
-	// creo busta
-	VFBusta busta = new VFBusta();
-	wrapper.getVFBusta().add(busta);
-	// init busta
-	// 1.assign pg
-	busta.setPgBusta(pgs[PG_BUSTA]);
-	// inc pgBusta
-	pgs[PG_BUSTA] = pgs[PG_BUSTA].add(BigDecimal.ONE);
-	// 2. add info (empty)
-	VFAdditionalInfoBustaType additionalInfoBustaType = new VFAdditionalInfoBustaType();
-	busta.setAdditionalInfo(additionalInfoBustaType);
+        // creo busta
+        VFBusta busta = new VFBusta();
+        wrapper.getVFBusta().add(busta);
+        // init busta
+        // 1.assign pg
+        busta.setPgBusta(pgs[PG_BUSTA]);
+        // inc pgBusta
+        pgs[PG_BUSTA] = pgs[PG_BUSTA].add(BigDecimal.ONE);
+        // 2. add info (empty)
+        VFAdditionalInfoBustaType additionalInfoBustaType = new VFAdditionalInfoBustaType();
+        busta.setAdditionalInfo(additionalInfoBustaType);
 
-	// for each signature
-	List<SignatureWrapper> signatures = reports.getDiagnosticData().getSignatures();
-	// strutta per gestione firme e contro firme
-	Map<String, VFFirmaCompType> firmaCompParent = new HashMap<>();
-	for (SignatureWrapper signature : signatures) {
-	    // build firma
-	    VFFirmaCompType firmaCompType = new EidasVFFirmaCompBuilder().create(controlliAbilitati,
-		    isDataDiRiferimentoOnCompVers, dataDiRiferimento, modificatoriWSCalc, dto,
-		    wrapper, signature, Optional.empty(), pgs);
+        // for each signature
+        List<SignatureWrapper> signatures = reports.getDiagnosticData().getSignatures();
+        // strutta per gestione firme e contro firme
+        Map<String, VFFirmaCompType> firmaCompParent = new HashMap<>();
+        for (SignatureWrapper signature : signatures) {
+            // build firma
+            VFFirmaCompType firmaCompType = new EidasVFFirmaCompBuilder().create(controlliAbilitati,
+                    isDataDiRiferimentoOnCompVers, dataDiRiferimento, modificatoriWSCalc, dto,
+                    wrapper, signature, Optional.empty(), pgs);
 
-	    // inc pgFirma
-	    pgs[PG_FIRMA] = pgs[PG_FIRMA].add(BigDecimal.ONE);
+            // inc pgFirma
+            pgs[PG_FIRMA] = pgs[PG_FIRMA].add(BigDecimal.ONE);
 
-	    // marche temporali
-	    for (TimestampWrapper ts : signature.getTimestampList()) {
-		// build marca
-		VFMarcaCompType marcaCompType = new EidasVFMarcaCompBuilder().create(
-			controlliAbilitati, isDataDiRiferimentoOnCompVers, dataDiRiferimento,
-			modificatoriWSCalc, dto, wrapper, signature, Optional.of(ts), pgs);
+            // marche temporali
+            for (TimestampWrapper ts : signature.getTimestampList()) {
+                // build marca
+                VFMarcaCompType marcaCompType = new EidasVFMarcaCompBuilder().create(
+                        controlliAbilitati, isDataDiRiferimentoOnCompVers, dataDiRiferimento,
+                        modificatoriWSCalc, dto, wrapper, signature, Optional.of(ts), pgs);
 
-		// add on list
-		firmaCompType.getMarcaComps().add(marcaCompType);
+                // add on list
+                firmaCompType.getMarcaComps().add(marcaCompType);
 
-		// inc pgMarche
-		pgs[PG_MARCA] = pgs[PG_MARCA].add(BigDecimal.ONE);
-	    }
+                // inc pgMarche
+                pgs[PG_MARCA] = pgs[PG_MARCA].add(BigDecimal.ONE);
+            }
 
-	    // contro firma
-	    if (!signature.isCounterSignature()) {
-		firmaCompParent.put(signature.getId(), firmaCompType);
-		// add on list
-		busta.getFirmaComps().add(firmaCompType);
-	    } else {
-		// creazione relazione firma padre-figlio (contro firme)
-		firmaCompParent.keySet().forEach(id -> {
-		    if (signature.getParent().getId().equals(id)) {
-			// update parent
-			firmaCompParent.get(id).getControfirmaFirmaFiglios().add(firmaCompType);
-		    }
-		});
-	    }
-	}
+            // contro firma
+            if (!signature.isCounterSignature()) {
+                firmaCompParent.put(signature.getId(), firmaCompType);
+                // add on list
+                busta.getFirmaComps().add(firmaCompType);
+            } else {
+                // creazione relazione firma padre-figlio (contro firme)
+                firmaCompParent.keySet().forEach(id -> {
+                    if (signature.getParent().getId().equals(id)) {
+                        // update parent
+                        firmaCompParent.get(id).getControfirmaFirmaFiglios().add(firmaCompType);
+                    }
+                });
+            }
+        }
     }
 
 }

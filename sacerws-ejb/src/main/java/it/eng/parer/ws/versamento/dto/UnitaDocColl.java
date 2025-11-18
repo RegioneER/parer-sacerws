@@ -47,39 +47,39 @@ public class UnitaDocColl implements Serializable {
      * @return the chiave
      */
     public ChiaveType getChiave() {
-	return chiave;
+        return chiave;
     }
 
     /**
      * @param chiave the chiave to set
      */
     public void setChiave(ChiaveType chiave) {
-	this.chiave = chiave;
+        this.chiave = chiave;
     }
 
     /**
      * @return the idUnitaDocLink
      */
     public long getIdUnitaDocLink() {
-	return idUnitaDocLink;
+        return idUnitaDocLink;
     }
 
     /**
      * @param idUnitaDocLink the idUnitaDocLink to set
      */
     public void setIdUnitaDocLink(long idUnitaDocLink) {
-	this.idUnitaDocLink = idUnitaDocLink;
+        this.idUnitaDocLink = idUnitaDocLink;
     }
 
     //
     public void aggiungiDescrizioneUnivoca(String descrizione) {
-	descrizioni.add(descrizione);
+        descrizioni.add(descrizione);
     }
 
     public String generaDescrizione() {
-	// la descrizione del collegamento è la somma delle descrizioni uniche
-	// di tutti i riferimenti alla UD oggetto del collegamento.
-	return StringUtils.join(descrizioni.toArray(), ";");
+        // la descrizione del collegamento è la somma delle descrizioni uniche
+        // di tutti i riferimenti alla UD oggetto del collegamento.
+        return StringUtils.join(descrizioni.toArray(), ";");
     }
 
 }

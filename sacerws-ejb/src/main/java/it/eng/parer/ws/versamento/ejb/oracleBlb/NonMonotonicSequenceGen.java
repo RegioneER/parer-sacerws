@@ -32,8 +32,8 @@ public class NonMonotonicSequenceGen implements ISequenceGen {
 
     @Override
     public long newSequenceNum(long baseSequence) {
-	long newval = Long.parseLong(randInt() + "" + baseSequence);
-	return newval;
+        long newval = Long.parseLong(randInt() + "" + baseSequence);
+        return newval;
     }
 
     /**
@@ -45,9 +45,9 @@ public class NonMonotonicSequenceGen implements ISequenceGen {
      * @see java.util.Random#nextInt(int)
      */
     private static int randInt() {
-	// nextInt is normally exclusive of the top value,
-	// so add 1 to make it inclusive
-	return rand.nextInt((MAX - MIN) + 1) + MIN;
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        return rand.nextInt((MAX - MIN) + 1) + MIN;
 
     }
 

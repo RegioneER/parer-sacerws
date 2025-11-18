@@ -28,6 +28,6 @@ public final class VrsSesUpdUnitaDocKo {
      * 'VERIFICATO')
      */
     public enum TiStatoSesUpdKo {
-	NON_RISOLUBILE, NON_VERIFICATO, RISOLTO, VERIFICATO
+        NON_RISOLUBILE, NON_VERIFICATO, RISOLTO, VERIFICATO
     }
 }

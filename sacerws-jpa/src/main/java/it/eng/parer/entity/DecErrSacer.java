@@ -55,51 +55,51 @@ public class DecErrSacer implements Serializable {
     @Id
     @Column(name = "ID_ERR_SACER")
     @GenericGenerator(name = "SDEC_ERR_SACER_ID_ERR_SACER_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_ERR_SACER"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_ERR_SACER"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_ERR_SACER_ID_ERR_SACER_GENERATOR")
     public Long getIdErrSacer() {
-	return idErrSacer;
+        return idErrSacer;
     }
 
     public void setIdErrSacer(Long idErrSacer) {
-	this.idErrSacer = idErrSacer;
+        this.idErrSacer = idErrSacer;
     }
 
     @Column(name = "CD_ERR")
     public String getCdErr() {
-	return cdErr;
+        return cdErr;
     }
 
     public void setCdErr(String cdErr) {
-	this.cdErr = cdErr;
+        this.cdErr = cdErr;
     }
 
     @Column(name = "DS_ERR")
     public String getDsErr() {
-	return dsErr;
+        return dsErr;
     }
 
     public void setDsErr(String dsErr) {
-	this.dsErr = dsErr;
+        this.dsErr = dsErr;
     }
 
     @Column(name = "DS_ERR_FILTRO")
     public String getDsErrFiltro() {
-	return dsErrFiltro;
+        return dsErrFiltro;
     }
 
     public void setDsErrFiltro(String dsErrFiltro) {
-	this.dsErrFiltro = dsErrFiltro;
+        this.dsErrFiltro = dsErrFiltro;
     }
 
     @Column(name = "TI_ERR_SACER")
     public String getTiErrSacer() {
-	return tiErrSacer;
+        return tiErrSacer;
     }
 
     public void setTiErrSacer(String tiErrSacer) {
-	this.tiErrSacer = tiErrSacer;
+        this.tiErrSacer = tiErrSacer;
     }
 
 }

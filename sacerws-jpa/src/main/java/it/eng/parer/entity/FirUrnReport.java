@@ -51,41 +51,41 @@ public class FirUrnReport implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FIR_URN_REPORT_IDURNREPORT_GENERATOR")
     @Column(name = "ID_URN_REPORT")
     public Long getIdUrnReport() {
-	return this.idUrnReport;
+        return this.idUrnReport;
     }
 
     public void setIdUrnReport(Long idUrnReport) {
-	this.idUrnReport = idUrnReport;
+        this.idUrnReport = idUrnReport;
     }
 
     @Column(name = "DS_URN")
     public String getDsUrn() {
-	return this.dsUrn;
+        return this.dsUrn;
     }
 
     public void setDsUrn(String dsUrn) {
-	this.dsUrn = dsUrn;
+        this.dsUrn = dsUrn;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_URN")
     public TiUrnReport getTiUrn() {
-	return this.tiUrn;
+        return this.tiUrn;
     }
 
     public void setTiUrn(TiUrnReport tiUrn) {
-	this.tiUrn = tiUrn;
+        this.tiUrn = tiUrn;
     }
 
     // bi-directional many-to-one association to FirReport
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REPORT")
     public FirReport getFirReport() {
-	return this.firReport;
+        return this.firReport;
     }
 
     public void setFirReport(FirReport firReport) {
-	this.firReport = firReport;
+        this.firReport = firReport;
     }
 
 }

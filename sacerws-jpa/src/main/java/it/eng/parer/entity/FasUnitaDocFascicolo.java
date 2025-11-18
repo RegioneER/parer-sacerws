@@ -50,37 +50,37 @@ public class FasUnitaDocFascicolo implements Serializable {
     @Id
     @Column(name = "ID_UNITA_DOC_FASCICOLO")
     @GenericGenerator(name = "SFAS_UNITA_DOC_FASCICOLO_ID_UNITA_DOC_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_UNITA_DOC_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_UNITA_DOC_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFAS_UNITA_DOC_FASCICOLO_ID_UNITA_DOC_FASCICOLO_GENERATOR")
     public Long getIdUnitaDocFascicolo() {
-	return this.idUnitaDocFascicolo;
+        return this.idUnitaDocFascicolo;
     }
 
     public void setIdUnitaDocFascicolo(Long idUnitaDocFascicolo) {
-	this.idUnitaDocFascicolo = idUnitaDocFascicolo;
+        this.idUnitaDocFascicolo = idUnitaDocFascicolo;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 
 }

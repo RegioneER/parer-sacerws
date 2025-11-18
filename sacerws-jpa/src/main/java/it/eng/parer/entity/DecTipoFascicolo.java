@@ -68,53 +68,53 @@ public class DecTipoFascicolo implements Serializable {
     @Id
     @Column(name = "ID_TIPO_FASCICOLO")
     @GenericGenerator(name = "SDEC_TIPO_FASCICOLO_ID_TIPO_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_TIPO_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_TIPO_FASCICOLO_ID_TIPO_FASCICOLO_GENERATOR")
     public Long getIdTipoFascicolo() {
-	return this.idTipoFascicolo;
+        return this.idTipoFascicolo;
     }
 
     public void setIdTipoFascicolo(Long idTipoFascicolo) {
-	this.idTipoFascicolo = idTipoFascicolo;
+        this.idTipoFascicolo = idTipoFascicolo;
     }
 
     @Column(name = "DS_TIPO_FASCICOLO")
     public String getDsTipoFascicolo() {
-	return this.dsTipoFascicolo;
+        return this.dsTipoFascicolo;
     }
 
     public void setDsTipoFascicolo(String dsTipoFascicolo) {
-	this.dsTipoFascicolo = dsTipoFascicolo;
+        this.dsTipoFascicolo = dsTipoFascicolo;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ISTITUZ")
     public Date getDtIstituz() {
-	return this.dtIstituz;
+        return this.dtIstituz;
     }
 
     public void setDtIstituz(Date dtIstituz) {
-	this.dtIstituz = dtIstituz;
+        this.dtIstituz = dtIstituz;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SOPPRES")
     public Date getDtSoppres() {
-	return this.dtSoppres;
+        return this.dtSoppres;
     }
 
     public void setDtSoppres(Date dtSoppres) {
-	this.dtSoppres = dtSoppres;
+        this.dtSoppres = dtSoppres;
     }
 
     @Column(name = "NM_TIPO_FASCICOLO")
     public String getNmTipoFascicolo() {
-	return this.nmTipoFascicolo;
+        return this.nmTipoFascicolo;
     }
 
     public void setNmTipoFascicolo(String nmTipoFascicolo) {
-	this.nmTipoFascicolo = nmTipoFascicolo;
+        this.nmTipoFascicolo = nmTipoFascicolo;
     }
 
     // bi-directional many-to-one association to OrgStrut
@@ -122,31 +122,31 @@ public class DecTipoFascicolo implements Serializable {
     @JoinColumn(name = "ID_STRUT")
     @XmlTransient
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to DecAaTipoFascicolo
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "decTipoFascicolo", fetch = FetchType.LAZY)
     public List<DecAaTipoFascicolo> getDecAaTipoFascicolos() {
-	return this.decAaTipoFascicolos;
+        return this.decAaTipoFascicolos;
     }
 
     public void setDecAaTipoFascicolos(List<DecAaTipoFascicolo> decAaTipoFascicolos) {
-	this.decAaTipoFascicolos = decAaTipoFascicolos;
+        this.decAaTipoFascicolos = decAaTipoFascicolos;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @OneToMany(mappedBy = "decTipoFascicolo")
     @XmlTransient
     public List<FasFascicolo> getFasFascicolos() {
-	return this.fasFascicolos;
+        return this.fasFascicolos;
     }
 
     public void setFasFascicolos(List<FasFascicolo> fasFascicolos) {
-	this.fasFascicolos = fasFascicolos;
+        this.fasFascicolos = fasFascicolos;
     }
 }
