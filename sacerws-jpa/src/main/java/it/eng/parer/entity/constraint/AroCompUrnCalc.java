@@ -23,7 +23,7 @@ public final class AroCompUrnCalc {
     }
 
     public enum TiUrn {
-	ORIGINALE, NORMALIZZATO, INIZIALE
+        ORIGINALE, NORMALIZZATO, INIZIALE
     }
 
 }

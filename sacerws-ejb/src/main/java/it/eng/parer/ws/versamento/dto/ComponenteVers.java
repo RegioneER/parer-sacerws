@@ -127,352 +127,352 @@ public class ComponenteVers implements java.io.Serializable, IDatiSpecEntity, IP
     private String urnPartComponenteNiOrdDoc = "";
 
     public ComponenteVers() {
-	//
+        //
     }
 
     public String getId() {
-	return id;
+        return id;
     }
 
     public void setId(String id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getChiaveComp() {
-	return chiaveComp;
+        return chiaveComp;
     }
 
     public void setChiaveComp(String chiaveComp) {
-	this.chiaveComp = chiaveComp;
+        this.chiaveComp = chiaveComp;
     }
 
     public boolean isDatiLetti() {
-	return datiLetti;
+        return datiLetti;
     }
 
     public void setDatiLetti(boolean datiLetti) {
-	this.datiLetti = datiLetti;
+        this.datiLetti = datiLetti;
     }
 
     public TipiSupporto getTipoSupporto() {
-	return tipoSupporto;
+        return tipoSupporto;
     }
 
     public void setTipoSupporto(TipiSupporto tipoSupporto) {
-	this.tipoSupporto = tipoSupporto;
+        this.tipoSupporto = tipoSupporto;
     }
 
     public boolean isPresenteRifMeta() {
-	return presenteRifMeta;
+        return presenteRifMeta;
     }
 
     public void setPresenteRifMeta(boolean presenteRifMeta) {
-	this.presenteRifMeta = presenteRifMeta;
+        this.presenteRifMeta = presenteRifMeta;
     }
 
     public ComponenteMM getRifComponenteMM() {
-	return rifComponenteMM;
+        return rifComponenteMM;
     }
 
     public void setRifComponenteMM(ComponenteMM rifComponenteMM) {
-	this.rifComponenteMM = rifComponenteMM;
+        this.rifComponenteMM = rifComponenteMM;
     }
 
     public it.eng.parer.ws.xml.versReq.ComponenteType getMyComponente() {
-	return myComponente;
+        return myComponente;
     }
 
     public void setMyComponente(it.eng.parer.ws.xml.versReq.ComponenteType myComponente) {
-	this.myComponente = myComponente;
+        this.myComponente = myComponente;
     }
 
     public it.eng.parer.ws.xml.versReq.SottoComponenteType getMySottoComponente() {
-	return mySottoComponente;
+        return mySottoComponente;
     }
 
     public void setMySottoComponente(
-	    it.eng.parer.ws.xml.versReq.SottoComponenteType mySottoComponente) {
-	this.mySottoComponente = mySottoComponente;
+            it.eng.parer.ws.xml.versReq.SottoComponenteType mySottoComponente) {
+        this.mySottoComponente = mySottoComponente;
     }
 
     public DocumentoVers getRifDocumentoVers() {
-	return rifDocumentoVers;
+        return rifDocumentoVers;
     }
 
     public void setRifDocumentoVers(DocumentoVers rifDocumentoVers) {
-	this.rifDocumentoVers = rifDocumentoVers;
+        this.rifDocumentoVers = rifDocumentoVers;
     }
 
     public ComponenteVers getRifComponenteVersPadre() {
-	return rifComponenteVersPadre;
+        return rifComponenteVersPadre;
     }
 
     public void setRifComponenteVersPadre(ComponenteVers rifComponenteVersPadre) {
-	this.rifComponenteVersPadre = rifComponenteVersPadre;
+        this.rifComponenteVersPadre = rifComponenteVersPadre;
     }
 
     public long getIdTipoComponente() {
-	return IdTipoComponente;
+        return IdTipoComponente;
     }
 
     public void setIdTipoComponente(long IdTipoComponente) {
-	this.IdTipoComponente = IdTipoComponente;
+        this.IdTipoComponente = IdTipoComponente;
     }
 
     public long getIdTipoRappresentazioneComponente() {
-	return idTipoRappresentazioneComponente;
+        return idTipoRappresentazioneComponente;
     }
 
     public void setIdTipoRappresentazioneComponente(long idTipoRappresentazioneComponente) {
-	this.idTipoRappresentazioneComponente = idTipoRappresentazioneComponente;
+        this.idTipoRappresentazioneComponente = idTipoRappresentazioneComponente;
     }
 
     public long getIdFormatoFileDocCont() {
-	return idFormatoFileDocCont;
+        return idFormatoFileDocCont;
     }
 
     public void setIdFormatoFileDocCont(long idFormatoFileDocCont) {
-	this.idFormatoFileDocCont = idFormatoFileDocCont;
+        this.idFormatoFileDocCont = idFormatoFileDocCont;
     }
 
     public long getIdFormatoFileDocConv() {
-	return idFormatoFileDocConv;
+        return idFormatoFileDocConv;
     }
 
     public void setIdFormatoFileDocConv(long idFormatoFileDocConv) {
-	this.idFormatoFileDocConv = idFormatoFileDocConv;
+        this.idFormatoFileDocConv = idFormatoFileDocConv;
     }
 
     public boolean isNonAccettareForzaFormato() {
-	return nonAccettareForzaFormato;
+        return nonAccettareForzaFormato;
     }
 
     public void setNonAccettareForzaFormato(boolean nonAccettareForzaFormato) {
-	this.nonAccettareForzaFormato = nonAccettareForzaFormato;
+        this.nonAccettareForzaFormato = nonAccettareForzaFormato;
     }
 
     public TipoAlgoritmoRappr getAlgoritmoRappr() {
-	return algoritmoRappr;
+        return algoritmoRappr;
     }
 
     public void setAlgoritmoRappr(TipoAlgoritmoRappr algoritmoRappr) {
-	this.algoritmoRappr = algoritmoRappr;
+        this.algoritmoRappr = algoritmoRappr;
     }
 
     public String getTipoUso() {
-	return tipoUso;
+        return tipoUso;
     }
 
     public void setTipoUso(String tipoUso) {
-	this.tipoUso = tipoUso;
+        this.tipoUso = tipoUso;
     }
 
     public Date getTmRifTempVers() {
-	return tmRifTempVers;
+        return tmRifTempVers;
     }
 
     public void setTmRifTempVers(Date tmRifTempVers) {
-	this.tmRifTempVers = tmRifTempVers;
+        this.tmRifTempVers = tmRifTempVers;
     }
 
     public String getFlRifTempDataFirmaVers() {
-	return flRifTempDataFirmaVers;
+        return flRifTempDataFirmaVers;
     }
 
     public void setFlRifTempDataFirmaVers(String flRifTempDataFirmaVers) {
-	this.flRifTempDataFirmaVers = flRifTempDataFirmaVers;
+        this.flRifTempDataFirmaVers = flRifTempDataFirmaVers;
     }
 
     public long getIdFormatoFileVers() {
-	return idFormatoFileVers;
+        return idFormatoFileVers;
     }
 
     public void setIdFormatoFileVers(long idFormatoFileVers) {
-	this.idFormatoFileVers = idFormatoFileVers;
+        this.idFormatoFileVers = idFormatoFileVers;
     }
 
     public boolean isFormatoFileVersNonAmmesso() {
-	return formatoFileVersNonAmmesso;
+        return formatoFileVersNonAmmesso;
     }
 
     public void setFormatoFileVersNonAmmesso(boolean formatoFileVersNonAmmesso) {
-	this.formatoFileVersNonAmmesso = formatoFileVersNonAmmesso;
+        this.formatoFileVersNonAmmesso = formatoFileVersNonAmmesso;
     }
 
     public String getDescFormatoFileVers() {
-	return descFormatoFileVers;
+        return descFormatoFileVers;
     }
 
     public void setDescFormatoFileVers(String descFormatoFileVers) {
-	this.descFormatoFileVers = descFormatoFileVers;
+        this.descFormatoFileVers = descFormatoFileVers;
     }
 
     public long getIdRecDB() {
-	return idRecDB;
+        return idRecDB;
     }
 
     public void setIdRecDB(long idRecDB) {
-	this.idRecDB = idRecDB;
+        this.idRecDB = idRecDB;
     }
 
     public long getOrdinePresentazione() {
-	return ordinePresentazione;
+        return ordinePresentazione;
     }
 
     public void setOrdinePresentazione(long ordinePresentazione) {
-	this.ordinePresentazione = ordinePresentazione;
+        this.ordinePresentazione = ordinePresentazione;
     }
 
     public FileBinario getRifFileBinario() {
-	return rifFileBinario;
+        return rifFileBinario;
     }
 
     public void setRifFileBinario(FileBinario rifFileBinario) {
-	this.rifFileBinario = rifFileBinario;
+        this.rifFileBinario = rifFileBinario;
     }
 
     public byte[] getHashCalcolato() {
-	return hashCalcolato;
+        return hashCalcolato;
     }
 
     public void setHashCalcolato(byte[] hashCalcolato) {
-	this.hashCalcolato = hashCalcolato;
+        this.hashCalcolato = hashCalcolato;
     }
 
     public boolean isHashForzato() {
-	return hashForzato;
+        return hashForzato;
     }
 
     public void setHashForzato(boolean hashForzato) {
-	this.hashForzato = hashForzato;
+        this.hashForzato = hashForzato;
     }
 
     public boolean isHashVersNonDefinito() {
-	return hashVersNonDefinito;
+        return hashVersNonDefinito;
     }
 
     public void setHashVersNonDefinito(boolean hashVersNonDefinito) {
-	this.hashVersNonDefinito = hashVersNonDefinito;
+        this.hashVersNonDefinito = hashVersNonDefinito;
     }
 
     public byte[] getHashVersato() {
-	return hashVersato;
+        return hashVersato;
     }
 
     public void setHashVersato(byte[] hashVersato) {
-	this.hashVersato = hashVersato;
+        this.hashVersato = hashVersato;
     }
 
     public CostantiDB.TipiHash getHashVersatoAlgoritmo() {
-	return hashVersatoAlgoritmo;
+        return hashVersatoAlgoritmo;
     }
 
     public void setHashVersatoAlgoritmo(CostantiDB.TipiHash hashVersatoAlgoritmo) {
-	this.hashVersatoAlgoritmo = hashVersatoAlgoritmo;
+        this.hashVersatoAlgoritmo = hashVersatoAlgoritmo;
     }
 
     public CostantiDB.TipiEncBinari getHashVersatoEncoding() {
-	return hashVersatoEncoding;
+        return hashVersatoEncoding;
     }
 
     public void setHashVersatoEncoding(CostantiDB.TipiEncBinari hashVersatoEncoding) {
-	this.hashVersatoEncoding = hashVersatoEncoding;
+        this.hashVersatoEncoding = hashVersatoEncoding;
     }
 
     public it.eng.parer.ws.xml.versResp.ECComponenteType getRifComponenteResp() {
-	return rifComponenteResp;
+        return rifComponenteResp;
     }
 
     public void setRifComponenteResp(
-	    it.eng.parer.ws.xml.versResp.ECComponenteType rifComponenteResp) {
-	this.rifComponenteResp = rifComponenteResp;
+            it.eng.parer.ws.xml.versResp.ECComponenteType rifComponenteResp) {
+        this.rifComponenteResp = rifComponenteResp;
     }
 
     public it.eng.parer.ws.xml.versResp.ECSottoComponenteType getRifSottoComponenteResp() {
-	return rifSottoComponenteResp;
+        return rifSottoComponenteResp;
     }
 
     public void setRifSottoComponenteResp(
-	    it.eng.parer.ws.xml.versResp.ECSottoComponenteType rifSottoComponenteResp) {
-	this.rifSottoComponenteResp = rifSottoComponenteResp;
+            it.eng.parer.ws.xml.versResp.ECSottoComponenteType rifSottoComponenteResp) {
+        this.rifSottoComponenteResp = rifSottoComponenteResp;
     }
 
     public CompDocMock withAcdEntity() {
-	if (acdEntity == null) {
-	    acdEntity = new CompDocMock();
-	}
-	return acdEntity;
+        if (acdEntity == null) {
+            acdEntity = new CompDocMock();
+        }
+        return acdEntity;
     }
 
     public long getIdUnitaDocRif() {
-	return idUnitaDocRif;
+        return idUnitaDocRif;
     }
 
     public void setIdUnitaDocRif(long idUnitaDocRif) {
-	this.idUnitaDocRif = idUnitaDocRif;
+        this.idUnitaDocRif = idUnitaDocRif;
     }
 
     public Map<String, DatoSpecifico> getDatiSpecifici() {
-	return datiSpecifici;
+        return datiSpecifici;
     }
 
     @Override
     public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
-	this.datiSpecifici = datiSpecifici;
+        this.datiSpecifici = datiSpecifici;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
-	return datiSpecificiMigrazione;
+        return datiSpecificiMigrazione;
     }
 
     @Override
     public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
-	this.datiSpecificiMigrazione = datiSpecificiMigrazione;
+        this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 
     @Override
     public long getIdRecXsdDatiSpec() {
-	return idRecXsdDatiSpec;
+        return idRecXsdDatiSpec;
     }
 
     @Override
     public void setIdRecXsdDatiSpec(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpec = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpec = idRecXsdDatiSpec;
     }
 
     @Override
     public long getIdRecXsdDatiSpecMigrazione() {
-	return idRecXsdDatiSpecMigrazione;
+        return idRecXsdDatiSpecMigrazione;
     }
 
     @Override
     public void setIdRecXsdDatiSpecMigrazione(long idRecXsdDatiSpecMigrazione) {
-	this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpecMigrazione;
+        this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpecMigrazione;
     }
 
     public String getNomeFileArk() {
-	return nomeFileArk;
+        return nomeFileArk;
     }
 
     public void setNomeFileArk(String nomeFileArk) {
-	this.nomeFileArk = nomeFileArk;
+        this.nomeFileArk = nomeFileArk;
     }
 
     public VerificaFirmaWrapper getVfWrapper() {
-	if (vfWrapper == null) {
-	    vfWrapper = new VerificaFirmaWrapper();
-	}
-	return vfWrapper;
+        if (vfWrapper == null) {
+            vfWrapper = new VerificaFirmaWrapper();
+        }
+        return vfWrapper;
     }
 
     public void setVfWrapper(VerificaFirmaWrapper vfWrapper) {
-	this.vfWrapper = vfWrapper;
+        this.vfWrapper = vfWrapper;
     }
 
     public enum TipiSupporto {
 
-	FILE, METADATI, RIFERIMENTO
+        FILE, METADATI, RIFERIMENTO
     }
 
     /**
@@ -482,39 +482,39 @@ public class ComponenteVers implements java.io.Serializable, IDatiSpecEntity, IP
      * @return true se il componente è firmato/marcato; false altrimenti.
      */
     public boolean hasBusteOnVerificaFirmaWrapper() {
-	return !getVfWrapper().getVFBusta().isEmpty();
+        return !getVfWrapper().getVFBusta().isEmpty();
     }
 
     public String getUrnPartComponenteNiOrdDoc() {
-	return urnPartComponenteNiOrdDoc;
+        return urnPartComponenteNiOrdDoc;
     }
 
     public void setUrnPartComponenteNiOrdDoc(String urnPartComponenteNiOrdDoc) {
-	this.urnPartComponenteNiOrdDoc = urnPartComponenteNiOrdDoc;
+        this.urnPartComponenteNiOrdDoc = urnPartComponenteNiOrdDoc;
     }
 
     @Override
     public Long getIdRecUsoXsdProfiloNormativo() {
-	throw new NotImplementedException(
-		"getIdRecUsoXsdProfiloNormativo non implementato per il componente");
+        throw new NotImplementedException(
+                "getIdRecUsoXsdProfiloNormativo non implementato per il componente");
     }
 
     @Override
     public void setIdRecUsoXsdProfiloNormativo(Long idRecUsoXsdProfiloNormativo) {
-	throw new NotImplementedException(
-		"setIdRecUsoXsdProfiloNormativo non implementato per il componente");
+        throw new NotImplementedException(
+                "setIdRecUsoXsdProfiloNormativo non implementato per il componente");
     }
 
     @Override
     public String getDatiC14NProfNormXml() {
-	throw new NotImplementedException(
-		"getDatiC14NProfNormXml non implementato per il componente");
+        throw new NotImplementedException(
+                "getDatiC14NProfNormXml non implementato per il componente");
     }
 
     @Override
     public void setDatiC14NProfNormXml(String datiC14NProfNormXml) {
-	throw new NotImplementedException(
-		"setDatiC14NProfNormXml non implementato per il componente");
+        throw new NotImplementedException(
+                "setDatiC14NProfNormXml non implementato per il componente");
     }
 
 }

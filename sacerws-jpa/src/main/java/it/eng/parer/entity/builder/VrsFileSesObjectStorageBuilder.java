@@ -29,47 +29,47 @@ public final class VrsFileSesObjectStorageBuilder {
     }
 
     public static VrsFileSesObjectStorageBuilder builder() {
-	return new VrsFileSesObjectStorageBuilder();
+        return new VrsFileSesObjectStorageBuilder();
     }
 
     public VrsFileSesObjectStorageBuilder decBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
-	return this;
+        this.decBackend = decBackend;
+        return this;
     }
 
     public VrsFileSesObjectStorageBuilder fileSessioneKo(VrsFileSessioneKo fileSessioneKo) {
-	this.fileSessioneKo = fileSessioneKo;
-	return this;
+        this.fileSessioneKo = fileSessioneKo;
+        return this;
     }
 
     public VrsFileSesObjectStorageBuilder nmTenant(String nmTenant) {
-	this.nmTenant = nmTenant;
-	return this;
+        this.nmTenant = nmTenant;
+        return this;
     }
 
     public VrsFileSesObjectStorageBuilder nmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
-	return this;
+        this.nmBucket = nmBucket;
+        return this;
     }
 
     public VrsFileSesObjectStorageBuilder nmKeyFile(String nmKeyFile) {
-	this.nmKeyFile = nmKeyFile;
-	return this;
+        this.nmKeyFile = nmKeyFile;
+        return this;
     }
 
     public VrsFileSesObjectStorageBuilder idStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
-	return this;
+        this.idStrut = idStrut;
+        return this;
     }
 
     public VrsFileSesObjectStorageKo buildVrsFileSesObjectStorageKo() {
-	VrsFileSesObjectStorageKo vrsFileSesObjectStorageKo = new VrsFileSesObjectStorageKo();
-	vrsFileSesObjectStorageKo.setDecBackend(decBackend);
-	vrsFileSesObjectStorageKo.setFileSessioneKo(fileSessioneKo);
-	vrsFileSesObjectStorageKo.setNmTenant(nmTenant);
-	vrsFileSesObjectStorageKo.setNmBucket(nmBucket);
-	vrsFileSesObjectStorageKo.setNmKeyFile(nmKeyFile);
-	vrsFileSesObjectStorageKo.setIdStrut(idStrut);
-	return vrsFileSesObjectStorageKo;
+        VrsFileSesObjectStorageKo vrsFileSesObjectStorageKo = new VrsFileSesObjectStorageKo();
+        vrsFileSesObjectStorageKo.setDecBackend(decBackend);
+        vrsFileSesObjectStorageKo.setFileSessioneKo(fileSessioneKo);
+        vrsFileSesObjectStorageKo.setNmTenant(nmTenant);
+        vrsFileSesObjectStorageKo.setNmBucket(nmBucket);
+        vrsFileSesObjectStorageKo.setNmKeyFile(nmKeyFile);
+        vrsFileSesObjectStorageKo.setIdStrut(idStrut);
+        return vrsFileSesObjectStorageKo;
     }
 }

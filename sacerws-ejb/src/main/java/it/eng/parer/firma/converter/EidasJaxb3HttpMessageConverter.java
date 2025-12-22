@@ -54,125 +54,125 @@ public class EidasJaxb3HttpMessageConverter extends EidasAbstractJaxb3HttpMessag
     private boolean processExternalEntities = false;
 
     public void setSupportDtd(boolean supportDtd) {
-	this.supportDtd = supportDtd;
+        this.supportDtd = supportDtd;
     }
 
     public boolean isSupportDtd() {
-	return this.supportDtd;
+        return this.supportDtd;
     }
 
     public void setProcessExternalEntities(boolean processExternalEntities) {
-	this.processExternalEntities = processExternalEntities;
-	if (processExternalEntities) {
-	    setSupportDtd(true);
-	}
+        this.processExternalEntities = processExternalEntities;
+        if (processExternalEntities) {
+            setSupportDtd(true);
+        }
     }
 
     public boolean isProcessExternalEntities() {
-	return this.processExternalEntities;
+        return this.processExternalEntities;
     }
 
     @Override
     public boolean canRead(Class<?> clazz, MediaType mediaType) {
-	return (clazz.isAnnotationPresent(XmlRootElement.class)
-		|| clazz.isAnnotationPresent(XmlType.class)) && canRead(mediaType);
+        return (clazz.isAnnotationPresent(XmlRootElement.class)
+                || clazz.isAnnotationPresent(XmlType.class)) && canRead(mediaType);
     }
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-	return (AnnotationUtils.findAnnotation(clazz, XmlRootElement.class) != null
-		&& canWrite(mediaType));
+        return (AnnotationUtils.findAnnotation(clazz, XmlRootElement.class) != null
+                && canWrite(mediaType));
     }
 
     @Override
     protected boolean supports(Class<?> clazz) {
-	// should not be called, since we override canRead/Write
-	throw new UnsupportedOperationException();
+        // should not be called, since we override canRead/Write
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected Object readFromSource(Class<?> clazz, HttpHeaders headers, Source source)
-	    throws Exception {
-	try {
-	    source = processSource(source);
-	    Unmarshaller unmarshaller = createUnmarshaller(clazz);
-	    if (clazz.isAnnotationPresent(XmlRootElement.class)) {
-		return unmarshaller.unmarshal(source);
-	    } else {
-		JAXBElement<?> jaxbElement = unmarshaller.unmarshal(source, clazz);
-		return jaxbElement.getValue();
-	    }
-	} catch (NullPointerException ex) {
-	    if (!isSupportDtd()) {
-		throw new IllegalStateException("NPE while unmarshalling. "
-			+ "This can happen due to the presence of DTD declarations which are disabled.",
-			ex);
-	    }
-	    throw ex;
-	} catch (UnmarshalException ex) {
-	    throw ex;
-	} catch (JAXBException ex) {
-	    throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
-	}
+            throws Exception {
+        try {
+            source = processSource(source);
+            Unmarshaller unmarshaller = createUnmarshaller(clazz);
+            if (clazz.isAnnotationPresent(XmlRootElement.class)) {
+                return unmarshaller.unmarshal(source);
+            } else {
+                JAXBElement<?> jaxbElement = unmarshaller.unmarshal(source, clazz);
+                return jaxbElement.getValue();
+            }
+        } catch (NullPointerException ex) {
+            if (!isSupportDtd()) {
+                throw new IllegalStateException("NPE while unmarshalling. "
+                        + "This can happen due to the presence of DTD declarations which are disabled.",
+                        ex);
+            }
+            throw ex;
+        } catch (UnmarshalException ex) {
+            throw ex;
+        } catch (JAXBException ex) {
+            throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
+        }
     }
 
     protected Source processSource(Source source) {
-	if (source instanceof StreamSource) {
-	    StreamSource streamSource = (StreamSource) source;
-	    InputSource inputSource = new InputSource(streamSource.getInputStream());
-	    try {
-		/*
-		 * XMLReader istanziato con una SAXParserFactory in modo da settare a true la
-		 * property namespaceAware, al fine di rendere il reader consapevole dei namespaces
-		 * necessari alla lettura della response secondo la versione 1.5 di jaxb
-		 */
-		final SAXParserFactory sax = SAXParserFactory.newInstance();
-		sax.setNamespaceAware(true);
-		final XMLReader xmlReader = sax.newSAXParser().getXMLReader();
-		xmlReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl",
-			!isSupportDtd());
-		String featureName = "http://xml.org/sax/features/external-general-entities";
-		xmlReader.setFeature(featureName, isProcessExternalEntities());
-		if (!isProcessExternalEntities()) {
-		    xmlReader.setEntityResolver(NO_OP_ENTITY_RESOLVER);
-		}
-		return new SAXSource(xmlReader, inputSource);
-	    } catch (SAXException ex) {
-		logger.warn("Processing of external entities could not be disabled", ex);
-		return source;
-	    } catch (ParserConfigurationException ex) {
-		Logger.getLogger(EidasJaxb3HttpMessageConverter.class.getName()).log(Level.SEVERE,
-			null, ex);
-		return source;
-	    }
-	} else {
-	    return source;
-	}
+        if (source instanceof StreamSource) {
+            StreamSource streamSource = (StreamSource) source;
+            InputSource inputSource = new InputSource(streamSource.getInputStream());
+            try {
+                /*
+                 * XMLReader istanziato con una SAXParserFactory in modo da settare a true la
+                 * property namespaceAware, al fine di rendere il reader consapevole dei namespaces
+                 * necessari alla lettura della response secondo la versione 1.5 di jaxb
+                 */
+                final SAXParserFactory sax = SAXParserFactory.newInstance();
+                sax.setNamespaceAware(true);
+                final XMLReader xmlReader = sax.newSAXParser().getXMLReader();
+                xmlReader.setFeature("http://apache.org/xml/features/disallow-doctype-decl",
+                        !isSupportDtd());
+                String featureName = "http://xml.org/sax/features/external-general-entities";
+                xmlReader.setFeature(featureName, isProcessExternalEntities());
+                if (!isProcessExternalEntities()) {
+                    xmlReader.setEntityResolver(NO_OP_ENTITY_RESOLVER);
+                }
+                return new SAXSource(xmlReader, inputSource);
+            } catch (SAXException ex) {
+                logger.warn("Processing of external entities could not be disabled", ex);
+                return source;
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(EidasJaxb3HttpMessageConverter.class.getName()).log(Level.SEVERE,
+                        null, ex);
+                return source;
+            }
+        } else {
+            return source;
+        }
     }
 
     @Override
     protected void writeToResult(Object o, HttpHeaders headers, Result result) throws IOException {
-	try {
-	    Class<?> clazz = ClassUtils.getUserClass(o);
-	    Marshaller marshaller = createMarshaller(clazz);
-	    setCharset(headers.getContentType(), marshaller);
-	    marshaller.marshal(o, result);
-	} catch (MarshalException ex) {
-	    throw new HttpMessageNotWritableException(
-		    "Could not marshal [" + o + "]: " + ex.getMessage(), ex);
-	} catch (JAXBException ex) {
-	    throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
-	}
+        try {
+            Class<?> clazz = ClassUtils.getUserClass(o);
+            Marshaller marshaller = createMarshaller(clazz);
+            setCharset(headers.getContentType(), marshaller);
+            marshaller.marshal(o, result);
+        } catch (MarshalException ex) {
+            throw new HttpMessageNotWritableException(
+                    "Could not marshal [" + o + "]: " + ex.getMessage(), ex);
+        } catch (JAXBException ex) {
+            throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
+        }
     }
 
     private void setCharset(@Nullable MediaType contentType, Marshaller marshaller)
-	    throws PropertyException {
-	if (contentType != null && contentType.getCharset() != null) {
-	    marshaller.setProperty(Marshaller.JAXB_ENCODING, contentType.getCharset().name());
-	}
+            throws PropertyException {
+        if (contentType != null && contentType.getCharset() != null) {
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, contentType.getCharset().name());
+        }
     }
 
     private static final EntityResolver NO_OP_ENTITY_RESOLVER = (publicId,
-	    systemId) -> new InputSource(new StringReader(""));
+            systemId) -> new InputSource(new StringReader(""));
 
 }

@@ -32,43 +32,43 @@ public class LogSessioneUtils {
     private static final int DS_ERR_MAX_LEN = 1024;
 
     private LogSessioneUtils() {
-	throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class");
     }
 
     public static Date getDatePart(Date date) {
-	Calendar cal = Calendar.getInstance();
-	cal.setTime(date);
-	cal.set(Calendar.HOUR_OF_DAY, 0);
-	cal.set(Calendar.MINUTE, 0);
-	cal.set(Calendar.SECOND, 0);
-	cal.set(Calendar.MILLISECOND, 0);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
-	return cal.getTime();
+        return cal.getTime();
     }
 
     public static String getDsErrAtMaxLen(String dsErrore) {
-	String tmpErrMess;
-	if (dsErrore.isEmpty()) {
-	    tmpErrMess = "(vuoto)";
-	} else {
-	    tmpErrMess = getStringAtMaxLen(dsErrore, DS_ERR_MAX_LEN);
-	}
-	return tmpErrMess;
+        String tmpErrMess;
+        if (dsErrore.isEmpty()) {
+            tmpErrMess = "(vuoto)";
+        } else {
+            tmpErrMess = getStringAtMaxLen(dsErrore, DS_ERR_MAX_LEN);
+        }
+        return tmpErrMess;
     }
 
     public static String getStringAtMaxLen(String string, int maxLen) {
-	String tmpReturn = string;
+        String tmpReturn = string;
 
-	if (tmpReturn.length() > maxLen) {
-	    tmpReturn = tmpReturn.substring(0, maxLen);
-	}
-	return tmpReturn;
+        if (tmpReturn.length() > maxLen) {
+            tmpReturn = tmpReturn.substring(0, maxLen);
+        }
+        return tmpReturn;
     }
 
     public static void logSimulazioni(String ambiente, String ente, String struttura,
-	    String registro, int anno, String numero, String user, Logger logger) {
-	logger.info(
-		"Chiamata al WS con SimulaSalvataggioDatiInDB=true versatore=[{}-{}-{}] key=[{}-{}-{}] user=[{}] ",
-		ambiente, ente, struttura, registro, anno, numero, user);
+            String registro, int anno, String numero, String user, Logger logger) {
+        logger.info(
+                "Chiamata al WS con SimulaSalvataggioDatiInDB=true versatore=[{}-{}-{}] key=[{}-{}-{}] user=[{}] ",
+                ambiente, ente, struttura, registro, anno, numero, user);
     }
 }

@@ -91,190 +91,190 @@ public class VrsSesUpdUnitaDocKo implements Serializable {
     @Id
     @Column(name = "ID_SES_UPD_UNITA_DOC_KO")
     @GenericGenerator(name = "SVRS_SES_UPD_UNITA_DOC_KO_ID_SES_UPD_UNITA_DOC_KO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_SES_UPD_UNITA_DOC_KO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_SES_UPD_UNITA_DOC_KO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_SES_UPD_UNITA_DOC_KO_ID_SES_UPD_UNITA_DOC_KO_GENERATOR")
     public Long getIdSesUpdUnitaDocKo() {
-	return this.idSesUpdUnitaDocKo;
+        return this.idSesUpdUnitaDocKo;
     }
 
     public void setIdSesUpdUnitaDocKo(Long idSesUpdUnitaDocKo) {
-	this.idSesUpdUnitaDocKo = idSesUpdUnitaDocKo;
+        this.idSesUpdUnitaDocKo = idSesUpdUnitaDocKo;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-	return this.aaKeyUnitaDoc;
+        return this.aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     @Column(name = "CD_VERSIONE_WS")
     public String getCdVersioneWs() {
-	return this.cdVersioneWs;
+        return this.cdVersioneWs;
     }
 
     public void setCdVersioneWs(String cdVersioneWs) {
-	this.cdVersioneWs = cdVersioneWs;
+        this.cdVersioneWs = cdVersioneWs;
     }
 
     @Column(name = "DS_ERR_PRINC")
     public String getDsErrPrinc() {
-	return this.dsErrPrinc;
+        return this.dsErrPrinc;
     }
 
     public void setDsErrPrinc(String dsErrPrinc) {
-	this.dsErrPrinc = dsErrPrinc;
+        this.dsErrPrinc = dsErrPrinc;
     }
 
     // bi-directional many-to-one association to DecErrSacer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CONTROLLO_WS_PRINC")
     public DecControlloWs getDecControlloWsPrinc() {
-	return this.decControlloWsPrinc;
+        return this.decControlloWsPrinc;
     }
 
     public void setDecControlloWsPrinc(DecControlloWs decControlloWsPrinc) {
-	this.decControlloWsPrinc = decControlloWsPrinc;
+        this.decControlloWsPrinc = decControlloWsPrinc;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ERR_SACER_PRINC")
     public DecErrSacer getDecErrSacerPrinc() {
-	return this.decErrSacerPrinc;
+        return this.decErrSacerPrinc;
     }
 
     public void setDecErrSacerPrinc(DecErrSacer decErrSacerPrinc) {
-	this.decErrSacerPrinc = decErrSacerPrinc;
+        this.decErrSacerPrinc = decErrSacerPrinc;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGISTRO_UNITA_DOC")
     public DecRegistroUnitaDoc getDecRegistroUnitaDoc() {
-	return this.decRegistroUnitaDoc;
+        return this.decRegistroUnitaDoc;
     }
 
     public void setDecRegistroUnitaDoc(DecRegistroUnitaDoc decRegistroUnitaDoc) {
-	this.decRegistroUnitaDoc = decRegistroUnitaDoc;
+        this.decRegistroUnitaDoc = decRegistroUnitaDoc;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC_PRINC")
     public DecTipoDoc getDecTipoDocPrinc() {
-	return this.decTipoDocPrinc;
+        return this.decTipoDocPrinc;
     }
 
     public void setDecTipoDocPrinc(DecTipoDoc decTipoDocPrinc) {
-	this.decTipoDocPrinc = decTipoDocPrinc;
+        this.decTipoDocPrinc = decTipoDocPrinc;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_UNITA_DOC")
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
-	return this.decTipoUnitaDoc;
+        return this.decTipoUnitaDoc;
     }
 
     public void setDecTipoUnitaDoc(DecTipoUnitaDoc decTipoUnitaDoc) {
-	this.decTipoUnitaDoc = decTipoUnitaDoc;
+        this.decTipoUnitaDoc = decTipoUnitaDoc;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UPD_UNITA_DOC_KO")
     public VrsUpdUnitaDocKo getVrsUpdUnitaDocKo() {
-	return this.vrsUpdUnitaDocKo;
+        return this.vrsUpdUnitaDocKo;
     }
 
     public void setVrsUpdUnitaDocKo(VrsUpdUnitaDocKo vrsUpdUnitaDocKo) {
-	this.vrsUpdUnitaDocKo = vrsUpdUnitaDocKo;
+        this.vrsUpdUnitaDocKo = vrsUpdUnitaDocKo;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UPD_UNITA_DOC")
     public AroUpdUnitaDoc getAroUpdUnitaDoc() {
-	return this.aroUpdUnitaDoc;
+        return this.aroUpdUnitaDoc;
     }
 
     public void setAroUpdUnitaDoc(AroUpdUnitaDoc aroUpdUnitaDoc) {
-	this.aroUpdUnitaDoc = aroUpdUnitaDoc;
+        this.aroUpdUnitaDoc = aroUpdUnitaDoc;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_USER_IAM")
     public IamUser getIamUser() {
-	return this.iamUser;
+        return this.iamUser;
     }
 
     public void setIamUser(IamUser iamUser) {
-	this.iamUser = iamUser;
+        this.iamUser = iamUser;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_STATO_SES_UPD_KO")
     public TiStatoSesUpdKo getTiStatoSesUpdKo() {
-	return this.tiStatoSesUpdKo;
+        return this.tiStatoSesUpdKo;
     }
 
     public void setTiStatoSesUpdKo(TiStatoSesUpdKo tiStatoSesUpdKo) {
-	this.tiStatoSesUpdKo = tiStatoSesUpdKo;
+        this.tiStatoSesUpdKo = tiStatoSesUpdKo;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_FINE_SES")
     public Date getTsFineSes() {
-	return this.tsFineSes;
+        return this.tsFineSes;
     }
 
     public void setTsFineSes(Date tsFineSes) {
-	this.tsFineSes = tsFineSes;
+        this.tsFineSes = tsFineSes;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_INI_SES")
     public Date getTsIniSes() {
-	return this.tsIniSes;
+        return this.tsIniSes;
     }
 
     public void setTsIniSes(Date tsIniSes) {
-	this.tsIniSes = tsIniSes;
+        this.tsIniSes = tsIniSes;
     }
 
     // bi-directional many-to-one association to VrsSesFascicoloKo
     @OneToMany(mappedBy = "vrsSesUpdUnitaDocKo")
     public List<VrsErrSesUpdUnitaDocKo> getVrsErrSesUpdUnitaDocKos() {
-	return this.vrsErrSesUpdUnitaDocKos;
+        return this.vrsErrSesUpdUnitaDocKos;
     }
 
     public void setVrsErrSesUpdUnitaDocKos(List<VrsErrSesUpdUnitaDocKo> vrsErrSesUpdUnitaDocKos) {
-	this.vrsErrSesUpdUnitaDocKos = vrsErrSesUpdUnitaDocKos;
+        this.vrsErrSesUpdUnitaDocKos = vrsErrSesUpdUnitaDocKos;
     }
 
     // bi-directional many-to-one association to VrsSesFascicoloKo
     @OneToMany(mappedBy = "vrsSesUpdUnitaDocKo")
     public List<VrsXmlSesUpdUnitaDocKo> getVrsXmlSesUpdUnitaDocKos() {
-	return this.vrsXmlSesUpdUnitaDocKos;
+        return this.vrsXmlSesUpdUnitaDocKos;
     }
 
     public void setVrsXmlSesUpdUnitaDocKos(List<VrsXmlSesUpdUnitaDocKo> vrsXmlSesUpdUnitaDocKos) {
-	this.vrsXmlSesUpdUnitaDocKos = vrsXmlSesUpdUnitaDocKos;
+        this.vrsXmlSesUpdUnitaDocKos = vrsXmlSesUpdUnitaDocKos;
     }
 }

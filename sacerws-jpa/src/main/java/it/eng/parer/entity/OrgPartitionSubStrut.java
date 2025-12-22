@@ -52,46 +52,46 @@ public class OrgPartitionSubStrut implements Serializable {
     @Id
     @Column(name = "ID_PARTITION_SUB_STRUT")
     @GenericGenerator(name = "SORG_PARTITION_SUB_STRUT_ID_PARTITION_SUB_STRUT_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION_SUB_STRUT"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION_SUB_STRUT"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_PARTITION_SUB_STRUT_ID_PARTITION_SUB_STRUT_GENERATOR")
     public Long getIdPartitionSubStrut() {
-	return this.idPartitionSubStrut;
+        return this.idPartitionSubStrut;
     }
 
     public void setIdPartitionSubStrut(Long idPartitionSubStrut) {
-	this.idPartitionSubStrut = idPartitionSubStrut;
+        this.idPartitionSubStrut = idPartitionSubStrut;
     }
 
     @Column(name = "TI_PARTITION")
     public String getTiPartition() {
-	return this.tiPartition;
+        return this.tiPartition;
     }
 
     public void setTiPartition(String tiPartition) {
-	this.tiPartition = tiPartition;
+        this.tiPartition = tiPartition;
     }
 
     // bi-directional many-to-one association to OrgPartition
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PARTITION")
     public OrgPartition getOrgPartition() {
-	return this.orgPartition;
+        return this.orgPartition;
     }
 
     public void setOrgPartition(OrgPartition orgPartition) {
-	this.orgPartition = orgPartition;
+        this.orgPartition = orgPartition;
     }
 
     // bi-directional many-to-one association to OrgSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SUB_STRUT")
     public OrgSubStrut getOrgSubStrut() {
-	return this.orgSubStrut;
+        return this.orgSubStrut;
     }
 
     public void setOrgSubStrut(OrgSubStrut orgSubStrut) {
-	this.orgSubStrut = orgSubStrut;
+        this.orgSubStrut = orgSubStrut;
     }
 
 }

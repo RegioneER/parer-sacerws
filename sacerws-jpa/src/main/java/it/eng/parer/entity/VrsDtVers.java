@@ -84,64 +84,64 @@ public class VrsDtVers implements Serializable {
     @Id
     @Column(name = "ID_DT_VERS")
     @GenericGenerator(name = "SVRS_DT_VERS_ID_DT_VERS_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_DT_VERS"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_DT_VERS"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_DT_VERS_ID_DT_VERS_GENERATOR")
     public Long getIdDtVers() {
-	return this.idDtVers;
+        return this.idDtVers;
     }
 
     public void setIdDtVers(Long idDtVers) {
-	this.idDtVers = idDtVers;
+        this.idDtVers = idDtVers;
     }
 
     @Column(name = "DL_PATH_DT_VERS")
     public String getDlPathDtVers() {
-	return this.dlPathDtVers;
+        return this.dlPathDtVers;
     }
 
     public void setDlPathDtVers(String dlPathDtVers) {
-	this.dlPathDtVers = dlPathDtVers;
+        this.dlPathDtVers = dlPathDtVers;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_CREAZIONE_DT_VERS")
     public Date getDtCreazioneDtVers() {
-	return this.dtCreazioneDtVers;
+        return this.dtCreazioneDtVers;
     }
 
     public void setDtCreazioneDtVers(Date dtCreazioneDtVers) {
-	this.dtCreazioneDtVers = dtCreazioneDtVers;
+        this.dtCreazioneDtVers = dtCreazioneDtVers;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_LAST_ARK_DT_VERS")
     public Date getDtLastArkDtVers() {
-	return this.dtLastArkDtVers;
+        return this.dtLastArkDtVers;
     }
 
     public void setDtLastArkDtVers(Date dtLastArkDtVers) {
-	this.dtLastArkDtVers = dtLastArkDtVers;
+        this.dtLastArkDtVers = dtLastArkDtVers;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_LAST_ARK_DT_VERS_SECONDARIO")
     public Date getDtLastArkDtVersSecondario() {
-	return this.dtLastArkDtVersSecondario;
+        return this.dtLastArkDtVersSecondario;
     }
 
     public void setDtLastArkDtVersSecondario(Date dtLastArkDtVersSecondario) {
-	this.dtLastArkDtVersSecondario = dtLastArkDtVersSecondario;
+        this.dtLastArkDtVersSecondario = dtLastArkDtVersSecondario;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_STATO_DT_VERS")
     public Date getDtStatoDtVers() {
-	return this.dtStatoDtVers;
+        return this.dtStatoDtVers;
     }
 
     public void setDtStatoDtVers(Date dtStatoDtVers) {
-	this.dtStatoDtVers = dtStatoDtVers;
+        this.dtStatoDtVers = dtStatoDtVers;
     }
 
     // MAC#27629
@@ -151,84 +151,84 @@ public class VrsDtVers implements Serializable {
      */
     @Column(name = "DT_VERS")
     public LocalDate getDtVers() {
-	return this.dtVers;
+        return this.dtVers;
     }
 
     public void setDtVers(LocalDate dtVers) {
-	this.dtVers = dtVers;
+        this.dtVers = dtVers;
     }
     // end MAC#27629
 
     @Column(name = "FL_ARK", columnDefinition = "char(1)")
     public String getFlArk() {
-	return this.flArk;
+        return this.flArk;
     }
 
     public void setFlArk(String flArk) {
-	this.flArk = flArk;
+        this.flArk = flArk;
     }
 
     @Column(name = "FL_ARK_SECONDARIO", columnDefinition = "char(1)")
     public String getFlArkSecondario() {
-	return this.flArkSecondario;
+        return this.flArkSecondario;
     }
 
     public void setFlArkSecondario(String flArkSecondario) {
-	this.flArkSecondario = flArkSecondario;
+        this.flArkSecondario = flArkSecondario;
     }
 
     @Column(name = "FL_FILE_NO_ARK", columnDefinition = "char(1)")
     public String getFlFileNoArk() {
-	return this.flFileNoArk;
+        return this.flFileNoArk;
     }
 
     public void setFlFileNoArk(String flFileNoArk) {
-	this.flFileNoArk = flFileNoArk;
+        this.flFileNoArk = flFileNoArk;
     }
 
     @Column(name = "FL_FILE_NO_ARK_SECONDARIO", columnDefinition = "char(1)")
     public String getFlFileNoArkSecondario() {
-	return this.flFileNoArkSecondario;
+        return this.flFileNoArkSecondario;
     }
 
     public void setFlFileNoArkSecondario(String flFileNoArkSecondario) {
-	this.flFileNoArkSecondario = flFileNoArkSecondario;
+        this.flFileNoArkSecondario = flFileNoArkSecondario;
     }
 
     @Column(name = "FL_MIGRAZ", columnDefinition = "char(1)")
     public String getFlMigraz() {
-	return this.flMigraz;
+        return this.flMigraz;
     }
 
     public void setFlMigraz(String flMigraz) {
-	this.flMigraz = flMigraz;
+        this.flMigraz = flMigraz;
     }
 
     @Column(name = "FL_PRESENZA_SECONDARIO", columnDefinition = "char(1)")
     public String getFlPresenzaSecondario() {
-	return this.flPresenzaSecondario;
+        return this.flPresenzaSecondario;
     }
 
     public void setFlPresenzaSecondario(String flPresenzaSecondario) {
-	this.flPresenzaSecondario = flPresenzaSecondario;
+        this.flPresenzaSecondario = flPresenzaSecondario;
     }
 
     @Column(name = "TI_STATO_DT_VERS")
     public String getTiStatoDtVers() {
-	return this.tiStatoDtVers;
+        return this.tiStatoDtVers;
     }
 
     public void setTiStatoDtVers(String tiStatoDtVers) {
-	this.tiStatoDtVers = tiStatoDtVers;
+        this.tiStatoDtVers = tiStatoDtVers;
     }
 
     // bi-directional many-to-one association to VrsPathDtVer
     @OneToMany(mappedBy = "vrsDtVers")
     public List<VrsPathDtVers> getVrsPathDtVers() {
-	return this.vrsPathDtVers;
+        return this.vrsPathDtVers;
     }
 
     public void setVrsPathDtVers(List<VrsPathDtVers> vrsPathDtVers) {
-	this.vrsPathDtVers = vrsPathDtVers;
+        this.vrsPathDtVers = vrsPathDtVers;
     }
 }

@@ -17,6 +17,6 @@ public class ConnectionException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public ConnectionException(String message, Exception e) {
-	super(message, e);
+        super(message, e);
     }
 }

@@ -56,62 +56,62 @@ public class OrgPartition implements Serializable {
     @Id
     @Column(name = "ID_PARTITION")
     @GenericGenerator(name = "SORG_PARTITION_ID_PARTITION_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_PARTITION_ID_PARTITION_GENERATOR")
     public Long getIdPartition() {
-	return this.idPartition;
+        return this.idPartition;
     }
 
     public void setIdPartition(Long idPartition) {
-	this.idPartition = idPartition;
+        this.idPartition = idPartition;
     }
 
     @Column(name = "CD_PARTITION")
     public String getCdPartition() {
-	return this.cdPartition;
+        return this.cdPartition;
     }
 
     public void setCdPartition(String cdPartition) {
-	this.cdPartition = cdPartition;
+        this.cdPartition = cdPartition;
     }
 
     @Column(name = "TI_PARTITION")
     public String getTiPartition() {
-	return this.tiPartition;
+        return this.tiPartition;
     }
 
     public void setTiPartition(String tiPartition) {
-	this.tiPartition = tiPartition;
+        this.tiPartition = tiPartition;
     }
 
     // bi-directional many-to-one association to OrgPartitionStrut
     @OneToMany(mappedBy = "orgPartition")
     public List<OrgPartitionStrut> getOrgPartitionStruts() {
-	return this.orgPartitionStruts;
+        return this.orgPartitionStruts;
     }
 
     public void setOrgPartitionStruts(List<OrgPartitionStrut> orgPartitionStruts) {
-	this.orgPartitionStruts = orgPartitionStruts;
+        this.orgPartitionStruts = orgPartitionStruts;
     }
 
     // bi-directional many-to-one association to OrgValSubPartition
     @OneToMany(mappedBy = "orgPartition")
     public List<OrgValSubPartition> getOrgValSubPartitions() {
-	return this.orgValSubPartitions;
+        return this.orgValSubPartitions;
     }
 
     public void setOrgValSubPartitions(List<OrgValSubPartition> orgValSubPartitions) {
-	this.orgValSubPartitions = orgValSubPartitions;
+        this.orgValSubPartitions = orgValSubPartitions;
     }
 
     // bi-directional many-to-one association to OrgPartitionSubStrut
     @OneToMany(mappedBy = "orgPartition")
     public List<OrgPartitionSubStrut> getOrgPartitionSubStruts() {
-	return this.orgPartitionSubStruts;
+        return this.orgPartitionSubStruts;
     }
 
     public void setOrgPartitionSubStruts(List<OrgPartitionSubStrut> orgPartitionSubStruts) {
-	this.orgPartitionSubStruts = orgPartitionSubStruts;
+        this.orgPartitionSubStruts = orgPartitionSubStruts;
     }
 }

@@ -31,44 +31,44 @@ public class UpdComponenteVers extends ComponenteVers {
     private String tipoComponenteNonVerificato;
 
     public it.eng.parer.ws.xml.versUpdReq.ComponenteType getMyUpdComponente() {
-	return myUpdComponente;
+        return myUpdComponente;
     }
 
     public void setMyUpdComponente(it.eng.parer.ws.xml.versUpdReq.ComponenteType myAggComponente) {
-	this.myUpdComponente = myAggComponente;
+        this.myUpdComponente = myAggComponente;
     }
 
     public it.eng.parer.ws.xml.versUpdReq.SottoComponenteType getMyUpdSottoComponente() {
-	return myUpdSottoComponente;
+        return myUpdSottoComponente;
     }
 
     public void setMyUpdSottoComponente(
-	    it.eng.parer.ws.xml.versUpdReq.SottoComponenteType myAggSottoComponente) {
-	this.myUpdSottoComponente = myAggSottoComponente;
+            it.eng.parer.ws.xml.versUpdReq.SottoComponenteType myAggSottoComponente) {
+        this.myUpdSottoComponente = myAggSottoComponente;
     }
 
     public UpdDocumentoVers getRifUpdDocumentoVers() {
-	return rifAggDocumentoVers;
+        return rifAggDocumentoVers;
     }
 
     public void setRifUpdDocumentoVers(UpdDocumentoVers rifAggDocumentoVers) {
-	this.rifAggDocumentoVers = rifAggDocumentoVers;
+        this.rifAggDocumentoVers = rifAggDocumentoVers;
     }
 
     public String getTipoComponenteNonVerificato() {
-	return tipoComponenteNonVerificato;
+        return tipoComponenteNonVerificato;
     }
 
     public void setTipoComponenteNonVerificato(String tipoComponenteNonVerificato) {
-	this.tipoComponenteNonVerificato = tipoComponenteNonVerificato;
+        this.tipoComponenteNonVerificato = tipoComponenteNonVerificato;
     }
 
     public String getKeyCtrl() {
-	return keyCtrl;
+        return keyCtrl;
     }
 
     public void setKeyCtrl(String keyCtrl) {
-	this.keyCtrl = keyCtrl;
+        this.keyCtrl = keyCtrl;
     }
 
 }

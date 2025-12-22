@@ -52,35 +52,35 @@ public class DecFormatoFileBusta implements Serializable {
     @Id
     @Column(name = "ID_FORMATO_FILE_BUSTA")
     @GenericGenerator(name = "SDEC_FORMATO_FILE_BUSTA_ID_FORMATO_FILE_BUSTA_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_FORMATO_FILE_BUSTA"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_FORMATO_FILE_BUSTA"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_FORMATO_FILE_BUSTA_ID_FORMATO_FILE_BUSTA_GENERATOR")
     public Long getIdFormatoFileBusta() {
-	return this.idFormatoFileBusta;
+        return this.idFormatoFileBusta;
     }
 
     public void setIdFormatoFileBusta(Long idFormatoFileBusta) {
-	this.idFormatoFileBusta = idFormatoFileBusta;
+        this.idFormatoFileBusta = idFormatoFileBusta;
     }
 
     @Column(name = "TI_FORMATO_FIRMA_MARCA")
     public String getTiFormatoFirmaMarca() {
-	return this.tiFormatoFirmaMarca;
+        return this.tiFormatoFirmaMarca;
     }
 
     public void setTiFormatoFirmaMarca(String tiFormatoFirmaMarca) {
-	this.tiFormatoFirmaMarca = tiFormatoFirmaMarca;
+        this.tiFormatoFirmaMarca = tiFormatoFirmaMarca;
     }
 
     // bi-directional many-to-one association to DecFormatoFileStandard
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_STANDARD")
     public DecFormatoFileStandard getDecFormatoFileStandard() {
-	return this.decFormatoFileStandard;
+        return this.decFormatoFileStandard;
     }
 
     public void setDecFormatoFileStandard(DecFormatoFileStandard decFormatoFileStandard) {
-	this.decFormatoFileStandard = decFormatoFileStandard;
+        this.decFormatoFileStandard = decFormatoFileStandard;
     }
 
 }

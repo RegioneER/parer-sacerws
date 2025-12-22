@@ -68,67 +68,67 @@ public class FirCrl implements Serializable {
     @Id
     @Column(name = "ID_CRL")
     @GenericGenerator(name = "SFIR_CRL_ID_CRL_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CRL"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CRL"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFIR_CRL_ID_CRL_GENERATOR")
     public Long getIdCrl() {
-	return this.idCrl;
+        return this.idCrl;
     }
 
     public void setIdCrl(Long idCrl) {
-	this.idCrl = idCrl;
+        this.idCrl = idCrl;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_INI_CRL")
     public Date getDtIniCrl() {
-	return this.dtIniCrl;
+        return this.dtIniCrl;
     }
 
     public void setDtIniCrl(Date dtIniCrl) {
-	this.dtIniCrl = dtIniCrl;
+        this.dtIniCrl = dtIniCrl;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SCAD_CRL")
     public Date getDtScadCrl() {
-	return this.dtScadCrl;
+        return this.dtScadCrl;
     }
 
     public void setDtScadCrl(Date dtScadCrl) {
-	this.dtScadCrl = dtScadCrl;
+        this.dtScadCrl = dtScadCrl;
     }
 
     @Column(name = "DS_SERIAL_CRL")
     public String getDsSerialCrl() {
-	return this.dsSerialCrl;
+        return this.dsSerialCrl;
     }
 
     public void setDsSerialCrl(String dsSerialCrl) {
-	this.dsSerialCrl = dsSerialCrl;
+        this.dsSerialCrl = dsSerialCrl;
     }
 
     // bi-directional many-to-one association to FirCertifCa
     @ManyToOne(cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_CERTIF_CA")
     public FirCertifCa getFirCertifCa() {
-	return this.firCertifCa;
+        return this.firCertifCa;
     }
 
     public void setFirCertifCa(FirCertifCa firCertifCa) {
-	this.firCertifCa = firCertifCa;
+        this.firCertifCa = firCertifCa;
     }
 
     // bi-directional one-to-one association to FirFilePerFirma
     @OneToOne(mappedBy = "firCrl", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     public FirFilePerFirma getFirFilePerFirma() {
-	return this.firFilePerFirma;
+        return this.firFilePerFirma;
     }
 
     public void setFirFilePerFirma(FirFilePerFirma firFilePerFirma) {
-	this.firFilePerFirma = firFilePerFirma;
+        this.firFilePerFirma = firFilePerFirma;
     }
 
     /**
@@ -140,14 +140,14 @@ public class FirCrl implements Serializable {
      */
     @PrePersist
     void preInsert() {
-	this.dtScadCrl = NeverendingDateConverter.verifyOverZoneId(this.dtScadCrl,
-		TimeZone.getTimeZone("UTC").toZoneId());
+        this.dtScadCrl = NeverendingDateConverter.verifyOverZoneId(this.dtScadCrl,
+                TimeZone.getTimeZone("UTC").toZoneId());
     }
 
     @PreUpdate
     void preUpdate() {
-	this.dtScadCrl = NeverendingDateConverter.verifyOverZoneId(this.dtScadCrl,
-		TimeZone.getTimeZone("UTC").toZoneId());
+        this.dtScadCrl = NeverendingDateConverter.verifyOverZoneId(this.dtScadCrl,
+                TimeZone.getTimeZone("UTC").toZoneId());
     }
 
 }

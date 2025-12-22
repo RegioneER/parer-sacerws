@@ -37,7 +37,7 @@ public interface ObjectStorageBackend extends BackendStorage {
 
     @Override
     default STORAGE_TYPE getType() {
-	return STORAGE_TYPE.OS;
+        return STORAGE_TYPE.OS;
     }
 
 }

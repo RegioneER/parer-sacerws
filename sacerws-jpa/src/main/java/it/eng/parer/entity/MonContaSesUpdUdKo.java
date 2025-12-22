@@ -62,55 +62,55 @@ public class MonContaSesUpdUdKo implements Serializable {
     @Id
     @Column(name = "ID_CONTA_SES_UPD_UD_KO")
     @GenericGenerator(name = "SMON_CONTA_SES_UPD_UD_KO_ID_CONTA_SES_UPD_UD_KO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_CONTA_SES_UPD_UD_KO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_CONTA_SES_UPD_UD_KO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SMON_CONTA_SES_UPD_UD_KO_ID_CONTA_SES_UPD_UD_KO_GENERATOR")
     public Long getIdContaSesUpdUdKo() {
-	return this.idContaSesUpdUdKo;
+        return this.idContaSesUpdUdKo;
     }
 
     public void setIdContaSesUpdUdKo(Long idContaSesUpdUdKo) {
-	this.idContaSesUpdUdKo = idContaSesUpdUdKo;
+        this.idContaSesUpdUdKo = idContaSesUpdUdKo;
     }
 
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_RIF_CONTA")
     public Date getDtRifConta() {
-	return this.dtRifConta;
+        return this.dtRifConta;
     }
 
     public void setDtRifConta(Date dtRifConta) {
-	this.dtRifConta = dtRifConta;
+        this.dtRifConta = dtRifConta;
     }
 
     @Column(name = "NI_SES_UPD_UD_KO")
     public BigDecimal getNiSesUpdUdKo() {
-	return this.niSesUpdUdKo;
+        return this.niSesUpdUdKo;
     }
 
     public void setNiSesUpdUdKo(BigDecimal niSesUpdUdKo) {
-	this.niSesUpdUdKo = niSesUpdUdKo;
+        this.niSesUpdUdKo = niSesUpdUdKo;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_STATO_UDP_UD_KO")
     public TiStatoUdpUdKoMonContaSesUpdUdKo getTiStatoUdpUdKo() {
-	return this.tiStatoUdpUdKo;
+        return this.tiStatoUdpUdKo;
     }
 
     public void setTiStatoUdpUdKo(TiStatoUdpUdKoMonContaSesUpdUdKo tiStatoUdpUdKo) {
-	this.tiStatoUdpUdKo = tiStatoUdpUdKo;
+        this.tiStatoUdpUdKo = tiStatoUdpUdKo;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_KEY_TOTAL_UD_KO")
     public MonKeyTotalUdKo getMonKeyTotalUdKo() {
-	return this.monKeyTotalUdKo;
+        return this.monKeyTotalUdKo;
     }
 
     public void setMonKeyTotalUdKo(MonKeyTotalUdKo monKeyTotalUdKo) {
-	this.monKeyTotalUdKo = monKeyTotalUdKo;
+        this.monKeyTotalUdKo = monKeyTotalUdKo;
     }
 
 }

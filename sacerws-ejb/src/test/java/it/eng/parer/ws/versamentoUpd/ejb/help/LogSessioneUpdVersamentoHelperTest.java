@@ -48,7 +48,7 @@ import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 public class LogSessioneUpdVersamentoHelperTest {
     @Test
     public void itWorks() {
-	assertTrue(true);
+        assertTrue(true);
     }
 
     @EJB
@@ -56,97 +56,97 @@ public class LogSessioneUpdVersamentoHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(LogSessioneUpdVersamentoHelperTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
-			"it.eng.parer.ws.xml.versUpdReq", "it.eng.parer.ws.xml.versUpdResp"),
-			LogSessioneUpdVersamentoHelperTest.class,
-			LogSessioneUpdVersamentoHelper.class,
-			it.eng.parer.ws.ejb.XmlUpdVersCache.class,
-			it.eng.parer.util.ejb.AppServerInstance.class,
-			it.eng.parer.ws.ejb.ControlliSemantici.class,
-			it.eng.parer.util.ejb.help.ConfigurationHelper.class,
-			it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
-			it.eng.parer.util.DateUtilsConverter.class)
-			.addAsResource(
-				LogSessioneSyncTest.class.getClassLoader()
-					.getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
-				"/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5..xsd")
-			.addAsResource(
-				LogSessioneSyncTest.class.getClassLoader()
-					.getResource("WSResponseAggiornamentoVersamento_1.5..xsd"),
-				"it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd"),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(LogSessioneUpdVersamentoHelperTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
+                        "it.eng.parer.ws.xml.versUpdReq", "it.eng.parer.ws.xml.versUpdResp"),
+                        LogSessioneUpdVersamentoHelperTest.class,
+                        LogSessioneUpdVersamentoHelper.class,
+                        it.eng.parer.ws.ejb.XmlUpdVersCache.class,
+                        it.eng.parer.util.ejb.AppServerInstance.class,
+                        it.eng.parer.ws.ejb.ControlliSemantici.class,
+                        it.eng.parer.util.ejb.help.ConfigurationHelper.class,
+                        it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
+                        it.eng.parer.util.DateUtilsConverter.class)
+                        .addAsResource(
+                                LogSessioneSyncTest.class.getClassLoader()
+                                        .getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
+                                "/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5..xsd")
+                        .addAsResource(
+                                LogSessioneSyncTest.class.getClassLoader()
+                                        .getResource("WSResponseAggiornamentoVersamento_1.5..xsd"),
+                                "it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd"),
+                createSacerLogJavaArchive());
     }
 
     private UpdVersamentoExt mockUpdVersamentoExt() {
-	final UpdVersamentoExt versamento = new UpdVersamentoExt();
-	versamento.setStrutturaUpdVers(new StrutturaUpdVers());
-	versamento.getStrutturaUpdVers().setIdStruttura(0L);
-	versamento.getStrutturaUpdVers().setIdUd(0L);
-	versamento.getStrutturaUpdVers().setChiaveNonVerificata(new CSChiave());
-	versamento.getStrutturaUpdVers().getChiaveNonVerificata().setAnno(-2020L);
-	versamento.getStrutturaUpdVers().getChiaveNonVerificata().setNumero("11051985");
-	versamento.getStrutturaUpdVers().getChiaveNonVerificata().setTipoRegistro("NON_ESISTE");
-	return versamento;
+        final UpdVersamentoExt versamento = new UpdVersamentoExt();
+        versamento.setStrutturaUpdVers(new StrutturaUpdVers());
+        versamento.getStrutturaUpdVers().setIdStruttura(0L);
+        versamento.getStrutturaUpdVers().setIdUd(0L);
+        versamento.getStrutturaUpdVers().setChiaveNonVerificata(new CSChiave());
+        versamento.getStrutturaUpdVers().getChiaveNonVerificata().setAnno(-2020L);
+        versamento.getStrutturaUpdVers().getChiaveNonVerificata().setNumero("11051985");
+        versamento.getStrutturaUpdVers().getChiaveNonVerificata().setTipoRegistro("NON_ESISTE");
+        return versamento;
     }
 
     @Test
     public void recuperoUpdUnitaDocOk_queryIsOk() {
-	final SyncFakeSessn sessione = new SyncFakeSessn();
-	sessione.setTmApertura(ZonedDateTime.now());
-	final RispostaControlli rispostaControlli = helper
-		.recuperoUpdUnitaDocOk(mockUpdVersamentoExt(), sessione);
-	assertTrue(rispostaControlli.isrBoolean());
+        final SyncFakeSessn sessione = new SyncFakeSessn();
+        sessione.setTmApertura(ZonedDateTime.now());
+        final RispostaControlli rispostaControlli = helper
+                .recuperoUpdUnitaDocOk(mockUpdVersamentoExt(), sessione);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void cercaAggiornamentoKo_queryIsOk() {
-	final RispostaControlli rispostaControlli = helper
-		.cercaAggiornamentoKo(mockUpdVersamentoExt());
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper
+                .cercaAggiornamentoKo(mockUpdVersamentoExt());
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void lockAndGetMonContaSesUpdUdKo_queryIsOk() {
-	final RispostaControlli rispostaControlli = helper
-		.lockAndGetMonContaSesUpdUdKo(mockVrsUpdUnitaDocKo());
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper
+                .lockAndGetMonContaSesUpdUdKo(mockVrsUpdUnitaDocKo());
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     private VrsUpdUnitaDocKo mockVrsUpdUnitaDocKo() {
-	final VrsUpdUnitaDocKo updUnitaDocKo = new VrsUpdUnitaDocKo();
-	updUnitaDocKo.setOrgStrut(new OrgStrut());
-	updUnitaDocKo.getOrgStrut().setIdStrut(0L);
-	updUnitaDocKo.setAaKeyUnitaDoc(BigDecimal.ZERO);
-	updUnitaDocKo.setDecRegistroUnitaDocLast(new DecRegistroUnitaDoc());
-	updUnitaDocKo.getDecRegistroUnitaDocLast().setIdRegistroUnitaDoc(0L);
-	updUnitaDocKo.setDecTipoDocPrincLast(new DecTipoDoc());
-	updUnitaDocKo.getDecTipoDocPrincLast().setIdTipoDoc(0L);
-	updUnitaDocKo.setDecTipoUnitaDocLast(new DecTipoUnitaDoc());
-	updUnitaDocKo.getDecTipoUnitaDocLast().setIdTipoUnitaDoc(0L);
-	return updUnitaDocKo;
+        final VrsUpdUnitaDocKo updUnitaDocKo = new VrsUpdUnitaDocKo();
+        updUnitaDocKo.setOrgStrut(new OrgStrut());
+        updUnitaDocKo.getOrgStrut().setIdStrut(0L);
+        updUnitaDocKo.setAaKeyUnitaDoc(BigDecimal.ZERO);
+        updUnitaDocKo.setDecRegistroUnitaDocLast(new DecRegistroUnitaDoc());
+        updUnitaDocKo.getDecRegistroUnitaDocLast().setIdRegistroUnitaDoc(0L);
+        updUnitaDocKo.setDecTipoDocPrincLast(new DecTipoDoc());
+        updUnitaDocKo.getDecTipoDocPrincLast().setIdTipoDoc(0L);
+        updUnitaDocKo.setDecTipoUnitaDocLast(new DecTipoUnitaDoc());
+        updUnitaDocKo.getDecTipoUnitaDocLast().setIdTipoUnitaDoc(0L);
+        return updUnitaDocKo;
     }
 
     @Test
     public void aggiornaConteggioMonContaSesUpdUdKo_queryIsOk() {
-	final VrsSesUpdUnitaDocKo vrsSesUpdUnitaDocKo = new VrsSesUpdUnitaDocKo();
-	vrsSesUpdUnitaDocKo.setTsIniSes(new Date());
-	final MonKeyTotalUdKo monKeyTotalUdKo = new MonKeyTotalUdKo();
-	monKeyTotalUdKo.setIdKeyTotalUdKo(0L);
-	for (it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo tiStatoSesUpdKo : it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo
-		.values()) {
-	    vrsSesUpdUnitaDocKo.setTiStatoSesUpdKo(tiStatoSesUpdKo);
-	    RispostaControlli rispostaControlli = helper.aggiornaConteggioMonContaSesUpdUdKo(
-		    vrsSesUpdUnitaDocKo, monKeyTotalUdKo, false);
-	    assertTrue(rispostaControlli.isrBoolean());
+        final VrsSesUpdUnitaDocKo vrsSesUpdUnitaDocKo = new VrsSesUpdUnitaDocKo();
+        vrsSesUpdUnitaDocKo.setTsIniSes(new Date());
+        final MonKeyTotalUdKo monKeyTotalUdKo = new MonKeyTotalUdKo();
+        monKeyTotalUdKo.setIdKeyTotalUdKo(0L);
+        for (it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo tiStatoSesUpdKo : it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo
+                .values()) {
+            vrsSesUpdUnitaDocKo.setTiStatoSesUpdKo(tiStatoSesUpdKo);
+            RispostaControlli rispostaControlli = helper.aggiornaConteggioMonContaSesUpdUdKo(
+                    vrsSesUpdUnitaDocKo, monKeyTotalUdKo, false);
+            assertTrue(rispostaControlli.isrBoolean());
 
-	}
+        }
     }
 
     @Test
     public void verificaDataAttivazioneJob_queryIsOk() {
-	final RispostaControlli rispostaControlli = helper.verificaDataAttivazioneJob();
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper.verificaDataAttivazioneJob();
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
 }

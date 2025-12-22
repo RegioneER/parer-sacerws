@@ -57,54 +57,54 @@ public class AroIndiceAipUd implements Serializable {
     @Id
     @Column(name = "ID_INDICE_AIP")
     @GenericGenerator(name = "SARO_INDICE_AIP_UD_ID_INDICE_AIP_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_INDICE_AIP_UD"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_INDICE_AIP_UD"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_INDICE_AIP_UD_ID_INDICE_AIP_GENERATOR")
     public Long getIdIndiceAip() {
-	return this.idIndiceAip;
+        return this.idIndiceAip;
     }
 
     public void setIdIndiceAip(Long idIndiceAip) {
-	this.idIndiceAip = idIndiceAip;
+        this.idIndiceAip = idIndiceAip;
     }
 
     @Column(name = "ID_VER_INDICE_AIP_LAST")
     public BigDecimal getIdVerIndiceAipLast() {
-	return this.idVerIndiceAipLast;
+        return this.idVerIndiceAipLast;
     }
 
     public void setIdVerIndiceAipLast(BigDecimal idVerIndiceAipLast) {
-	this.idVerIndiceAipLast = idVerIndiceAipLast;
+        this.idVerIndiceAipLast = idVerIndiceAipLast;
     }
 
     @Column(name = "TI_FORMATO_INDICE_AIP")
     public String getTiFormatoIndiceAip() {
-	return this.tiFormatoIndiceAip;
+        return this.tiFormatoIndiceAip;
     }
 
     public void setTiFormatoIndiceAip(String tiFormatoIndiceAip) {
-	this.tiFormatoIndiceAip = tiFormatoIndiceAip;
+        this.tiFormatoIndiceAip = tiFormatoIndiceAip;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
     // bi-directional many-to-one association to AroVerIndiceAipUd
     @OneToMany(mappedBy = "aroIndiceAipUd", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<AroVerIndiceAipUd> getAroVerIndiceAipUds() {
-	return this.aroVerIndiceAipUds;
+        return this.aroVerIndiceAipUds;
     }
 
     public void setAroVerIndiceAipUds(List<AroVerIndiceAipUd> aroVerIndiceAipUds) {
-	this.aroVerIndiceAipUds = aroVerIndiceAipUds;
+        this.aroVerIndiceAipUds = aroVerIndiceAipUds;
     }
 }

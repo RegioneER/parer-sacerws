@@ -57,46 +57,46 @@ public class DecXsdAttribDatiSpec implements Serializable {
     @Column(name = "ID_XSD_ATTRIB_DATI_SPEC")
     @XmlID
     @GenericGenerator(name = "SDEC_XSD_ATTRIB_DATI_SPEC_ID_XSD_ATTRIB_DATI_SPEC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_XSD_ATTRIB_DATI_SPEC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_XSD_ATTRIB_DATI_SPEC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_XSD_ATTRIB_DATI_SPEC_ID_XSD_ATTRIB_DATI_SPEC_GENERATOR")
     public Long getIdXsdAttribDatiSpec() {
-	return this.idXsdAttribDatiSpec;
+        return this.idXsdAttribDatiSpec;
     }
 
     public void setIdXsdAttribDatiSpec(Long idXsdAttribDatiSpec) {
-	this.idXsdAttribDatiSpec = idXsdAttribDatiSpec;
+        this.idXsdAttribDatiSpec = idXsdAttribDatiSpec;
     }
 
     @Column(name = "NI_ORD_ATTRIB")
     public BigDecimal getNiOrdAttrib() {
-	return this.niOrdAttrib;
+        return this.niOrdAttrib;
     }
 
     public void setNiOrdAttrib(BigDecimal niOrdAttrib) {
-	this.niOrdAttrib = niOrdAttrib;
+        this.niOrdAttrib = niOrdAttrib;
     }
 
     // bi-directional many-to-one association to DecAttribDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ATTRIB_DATI_SPEC")
     public DecAttribDatiSpec getDecAttribDatiSpec() {
-	return this.decAttribDatiSpec;
+        return this.decAttribDatiSpec;
     }
 
     public void setDecAttribDatiSpec(DecAttribDatiSpec decAttribDatiSpec) {
-	this.decAttribDatiSpec = decAttribDatiSpec;
+        this.decAttribDatiSpec = decAttribDatiSpec;
     }
 
     // bi-directional many-to-one association to DecXsdDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_XSD_DATI_SPEC", nullable = false)
     public DecXsdDatiSpec getDecXsdDatiSpec() {
-	return this.decXsdDatiSpec;
+        return this.decXsdDatiSpec;
     }
 
     public void setDecXsdDatiSpec(DecXsdDatiSpec decXsdDatiSpec) {
-	this.decXsdDatiSpec = decXsdDatiSpec;
+        this.decXsdDatiSpec = decXsdDatiSpec;
     }
 
 }

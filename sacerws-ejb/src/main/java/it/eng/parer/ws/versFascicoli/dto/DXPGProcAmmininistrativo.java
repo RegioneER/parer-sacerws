@@ -19,24 +19,24 @@ public class DXPGProcAmmininistrativo {
     String denominazione;
 
     public String getCodice() {
-	return codice;
+        return codice;
     }
 
     public void setCodice(String codice) {
-	this.codice = codice;
+        this.codice = codice;
     }
 
     public String getDenominazione() {
-	return denominazione;
+        return denominazione;
     }
 
     public void setDenominazione(String denominazione) {
-	this.denominazione = denominazione;
+        this.denominazione = denominazione;
     }
 
     @Override
     public String toString() {
-	return codice + " - " + denominazione;
+        return codice + " - " + denominazione;
     }
 
 }

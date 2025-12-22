@@ -38,11 +38,11 @@ public class ControlliSubStrutTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliSubStrutTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList(""), ControlliSubStrutTest.class,
-			ControlliSubStrut.class, it.eng.parer.util.DateUtilsConverter.class)
-			.addPackages(true, "org.apache.poi.ss.formula"),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliSubStrutTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList(""), ControlliSubStrutTest.class,
+                        ControlliSubStrut.class, it.eng.parer.util.DateUtilsConverter.class)
+                        .addPackages(true, "org.apache.poi.ss.formula"),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -50,13 +50,13 @@ public class ControlliSubStrutTest {
 
     @Test
     public void calcolaSubStrut() {
-	final StrutturaVersamento strutV = new StrutturaVersamento();
-	strutV.setIdTipologiaUnitaDocumentaria(0L);
-	strutV.setDocumentiAttesi(new ArrayList<>());
-	strutV.getDocumentiAttesi().add(new DocumentoVers());
-	strutV.getDocumentiAttesi().get(0).setIdTipoDocumentoDB(0L);
-	strutV.setDataVersamento(ZonedDateTime.now());
-	final RispostaControlli rispostaControlli = controlliSubStrut.calcolaSubStrut(strutV);
-	assertNoErr(rispostaControlli);
+        final StrutturaVersamento strutV = new StrutturaVersamento();
+        strutV.setIdTipologiaUnitaDocumentaria(0L);
+        strutV.setDocumentiAttesi(new ArrayList<>());
+        strutV.getDocumentiAttesi().add(new DocumentoVers());
+        strutV.getDocumentiAttesi().get(0).setIdTipoDocumentoDB(0L);
+        strutV.setDataVersamento(ZonedDateTime.now());
+        final RispostaControlli rispostaControlli = controlliSubStrut.calcolaSubStrut(strutV);
+        assertNoErr(rispostaControlli);
     }
 }

@@ -35,10 +35,10 @@ public class SerVLisVerserByUpdUd implements Serializable {
 
     @EmbeddedId()
     public SerVLisVerserByUpdUdId getSerVLisVerserByUpdUdId() {
-	return serVLisVerserByUpdUdId;
+        return serVLisVerserByUpdUdId;
     }
 
     public void setSerVLisVerserByUpdUdId(SerVLisVerserByUpdUdId serVLisVerserByUpdUdId) {
-	this.serVLisVerserByUpdUdId = serVLisVerserByUpdUdId;
+        this.serVLisVerserByUpdUdId = serVLisVerserByUpdUdId;
     }
 }

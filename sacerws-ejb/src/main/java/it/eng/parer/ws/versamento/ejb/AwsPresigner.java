@@ -63,13 +63,13 @@ public class AwsPresigner {
 
     private S3Presigner lookupPresigner(ObjectStorageBackend configuration) {
 
-	final CacheKey cacheKey = new CacheKey(configuration.getAddress(),
-		configuration.getBucket());
-	S3Presigner presigner = presignerCache.computeIfAbsent(cacheKey,
-		k -> createPresigner(configuration));
-	log.debug("Il presigner per il bucket {} dell'object storage {} utilizzato",
-		configuration.getBucket(), configuration.getAddress());
-	return presigner;
+        final CacheKey cacheKey = new CacheKey(configuration.getAddress(),
+                configuration.getBucket());
+        S3Presigner presigner = presignerCache.computeIfAbsent(cacheKey,
+                k -> createPresigner(configuration));
+        log.debug("Il presigner per il bucket {} dell'object storage {} utilizzato",
+                configuration.getBucket(), configuration.getAddress());
+        return presigner;
     }
 
     /*
@@ -79,14 +79,14 @@ public class AwsPresigner {
      */
     private S3Presigner createPresigner(ObjectStorageBackend configuration) {
 
-	final AwsCredentialsProvider credProvider = StaticCredentialsProvider
-		.create(AwsBasicCredentials.create(configuration.getAccessKeyId(),
-			configuration.getSecretKey()));
+        final AwsCredentialsProvider credProvider = StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(configuration.getAccessKeyId(),
+                        configuration.getSecretKey()));
 
-	return S3Presigner.builder().endpointOverride(configuration.getAddress())
-		.region(Region.US_EAST_1).credentialsProvider(credProvider).serviceConfiguration(
-			S3Configuration.builder().pathStyleAccessEnabled(true).build())
-		.build();
+        return S3Presigner.builder().endpointOverride(configuration.getAddress())
+                .region(Region.US_EAST_1).credentialsProvider(credProvider).serviceConfiguration(
+                        S3Configuration.builder().pathStyleAccessEnabled(true).build())
+                .build();
     }
 
     /**
@@ -100,7 +100,7 @@ public class AwsPresigner {
      * @return URL pre firmata (accessibile per i prossimi 10 minuti)
      */
     public URL getPresignedUrl(ObjectStorageBackend configuration, String key) {
-	return getPresignedUrl(configuration, key, presignedUrlDurationOfMinutes());
+        return getPresignedUrl(configuration, key, presignedUrlDurationOfMinutes());
 
     }
 
@@ -115,20 +115,20 @@ public class AwsPresigner {
      * @return URL pre firmata (accessibile per la durata passata come parametro)
      */
     public URL getPresignedUrl(ObjectStorageBackend configuration, String key,
-	    Duration signatureDuration) {
-	S3Presigner presigner = lookupPresigner(configuration);
+            Duration signatureDuration) {
+        S3Presigner presigner = lookupPresigner(configuration);
 
-	GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-		.bucket(configuration.getBucket()).key(key).build();
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(configuration.getBucket()).key(key).build();
 
-	GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
-		.signatureDuration(signatureDuration).getObjectRequest(getObjectRequest).build();
+        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(signatureDuration).getObjectRequest(getObjectRequest).build();
 
-	PresignedGetObjectRequest presignedGetObjectRequest = presigner
-		.presignGetObject(getObjectPresignRequest);
-	log.debug("Ora puoi accedere a questa URL per {} minuti {}", signatureDuration.toMinutes(),
-		presignedGetObjectRequest.url());
-	return presignedGetObjectRequest.url();
+        PresignedGetObjectRequest presignedGetObjectRequest = presigner
+                .presignGetObject(getObjectPresignRequest);
+        log.debug("Ora puoi accedere a questa URL per {} minuti {}", signatureDuration.toMinutes(),
+                presignedGetObjectRequest.url());
+        return presignedGetObjectRequest.url();
     }
 
     /**
@@ -139,58 +139,58 @@ public class AwsPresigner {
      *
      */
     private final Duration presignedUrlDurationOfMinutes() {
-	final String longParameterString = configurationHelper
-		.getValoreParamApplicByApplic(ParametroApplDB.S3_PRESIGNED_URL_DURATION);
-	return Duration.ofMinutes(
-		NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString)
-			: 10L); // default
+        final String longParameterString = configurationHelper
+                .getValoreParamApplicByApplic(ParametroApplDB.S3_PRESIGNED_URL_DURATION);
+        return Duration.ofMinutes(
+                NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString)
+                        : 10L); // default
     }
 
     @PreDestroy
     private void clear() {
-	for (S3Presigner s3Presigner : presignerCache.values()) {
-	    if (s3Presigner != null) {
-		s3Presigner.close();
-	    }
-	}
+        for (S3Presigner s3Presigner : presignerCache.values()) {
+            if (s3Presigner != null) {
+                s3Presigner.close();
+            }
+        }
     }
 
     private static class CacheKey {
 
-	private URI storageAddress;
-	private String bucket;
+        private URI storageAddress;
+        private String bucket;
 
-	CacheKey(URI storageAddress, String bucket) {
-	    this.storageAddress = storageAddress;
-	    this.bucket = bucket;
-	}
+        CacheKey(URI storageAddress, String bucket) {
+            this.storageAddress = storageAddress;
+            this.bucket = bucket;
+        }
 
-	@Override
-	public int hashCode() {
-	    final int prime = 31;
-	    int result = 1;
-	    result = prime * result + ((storageAddress == null) ? 0 : storageAddress.hashCode());
-	    result = prime * result + ((bucket == null) ? 0 : bucket.hashCode());
-	    return result;
-	}
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((storageAddress == null) ? 0 : storageAddress.hashCode());
+            result = prime * result + ((bucket == null) ? 0 : bucket.hashCode());
+            return result;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj) {
-		return true;
-	    }
-	    if (obj == null) {
-		return false;
-	    }
-	    if (getClass() != obj.getClass()) {
-		return false;
-	    }
-	    final CacheKey other = (CacheKey) obj;
-	    if (!Objects.equals(this.bucket, other.bucket)) {
-		return false;
-	    }
-	    return Objects.equals(this.storageAddress, other.storageAddress);
-	}
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final CacheKey other = (CacheKey) obj;
+            if (!Objects.equals(this.bucket, other.bucket)) {
+                return false;
+            }
+            return Objects.equals(this.storageAddress, other.storageAddress);
+        }
 
     }
 }

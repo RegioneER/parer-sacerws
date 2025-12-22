@@ -68,51 +68,51 @@ public class DecAaTipoFascicolo implements Serializable {
     @Id
     @Column(name = "ID_AA_TIPO_FASCICOLO")
     @GenericGenerator(name = "SDEC_AA_TIPO_FASCICOLO_ID_AA_TIPO_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_AA_TIPO_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_AA_TIPO_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_AA_TIPO_FASCICOLO_ID_AA_TIPO_FASCICOLO_GENERATOR")
     public Long getIdAaTipoFascicolo() {
-	return this.idAaTipoFascicolo;
+        return this.idAaTipoFascicolo;
     }
 
     public void setIdAaTipoFascicolo(Long idAaTipoFascicolo) {
-	this.idAaTipoFascicolo = idAaTipoFascicolo;
+        this.idAaTipoFascicolo = idAaTipoFascicolo;
     }
 
     @Column(name = "AA_FIN_TIPO_FASCICOLO")
     public BigDecimal getAaFinTipoFascicolo() {
-	return this.aaFinTipoFascicolo;
+        return this.aaFinTipoFascicolo;
     }
 
     public void setAaFinTipoFascicolo(BigDecimal aaFinTipoFascicolo) {
-	this.aaFinTipoFascicolo = aaFinTipoFascicolo;
+        this.aaFinTipoFascicolo = aaFinTipoFascicolo;
     }
 
     @Column(name = "AA_INI_TIPO_FASCICOLO")
     public BigDecimal getAaIniTipoFascicolo() {
-	return this.aaIniTipoFascicolo;
+        return this.aaIniTipoFascicolo;
     }
 
     public void setAaIniTipoFascicolo(BigDecimal aaIniTipoFascicolo) {
-	this.aaIniTipoFascicolo = aaIniTipoFascicolo;
+        this.aaIniTipoFascicolo = aaIniTipoFascicolo;
     }
 
     @Column(name = "FL_UPD_FMT_NUMERO", columnDefinition = "char(1)")
     public String getFlUpdFmtNumero() {
-	return this.flUpdFmtNumero;
+        return this.flUpdFmtNumero;
     }
 
     public void setFlUpdFmtNumero(String flUpdFmtNumero) {
-	this.flUpdFmtNumero = flUpdFmtNumero;
+        this.flUpdFmtNumero = flUpdFmtNumero;
     }
 
     @Column(name = "NI_CHAR_PAD_PARTE_CLASSIF")
     public BigDecimal getNiCharPadParteClassif() {
-	return this.niCharPadParteClassif;
+        return this.niCharPadParteClassif;
     }
 
     public void setNiCharPadParteClassif(BigDecimal niCharPadParteClassif) {
-	this.niCharPadParteClassif = niCharPadParteClassif;
+        this.niCharPadParteClassif = niCharPadParteClassif;
     }
 
     // bi-directional many-to-one association to DecTipoFascicolo
@@ -120,45 +120,45 @@ public class DecAaTipoFascicolo implements Serializable {
     @JoinColumn(name = "ID_TIPO_FASCICOLO")
     @XmlTransient
     public DecTipoFascicolo getDecTipoFascicolo() {
-	return this.decTipoFascicolo;
+        return this.decTipoFascicolo;
     }
 
     public void setDecTipoFascicolo(DecTipoFascicolo decTipoFascicolo) {
-	this.decTipoFascicolo = decTipoFascicolo;
+        this.decTipoFascicolo = decTipoFascicolo;
     }
 
     // bi-directional many-to-one association to DecParteNumeroFascicolo
     @OneToMany(mappedBy = "decAaTipoFascicolo", cascade = {
-	    CascadeType.PERSIST, CascadeType.REMOVE })
+            CascadeType.PERSIST, CascadeType.REMOVE })
     public List<DecParteNumeroFascicolo> getDecParteNumeroFascicolos() {
-	return this.decParteNumeroFascicolos;
+        return this.decParteNumeroFascicolos;
     }
 
     public void setDecParteNumeroFascicolos(
-	    List<DecParteNumeroFascicolo> decParteNumeroFascicolos) {
-	this.decParteNumeroFascicolos = decParteNumeroFascicolos;
+            List<DecParteNumeroFascicolo> decParteNumeroFascicolos) {
+        this.decParteNumeroFascicolos = decParteNumeroFascicolos;
     }
 
     // bi-directional one-to-many association to DecUsoModelloXsdFasc
     @OneToMany(mappedBy = "decAaTipoFascicolo", cascade = {
-	    CascadeType.PERSIST, CascadeType.REMOVE })
+            CascadeType.PERSIST, CascadeType.REMOVE })
     @XmlTransient
     public List<DecUsoModelloXsdFasc> getDecUsoModelloXsdFascs() {
-	return this.decUsoModelloXsdFascs;
+        return this.decUsoModelloXsdFascs;
     }
 
     public void setDecUsoModelloXsdFascs(List<DecUsoModelloXsdFasc> decUsoModelloXsdFascs) {
-	this.decUsoModelloXsdFascs = decUsoModelloXsdFascs;
+        this.decUsoModelloXsdFascs = decUsoModelloXsdFascs;
     }
 
     // bi-directional many-to-one association to DecWarnAaTipoFascicolo
     @OneToMany(mappedBy = "decAaTipoFascicolo", cascade = CascadeType.REMOVE)
     @XmlTransient
     public List<DecWarnAaTipoFascicolo> getDecWarnAaTipoFascicolos() {
-	return this.decWarnAaTipoFascicolos;
+        return this.decWarnAaTipoFascicolos;
     }
 
     public void setDecWarnAaTipoFascicolos(List<DecWarnAaTipoFascicolo> decWarnAaTipoFascicolos) {
-	this.decWarnAaTipoFascicolos = decWarnAaTipoFascicolos;
+        this.decWarnAaTipoFascicolos = decWarnAaTipoFascicolos;
     }
 }

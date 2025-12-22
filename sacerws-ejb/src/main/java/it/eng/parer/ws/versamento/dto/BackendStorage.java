@@ -24,7 +24,7 @@ import java.io.Serializable;
 public interface BackendStorage extends Serializable {
 
     enum STORAGE_TYPE {
-	OS, BLOB, FILE
+        OS, BLOB, FILE
     }
 
     STORAGE_TYPE getType();
@@ -32,15 +32,15 @@ public interface BackendStorage extends Serializable {
     String getBackendName();
 
     default boolean isObjectStorage() {
-	return STORAGE_TYPE.OS.equals(getType());
+        return STORAGE_TYPE.OS.equals(getType());
     }
 
     default boolean isDataBase() {
-	return STORAGE_TYPE.BLOB.equals(getType());
+        return STORAGE_TYPE.BLOB.equals(getType());
     }
 
     default boolean isFile() {
-	return STORAGE_TYPE.FILE.equals(getType());
+        return STORAGE_TYPE.FILE.equals(getType());
     }
 
 }

@@ -122,7 +122,7 @@ public class SalvataggioBackendHelper {
     private EntityManager entityManager;
 
     public enum BACKEND_VERSAMENTO {
-	DATABASE, OBJECT_STORAGE
+        DATABASE, OBJECT_STORAGE
     }
 
     /**
@@ -135,15 +135,15 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore di recupero del parametro
      */
     public String getBackendStaging() throws ObjectStorageException {
-	try {
-	    return configurationHelper
-		    .getValoreParamApplicByApplic(ParametroApplDB.BACKEND_VRS_SES_UD_STAGING);
+        try {
+            return configurationHelper
+                    .getValoreParamApplicByApplic(ParametroApplDB.BACKEND_VRS_SES_UD_STAGING);
 
-	} catch (ParamApplicNotFoundException | IllegalArgumentException e) {
-	    throw ObjectStorageException.builder()
-		    .message(NO_PARAMETER, ParametroApplDB.BACKEND_VRS_SES_UD_STAGING).cause(e)
-		    .build();
-	}
+        } catch (ParamApplicNotFoundException | IllegalArgumentException e) {
+            throw ObjectStorageException.builder()
+                    .message(NO_PARAMETER, ParametroApplDB.BACKEND_VRS_SES_UD_STAGING).cause(e)
+                    .build();
+        }
     }
 
     // MEV#29276
@@ -157,15 +157,15 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore di recupero del parametro
      */
     public String getBackendSessioniErrKoAggMd() throws ObjectStorageException {
-	try {
-	    return configurationHelper
-		    .getValoreParamApplicByApplic(ParametroApplDB.BACKEND_XML_SES_AGG_MD_ERR_KO);
+        try {
+            return configurationHelper
+                    .getValoreParamApplicByApplic(ParametroApplDB.BACKEND_XML_SES_AGG_MD_ERR_KO);
 
-	} catch (ParamApplicNotFoundException | IllegalArgumentException e) {
-	    throw ObjectStorageException.builder()
-		    .message(NO_PARAMETER, ParametroApplDB.BACKEND_XML_SES_AGG_MD_ERR_KO).cause(e)
-		    .build();
-	}
+        } catch (ParamApplicNotFoundException | IllegalArgumentException e) {
+            throw ObjectStorageException.builder()
+                    .message(NO_PARAMETER, ParametroApplDB.BACKEND_XML_SES_AGG_MD_ERR_KO).cause(e)
+                    .build();
+        }
     }
     // end MEV#29276
 
@@ -181,46 +181,46 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public String getBackendByServiceName(long idTipoUnitaDoc, String nomeWs)
-	    throws ObjectStorageException {
-	try {
+            throws ObjectStorageException {
+        try {
 
-	    final String backendDatiVersamento;
-	    switch (nomeWs) {
-	    case WS_VERSAMENTO_NOME:
-		backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_SYNC;
-		break;
-	    case WS_AGGIUNTA_DOC_NOME:
-		backendDatiVersamento = ParametroApplDB.BACKEND_AGGIUNTALLEGATI_SYNC;
-		break;
-	    case WS_VERSAMENTO_MM_NOME:
-		backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_MULTIMEDIA;
-		break;
-	    // MEV#29276
-	    case WS_AGGIORNAMENTO_VERS_NOME:
-		backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_AGG_MD;
-		break;
-	    // end MEV#29276
-	    default:
-		throw new IllegalArgumentException("Tipo creazione documento non supportato");
-	    }
+            final String backendDatiVersamento;
+            switch (nomeWs) {
+            case WS_VERSAMENTO_NOME:
+                backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_SYNC;
+                break;
+            case WS_AGGIUNTA_DOC_NOME:
+                backendDatiVersamento = ParametroApplDB.BACKEND_AGGIUNTALLEGATI_SYNC;
+                break;
+            case WS_VERSAMENTO_MM_NOME:
+                backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_MULTIMEDIA;
+                break;
+            // MEV#29276
+            case WS_AGGIORNAMENTO_VERS_NOME:
+                backendDatiVersamento = ParametroApplDB.BACKEND_VERSAMENTO_AGG_MD;
+                break;
+            // end MEV#29276
+            default:
+                throw new IllegalArgumentException("Tipo creazione documento non supportato");
+            }
 
-	    return getParameter(backendDatiVersamento, idTipoUnitaDoc);
+            return getParameter(backendDatiVersamento, idTipoUnitaDoc);
 
-	} catch (ParamApplicNotFoundException | IllegalArgumentException e) {
-	    throw ObjectStorageException.builder().message(
-		    "Impossibile ottenere il parametro per id tipo unita doc {0} e nome servizio {1}",
-		    idTipoUnitaDoc, nomeWs).cause(e).build();
-	}
+        } catch (ParamApplicNotFoundException | IllegalArgumentException e) {
+            throw ObjectStorageException.builder().message(
+                    "Impossibile ottenere il parametro per id tipo unita doc {0} e nome servizio {1}",
+                    idTipoUnitaDoc, nomeWs).cause(e).build();
+        }
     }
 
     private String getParameter(String parameterName, long idTipoUnitaDoc) {
-	DecTipoUnitaDoc tipoUd = entityManager.find(DecTipoUnitaDoc.class, idTipoUnitaDoc);
-	long idStrut = tipoUd.getOrgStrut().getIdStrut();
+        DecTipoUnitaDoc tipoUd = entityManager.find(DecTipoUnitaDoc.class, idTipoUnitaDoc);
+        long idStrut = tipoUd.getOrgStrut().getIdStrut();
 
-	long idAmbiente = tipoUd.getOrgStrut().getOrgEnte().getOrgAmbiente().getIdAmbiente();
+        long idAmbiente = tipoUd.getOrgStrut().getOrgEnte().getOrgAmbiente().getIdAmbiente();
 
-	return configurationHelper.getValoreParamApplicByTipoUd(parameterName, idStrut, idAmbiente,
-		idTipoUnitaDoc);
+        return configurationHelper.getValoreParamApplicByTipoUd(parameterName, idStrut, idAmbiente,
+                idTipoUnitaDoc);
     }
 
     /**
@@ -241,99 +241,99 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public ObjectStorageResource putObject(InputStream blob, long blobLength, final String key,
-	    ObjectStorageBackend configuration, Optional<Map<String, String>> metadata,
-	    Optional<Set<Tag>> tags, Optional<String> base64crc32c) throws ObjectStorageException {
+            ObjectStorageBackend configuration, Optional<Map<String, String>> metadata,
+            Optional<Set<Tag>> tags, Optional<String> base64crc32c) throws ObjectStorageException {
 
-	checkFullConfiguration(configuration);
+        checkFullConfiguration(configuration);
 
-	final URI storageAddress = configuration.getAddress();
-	final String accessKeyId = configuration.getAccessKeyId();
-	final String secretKey = configuration.getSecretKey();
-	final String bucket = configuration.getBucket();
+        final URI storageAddress = configuration.getAddress();
+        final String accessKeyId = configuration.getAccessKeyId();
+        final String secretKey = configuration.getSecretKey();
+        final String bucket = configuration.getBucket();
 
-	log.debug("Sto per inserire nell'os {} la chiave {} sul bucket {}", storageAddress, key,
-		bucket);
+        log.debug("Sto per inserire nell'os {} la chiave {} sul bucket {}", storageAddress, key,
+                bucket);
 
-	try {
-	    S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
+        try {
+            S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
 
-	    Builder putObjectBuilder = PutObjectRequest.builder().bucket(bucket).key(key);
+            Builder putObjectBuilder = PutObjectRequest.builder().bucket(bucket).key(key);
 
-	    if (metadata.isPresent()) {
-		putObjectBuilder.metadata(metadata.get());
-	    } else {
-		putObjectBuilder.metadata(defaultMetadata());
-	    }
-	    if (tags.isPresent()) {
-		putObjectBuilder.tagging(Tagging.builder().tagSet(tags.get()).build());
-	    }
-	    if (base64crc32c.isPresent()) {
-		putObjectBuilder.checksumCRC32C(base64crc32c.get());
-	    }
+            if (metadata.isPresent()) {
+                putObjectBuilder.metadata(metadata.get());
+            } else {
+                putObjectBuilder.metadata(defaultMetadata());
+            }
+            if (tags.isPresent()) {
+                putObjectBuilder.tagging(Tagging.builder().tagSet(tags.get()).build());
+            }
+            if (base64crc32c.isPresent()) {
+                putObjectBuilder.checksumCRC32C(base64crc32c.get());
+            }
 
-	    PutObjectRequest objectRequest = putObjectBuilder.build();
-	    final long start = System.currentTimeMillis();
-	    PutObjectResponse response = s3Client.putObject(objectRequest,
-		    RequestBody.fromInputStream(blob, blobLength));
+            PutObjectRequest objectRequest = putObjectBuilder.build();
+            final long start = System.currentTimeMillis();
+            PutObjectResponse response = s3Client.putObject(objectRequest,
+                    RequestBody.fromInputStream(blob, blobLength));
 
-	    final long end = System.currentTimeMillis() - start;
-	    if (log.isDebugEnabled()) {
-		log.debug("Salvato oggetto {} di {} byte sul bucket {} con ETag {} in {} ms", key,
-			blobLength, bucket, response.eTag(), end);
-	    }
-	    final URL presignedUrl = presigner.getPresignedUrl(configuration, key);
-	    //
-	    final URI presignedURLasURI = presignedUrl.toURI();
+            final long end = System.currentTimeMillis() - start;
+            if (log.isDebugEnabled()) {
+                log.debug("Salvato oggetto {} di {} byte sul bucket {} con ETag {} in {} ms", key,
+                        blobLength, bucket, response.eTag(), end);
+            }
+            final URL presignedUrl = presigner.getPresignedUrl(configuration, key);
+            //
+            final URI presignedURLasURI = presignedUrl.toURI();
 
-	    final String tenant = getDefaultTenant();
+            final String tenant = getDefaultTenant();
 
-	    return new ObjectStorageResource() {
-		@Override
-		public String getBucket() {
-		    return bucket;
-		}
+            return new ObjectStorageResource() {
+                @Override
+                public String getBucket() {
+                    return bucket;
+                }
 
-		@Override
-		public String getKey() {
-		    return key;
-		}
+                @Override
+                public String getKey() {
+                    return key;
+                }
 
-		@Override
-		public String getETag() {
-		    return response.eTag();
-		}
+                @Override
+                public String getETag() {
+                    return response.eTag();
+                }
 
-		@Override
-		public String getExpiration() {
-		    return response.expiration();
-		}
+                @Override
+                public String getExpiration() {
+                    return response.expiration();
+                }
 
-		@Override
-		public URI getPresignedURL() {
-		    return presignedURLasURI;
-		}
+                @Override
+                public URI getPresignedURL() {
+                    return presignedURLasURI;
+                }
 
-		@Override
-		public String getTenant() {
-		    return tenant;
-		}
-	    };
+                @Override
+                public String getTenant() {
+                    return tenant;
+                }
+            };
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder()
-		    .message("{0}: impossibile salvare oggetto {1} sul bucket {2}",
-			    configuration.getBackendName(), key, configuration.getBucket())
-		    .cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder()
+                    .message("{0}: impossibile salvare oggetto {1} sul bucket {2}",
+                            configuration.getBackendName(), key, configuration.getBucket())
+                    .cause(e).build();
+        }
     }
 
     private Map<String, String> defaultMetadata() {
 
-	Map<String, String> defaultMetadata = new HashMap<>();
-	defaultMetadata.put(MEATADATA_INGEST_NODE, System.getProperty("jboss.node.name"));
-	defaultMetadata.put(MEATADATA_INGEST_TIME,
-		ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
-	return defaultMetadata;
+        Map<String, String> defaultMetadata = new HashMap<>();
+        defaultMetadata.put(MEATADATA_INGEST_NODE, System.getProperty("jboss.node.name"));
+        defaultMetadata.put(MEATADATA_INGEST_TIME,
+                ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
+        return defaultMetadata;
     }
 
     /**
@@ -356,40 +356,40 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public ObjectStorageResource getObjectFromSrcAndPutObjectOnDest(String sourceKey,
-	    ObjectStorageBackend sourceConfiguration, String destKey,
-	    ObjectStorageBackend destConfiguration) throws ObjectStorageException {
+            ObjectStorageBackend sourceConfiguration, String destKey,
+            ObjectStorageBackend destConfiguration) throws ObjectStorageException {
 
-	checkFullConfiguration(sourceConfiguration);
-	checkFullConfiguration(destConfiguration);
+        checkFullConfiguration(sourceConfiguration);
+        checkFullConfiguration(destConfiguration);
 
-	S3Client s3SourceClient;
-	GetObjectRequest getObjectRequest;
-	try {
-	    s3SourceClient = s3Clients.getClient(sourceConfiguration.getAddress(),
-		    sourceConfiguration.getAccessKeyId(), sourceConfiguration.getSecretKey());
+        S3Client s3SourceClient;
+        GetObjectRequest getObjectRequest;
+        try {
+            s3SourceClient = s3Clients.getClient(sourceConfiguration.getAddress(),
+                    sourceConfiguration.getAccessKeyId(), sourceConfiguration.getSecretKey());
 
-	    getObjectRequest = GetObjectRequest.builder().bucket(sourceConfiguration.getBucket())
-		    .key(sourceKey).build();
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(
-		    "{0}: errore generico creazione / copia oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
-		    sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(),
-		    sourceKey, destConfiguration.getBucket(), destKey).cause(e).build();
-	}
-	try (ResponseInputStream<GetObjectResponse> objectStream = s3SourceClient
-		.getObject(getObjectRequest);) {
-	    long objectLength = objectStream.response().contentLength();
-	    // if present
-	    String crc32c = objectStream.response().checksumCRC32C();
-	    return putObject(objectStream, objectLength, destKey, destConfiguration,
-		    Optional.empty(), Optional.empty(), Optional.ofNullable(crc32c));
+            getObjectRequest = GetObjectRequest.builder().bucket(sourceConfiguration.getBucket())
+                    .key(sourceKey).build();
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(
+                    "{0}: errore generico creazione / copia oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
+                    sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(),
+                    sourceKey, destConfiguration.getBucket(), destKey).cause(e).build();
+        }
+        try (ResponseInputStream<GetObjectResponse> objectStream = s3SourceClient
+                .getObject(getObjectRequest);) {
+            long objectLength = objectStream.response().contentLength();
+            // if present
+            String crc32c = objectStream.response().checksumCRC32C();
+            return putObject(objectStream, objectLength, destKey, destConfiguration,
+                    Optional.empty(), Optional.empty(), Optional.ofNullable(crc32c));
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(
-		    "{0}: impossibile creare / copiare oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
-		    sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(),
-		    sourceKey, destConfiguration.getBucket(), destKey).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(
+                    "{0}: impossibile creare / copiare oggetto da bucket {1} con chiave {2} verso bucket {3} con chiave {4}",
+                    sourceConfiguration.getBackendName(), sourceConfiguration.getBucket(),
+                    sourceKey, destConfiguration.getBucket(), destKey).cause(e).build();
+        }
 
     }
 
@@ -403,22 +403,22 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkCompDoc(ObjectStorageResource object, String nmBackend,
-	    long idCompDoc) throws ObjectStorageException {
-	try {
-	    AroCompDoc aroCompDoc = entityManager.find(AroCompDoc.class, idCompDoc);
-	    AroCompObjectStorage osLink = new AroCompObjectStorage();
-	    osLink.setAroCompDoc(aroCompDoc);
+            long idCompDoc) throws ObjectStorageException {
+        try {
+            AroCompDoc aroCompDoc = entityManager.find(AroCompDoc.class, idCompDoc);
+            AroCompObjectStorage osLink = new AroCompObjectStorage();
+            osLink.setAroCompDoc(aroCompDoc);
 
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
 
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    entityManager.persist(osLink);
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -432,22 +432,22 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipUd(ObjectStorageResource object, String nmBackend,
-	    long idAroUnitaDoc) throws ObjectStorageException {
-	try {
-	    AroUnitaDoc aroUnitaDoc = entityManager.find(AroUnitaDoc.class, idAroUnitaDoc);
-	    AroXmlUnitaDocObjectStorage osLink = new AroXmlUnitaDocObjectStorage();
-	    osLink.setAroUnitaDoc(aroUnitaDoc);
+            long idAroUnitaDoc) throws ObjectStorageException {
+        try {
+            AroUnitaDoc aroUnitaDoc = entityManager.find(AroUnitaDoc.class, idAroUnitaDoc);
+            AroXmlUnitaDocObjectStorage osLink = new AroXmlUnitaDocObjectStorage();
+            osLink.setAroUnitaDoc(aroUnitaDoc);
 
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
 
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    entityManager.persist(osLink);
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -461,22 +461,22 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipDoc(ObjectStorageResource object, String nmBackend,
-	    long idAroDoc) throws ObjectStorageException {
-	try {
-	    AroDoc aroDoc = entityManager.find(AroDoc.class, idAroDoc);
-	    AroXmlDocObjectStorage osLink = new AroXmlDocObjectStorage();
-	    osLink.setAroDoc(aroDoc);
+            long idAroDoc) throws ObjectStorageException {
+        try {
+            AroDoc aroDoc = entityManager.find(AroDoc.class, idAroDoc);
+            AroXmlDocObjectStorage osLink = new AroXmlDocObjectStorage();
+            osLink.setAroDoc(aroDoc);
 
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
 
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    entityManager.persist(osLink);
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     // MEV#29276
@@ -492,24 +492,24 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipAggMd(ObjectStorageResource object, String nmBackend,
-	    long idUpdUnitaDoc, BigDecimal idStrut) throws ObjectStorageException {
-	try {
-	    AroUpdUnitaDoc aroUpdUnitaDoc = entityManager.find(AroUpdUnitaDoc.class, idUpdUnitaDoc);
+            long idUpdUnitaDoc, BigDecimal idStrut) throws ObjectStorageException {
+        try {
+            AroUpdUnitaDoc aroUpdUnitaDoc = entityManager.find(AroUpdUnitaDoc.class, idUpdUnitaDoc);
 
-	    AroXmlUpdUdObjectStorage osLink = new AroXmlUpdUdObjectStorage();
-	    osLink.setAroUpdUnitaDoc(aroUpdUnitaDoc);
+            AroXmlUpdUdObjectStorage osLink = new AroXmlUpdUdObjectStorage();
+            osLink.setAroUpdUnitaDoc(aroUpdUnitaDoc);
 
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    osLink.setIdStrut(idStrut);
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            osLink.setIdStrut(idStrut);
 
-	    entityManager.persist(osLink);
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -527,48 +527,48 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkUpdDatiSpecAggMd(ObjectStorageResource object,
-	    String nmBackend, long idEntitySacerUpd,
-	    TiEntitaAroUpdDatiSpecUnitaDoc tipoEntitySacerUpd, BigDecimal idStrut)
-	    throws ObjectStorageException {
+            String nmBackend, long idEntitySacerUpd,
+            TiEntitaAroUpdDatiSpecUnitaDoc tipoEntitySacerUpd, BigDecimal idStrut)
+            throws ObjectStorageException {
 
-	try {
+        try {
 
-	    AroUpdDatiSpecUdObjectStorage osLink = new AroUpdDatiSpecUdObjectStorage();
+            AroUpdDatiSpecUdObjectStorage osLink = new AroUpdDatiSpecUdObjectStorage();
 
-	    switch (tipoEntitySacerUpd) {
-	    case UPD_UNI_DOC:
-		AroUpdUnitaDoc aroUpdUnitaDoc = entityManager.find(AroUpdUnitaDoc.class,
-			idEntitySacerUpd);
-		osLink.setAroUpdUnitaDoc(aroUpdUnitaDoc);
-		break;
-	    case UPD_DOC:
-		AroUpdDocUnitaDoc aroUpdDocUnitaDoc = entityManager.find(AroUpdDocUnitaDoc.class,
-			idEntitySacerUpd);
-		osLink.setAroUpdUnitaDoc(aroUpdDocUnitaDoc.getAroUpdUnitaDoc());
-		osLink.setAroUpdDocUnitaDoc(aroUpdDocUnitaDoc);
-		break;
-	    case UPD_COMP:
-		AroUpdCompUnitaDoc aroUpdCompUnitaDoc = entityManager.find(AroUpdCompUnitaDoc.class,
-			idEntitySacerUpd);
-		osLink.setAroUpdUnitaDoc(
-			aroUpdCompUnitaDoc.getAroUpdDocUnitaDoc().getAroUpdUnitaDoc());
-		osLink.setAroUpdDocUnitaDoc(aroUpdCompUnitaDoc.getAroUpdDocUnitaDoc());
-		osLink.setAroUpdCompUnitaDoc(aroUpdCompUnitaDoc);
-		break;
-	    }
+            switch (tipoEntitySacerUpd) {
+            case UPD_UNI_DOC:
+                AroUpdUnitaDoc aroUpdUnitaDoc = entityManager.find(AroUpdUnitaDoc.class,
+                        idEntitySacerUpd);
+                osLink.setAroUpdUnitaDoc(aroUpdUnitaDoc);
+                break;
+            case UPD_DOC:
+                AroUpdDocUnitaDoc aroUpdDocUnitaDoc = entityManager.find(AroUpdDocUnitaDoc.class,
+                        idEntitySacerUpd);
+                osLink.setAroUpdUnitaDoc(aroUpdDocUnitaDoc.getAroUpdUnitaDoc());
+                osLink.setAroUpdDocUnitaDoc(aroUpdDocUnitaDoc);
+                break;
+            case UPD_COMP:
+                AroUpdCompUnitaDoc aroUpdCompUnitaDoc = entityManager.find(AroUpdCompUnitaDoc.class,
+                        idEntitySacerUpd);
+                osLink.setAroUpdUnitaDoc(
+                        aroUpdCompUnitaDoc.getAroUpdDocUnitaDoc().getAroUpdUnitaDoc());
+                osLink.setAroUpdDocUnitaDoc(aroUpdCompUnitaDoc.getAroUpdDocUnitaDoc());
+                osLink.setAroUpdCompUnitaDoc(aroUpdCompUnitaDoc);
+                break;
+            }
 
-	    osLink.setTiEntitaSacer(tipoEntitySacerUpd);
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    osLink.setIdStrut(idStrut);
+            osLink.setTiEntitaSacer(tipoEntitySacerUpd);
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            osLink.setIdStrut(idStrut);
 
-	    entityManager.persist(osLink);
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -586,48 +586,48 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkVersIniDatiSpecAggMd(ObjectStorageResource object,
-	    String nmBackend, long idEntitySacerVersIni,
-	    TiEntitaSacerAroVersIniDatiSpec tipoEntitySacerVersIni, BigDecimal idStrut)
-	    throws ObjectStorageException {
+            String nmBackend, long idEntitySacerVersIni,
+            TiEntitaSacerAroVersIniDatiSpec tipoEntitySacerVersIni, BigDecimal idStrut)
+            throws ObjectStorageException {
 
-	try {
+        try {
 
-	    AroVersIniDatiSpecObjectStorage osLink = new AroVersIniDatiSpecObjectStorage();
+            AroVersIniDatiSpecObjectStorage osLink = new AroVersIniDatiSpecObjectStorage();
 
-	    switch (tipoEntitySacerVersIni) {
-	    case UNI_DOC:
-		AroVersIniUnitaDoc aroVersIniUnitaDoc = entityManager.find(AroVersIniUnitaDoc.class,
-			idEntitySacerVersIni);
-		osLink.setAroVersIniUnitaDoc(aroVersIniUnitaDoc);
-		break;
-	    case DOC:
-		AroVersIniDoc aroVersIniDoc = entityManager.find(AroVersIniDoc.class,
-			idEntitySacerVersIni);
-		osLink.setAroVersIniUnitaDoc(aroVersIniDoc.getAroVersIniUnitaDoc());
-		osLink.setAroVersIniDoc(aroVersIniDoc);
-		break;
-	    case COMP:
-		AroVersIniComp aroVersIniComp = entityManager.find(AroVersIniComp.class,
-			idEntitySacerVersIni);
-		osLink.setAroVersIniUnitaDoc(
-			aroVersIniComp.getAroVersIniDoc().getAroVersIniUnitaDoc());
-		osLink.setAroVersIniDoc(aroVersIniComp.getAroVersIniDoc());
-		osLink.setAroVersIniComp(aroVersIniComp);
-		break;
-	    }
+            switch (tipoEntitySacerVersIni) {
+            case UNI_DOC:
+                AroVersIniUnitaDoc aroVersIniUnitaDoc = entityManager.find(AroVersIniUnitaDoc.class,
+                        idEntitySacerVersIni);
+                osLink.setAroVersIniUnitaDoc(aroVersIniUnitaDoc);
+                break;
+            case DOC:
+                AroVersIniDoc aroVersIniDoc = entityManager.find(AroVersIniDoc.class,
+                        idEntitySacerVersIni);
+                osLink.setAroVersIniUnitaDoc(aroVersIniDoc.getAroVersIniUnitaDoc());
+                osLink.setAroVersIniDoc(aroVersIniDoc);
+                break;
+            case COMP:
+                AroVersIniComp aroVersIniComp = entityManager.find(AroVersIniComp.class,
+                        idEntitySacerVersIni);
+                osLink.setAroVersIniUnitaDoc(
+                        aroVersIniComp.getAroVersIniDoc().getAroVersIniUnitaDoc());
+                osLink.setAroVersIniDoc(aroVersIniComp.getAroVersIniDoc());
+                osLink.setAroVersIniComp(aroVersIniComp);
+                break;
+            }
 
-	    osLink.setTiEntitaSacer(tipoEntitySacerVersIni);
-	    osLink.setCdKeyFile(object.getKey());
-	    osLink.setNmBucket(object.getBucket());
-	    osLink.setNmTenant(object.getTenant());
-	    osLink.setDecBackend(getBackendEntity(nmBackend));
-	    osLink.setIdStrut(idStrut);
+            osLink.setTiEntitaSacer(tipoEntitySacerVersIni);
+            osLink.setCdKeyFile(object.getKey());
+            osLink.setNmBucket(object.getBucket());
+            osLink.setNmTenant(object.getTenant());
+            osLink.setDecBackend(getBackendEntity(nmBackend));
+            osLink.setIdStrut(idStrut);
 
-	    entityManager.persist(osLink);
+            entityManager.persist(osLink);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -642,25 +642,25 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipSessioneKoAggMd(ObjectStorageResource object,
-	    String nmBackend, long idSesUpdUnitaDocKo, BigDecimal idStrut)
-	    throws ObjectStorageException {
-	try {
+            String nmBackend, long idSesUpdUnitaDocKo, BigDecimal idStrut)
+            throws ObjectStorageException {
+        try {
 
-	    VrsSesUpdUnitaDocKo sesUpdUnitaDocKo = entityManager.find(VrsSesUpdUnitaDocKo.class,
-		    idSesUpdUnitaDocKo);
+            VrsSesUpdUnitaDocKo sesUpdUnitaDocKo = entityManager.find(VrsSesUpdUnitaDocKo.class,
+                    idSesUpdUnitaDocKo);
 
-	    VrsXmlSesUpdUdKoObjectStorage linkFalliti = new VrsXmlSesUpdUdKoObjectStorage();
-	    linkFalliti.setVrsSesUpdUnitaDocKo(sesUpdUnitaDocKo);
-	    linkFalliti.setDecBackend(getBackendEntity(nmBackend));
-	    linkFalliti.setNmTenant(object.getTenant());
-	    linkFalliti.setNmBucket(object.getBucket());
-	    linkFalliti.setCdKeyFile(object.getKey());
-	    linkFalliti.setIdStrut(idStrut);
-	    entityManager.persist(linkFalliti);
+            VrsXmlSesUpdUdKoObjectStorage linkFalliti = new VrsXmlSesUpdUdKoObjectStorage();
+            linkFalliti.setVrsSesUpdUnitaDocKo(sesUpdUnitaDocKo);
+            linkFalliti.setDecBackend(getBackendEntity(nmBackend));
+            linkFalliti.setNmTenant(object.getTenant());
+            linkFalliti.setNmBucket(object.getBucket());
+            linkFalliti.setCdKeyFile(object.getKey());
+            linkFalliti.setIdStrut(idStrut);
+            entityManager.persist(linkFalliti);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -675,25 +675,25 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipSessioneErrAggMd(ObjectStorageResource object,
-	    String nmBackend, long idSesUpdUnitaDocErr, BigDecimal idStrut)
-	    throws ObjectStorageException {
-	try {
+            String nmBackend, long idSesUpdUnitaDocErr, BigDecimal idStrut)
+            throws ObjectStorageException {
+        try {
 
-	    VrsSesUpdUnitaDocErr sesUpdUnitaDocErr = entityManager.find(VrsSesUpdUnitaDocErr.class,
-		    idSesUpdUnitaDocErr);
+            VrsSesUpdUnitaDocErr sesUpdUnitaDocErr = entityManager.find(VrsSesUpdUnitaDocErr.class,
+                    idSesUpdUnitaDocErr);
 
-	    VrsXmlSesUpdUdErrObjectStorage linkErrati = new VrsXmlSesUpdUdErrObjectStorage();
-	    linkErrati.setVrsSesUpdUnitaDocErr(sesUpdUnitaDocErr);
-	    linkErrati.setDecBackend(getBackendEntity(nmBackend));
-	    linkErrati.setNmTenant(object.getTenant());
-	    linkErrati.setNmBucket(object.getBucket());
-	    linkErrati.setCdKeyFile(object.getKey());
-	    linkErrati.setIdStrut(idStrut);
-	    entityManager.persist(linkErrati);
+            VrsXmlSesUpdUdErrObjectStorage linkErrati = new VrsXmlSesUpdUdErrObjectStorage();
+            linkErrati.setVrsSesUpdUnitaDocErr(sesUpdUnitaDocErr);
+            linkErrati.setDecBackend(getBackendEntity(nmBackend));
+            linkErrati.setNmTenant(object.getTenant());
+            linkErrati.setNmBucket(object.getBucket());
+            linkErrati.setCdKeyFile(object.getKey());
+            linkErrati.setIdStrut(idStrut);
+            entityManager.persist(linkErrati);
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
     // end MEV#29276
 
@@ -709,20 +709,20 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkSipSessione(ObjectStorageResource object, String nmBackend,
-	    long idDatiSessioneVers, BigDecimal idStrut) throws ObjectStorageException {
-	try {
-	    VrsXmlDatiSesObjectStorageKo vrsXmlDatiSesObjectStorageKo = new VrsXmlDatiSesObjectStorageKo();
-	    vrsXmlDatiSesObjectStorageKo.setDecBackend(getBackendEntity(nmBackend));
-	    vrsXmlDatiSesObjectStorageKo.setNmTenant(object.getTenant());
-	    vrsXmlDatiSesObjectStorageKo.setNmBucket(object.getBucket());
-	    vrsXmlDatiSesObjectStorageKo.setNmKeyFile(object.getKey());
-	    vrsXmlDatiSesObjectStorageKo.setIdStrut(idStrut);
-	    vrsXmlDatiSesObjectStorageKo.setDatiSessioneVersKo(
-		    entityManager.find(VrsDatiSessioneVersKo.class, idDatiSessioneVers));
-	    entityManager.persist(vrsXmlDatiSesObjectStorageKo);
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+            long idDatiSessioneVers, BigDecimal idStrut) throws ObjectStorageException {
+        try {
+            VrsXmlDatiSesObjectStorageKo vrsXmlDatiSesObjectStorageKo = new VrsXmlDatiSesObjectStorageKo();
+            vrsXmlDatiSesObjectStorageKo.setDecBackend(getBackendEntity(nmBackend));
+            vrsXmlDatiSesObjectStorageKo.setNmTenant(object.getTenant());
+            vrsXmlDatiSesObjectStorageKo.setNmBucket(object.getBucket());
+            vrsXmlDatiSesObjectStorageKo.setNmKeyFile(object.getKey());
+            vrsXmlDatiSesObjectStorageKo.setIdStrut(idStrut);
+            vrsXmlDatiSesObjectStorageKo.setDatiSessioneVersKo(
+                    entityManager.find(VrsDatiSessioneVersKo.class, idDatiSessioneVers));
+            entityManager.persist(vrsXmlDatiSesObjectStorageKo);
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -737,23 +737,23 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public void saveObjectStorageLinkFileSessione(ObjectStorageResource stagingResource,
-	    String nmBackend, long idFileSessione, BigDecimal idStrut)
-	    throws ObjectStorageException {
-	try {
-	    VrsFileSessioneKo fileSessioneKo = entityManager.find(VrsFileSessioneKo.class,
-		    idFileSessione);
+            String nmBackend, long idFileSessione, BigDecimal idStrut)
+            throws ObjectStorageException {
+        try {
+            VrsFileSessioneKo fileSessioneKo = entityManager.find(VrsFileSessioneKo.class,
+                    idFileSessione);
 
-	    VrsFileSesObjectStorageKo linkFalliti = new VrsFileSesObjectStorageKo();
-	    linkFalliti.setFileSessioneKo(fileSessioneKo);
-	    linkFalliti.setDecBackend(getBackendEntity(nmBackend));
-	    linkFalliti.setNmTenant(stagingResource.getTenant());
-	    linkFalliti.setNmBucket(stagingResource.getBucket());
-	    linkFalliti.setNmKeyFile(stagingResource.getKey());
-	    linkFalliti.setIdStrut(idStrut);
-	    entityManager.persist(linkFalliti);
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
-	}
+            VrsFileSesObjectStorageKo linkFalliti = new VrsFileSesObjectStorageKo();
+            linkFalliti.setFileSessioneKo(fileSessioneKo);
+            linkFalliti.setDecBackend(getBackendEntity(nmBackend));
+            linkFalliti.setNmTenant(stagingResource.getTenant());
+            linkFalliti.setNmBucket(stagingResource.getBucket());
+            linkFalliti.setNmKeyFile(stagingResource.getKey());
+            linkFalliti.setIdStrut(idStrut);
+            entityManager.persist(linkFalliti);
+        } catch (Exception e) {
+            throw ObjectStorageException.builder().message(LOG_MESSAGE_NO_SAVED).cause(e).build();
+        }
     }
 
     /**
@@ -776,80 +776,80 @@ public class SalvataggioBackendHelper {
      *
      */
     public ObjectStorageResource copyObjectFromSrcToDest(String sourceKey,
-	    ObjectStorageBackend sourceConfiguration, String destKey,
-	    ObjectStorageBackend destConfiguration) throws ObjectStorageException {
+            ObjectStorageBackend sourceConfiguration, String destKey,
+            ObjectStorageBackend destConfiguration) throws ObjectStorageException {
 
-	checkFullConfiguration(sourceConfiguration);
-	checkFullConfiguration(destConfiguration);
+        checkFullConfiguration(sourceConfiguration);
+        checkFullConfiguration(destConfiguration);
 
-	// non è lo stesso Object storage, non posso effettuare la copia tra bucket.
-	if (!sameServiceAccount(destConfiguration, destConfiguration)) {
-	    throw ObjectStorageException.builder().message(
-		    "Impossibile effettuare copia source key = {0} bucket {1} / dest key = {2} bucket = {3} per istanze diverse di Object Storage {4} verso {5}",
-		    sourceKey, sourceConfiguration.getBucket(), destKey,
-		    destConfiguration.getBucket(), sourceConfiguration.getBackendName(),
-		    destConfiguration.getBackendName()).build();
-	}
+        // non è lo stesso Object storage, non posso effettuare la copia tra bucket.
+        if (!sameServiceAccount(destConfiguration, destConfiguration)) {
+            throw ObjectStorageException.builder().message(
+                    "Impossibile effettuare copia source key = {0} bucket {1} / dest key = {2} bucket = {3} per istanze diverse di Object Storage {4} verso {5}",
+                    sourceKey, sourceConfiguration.getBucket(), destKey,
+                    destConfiguration.getBucket(), sourceConfiguration.getBackendName(),
+                    destConfiguration.getBackendName()).build();
+        }
 
-	final URI storageAddress = sourceConfiguration.getAddress();
-	final String accessKeyId = sourceConfiguration.getAccessKeyId();
-	final String secretKey = sourceConfiguration.getSecretKey();
+        final URI storageAddress = sourceConfiguration.getAddress();
+        final String accessKeyId = sourceConfiguration.getAccessKeyId();
+        final String secretKey = sourceConfiguration.getSecretKey();
 
-	try {
-	    S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
+        try {
+            S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
 
-	    CopyObjectRequest copyReq = CopyObjectRequest.builder()
-		    .sourceBucket(sourceConfiguration.getBucket()).sourceKey(sourceKey)
-		    .destinationBucket(destConfiguration.getBucket()).destinationKey(destKey)
-		    .build();
+            CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                    .sourceBucket(sourceConfiguration.getBucket()).sourceKey(sourceKey)
+                    .destinationBucket(destConfiguration.getBucket()).destinationKey(destKey)
+                    .build();
 
-	    CopyObjectResponse copyRes = s3Client.copyObject(copyReq);
-	    if (log.isDebugEnabled()) {
-		log.debug(
-			"Copiato oggetto {} dal bucket di staging {} al bucket dei componenti {} con chiave {} e con ETag {}",
-			sourceKey, sourceConfiguration.getBucket(), destConfiguration.getBucket(),
-			destKey, copyRes.copyObjectResult().eTag());
-	    }
-	    final String tenant = getDefaultTenant();
-	    final URL presignedUrl = presigner.getPresignedUrl(destConfiguration, destKey);
-	    final URI presignedURLasURI = presignedUrl.toURI();
+            CopyObjectResponse copyRes = s3Client.copyObject(copyReq);
+            if (log.isDebugEnabled()) {
+                log.debug(
+                        "Copiato oggetto {} dal bucket di staging {} al bucket dei componenti {} con chiave {} e con ETag {}",
+                        sourceKey, sourceConfiguration.getBucket(), destConfiguration.getBucket(),
+                        destKey, copyRes.copyObjectResult().eTag());
+            }
+            final String tenant = getDefaultTenant();
+            final URL presignedUrl = presigner.getPresignedUrl(destConfiguration, destKey);
+            final URI presignedURLasURI = presignedUrl.toURI();
 
-	    return new ObjectStorageResource() {
-		@Override
-		public String getBucket() {
-		    return destConfiguration.getBucket();
-		}
+            return new ObjectStorageResource() {
+                @Override
+                public String getBucket() {
+                    return destConfiguration.getBucket();
+                }
 
-		@Override
-		public String getKey() {
-		    return destKey;
-		}
+                @Override
+                public String getKey() {
+                    return destKey;
+                }
 
-		@Override
-		public String getETag() {
-		    return copyRes.copyObjectResult().eTag();
-		}
+                @Override
+                public String getETag() {
+                    return copyRes.copyObjectResult().eTag();
+                }
 
-		@Override
-		public String getExpiration() {
-		    return copyRes.expiration();
-		}
+                @Override
+                public String getExpiration() {
+                    return copyRes.expiration();
+                }
 
-		@Override
-		public URI getPresignedURL() {
-		    return presignedURLasURI;
-		}
+                @Override
+                public URI getPresignedURL() {
+                    return presignedURLasURI;
+                }
 
-		@Override
-		public String getTenant() {
-		    return tenant;
-		}
-	    };
+                @Override
+                public String getTenant() {
+                    return tenant;
+                }
+            };
 
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder()
-		    .message("Impossibile copiare tra staging e componenti").cause(e).build();
-	}
+        } catch (Exception e) {
+            throw ObjectStorageException.builder()
+                    .message("Impossibile copiare tra staging e componenti").cause(e).build();
+        }
     }
 
     /**
@@ -862,17 +862,17 @@ public class SalvataggioBackendHelper {
      * @return true se il service account è il medesimo
      */
     private static boolean sameServiceAccount(ObjectStorageBackend conf1,
-	    ObjectStorageBackend conf2) {
-	return conf1.getAddress().equals(conf2.getAddress())
-		&& conf1.getAccessKeyId().equals(conf2.getAccessKeyId())
-		&& conf1.getSecretKey().equals(conf2.getSecretKey());
+            ObjectStorageBackend conf2) {
+        return conf1.getAddress().equals(conf2.getAddress())
+                && conf1.getAccessKeyId().equals(conf2.getAccessKeyId())
+                && conf1.getSecretKey().equals(conf2.getSecretKey());
     }
 
     private DecBackend getBackendEntity(String nomeBackend) {
-	TypedQuery<DecBackend> query = entityManager.createQuery(
-		"Select d from DecBackend d where d.nmBackend = :nomeBackend", DecBackend.class);
-	query.setParameter("nomeBackend", nomeBackend);
-	return query.getSingleResult();
+        TypedQuery<DecBackend> query = entityManager.createQuery(
+                "Select d from DecBackend d where d.nmBackend = :nomeBackend", DecBackend.class);
+        query.setParameter("nomeBackend", nomeBackend);
+        return query.getSingleResult();
     }
 
     /**
@@ -885,31 +885,31 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public BackendStorage getBackend(String nomeBackend) throws ObjectStorageException {
-	try {
+        try {
 
-	    DecBackend backend = getBackendEntity(nomeBackend);
-	    final BackendStorage.STORAGE_TYPE type = BackendStorage.STORAGE_TYPE
-		    .valueOf(backend.getNmTipoBackend());
-	    final String backendName = backend.getNmBackend();
+            DecBackend backend = getBackendEntity(nomeBackend);
+            final BackendStorage.STORAGE_TYPE type = BackendStorage.STORAGE_TYPE
+                    .valueOf(backend.getNmTipoBackend());
+            final String backendName = backend.getNmBackend();
 
-	    return new BackendStorage() {
-		private static final long serialVersionUID = 1L;
+            return new BackendStorage() {
+                private static final long serialVersionUID = 1L;
 
-		@Override
-		public BackendStorage.STORAGE_TYPE getType() {
-		    return type;
-		}
+                @Override
+                public BackendStorage.STORAGE_TYPE getType() {
+                    return type;
+                }
 
-		@Override
-		public String getBackendName() {
-		    return backendName;
-		}
-	    };
+                @Override
+                public String getBackendName() {
+                    return backendName;
+                }
+            };
 
-	} catch (IllegalArgumentException | NonUniqueResultException e) {
-	    throw ObjectStorageException.builder()
-		    .message("Impossibile ottenere le informazioni di backend").cause(e).build();
-	}
+        } catch (IllegalArgumentException | NonUniqueResultException e) {
+            throw ObjectStorageException.builder()
+                    .message("Impossibile ottenere le informazioni di backend").cause(e).build();
+        }
 
     }
 
@@ -929,86 +929,86 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public ObjectStorageBackend getObjectStorageConfiguration(final String nomeBackend,
-	    final String tipoUsoOs) throws ObjectStorageException {
-	TypedQuery<DecConfigObjectStorage> query = entityManager.createQuery(
-		"Select c from DecConfigObjectStorage c where c.tiUsoConfigObjectStorage = :tipoUsoOs and c.decBackend.nmBackend = :nomeBackend order by c.nmConfigObjectStorage",
-		DecConfigObjectStorage.class);
-	query.setParameter("tipoUsoOs", tipoUsoOs).setParameter("nomeBackend", nomeBackend);
-	List<DecConfigObjectStorage> resultList = query.getResultList();
-	String bucket = null;
-	String nomeSystemPropertyAccessKeyId = null;
-	String nomeSystemPropertySecretKey = null;
-	String storageAddress = null;
+            final String tipoUsoOs) throws ObjectStorageException {
+        TypedQuery<DecConfigObjectStorage> query = entityManager.createQuery(
+                "Select c from DecConfigObjectStorage c where c.tiUsoConfigObjectStorage = :tipoUsoOs and c.decBackend.nmBackend = :nomeBackend order by c.nmConfigObjectStorage",
+                DecConfigObjectStorage.class);
+        query.setParameter("tipoUsoOs", tipoUsoOs).setParameter("nomeBackend", nomeBackend);
+        List<DecConfigObjectStorage> resultList = query.getResultList();
+        String bucket = null;
+        String nomeSystemPropertyAccessKeyId = null;
+        String nomeSystemPropertySecretKey = null;
+        String storageAddress = null;
 
-	for (DecConfigObjectStorage decConfigObjectStorage : resultList) {
-	    switch (decConfigObjectStorage.getNmConfigObjectStorage()) {
-	    case ACCESS_KEY_ID_SYS_PROP:
-		nomeSystemPropertyAccessKeyId = decConfigObjectStorage
-			.getDsValoreConfigObjectStorage();
-		break;
-	    case BUCKET:
-		bucket = decConfigObjectStorage.getDsValoreConfigObjectStorage();
-		break;
-	    case SECRET_KEY_SYS_PROP:
-		nomeSystemPropertySecretKey = decConfigObjectStorage
-			.getDsValoreConfigObjectStorage();
-		break;
-	    default:
-		throw ObjectStorageException.builder().message(
-			"Impossibile stabilire la tipologia del parametro per l'object storage")
-			.build();
-	    }
-	    // identico per tutti perché definito nella tabella padre
-	    storageAddress = decConfigObjectStorage.getDecBackend().getDlBackendUri();
-	}
-	if (StringUtils.isBlank(bucket) || StringUtils.isBlank(nomeSystemPropertyAccessKeyId)
-		|| StringUtils.isBlank(nomeSystemPropertySecretKey)
-		|| StringUtils.isBlank(storageAddress)) {
-	    throw ObjectStorageException.builder()
-		    .message(
-			    "Impossibile stabilire la tipologia del parametro per l'object storage")
-		    .build();
-	}
+        for (DecConfigObjectStorage decConfigObjectStorage : resultList) {
+            switch (decConfigObjectStorage.getNmConfigObjectStorage()) {
+            case ACCESS_KEY_ID_SYS_PROP:
+                nomeSystemPropertyAccessKeyId = decConfigObjectStorage
+                        .getDsValoreConfigObjectStorage();
+                break;
+            case BUCKET:
+                bucket = decConfigObjectStorage.getDsValoreConfigObjectStorage();
+                break;
+            case SECRET_KEY_SYS_PROP:
+                nomeSystemPropertySecretKey = decConfigObjectStorage
+                        .getDsValoreConfigObjectStorage();
+                break;
+            default:
+                throw ObjectStorageException.builder().message(
+                        "Impossibile stabilire la tipologia del parametro per l'object storage")
+                        .build();
+            }
+            // identico per tutti perché definito nella tabella padre
+            storageAddress = decConfigObjectStorage.getDecBackend().getDlBackendUri();
+        }
+        if (StringUtils.isBlank(bucket) || StringUtils.isBlank(nomeSystemPropertyAccessKeyId)
+                || StringUtils.isBlank(nomeSystemPropertySecretKey)
+                || StringUtils.isBlank(storageAddress)) {
+            throw ObjectStorageException.builder()
+                    .message(
+                            "Impossibile stabilire la tipologia del parametro per l'object storage")
+                    .build();
+        }
 
-	final String accessKeyId = System.getProperty(nomeSystemPropertyAccessKeyId);
-	final String secretKey = System.getProperty(nomeSystemPropertySecretKey);
-	final URI osURI = URI.create(storageAddress);
-	final String stagingBucket = bucket;
+        final String accessKeyId = System.getProperty(nomeSystemPropertyAccessKeyId);
+        final String secretKey = System.getProperty(nomeSystemPropertySecretKey);
+        final URI osURI = URI.create(storageAddress);
+        final String stagingBucket = bucket;
 
-	return new ObjectStorageBackend() {
-	    private static final long serialVersionUID = -7818781527374773374L;
+        return new ObjectStorageBackend() {
+            private static final long serialVersionUID = -7818781527374773374L;
 
-	    @Override
-	    public String getBackendName() {
-		return nomeBackend;
-	    }
+            @Override
+            public String getBackendName() {
+                return nomeBackend;
+            }
 
-	    @Override
-	    public URI getAddress() {
-		return osURI;
-	    }
+            @Override
+            public URI getAddress() {
+                return osURI;
+            }
 
-	    @Override
-	    public String getBucket() {
-		return stagingBucket;
-	    }
+            @Override
+            public String getBucket() {
+                return stagingBucket;
+            }
 
-	    @Override
-	    public String getAccessKeyId() {
-		return accessKeyId;
-	    }
+            @Override
+            public String getAccessKeyId() {
+                return accessKeyId;
+            }
 
-	    @Override
-	    public String getSecretKey() {
-		return secretKey;
-	    }
-	};
+            @Override
+            public String getSecretKey() {
+                return secretKey;
+            }
+        };
 
     }
 
     private String getDefaultTenant() {
-	return configurationHelper
-		.getValoreParamApplicByApplic(ParametroApplDB.TENANT_OBJECT_STORAGE);
+        return configurationHelper
+                .getValoreParamApplicByApplic(ParametroApplDB.TENANT_OBJECT_STORAGE);
 
     }
 
@@ -1016,39 +1016,39 @@ public class SalvataggioBackendHelper {
      * Full configuration = S3 URI + access_key + secret_key + bucket name
      */
     private static void checkFullConfiguration(ObjectStorageBackend configuration)
-	    throws ObjectStorageException {
-	checkConfiguration(configuration, true);
+            throws ObjectStorageException {
+        checkConfiguration(configuration, true);
     }
 
     /*
      * Minimal configuration = S3 URI + access_key + secret_key
      */
     private static void checkMinimalConfiguration(ObjectStorageBackend configuration)
-	    throws ObjectStorageException {
-	checkConfiguration(configuration, false);
+            throws ObjectStorageException {
+        checkConfiguration(configuration, false);
     }
 
     private static void checkConfiguration(ObjectStorageBackend configuration,
-	    boolean checkIfBucketExists) throws ObjectStorageException {
-	List<String> errors = new ArrayList<>();
-	if (configuration.getAddress() == null) {
-	    errors.add("indirizzo object storage");
-	}
-	if (StringUtils.isBlank(configuration.getAccessKeyId())) {
-	    errors.add("access key Id");
-	}
-	if (StringUtils.isBlank(configuration.getSecretKey())) {
-	    errors.add("secret Key");
-	}
-	if (checkIfBucketExists && StringUtils.isBlank(configuration.getBucket())) {
-	    errors.add("nome bucket");
-	}
-	if (!errors.isEmpty()) {
-	    throw ObjectStorageException.builder()
-		    .message("Parametri mancanti per il collegamento a object storage: {0}",
-			    String.join(",", errors))
-		    .build();
-	}
+            boolean checkIfBucketExists) throws ObjectStorageException {
+        List<String> errors = new ArrayList<>();
+        if (configuration.getAddress() == null) {
+            errors.add("indirizzo object storage");
+        }
+        if (StringUtils.isBlank(configuration.getAccessKeyId())) {
+            errors.add("access key Id");
+        }
+        if (StringUtils.isBlank(configuration.getSecretKey())) {
+            errors.add("secret Key");
+        }
+        if (checkIfBucketExists && StringUtils.isBlank(configuration.getBucket())) {
+            errors.add("nome bucket");
+        }
+        if (!errors.isEmpty()) {
+            throw ObjectStorageException.builder()
+                    .message("Parametri mancanti per il collegamento a object storage: {0}",
+                            String.join(",", errors))
+                    .build();
+        }
 
     }
 
@@ -1062,14 +1062,14 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public AroXmlObjectStorage getLinkSipUnitaDocOs(long idUnitaDoc) throws ObjectStorageException {
-	try {
-	    return entityManager.find(AroXmlUnitaDocObjectStorage.class, idUnitaDoc);
+        try {
+            return entityManager.find(AroXmlUnitaDocObjectStorage.class, idUnitaDoc);
 
-	} catch (IllegalArgumentException e) {
-	    throw ObjectStorageException.builder().message(
-		    "Errore durante il recupero da AroXmlUnitaDocObjectStorage per id unita doc vers {0} ",
-		    idUnitaDoc).cause(e).build();
-	}
+        } catch (IllegalArgumentException e) {
+            throw ObjectStorageException.builder().message(
+                    "Errore durante il recupero da AroXmlUnitaDocObjectStorage per id unita doc vers {0} ",
+                    idUnitaDoc).cause(e).build();
+        }
 
     }
 
@@ -1083,14 +1083,14 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public AroXmlObjectStorage getLinkSipDocOs(long idDoc) throws ObjectStorageException {
-	try {
-	    return entityManager.find(AroXmlDocObjectStorage.class, idDoc);
+        try {
+            return entityManager.find(AroXmlDocObjectStorage.class, idDoc);
 
-	} catch (IllegalArgumentException e) {
-	    throw ObjectStorageException.builder().message(
-		    "Errore durante il recupero da AroXmlUnitaDocObjectStorage per id doc vers {0} ",
-		    idDoc).cause(e).build();
-	}
+        } catch (IllegalArgumentException e) {
+            throw ObjectStorageException.builder().message(
+                    "Errore durante il recupero da AroXmlUnitaDocObjectStorage per id doc vers {0} ",
+                    idDoc).cause(e).build();
+        }
 
     }
 
@@ -1106,21 +1106,21 @@ public class SalvataggioBackendHelper {
      * @throws ObjectStorageException in caso di errore
      */
     public ResponseInputStream<GetObjectResponse> getObject(ObjectStorageBackend configuration,
-	    String bucket, String objectKey) throws ObjectStorageException {
-	try {
-	    S3Client s3SourceClient = s3Clients.getClient(configuration.getAddress(),
-		    configuration.getAccessKeyId(), configuration.getSecretKey());
+            String bucket, String objectKey) throws ObjectStorageException {
+        try {
+            S3Client s3SourceClient = s3Clients.getClient(configuration.getAddress(),
+                    configuration.getAccessKeyId(), configuration.getSecretKey());
 
-	    GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket)
-		    .key(objectKey).build();
-	    return s3SourceClient.getObject(getObjectRequest);
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket)
+                    .key(objectKey).build();
+            return s3SourceClient.getObject(getObjectRequest);
 
-	} catch (AwsServiceException | SdkClientException e) {
-	    throw ObjectStorageException.builder()
-		    .message("{0}: impossibile ottenere dal bucket {1} oggetto con chiave {2}",
-			    configuration.getBackendName(), bucket, objectKey)
-		    .cause(e).build();
-	}
+        } catch (AwsServiceException | SdkClientException e) {
+            throw ObjectStorageException.builder()
+                    .message("{0}: impossibile ottenere dal bucket {1} oggetto con chiave {2}",
+                            configuration.getBackendName(), bucket, objectKey)
+                    .cause(e).build();
+        }
 
     }
 
@@ -1138,45 +1138,45 @@ public class SalvataggioBackendHelper {
      */
     @Deprecated(since = "Integrazione GCP (tagging not implemented)", forRemoval = true)
     public void taggingObject(ObjectStorageResource osResource, ObjectStorageBackend configuration,
-	    Set<Tag> tags) throws ObjectStorageException {
+            Set<Tag> tags) throws ObjectStorageException {
 
-	checkMinimalConfiguration(configuration);
+        checkMinimalConfiguration(configuration);
 
-	final URI storageAddress = configuration.getAddress();
-	final String accessKeyId = configuration.getAccessKeyId();
-	final String secretKey = configuration.getSecretKey();
+        final URI storageAddress = configuration.getAddress();
+        final String accessKeyId = configuration.getAccessKeyId();
+        final String secretKey = configuration.getSecretKey();
 
-	log.debug("Sto per taggare con {} nell'os {} la chiave {} sul bucket {}", tags,
-		storageAddress, osResource.getKey(), osResource.getBucket());
+        log.debug("Sto per taggare con {} nell'os {} la chiave {} sul bucket {}", tags,
+                storageAddress, osResource.getKey(), osResource.getBucket());
 
-	try {
-	    S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
-	    PutObjectTaggingRequest objectRequest = PutObjectTaggingRequest.builder()
-		    .bucket(osResource.getBucket()).key(osResource.getKey())
-		    .tagging(Tagging.builder().tagSet(tags).build()).build();
-	    final long start = System.currentTimeMillis();
-	    // s3 tagging
-	    PutObjectTaggingResponse response = s3Client.putObjectTagging(objectRequest);
-	    //
-	    if (!response.sdkHttpResponse().isSuccessful()) {
-		throw ObjectStorageException.builder()
-			.message("{0}: errore tagging oggetto {1} sul bucket {2}, response {3}",
-				configuration.getBackendName(), osResource.getKey(),
-				osResource.getBucket(), response)
-			.build();
-	    }
+        try {
+            S3Client s3Client = s3Clients.getClient(storageAddress, accessKeyId, secretKey);
+            PutObjectTaggingRequest objectRequest = PutObjectTaggingRequest.builder()
+                    .bucket(osResource.getBucket()).key(osResource.getKey())
+                    .tagging(Tagging.builder().tagSet(tags).build()).build();
+            final long start = System.currentTimeMillis();
+            // s3 tagging
+            PutObjectTaggingResponse response = s3Client.putObjectTagging(objectRequest);
+            //
+            if (!response.sdkHttpResponse().isSuccessful()) {
+                throw ObjectStorageException.builder()
+                        .message("{0}: errore tagging oggetto {1} sul bucket {2}, response {3}",
+                                configuration.getBackendName(), osResource.getKey(),
+                                osResource.getBucket(), response)
+                        .build();
+            }
 
-	    final long end = System.currentTimeMillis() - start;
-	    if (log.isDebugEnabled()) {
-		log.debug("Tagging oggetto {} sul bucket {} effettuato in {} ms",
-			osResource.getKey(), osResource.getBucket(), end);
-	    }
-	} catch (Exception e) {
-	    throw ObjectStorageException.builder()
-		    .message("{0}: errore imprevisto tagging oggetto {1} sul bucket {2}",
-			    configuration.getBackendName(), osResource.getKey(),
-			    osResource.getBucket())
-		    .cause(e).build();
-	}
+            final long end = System.currentTimeMillis() - start;
+            if (log.isDebugEnabled()) {
+                log.debug("Tagging oggetto {} sul bucket {} effettuato in {} ms",
+                        osResource.getKey(), osResource.getBucket(), end);
+            }
+        } catch (Exception e) {
+            throw ObjectStorageException.builder()
+                    .message("{0}: errore imprevisto tagging oggetto {1} sul bucket {2}",
+                            configuration.getBackendName(), osResource.getKey(),
+                            osResource.getBucket())
+                    .cause(e).build();
+        }
     }
 }

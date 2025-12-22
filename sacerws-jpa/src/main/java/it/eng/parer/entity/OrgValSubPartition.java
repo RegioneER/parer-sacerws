@@ -50,35 +50,35 @@ public class OrgValSubPartition implements Serializable {
     @Id
     @Column(name = "ID_VAL_SUB_PARTITION")
     @GenericGenerator(name = "SORG_VAL_SUB_PARTITION_ID_VAL_SUB_PARTITION_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_VAL_SUB_PARTITION"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_VAL_SUB_PARTITION"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_VAL_SUB_PARTITION_ID_VAL_SUB_PARTITION_GENERATOR")
     public Long getIdValSubPartition() {
-	return this.idValSubPartition;
+        return this.idValSubPartition;
     }
 
     public void setIdValSubPartition(Long idValSubPartition) {
-	this.idValSubPartition = idValSubPartition;
+        this.idValSubPartition = idValSubPartition;
     }
 
     @Column(name = "CD_VAL_SUB_PARTITION")
     public String getCdValSubPartition() {
-	return this.cdValSubPartition;
+        return this.cdValSubPartition;
     }
 
     public void setCdValSubPartition(String cdValSubPartition) {
-	this.cdValSubPartition = cdValSubPartition;
+        this.cdValSubPartition = cdValSubPartition;
     }
 
     // bi-directional many-to-one association to OrgPartition
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PARTITION")
     public OrgPartition getOrgPartition() {
-	return this.orgPartition;
+        return this.orgPartition;
     }
 
     public void setOrgPartition(OrgPartition orgPartition) {
-	this.orgPartition = orgPartition;
+        this.orgPartition = orgPartition;
     }
 
 }

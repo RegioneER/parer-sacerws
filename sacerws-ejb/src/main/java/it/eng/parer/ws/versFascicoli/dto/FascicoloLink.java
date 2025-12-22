@@ -19,16 +19,16 @@ public class FascicoloLink extends DXPAFascicoloCollegato {
     Long idLinkFasc;
 
     public Long getIdLinkFasc() {
-	return idLinkFasc;
+        return idLinkFasc;
     }
 
     public void setIdLinkFasc(Long idLinkFasc) {
-	this.idLinkFasc = idLinkFasc;
+        this.idLinkFasc = idLinkFasc;
     }
 
     @Override
     public String toString() {
-	return idLinkFasc + " - " + descCollegamento + " - " + csChiaveFasc;
+        return idLinkFasc + " - " + descCollegamento + " - " + csChiaveFasc;
     }
 
 }

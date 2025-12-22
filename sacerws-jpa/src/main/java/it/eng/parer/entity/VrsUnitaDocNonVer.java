@@ -66,91 +66,91 @@ public class VrsUnitaDocNonVer implements Serializable {
     @Id
     @Column(name = "ID_UNITA_DOC_NON_VERS")
     @GenericGenerator(name = "SVRS_UNITA_DOC_NON_VERS_ID_UNITA_DOC_NON_VERS_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_UNITA_DOC_NON_VERS"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_UNITA_DOC_NON_VERS"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_UNITA_DOC_NON_VERS_ID_UNITA_DOC_NON_VERS_GENERATOR")
     public Long getIdUnitaDocNonVers() {
-	return this.idUnitaDocNonVers;
+        return this.idUnitaDocNonVers;
     }
 
     public void setIdUnitaDocNonVers(Long idUnitaDocNonVers) {
-	this.idUnitaDocNonVers = idUnitaDocNonVers;
+        this.idUnitaDocNonVers = idUnitaDocNonVers;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-	return this.aaKeyUnitaDoc;
+        return this.aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     @Column(name = "CD_ERR_PRINC")
     public String getCdErrPrinc() {
-	return this.cdErrPrinc;
+        return this.cdErrPrinc;
     }
 
     public void setCdErrPrinc(String cdErrPrinc) {
-	this.cdErrPrinc = cdErrPrinc;
+        this.cdErrPrinc = cdErrPrinc;
     }
 
     @Column(name = "CD_KEY_UNITA_DOC")
     public String getCdKeyUnitaDoc() {
-	return this.cdKeyUnitaDoc;
+        return this.cdKeyUnitaDoc;
     }
 
     public void setCdKeyUnitaDoc(String cdKeyUnitaDoc) {
-	this.cdKeyUnitaDoc = cdKeyUnitaDoc;
+        this.cdKeyUnitaDoc = cdKeyUnitaDoc;
     }
 
     @Column(name = "CD_REGISTRO_KEY_UNITA_DOC")
     public String getCdRegistroKeyUnitaDoc() {
-	return this.cdRegistroKeyUnitaDoc;
+        return this.cdRegistroKeyUnitaDoc;
     }
 
     public void setCdRegistroKeyUnitaDoc(String cdRegistroKeyUnitaDoc) {
-	this.cdRegistroKeyUnitaDoc = cdRegistroKeyUnitaDoc;
+        this.cdRegistroKeyUnitaDoc = cdRegistroKeyUnitaDoc;
     }
 
     @Column(name = "DS_ERR_PRINC")
     public String getDsErrPrinc() {
-	return this.dsErrPrinc;
+        return this.dsErrPrinc;
     }
 
     public void setDsErrPrinc(String dsErrPrinc) {
-	this.dsErrPrinc = dsErrPrinc;
+        this.dsErrPrinc = dsErrPrinc;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_FIRST_SES_ERR")
     public Date getDtFirstSesErr() {
-	return this.dtFirstSesErr;
+        return this.dtFirstSesErr;
     }
 
     public void setDtFirstSesErr(Date dtFirstSesErr) {
-	this.dtFirstSesErr = dtFirstSesErr;
+        this.dtFirstSesErr = dtFirstSesErr;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_LAST_SES_ERR")
     public Date getDtLastSesErr() {
-	return this.dtLastSesErr;
+        return this.dtLastSesErr;
     }
 
     public void setDtLastSesErr(Date dtLastSesErr) {
-	this.dtLastSesErr = dtLastSesErr;
+        this.dtLastSesErr = dtLastSesErr;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
 }

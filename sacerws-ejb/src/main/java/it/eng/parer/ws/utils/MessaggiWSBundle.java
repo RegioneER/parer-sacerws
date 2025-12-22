@@ -35,7 +35,7 @@ public class MessaggiWSBundle {
     public static final String DEFAULT_LOCALE = "it";
 
     private MessaggiWSBundle() {
-	throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class");
     }
 
     /*
@@ -43,47 +43,47 @@ public class MessaggiWSBundle {
      * della classe originale: un normalissimo Bundle con un file di properties
      */
     public static String getString(String key) {
-	switch (key) {
-	case MessaggiWSBundle.ERR_666:
-	    return getDefaultErrorMessage(key);
-	case MessaggiWSBundle.ERR_666P:
-	    return getDefaultErrorMessage(key);
-	default:
-	    // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
-	    return lookupCacheRef().getString(key);
-	}
+        switch (key) {
+        case MessaggiWSBundle.ERR_666:
+            return getDefaultErrorMessage(key);
+        case MessaggiWSBundle.ERR_666P:
+            return getDefaultErrorMessage(key);
+        default:
+            // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
+            return lookupCacheRef().getString(key);
+        }
     }
 
     public static String getString(String key, Object... params) {
-	switch (key) {
-	case MessaggiWSBundle.ERR_666:
-	    return getDefaultErrorMessage(key, params);
-	case MessaggiWSBundle.ERR_666P:
-	    return getDefaultErrorMessage(key, params);
-	default:
-	    // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
-	    return lookupCacheRef().getString(key, params);
-	}
+        switch (key) {
+        case MessaggiWSBundle.ERR_666:
+            return getDefaultErrorMessage(key, params);
+        case MessaggiWSBundle.ERR_666P:
+            return getDefaultErrorMessage(key, params);
+        default:
+            // l'operazione di StringEscapeUtils.unescapeJava viene svolta nel singleton
+            return lookupCacheRef().getString(key, params);
+        }
     }
 
     private static MessaggiWSCache lookupCacheRef() {
-	try {
-	    return (MessaggiWSCache) new InitialContext()
-		    .lookup("java:app/sacerws-ejb/MessaggiWSCache");
-	} catch (NamingException ex) {
-	    throw new SacerWsRuntimeException(
-		    "Errore lookup singleton dei messaggi "
-			    + ExceptionUtils.getRootCauseMessage(ex),
-		    SacerWsErrorCategory.INTERNAL_ERROR);
-	}
+        try {
+            return (MessaggiWSCache) new InitialContext()
+                    .lookup("java:app/sacerws-ejb/MessaggiWSCache");
+        } catch (NamingException ex) {
+            throw new SacerWsRuntimeException(
+                    "Errore lookup singleton dei messaggi "
+                            + ExceptionUtils.getRootCauseMessage(ex),
+                    SacerWsErrorCategory.INTERNAL_ERROR);
+        }
     }
 
     private static String getDefaultErrorMessage(String key, Object... params) {
-	// get or generate uuid
-	final String uuid = UUIDMdcLogUtil.getUuid();
-	// log original message
-	log.error("Risposta originale : {}", lookupCacheRef().getString(key, params));
-	return lookupCacheRef().getString(MessaggiWSBundle.WS_GENERIC_ERROR_UUID, uuid);
+        // get or generate uuid
+        final String uuid = UUIDMdcLogUtil.getUuid();
+        // log original message
+        log.error("Risposta originale : {}", lookupCacheRef().getString(key, params));
+        return lookupCacheRef().getString(MessaggiWSBundle.WS_GENERIC_ERROR_UUID, uuid);
     }
 
     // ERRORI IMPREVISTI TEMPLATE (ossia da restituire all'utente a fronte degli
@@ -1795,6 +1795,11 @@ public class MessaggiWSBundle {
      * Utente che attiva il servizio non riconosciuto o non abilitato
      */
     public static final String SERVIZI_USR_005 = "SERVIZI-USR-005";
+
+    /*
+     * Errore nella verifica delle abilitazioni al tipo dato
+     */
+    public static final String IAM_ABIL_TIPO_DATO_001_001 = "IAM-ABIL-TIPO-DATO-001-001";
 
     // </editor-fold>
 }

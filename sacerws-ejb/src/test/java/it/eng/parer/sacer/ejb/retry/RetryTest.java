@@ -90,61 +90,61 @@ public class RetryTest {
 
     @BeforeEach
     void setUp() throws IOException {
-	restTemplateCrypto = new RestTemplate();
-	restTemplateEidas = new RestTemplate();
+        restTemplateCrypto = new RestTemplate();
+        restTemplateEidas = new RestTemplate();
 
-	HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-	clientHttpRequestFactory.setReadTimeout(TIMEOUT);
-	clientHttpRequestFactory.setConnectTimeout(TIMEOUT);
-	clientHttpRequestFactory.setConnectionRequestTimeout(TIMEOUT);
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setReadTimeout(TIMEOUT);
+        clientHttpRequestFactory.setConnectTimeout(TIMEOUT);
+        clientHttpRequestFactory.setConnectionRequestTimeout(TIMEOUT);
 
-	// get properties
-	configProps = new Properties();
-	InputStream iStream = new ClassPathResource("retrytest.properties").getInputStream();
-	configProps.load(iStream);
+        // get properties
+        configProps = new Properties();
+        InputStream iStream = new ClassPathResource("retrytest.properties").getInputStream();
+        configProps.load(iStream);
 
-	restTemplateCrypto.setRequestFactory(clientHttpRequestFactory);
-	restTemplateCrypto.setErrorHandler(new CryptoErrorHandler());
+        restTemplateCrypto.setRequestFactory(clientHttpRequestFactory);
+        restTemplateCrypto.setErrorHandler(new CryptoErrorHandler());
 
-	restTemplateEidas.setRequestFactory(clientHttpRequestFactory);
-	restTemplateEidas.setErrorHandler(new EidasErrorHandler());
+        restTemplateEidas.setRequestFactory(clientHttpRequestFactory);
+        restTemplateEidas.setErrorHandler(new EidasErrorHandler());
 
-	preferredEndpointCrypto = configProps.getProperty("crypto.pref.url");
-	preferredEndpointEidas = configProps.getProperty("eidas.pref.url");
+        preferredEndpointCrypto = configProps.getProperty("crypto.pref.url");
+        preferredEndpointEidas = configProps.getProperty("eidas.pref.url");
 
-	List<URI> endpointsCrypto = new ArrayList<>();
-	endpointsCrypto.add(URI.create(preferredEndpointCrypto));
-	// iterate endpoint
-	final AtomicInteger cryptoai = new AtomicInteger(1);
-	configProps.keySet().stream().filter(url -> url.toString().startsWith("crypto.url"))
-		.forEach(url -> {
-		    endpointsCrypto.add(URI.create(configProps
-			    .getProperty("crypto.url.".concat(String.valueOf(cryptoai.get())))));
-		    cryptoai.getAndIncrement();
-		});
+        List<URI> endpointsCrypto = new ArrayList<>();
+        endpointsCrypto.add(URI.create(preferredEndpointCrypto));
+        // iterate endpoint
+        final AtomicInteger cryptoai = new AtomicInteger(1);
+        configProps.keySet().stream().filter(url -> url.toString().startsWith("crypto.url"))
+                .forEach(url -> {
+                    endpointsCrypto.add(URI.create(configProps
+                            .getProperty("crypto.url.".concat(String.valueOf(cryptoai.get())))));
+                    cryptoai.getAndIncrement();
+                });
 
-	List<URI> endpointsEidas = new ArrayList<>();
-	endpointsEidas.add(URI.create(preferredEndpointEidas));
-	// iterate endpoint
-	final AtomicInteger eidasai = new AtomicInteger(1);
-	configProps.keySet().stream().filter(url -> url.toString().startsWith("eidas.url"))
-		.forEach(url -> {
-		    endpointsEidas.add(URI.create(configProps
-			    .getProperty("eidas.url.".concat(String.valueOf(eidasai.get())))));
-		    eidasai.getAndIncrement();
-		});
-	configureInterceptor(restTemplateCrypto, endpointsCrypto);
-	configureInterceptor(restTemplateEidas, endpointsEidas);
+        List<URI> endpointsEidas = new ArrayList<>();
+        endpointsEidas.add(URI.create(preferredEndpointEidas));
+        // iterate endpoint
+        final AtomicInteger eidasai = new AtomicInteger(1);
+        configProps.keySet().stream().filter(url -> url.toString().startsWith("eidas.url"))
+                .forEach(url -> {
+                    endpointsEidas.add(URI.create(configProps
+                            .getProperty("eidas.url.".concat(String.valueOf(eidasai.get())))));
+                    eidasai.getAndIncrement();
+                });
+        configureInterceptor(restTemplateCrypto, endpointsCrypto);
+        configureInterceptor(restTemplateEidas, endpointsEidas);
 
     }
 
     private void configureInterceptor(RestTemplate restTemplate, List<URI> endPoints) {
-	ParerRetryConfigurationBuilder buildConfiguration = ParerRetryConfiguration.builder();
-	buildConfiguration
-		.withMaxAttemps(Integer.valueOf((String) configProps.get("retry.maxattempts")));
-	ParerRetryConfiguration retryConfiguration = buildConfiguration.build();
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryConfiguration));
+        ParerRetryConfigurationBuilder buildConfiguration = ParerRetryConfiguration.builder();
+        buildConfiguration
+                .withMaxAttemps(Integer.valueOf((String) configProps.get("retry.maxattempts")));
+        ParerRetryConfiguration retryConfiguration = buildConfiguration.build();
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryConfiguration));
     }
 
     @AfterEach
@@ -154,32 +154,32 @@ public class RetryTest {
     @Test
     void testVerificaCrypto() throws FileNotFoundException {
 
-	File fileFirmato = ResourceUtils
-		.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
+        File fileFirmato = ResourceUtils
+                .getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
-	FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
-	CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
-	metadata.setComponentePrincipale(
-		new CryptoDataToValidateMetadataFile("componente-principale"));
+        FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
+        CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
+        metadata.setComponentePrincipale(
+                new CryptoDataToValidateMetadataFile("componente-principale"));
 
-	// input.setContenuto(new CryptoDocumentoVersato("XML_1",
-	// Resources.toByteArray(fileFirmato.getURL())));
-	Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
-	metadata.setTipologiaDataRiferimento(
-		TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // input.setContenuto(new CryptoDocumentoVersato("XML_1",
+        // Resources.toByteArray(fileFirmato.getURL())));
+        Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
+        metadata.setTipologiaDataRiferimento(
+                TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("metadati", metadata);
-	body.add("contenuto", fileFirmatoRes);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("metadati", metadata);
+        body.add("contenuto", fileFirmatoRes);
 
-	HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
-	CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v2/report-verifica",
-		entity, CryptoAroCompDoc.class);
+        CryptoAroCompDoc componente = restTemplateCrypto.postForObject("/v2/report-verifica",
+                entity, CryptoAroCompDoc.class);
 
-	assertNotNull(componente);
+        assertNotNull(componente);
     }
 
     /**
@@ -204,41 +204,41 @@ public class RetryTest {
     @Test
     void testVerificaCryptoEnpointNonValido() throws FileNotFoundException {
 
-	File fileFirmato = ResourceUtils
-		.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
+        File fileFirmato = ResourceUtils
+                .getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
-	FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
-	CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
+        FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
+        CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
 
-	// input.setContenuto(new CryptoDocumentoVersato("XML_1",
-	// Resources.toByteArray(fileFirmato.getURL())));
-	Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
-	metadata.setTipologiaDataRiferimento(
-		TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // input.setContenuto(new CryptoDocumentoVersato("XML_1",
+        // Resources.toByteArray(fileFirmato.getURL())));
+        Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
+        metadata.setTipologiaDataRiferimento(
+                TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("metadati", metadata);
-	body.add("contenuto", fileFirmatoRes);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("metadati", metadata);
+        body.add("contenuto", fileFirmatoRes);
 
-	HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
-	List<URI> badEndPoints = Arrays.asList(URI.create(preferredEndpointCrypto));
-	configureInterceptor(restTemplateCrypto, badEndPoints);
+        List<URI> badEndPoints = Arrays.asList(URI.create(preferredEndpointCrypto));
+        configureInterceptor(restTemplateCrypto, badEndPoints);
 
-	CryptoAroCompDoc componente = null;
-	try {
-	    componente = restTemplateCrypto.postForObject("/v0/report-verifica", entity,
-		    CryptoAroCompDoc.class);
-	    fail("Expected an RestClientException to be thrown");
-	} catch (RestClientException e) {
-	    // Test exception message...
-	    assertNotNull(e.getMessage());
-	    assertTrue(e.getMessage().contains("404 Not Found"));
-	}
+        CryptoAroCompDoc componente = null;
+        try {
+            componente = restTemplateCrypto.postForObject("/v0/report-verifica", entity,
+                    CryptoAroCompDoc.class);
+            fail("Expected an RestClientException to be thrown");
+        } catch (RestClientException e) {
+            // Test exception message...
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().contains("404 Not Found"));
+        }
 
-	assertNull(componente);
+        assertNull(componente);
     }
 
     /**
@@ -248,95 +248,95 @@ public class RetryTest {
     @Test
     void testVerificaCryptoEnpointInesistente() throws FileNotFoundException {
 
-	File fileFirmato = ResourceUtils
-		.getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
+        File fileFirmato = ResourceUtils
+                .getFile("classpath:firme/xml_sig_controfirma_cert_rev.xml");
 
-	FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
-	CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
+        FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
+        CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
 
-	// input.setContenuto(new CryptoDocumentoVersato("XML_1",
-	// Resources.toByteArray(fileFirmato.getURL())));
-	Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
-	metadata.setTipologiaDataRiferimento(
-		TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // input.setContenuto(new CryptoDocumentoVersato("XML_1",
+        // Resources.toByteArray(fileFirmato.getURL())));
+        Date rifVersato = getDate(8, Calendar.SEPTEMBER, 2013);
+        metadata.setTipologiaDataRiferimento(
+                TipologiaDataRiferimento.verificaAllaDataSpecifica(rifVersato.getTime()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("metadati", metadata);
-	body.add("contenuto", fileFirmatoRes);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("metadati", metadata);
+        body.add("contenuto", fileFirmatoRes);
 
-	HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
-	List<URI> badEndPoints = Arrays.asList(URI.create("smb://non_esiste/"));
+        List<URI> badEndPoints = Arrays.asList(URI.create("smb://non_esiste/"));
 
-	configureInterceptor(restTemplateCrypto, badEndPoints);
+        configureInterceptor(restTemplateCrypto, badEndPoints);
 
-	CryptoAroCompDoc componente = null;
-	try {
-	    componente = restTemplateCrypto.postForObject("/v2/report-verifica", entity,
-		    CryptoAroCompDoc.class);
-	    fail("Expected an RestClientException to be thrown");
-	} catch (RestClientException e) {
-	    // Test exception message...
-	    assertNotNull(e.getMessage());
-	    assertTrue(e.getMessage().contains("404 Not Found"));
-	}
+        CryptoAroCompDoc componente = null;
+        try {
+            componente = restTemplateCrypto.postForObject("/v2/report-verifica", entity,
+                    CryptoAroCompDoc.class);
+            fail("Expected an RestClientException to be thrown");
+        } catch (RestClientException e) {
+            // Test exception message...
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().contains("404 Not Found"));
+        }
 
-	assertNull(componente);
+        assertNull(componente);
     }
 
     private static Date getDate(int giorno, int mese, int anno) {
-	Calendar cal = Calendar.getInstance();
-	cal.set(anno, mese, giorno);
-	return cal.getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.set(anno, mese, giorno);
+        return cal.getTime();
 
     }
 
     @Test
     void testVerificaCryptoConTimestamp() throws FileNotFoundException {
 
-	File fileFirmato = ResourceUtils.getFile("classpath:firme/cades_T_1.pdf.p7m");
+        File fileFirmato = ResourceUtils.getFile("classpath:firme/cades_T_1.pdf.p7m");
 
-	FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
+        FileSystemResource fileFirmatoRes = new FileSystemResource(fileFirmato);
 
-	File marcaDetached = ResourceUtils.getFile("classpath:firme/cades_T_1.pdf.p7m.tsr");
+        File marcaDetached = ResourceUtils.getFile("classpath:firme/cades_T_1.pdf.p7m.tsr");
 
-	FileSystemResource marcaDetachedRes = new FileSystemResource(marcaDetached);
+        FileSystemResource marcaDetachedRes = new FileSystemResource(marcaDetached);
 
-	CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
-	metadata.setTipologiaDataRiferimento(TipologiaDataRiferimento.verificaAllaDataDiFirma());
-	metadata.setComponentePrincipale(new CryptoDataToValidateMetadataFile("cades_t1.p7m"));
-	metadata.setSottoComponentiMarca(Arrays.asList(new CryptoDataToValidateMetadataFile[] {
-		new CryptoDataToValidateMetadataFile("cades_t1.tsr") }));
-	metadata.setUuid("testVerificaFirmaV2TimestampDetached");
+        CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
+        metadata.setTipologiaDataRiferimento(TipologiaDataRiferimento.verificaAllaDataDiFirma());
+        metadata.setComponentePrincipale(new CryptoDataToValidateMetadataFile("cades_t1.p7m"));
+        metadata.setSottoComponentiMarca(Arrays.asList(new CryptoDataToValidateMetadataFile[] {
+                new CryptoDataToValidateMetadataFile("cades_t1.tsr") }));
+        metadata.setUuid("testVerificaFirmaV2TimestampDetached");
 
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("metadati", metadata);
-	body.add("contenuto", fileFirmatoRes);
-	body.add("marche", marcaDetachedRes);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("metadati", metadata);
+        body.add("contenuto", fileFirmatoRes);
+        body.add("marche", marcaDetachedRes);
 
-	HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
-	String url = preferredEndpointCrypto + "/v2/report-verifica";
-	// CryptoAroCompDoc componente =
-	// restTemplateMultipartDetached.postForObject("/v2/report-verifica", entity,
-	// CryptoAroCompDoc.class);
-	CryptoAroCompDoc componente = restTemplateCrypto.postForObject(url, entity,
-		CryptoAroCompDoc.class);
+        String url = preferredEndpointCrypto + "/v2/report-verifica";
+        // CryptoAroCompDoc componente =
+        // restTemplateMultipartDetached.postForObject("/v2/report-verifica", entity,
+        // CryptoAroCompDoc.class);
+        CryptoAroCompDoc componente = restTemplateCrypto.postForObject(url, entity,
+                CryptoAroCompDoc.class);
 
-	assertNotNull(componente);
+        assertNotNull(componente);
 
-	/*
-	 * Se non passo i metadati il valore predefinito è il seguente: - contenuto per il file
-	 * principale - firma_0 ... firma_n-1 per le firme detached - marca_0 ... marca_n-1 per le
-	 * marche detached
-	 */
-	assertEquals("cades_t1.p7m", componente.getAroMarcaComps().get(1).getIdMarca());
-	assertEquals("cades_t1.tsr", componente.getAroMarcaComps().get(0).getIdMarca());
+        /*
+         * Se non passo i metadati il valore predefinito è il seguente: - contenuto per il file
+         * principale - firma_0 ... firma_n-1 per le firme detached - marca_0 ... marca_n-1 per le
+         * marche detached
+         */
+        assertEquals("cades_t1.p7m", componente.getAroMarcaComps().get(1).getIdMarca());
+        assertEquals("cades_t1.tsr", componente.getAroMarcaComps().get(0).getIdMarca());
 
     }
 

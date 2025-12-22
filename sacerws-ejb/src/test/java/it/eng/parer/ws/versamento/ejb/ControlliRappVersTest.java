@@ -33,10 +33,10 @@ import it.eng.parer.ws.dto.RispostaControlli;
 public class ControlliRappVersTest {
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliRappVersTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList(""), ControlliRappVersTest.class,
-			ControlliRappVers.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliRappVersTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList(""), ControlliRappVersTest.class,
+                        ControlliRappVers.class),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -44,27 +44,27 @@ public class ControlliRappVersTest {
 
     @Test
     void trovaVersSessUd() {
-	final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessUd(0L);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessUd(0L);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     void trovaVersSessDoc() {
-	final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessDoc(0L, 0L);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliRappVers.trovaVersSessDoc(0L, 0L);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     void leggiXmlRappVersFromUd() {
-	final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromUd(0L,
-		0L);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromUd(0L,
+                0L);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     void leggiXmlRappVersFromDoc() {
-	final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromDoc(0L,
-		0L);
-	assertNoErr(rispostaControlli);
+        final RispostaControlli rispostaControlli = controlliRappVers.leggiXmlRappVersFromDoc(0L,
+                0L);
+        assertNoErr(rispostaControlli);
     }
 }

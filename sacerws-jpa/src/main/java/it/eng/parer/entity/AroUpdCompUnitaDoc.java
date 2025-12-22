@@ -66,92 +66,92 @@ public class AroUpdCompUnitaDoc implements Serializable {
     @Id
     @Column(name = "ID_UPD_COMP_UNITA_DOC")
     @GenericGenerator(name = "SARO_UPD_COMP_UNITA_DOC_ID_UPD_COMP_UNITA_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_UPD_COMP_UNITA_DOC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_UPD_COMP_UNITA_DOC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_UPD_COMP_UNITA_DOC_ID_UPD_COMP_UNITA_DOC_GENERATOR")
     public Long getIdUpdCompUnitaDoc() {
-	return this.idUpdCompUnitaDoc;
+        return this.idUpdCompUnitaDoc;
     }
 
     public void setIdUpdCompUnitaDoc(Long idUpdCompUnitaDoc) {
-	this.idUpdCompUnitaDoc = idUpdCompUnitaDoc;
+        this.idUpdCompUnitaDoc = idUpdCompUnitaDoc;
     }
 
     @Column(name = "DL_URN_COMP_VERS")
     public String getDlUrnCompVers() {
-	return this.dlUrnCompVers;
+        return this.dlUrnCompVers;
     }
 
     public void setDlUrnCompVers(String dlUrnCompVers) {
-	this.dlUrnCompVers = dlUrnCompVers;
+        this.dlUrnCompVers = dlUrnCompVers;
     }
 
     @Column(name = "DS_ID_COMP_VERS")
     public String getDsIdCompVers() {
-	return this.dsIdCompVers;
+        return this.dsIdCompVers;
     }
 
     public void setDsIdCompVers(String dsIdCompVers) {
-	this.dsIdCompVers = dsIdCompVers;
+        this.dsIdCompVers = dsIdCompVers;
     }
 
     @Column(name = "DS_NOME_COMP_VERS")
     public String getDsNomeCompVers() {
-	return this.dsNomeCompVers;
+        return this.dsNomeCompVers;
     }
 
     public void setDsNomeCompVers(String dsNomeCompVers) {
-	this.dsNomeCompVers = dsNomeCompVers;
+        this.dsNomeCompVers = dsNomeCompVers;
     }
 
     // bi-directional many-to-one association to AroDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_COMP_DOC")
     public AroCompDoc getAroCompDoc() {
-	return this.aroCompDoc;
+        return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-	this.aroCompDoc = aroCompDoc;
+        this.aroCompDoc = aroCompDoc;
     }
 
     // bi-directional many-to-one association to AroDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UPD_DOC_UNITA_DOC")
     public AroUpdDocUnitaDoc getAroUpdDocUnitaDoc() {
-	return this.aroUpdDocUnitaDoc;
+        return this.aroUpdDocUnitaDoc;
     }
 
     public void setAroUpdDocUnitaDoc(AroUpdDocUnitaDoc aroUpdDocUnitaDoc) {
-	this.aroUpdDocUnitaDoc = aroUpdDocUnitaDoc;
+        this.aroUpdDocUnitaDoc = aroUpdDocUnitaDoc;
     }
 
     // bi-directional many-to-one association to AroUpdDatiSpecUnitaDoc
     @OneToMany(mappedBy = "aroUpdCompUnitaDoc", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<AroUpdDatiSpecUnitaDoc> getAroUpdDatiSpecUnitaDocs() {
-	return this.aroUpdDatiSpecUnitaDocs;
+        return this.aroUpdDatiSpecUnitaDocs;
     }
 
     public void setAroUpdDatiSpecUnitaDocs(List<AroUpdDatiSpecUnitaDoc> aroUpdDatiSpecUnitaDocs) {
-	this.aroUpdDatiSpecUnitaDocs = aroUpdDatiSpecUnitaDocs;
+        this.aroUpdDatiSpecUnitaDocs = aroUpdDatiSpecUnitaDocs;
     }
 
     @Column(name = "FL_UPD_DATI_SPEC", columnDefinition = "char(1)")
     public String getFlUpdDatiSpec() {
-	return this.flUpdDatiSpec;
+        return this.flUpdDatiSpec;
     }
 
     public void setFlUpdDatiSpec(String flUpdDatiSpec) {
-	this.flUpdDatiSpec = flUpdDatiSpec;
+        this.flUpdDatiSpec = flUpdDatiSpec;
     }
 
     @Column(name = "FL_UPD_DATI_SPEC_MIGRAZ", columnDefinition = "char(1)")
     public String getFlUpdDatiSpecMigraz() {
-	return this.flUpdDatiSpecMigraz;
+        return this.flUpdDatiSpecMigraz;
     }
 
     public void setFlUpdDatiSpecMigraz(String flUpdDatiSpecMigraz) {
-	this.flUpdDatiSpecMigraz = flUpdDatiSpecMigraz;
+        this.flUpdDatiSpecMigraz = flUpdDatiSpecMigraz;
     }
 }

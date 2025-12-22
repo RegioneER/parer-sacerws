@@ -19,24 +19,24 @@ public class DXPAVoceClassificazione {
     String DescrizioneVoce;
 
     public String getCodiceVoce() {
-	return codiceVoce;
+        return codiceVoce;
     }
 
     public void setCodiceVoce(String codiceVoce) {
-	this.codiceVoce = codiceVoce;
+        this.codiceVoce = codiceVoce;
     }
 
     public String getDescrizioneVoce() {
-	return DescrizioneVoce;
+        return DescrizioneVoce;
     }
 
     public void setDescrizioneVoce(String descrizioneVoce) {
-	DescrizioneVoce = descrizioneVoce;
+        DescrizioneVoce = descrizioneVoce;
     }
 
     @Override
     public String toString() {
-	return codiceVoce + " - " + DescrizioneVoce;
+        return codiceVoce + " - " + DescrizioneVoce;
     }
 
 }

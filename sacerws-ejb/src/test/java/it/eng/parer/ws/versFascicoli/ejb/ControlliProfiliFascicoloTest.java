@@ -43,14 +43,14 @@ public class ControlliProfiliFascicoloTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliProfiliFascicoloTest.class.getSimpleName(),
-		createSacerWSJavaArchive(
-			Arrays.asList("it.eng.parer.ws.xml.versfascicolo",
-				"it.eng.parer.ws.versFascicoli.dto",
-				"it.eng.parer.ws.xml.versfascicoloresp"),
-			ControlliProfiliFascicoloTest.class, ControlliProfiliFascicolo.class,
-			it.eng.parer.ws.ejb.ControlliSemantici.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliProfiliFascicoloTest.class.getSimpleName(),
+                createSacerWSJavaArchive(
+                        Arrays.asList("it.eng.parer.ws.xml.versfascicolo",
+                                "it.eng.parer.ws.versFascicoli.dto",
+                                "it.eng.parer.ws.xml.versfascicoloresp"),
+                        ControlliProfiliFascicoloTest.class, ControlliProfiliFascicolo.class,
+                        it.eng.parer.ws.ejb.ControlliSemantici.class),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -58,63 +58,63 @@ public class ControlliProfiliFascicoloTest {
 
     @Test
     public void verificaProfiloArchivistico_queryIsOk() {
-	final VersFascicoloExt versamento = new VersFascicoloExt();
-	versamento.setVersamento(new IndiceSIPFascicolo());
-	versamento.getVersamento().setParametri(new ConfigType());
-	versamento.getVersamento().getParametri()
-		.setVersioneProfiloArchivisticoFascicolo("versione");
-	versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
-	versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
-	versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
-	versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
-	final RispostaControlli rispostaControlli = controlliProfiliFascicolo
-		.verificaProfiloArchivistico(versamento);
-	assertNoErr(rispostaControlli);
+        final VersFascicoloExt versamento = new VersFascicoloExt();
+        versamento.setVersamento(new IndiceSIPFascicolo());
+        versamento.getVersamento().setParametri(new ConfigType());
+        versamento.getVersamento().getParametri()
+                .setVersioneProfiloArchivisticoFascicolo("versione");
+        versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
+        versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
+        versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
+        versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
+        final RispostaControlli rispostaControlli = controlliProfiliFascicolo
+                .verificaProfiloArchivistico(versamento);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void verificaProfiloArchivisticoNoVersione_queryIsOk() {
-	final VersFascicoloExt versamento = new VersFascicoloExt();
-	versamento.setVersamento(new IndiceSIPFascicolo());
-	versamento.getVersamento().setProfiloArchivistico(
-		new JAXBElement<>(new QName("http://www.test.eng", "userDN"),
-			ProfiloArchivisticoType.class, new ProfiloArchivisticoType()));
-	versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
-	versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
-	versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
-	versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
-	final RispostaControlli rispostaControlli = controlliProfiliFascicolo
-		.verificaProfiloArchivistico(versamento);
-	assertNoErr(rispostaControlli);
+        final VersFascicoloExt versamento = new VersFascicoloExt();
+        versamento.setVersamento(new IndiceSIPFascicolo());
+        versamento.getVersamento().setProfiloArchivistico(
+                new JAXBElement<>(new QName("http://www.test.eng", "userDN"),
+                        ProfiloArchivisticoType.class, new ProfiloArchivisticoType()));
+        versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
+        versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
+        versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
+        versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
+        final RispostaControlli rispostaControlli = controlliProfiliFascicolo
+                .verificaProfiloArchivistico(versamento);
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void verificaProfiloGenerale_queryIsOk() {
-	final VersFascicoloExt versamento = new VersFascicoloExt();
-	versamento.setVersamento(new IndiceSIPFascicolo());
-	versamento.getVersamento().setProfiloArchivistico(
-		new JAXBElement<>(new QName("http://www.test.eng", "userDN"),
-			ProfiloArchivisticoType.class, new ProfiloArchivisticoType()));
-	versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
-	versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
-	versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
-	versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
-	final RispostaControlli rispostaControlli = controlliProfiliFascicolo
-		.verificaProfiloGenerale(versamento, new ECFascicoloType());
-	assertNoErr(rispostaControlli);
+        final VersFascicoloExt versamento = new VersFascicoloExt();
+        versamento.setVersamento(new IndiceSIPFascicolo());
+        versamento.getVersamento().setProfiloArchivistico(
+                new JAXBElement<>(new QName("http://www.test.eng", "userDN"),
+                        ProfiloArchivisticoType.class, new ProfiloArchivisticoType()));
+        versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
+        versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
+        versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
+        versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
+        final RispostaControlli rispostaControlli = controlliProfiliFascicolo
+                .verificaProfiloGenerale(versamento, new ECFascicoloType());
+        assertNoErr(rispostaControlli);
     }
 
     @Test
     public void verificaProfiloGeneraleProfiloNull_queryIsOk() {
-	final VersFascicoloExt versamento = new VersFascicoloExt();
-	versamento.setVersamento(new IndiceSIPFascicolo());
-	versamento.getVersamento().setProfiloArchivistico(null);
-	versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
-	versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
-	versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
-	versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
-	final RispostaControlli rispostaControlli = controlliProfiliFascicolo
-		.verificaProfiloGenerale(versamento, new ECFascicoloType());
-	assertNoErr(rispostaControlli);
+        final VersFascicoloExt versamento = new VersFascicoloExt();
+        versamento.setVersamento(new IndiceSIPFascicolo());
+        versamento.getVersamento().setProfiloArchivistico(null);
+        versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
+        versamento.getStrutturaComponenti().setIdTipoFascicolo(0L);
+        versamento.getStrutturaComponenti().setChiaveNonVerificata(new CSChiaveFasc());
+        versamento.getStrutturaComponenti().getChiaveNonVerificata().setAnno(2021);
+        final RispostaControlli rispostaControlli = controlliProfiliFascicolo
+                .verificaProfiloGenerale(versamento, new ECFascicoloType());
+        assertNoErr(rispostaControlli);
     }
 }

@@ -32,35 +32,35 @@ public class FileServUtils {
     private static long MAX_DISK_FILL = 85;
 
     public boolean controllaSpazioLibero(String partitionName, long bytesNeeded) {
-	File file = new File(partitionName);
+        File file = new File(partitionName);
 
-	log.debug("*************** controllaSpazioLibero ");
+        log.debug("*************** controllaSpazioLibero ");
 
-	log.debug("Partition name {}", partitionName);
-	log.debug("Bytes needed {}", bytesNeeded);
+        log.debug("Partition name {}", partitionName);
+        log.debug("Bytes needed {}", bytesNeeded);
 
-	double rawTotalSpace = file.getTotalSpace(); // total disk space in bytes.
-	double rawUsableSpace = file.getUsableSpace(); // /usable space in bytes,
-	double rawFreeSpace = file.getFreeSpace(); // raw free disk space in bytes.
+        double rawTotalSpace = file.getTotalSpace(); // total disk space in bytes.
+        double rawUsableSpace = file.getUsableSpace(); // /usable space in bytes,
+        double rawFreeSpace = file.getFreeSpace(); // raw free disk space in bytes.
 
-	log.debug("getTotalSpace {}", rawTotalSpace);
-	log.debug("getUsableSpace  {}", rawUsableSpace);
-	log.debug("getFreeSpace {}", rawFreeSpace);
+        log.debug("getTotalSpace {}", rawTotalSpace);
+        log.debug("getUsableSpace  {}", rawUsableSpace);
+        log.debug("getFreeSpace {}", rawFreeSpace);
 
-	double usableSpace = rawFreeSpace < rawUsableSpace ? rawFreeSpace : rawUsableSpace;
-	double usedPerc = 100d - (usableSpace / rawTotalSpace * 100d);
+        double usableSpace = rawFreeSpace < rawUsableSpace ? rawFreeSpace : rawUsableSpace;
+        double usedPerc = 100d - (usableSpace / rawTotalSpace * 100d);
 
-	log.debug("usableSpace {}", usableSpace);
-	log.debug("usedPerc {}", usedPerc);
+        log.debug("usableSpace {}", usableSpace);
+        log.debug("usedPerc {}", usedPerc);
 
-	return (bytesNeeded < usableSpace && usedPerc < MAX_DISK_FILL);
+        return (bytesNeeded < usableSpace && usedPerc < MAX_DISK_FILL);
     }
 
     public boolean controllaSubPath(String subpath) {
-	return (subpath.matches(POSIX_SET));
+        return (subpath.matches(POSIX_SET));
     }
 
     public boolean controllaPath(String path) {
-	return (path.length() <= KeySizeUtility.MAX_LEN_FILENAME_ARK);
+        return (path.length() <= KeySizeUtility.MAX_LEN_FILENAME_ARK);
     }
 }

@@ -34,10 +34,10 @@ public class ControlliMMTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(ControlliMMTest.class.getSimpleName(),
-		createSacerWSJavaArchive(Arrays.asList(""), ControlliMMTest.class,
-			ControlliMM.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(ControlliMMTest.class.getSimpleName(),
+                createSacerWSJavaArchive(Arrays.asList(""), ControlliMMTest.class,
+                        ControlliMM.class),
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -45,11 +45,11 @@ public class ControlliMMTest {
 
     @Test
     public void caricaRootPath() {
-	for (ControlliMM.TipiRootPath tipoRootPath : ControlliMM.TipiRootPath.values()) {
-	    final RispostaControlli rispostaControlli = controlliMM
-		    .caricaRootPath("SACER_PREINGEST", tipoRootPath);
-	    assertTrue(rispostaControlli.isrBoolean());
-	}
+        for (ControlliMM.TipiRootPath tipoRootPath : ControlliMM.TipiRootPath.values()) {
+            final RispostaControlli rispostaControlli = controlliMM
+                    .caricaRootPath("SACER_PREINGEST", tipoRootPath);
+            assertTrue(rispostaControlli.isrBoolean());
+        }
 
     }
 }

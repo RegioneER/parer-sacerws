@@ -19,7 +19,7 @@ public final class FiUrnReport {
     }
 
     public enum TiUrnReport {
-	NORMALIZZATO, ORIGINALE
+        NORMALIZZATO, ORIGINALE
     }
 
 }

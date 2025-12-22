@@ -22,49 +22,49 @@ public class DXPGRespFascicolo {
     String responsabilita;
 
     public String getNome() {
-	return nome;
+        return nome;
     }
 
     public void setNome(String nome) {
-	this.nome = nome;
+        this.nome = nome;
     }
 
     public String getCognome() {
-	return cognome;
+        return cognome;
     }
 
     public void setCognome(String cognome) {
-	this.cognome = cognome;
+        this.cognome = cognome;
     }
 
     public String getCdIdentificativo() {
-	return cdIdentificativo;
+        return cdIdentificativo;
     }
 
     public void setCdIdentificativo(String cdIdentificativo) {
-	this.cdIdentificativo = cdIdentificativo;
+        this.cdIdentificativo = cdIdentificativo;
     }
 
     public String getTiCdIdentificativo() {
-	return tiCdIdentificativo;
+        return tiCdIdentificativo;
     }
 
     public void setTiCdIdentificativo(String tiCdIdentificativo) {
-	this.tiCdIdentificativo = tiCdIdentificativo;
+        this.tiCdIdentificativo = tiCdIdentificativo;
     }
 
     public String getResponsabilita() {
-	return responsabilita;
+        return responsabilita;
     }
 
     public void setResponsabilita(String responsabilita) {
-	this.responsabilita = responsabilita;
+        this.responsabilita = responsabilita;
     }
 
     @Override
     public String toString() {
-	return nome + " - " + cognome + " - " + cdIdentificativo + " - " + tiCdIdentificativo
-		+ " - " + responsabilita;
+        return nome + " - " + cognome + " - " + cdIdentificativo + " - " + tiCdIdentificativo
+                + " - " + responsabilita;
     }
 
 }

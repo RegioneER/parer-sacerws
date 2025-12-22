@@ -27,10 +27,10 @@ public class StrutturaIndiceMM {
     private HashMap<String, ComponenteMM> componenti;
 
     public HashMap<String, ComponenteMM> getComponenti() {
-	return componenti;
+        return componenti;
     }
 
     public void setComponenti(HashMap<String, ComponenteMM> componenti) {
-	this.componenti = componenti;
+        this.componenti = componenti;
     }
 }

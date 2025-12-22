@@ -33,22 +33,22 @@ public class ControlloEseguito implements java.io.Serializable {
     // stabilito un "ordine" per famiglia a livello di codice
     // TODO : farlo su DB?!
     public enum FamigliaControllo {
-	ERRORISISTEMA(new BigDecimal(1)), CONTROLLIGENERALI(new BigDecimal(2)), /**/
-	CONTROLLIXSD(new BigDecimal(3)), CONTROLLIINTESTAZIONE(new BigDecimal(4)), /**/
-	CONTROLLIUNITADOC(new BigDecimal(5)), CONTROLLICOLLEGAMENTO(new BigDecimal(6)), /**/
-	CONTROLLICHIAVEDOCUMENTO(new BigDecimal(7)),
-	CONTROLLICHIAVECOMPONENTE(new BigDecimal(8)), /**/
-	CONTROLLIDOCUMENTO(new BigDecimal(9)), CONTROLLICOMPONENTE(new BigDecimal(10));
+        ERRORISISTEMA(new BigDecimal(1)), CONTROLLIGENERALI(new BigDecimal(2)), /**/
+        CONTROLLIXSD(new BigDecimal(3)), CONTROLLIINTESTAZIONE(new BigDecimal(4)), /**/
+        CONTROLLIUNITADOC(new BigDecimal(5)), CONTROLLICOLLEGAMENTO(new BigDecimal(6)), /**/
+        CONTROLLICHIAVEDOCUMENTO(new BigDecimal(7)),
+        CONTROLLICHIAVECOMPONENTE(new BigDecimal(8)), /**/
+        CONTROLLIDOCUMENTO(new BigDecimal(9)), CONTROLLICOMPONENTE(new BigDecimal(10));
 
-	private BigDecimal niOrd;
+        private BigDecimal niOrd;
 
-	private FamigliaControllo(BigDecimal niOrd) {
-	    this.niOrd = niOrd;
-	}
+        private FamigliaControllo(BigDecimal niOrd) {
+            this.niOrd = niOrd;
+        }
 
-	public BigDecimal getNiOrd() {
-	    return niOrd;
-	}
+        public BigDecimal getNiOrd() {
+            return niOrd;
+        }
 
     }
 
@@ -64,51 +64,51 @@ public class ControlloEseguito implements java.io.Serializable {
     //
 
     public String getDsControllo() {
-	return dsControllo;
+        return dsControllo;
     }
 
     public void setDsControllo(String dsControllo) {
-	this.dsControllo = dsControllo;
+        this.dsControllo = dsControllo;
     }
 
     public VoceDiErrore.TipiEsitoErrore getEsito() {
-	return esito;
+        return esito;
     }
 
     public void setEsito(VoceDiErrore.TipiEsitoErrore esito) {
-	this.esito = esito;
+        this.esito = esito;
     }
 
     public List<VoceDiErrore> getErrori() {
-	return errori;
+        return errori;
     }
 
     public void setErrori(List<VoceDiErrore> errori) {
-	this.errori = errori;
+        this.errori = errori;
     }
 
     public BigDecimal getNiOrd() {
-	return niOrd;
+        return niOrd;
     }
 
     public void setNiOrd(BigDecimal niOrd) {
-	this.niOrd = niOrd;
+        this.niOrd = niOrd;
     }
 
     public FamigliaControllo getFamiglia() {
-	return famiglia;
+        return famiglia;
     }
 
     public void setFamiglia(FamigliaControllo famiglia) {
-	this.famiglia = famiglia;
+        this.famiglia = famiglia;
     }
 
     public String getCdControllo() {
-	return cdControllo;
+        return cdControllo;
     }
 
     public void setCdControllo(String cdControllo) {
-	this.cdControllo = cdControllo;
+        this.cdControllo = cdControllo;
     }
 
 }

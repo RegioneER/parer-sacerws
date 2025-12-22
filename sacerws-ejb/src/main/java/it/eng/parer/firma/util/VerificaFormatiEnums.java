@@ -24,33 +24,33 @@ public class VerificaFormatiEnums {
 
     public enum FormatiStandardFirme {
 
-	PDF, P7M, XML, TSR
+        PDF, P7M, XML, TSR
     }
 
     public static final String SEPARATORE_FORMATI = ".";
 
     public enum EsitoControlloFormato {
 
-	POSITIVO("Controllo OK"), NEGATIVO("Controllo fallito"), WARNING("Controllo con Warning"),
-	DISABILITATO("Controllo disabilitato");
+        POSITIVO("Controllo OK"), NEGATIVO("Controllo fallito"), WARNING("Controllo con Warning"),
+        DISABILITATO("Controllo disabilitato");
 
-	private final String message;
+        private final String message;
 
-	private EsitoControlloFormato() {
-	    this.message = null;
-	}
+        private EsitoControlloFormato() {
+            this.message = null;
+        }
 
-	private EsitoControlloFormato(final String message) {
-	    this.message = message;
-	}
+        private EsitoControlloFormato(final String message) {
+            this.message = message;
+        }
 
-	public java.lang.String message() {
-	    return this.message;
-	}
+        public java.lang.String message() {
+            return this.message;
+        }
     }
 
     public enum IdoneitaFormato {
-	IDONEO, GESTITO, DEPRECATO
+        IDONEO, GESTITO, DEPRECATO
     }
 
     /*

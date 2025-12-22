@@ -29,16 +29,16 @@ public class CSChiaveSottFasc extends CSChiaveFasc {
     private String oggetto;
 
     public String getOggetto() {
-	return oggetto;
+        return oggetto;
     }
 
     public void setOggetto(String oggetto) {
-	this.oggetto = oggetto;
+        this.oggetto = oggetto;
     }
 
     @Override
     public String toString() {
-	return super.toString() + " - " + oggetto;
+        return super.toString() + " - " + oggetto;
     }
 
 }

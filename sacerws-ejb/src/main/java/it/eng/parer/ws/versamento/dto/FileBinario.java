@@ -29,61 +29,61 @@ public class FileBinario implements java.io.Serializable {
     private transient ObjectStorageResource objectStorageResource;
 
     public String getId() {
-	return id;
+        return id;
     }
 
     public void setId(String id) {
-	this.id = id;
+        this.id = id;
     }
 
     /**
      * @return the fileSuDisco
      */
     public File getFileSuDisco() {
-	return fileSuDisco;
+        return fileSuDisco;
     }
 
     /**
      * @param fileSuDisco the fileSuDisco to set
      */
     public void setFileSuDisco(File fileSuDisco) {
-	this.fileSuDisco = fileSuDisco;
+        this.fileSuDisco = fileSuDisco;
     }
 
     /**
      * @return the dimensione
      */
     public long getDimensione() {
-	return dimensione;
+        return dimensione;
     }
 
     /**
      * @param dimensione the dimensione to set
      */
     public void setDimensione(long dimensione) {
-	this.dimensione = dimensione;
+        this.dimensione = dimensione;
     }
 
     /**
      * @return the fileName
      */
     public String getFileName() {
-	return fileName;
+        return fileName;
     }
 
     /**
      * @param fileName the fileName to set
      */
     public void setFileName(String fileName) {
-	this.fileName = fileName;
+        this.fileName = fileName;
     }
 
     public ObjectStorageResource getObjectStorageResource() {
-	return objectStorageResource;
+        return objectStorageResource;
     }
 
     public void setObjectStorageResource(ObjectStorageResource objectStorageResource) {
-	this.objectStorageResource = objectStorageResource;
+        this.objectStorageResource = objectStorageResource;
     }
 
 }

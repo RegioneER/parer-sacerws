@@ -54,66 +54,66 @@ public class ElencoVersamentoFascicoli {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public RispostaControlli scriviElvFascDaElabElenco(RispostaWSFascicolo rispostaWs,
-	    VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
+            VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
 
-	RispostaControlli tmpRispostaControlli = new RispostaControlli();
-	StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
-	tmpRispostaControlli.setrBoolean(false);
-	try {
-	    elencoVersamentoFascicoliHelper.insertFascicoloOnCodaDaElab(fascicolo,
-		    svf.getIdTipoFascicolo(), TiStatoFascDaElab.IN_ATTESA_SCHED);
-	    tmpRispostaControlli.setrBoolean(true);
-	} catch (Exception e) {
-	    tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-	    tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
-		    "Errore interno nella fase di salvataggio coda da elaborare: "
-			    + e.getMessage()));
-	    tmpRispostaControlli.setrBoolean(false);
-	}
+        RispostaControlli tmpRispostaControlli = new RispostaControlli();
+        StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
+        tmpRispostaControlli.setrBoolean(false);
+        try {
+            elencoVersamentoFascicoliHelper.insertFascicoloOnCodaDaElab(fascicolo,
+                    svf.getIdTipoFascicolo(), TiStatoFascDaElab.IN_ATTESA_SCHED);
+            tmpRispostaControlli.setrBoolean(true);
+        } catch (Exception e) {
+            tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
+            tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
+                    "Errore interno nella fase di salvataggio coda da elaborare: "
+                            + e.getMessage()));
+            tmpRispostaControlli.setrBoolean(false);
+        }
 
-	return tmpRispostaControlli;
+        return tmpRispostaControlli;
     }
 
     public RispostaControlli scriviStatoConservFascicolo(RispostaWSFascicolo rispostaWs,
-	    VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
+            VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
 
-	RispostaControlli tmpRispostaControlli = new RispostaControlli();
-	// StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
-	tmpRispostaControlli.setrBoolean(false);
-	try {
-	    elencoVersamentoFascicoliHelper.insertFascicoloOnStatoCons(fascicolo,
-		    TiStatoConservazione.PRESA_IN_CARICO);
-	    tmpRispostaControlli.setrBoolean(true);
-	} catch (Exception e) {
-	    tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-	    tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
-		    "Errore interno nella fase di salvataggio stato conservazione fascicolo: "
-			    + e.getMessage()));
-	    tmpRispostaControlli.setrBoolean(false);
-	}
+        RispostaControlli tmpRispostaControlli = new RispostaControlli();
+        // StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
+        tmpRispostaControlli.setrBoolean(false);
+        try {
+            elencoVersamentoFascicoliHelper.insertFascicoloOnStatoCons(fascicolo,
+                    TiStatoConservazione.PRESA_IN_CARICO);
+            tmpRispostaControlli.setrBoolean(true);
+        } catch (Exception e) {
+            tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
+            tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
+                    "Errore interno nella fase di salvataggio stato conservazione fascicolo: "
+                            + e.getMessage()));
+            tmpRispostaControlli.setrBoolean(false);
+        }
 
-	return tmpRispostaControlli;
+        return tmpRispostaControlli;
     }
 
     public RispostaControlli scriviStatoFascicoloElenco(RispostaWSFascicolo rispostaWs,
-	    VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
+            VersFascicoloExt versamento, SyncFakeSessn sessione, FasFascicolo fascicolo) {
 
-	RispostaControlli tmpRispostaControlli = new RispostaControlli();
-	// StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
-	tmpRispostaControlli.setrBoolean(false);
-	try {
-	    elencoVersamentoFascicoliHelper.insertFascicoloOnStatoElenco(fascicolo,
-		    TiStatoFascElenco.IN_ATTESA_SCHED);
-	    tmpRispostaControlli.setrBoolean(true);
-	} catch (Exception e) {
-	    tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
-	    tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
-		    "Errore interno nella fase di salvataggio stato fascicolo elenco: "
-			    + e.getMessage()));
-	    tmpRispostaControlli.setrBoolean(false);
-	}
+        RispostaControlli tmpRispostaControlli = new RispostaControlli();
+        // StrutturaVersFascicolo svf = versamento.getStrutturaComponenti();
+        tmpRispostaControlli.setrBoolean(false);
+        try {
+            elencoVersamentoFascicoliHelper.insertFascicoloOnStatoElenco(fascicolo,
+                    TiStatoFascElenco.IN_ATTESA_SCHED);
+            tmpRispostaControlli.setrBoolean(true);
+        } catch (Exception e) {
+            tmpRispostaControlli.setCodErr(MessaggiWSBundle.ERR_666P);
+            tmpRispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666P,
+                    "Errore interno nella fase di salvataggio stato fascicolo elenco: "
+                            + e.getMessage()));
+            tmpRispostaControlli.setrBoolean(false);
+        }
 
-	return tmpRispostaControlli;
+        return tmpRispostaControlli;
     }
 
 }

@@ -47,101 +47,101 @@ public class JmsProducerUtilEjb {
     private static final Logger log = LoggerFactory.getLogger(JmsProducerUtilEjb.class);
 
     public RispostaControlli inviaMessaggioInFormatoJson(ConnectionFactory connectionFactory,
-	    Queue queue, Object objectToSerializeInJson, String tipoPayload) {
-	RispostaControlli tmpRispostaControlli = new RispostaControlli();
-	tmpRispostaControlli.setrBoolean(false);
+            Queue queue, Object objectToSerializeInJson, String tipoPayload) {
+        RispostaControlli tmpRispostaControlli = new RispostaControlli();
+        tmpRispostaControlli.setrBoolean(false);
 
-	try (Connection connection = connectionFactory.createConnection();
-		Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-		MessageProducer messageProducer = session.createProducer(queue)) {
-	    TextMessage textMessage = session.createTextMessage();
-	    // app selector
-	    textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
-	    textMessage.setStringProperty("tipoPayload", tipoPayload);
-	    ObjectMapper jsonMapper = new ObjectMapper();
-	    textMessage.setText(jsonMapper.writeValueAsString(objectToSerializeInJson));
-	    log.debug("JmsProducer [JSON] {}", textMessage.getText());
-	    messageProducer.send(textMessage);
-	    log.debug("JmsProducer messaggio inviato");
-	    tmpRispostaControlli.setrBoolean(true);
-	} catch (JMSException ex) {
-	    tmpRispostaControlli.setCodErr("ERR");
-	    StringBuilder errorMessage = new StringBuilder();
-	    errorMessage.append(String.format("Errore nell'invio del messaggio in coda: "))
-		    .append(ex.getMessage());
-	    log.error(errorMessage.toString(), ex);
-	    tmpRispostaControlli.setDsErr(errorMessage.toString());
-	    tmpRispostaControlli.setrBoolean(false);
+        try (Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                MessageProducer messageProducer = session.createProducer(queue)) {
+            TextMessage textMessage = session.createTextMessage();
+            // app selector
+            textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
+            textMessage.setStringProperty("tipoPayload", tipoPayload);
+            ObjectMapper jsonMapper = new ObjectMapper();
+            textMessage.setText(jsonMapper.writeValueAsString(objectToSerializeInJson));
+            log.debug("JmsProducer [JSON] {}", textMessage.getText());
+            messageProducer.send(textMessage);
+            log.debug("JmsProducer messaggio inviato");
+            tmpRispostaControlli.setrBoolean(true);
+        } catch (JMSException ex) {
+            tmpRispostaControlli.setCodErr("ERR");
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append(String.format("Errore nell'invio del messaggio in coda: "))
+                    .append(ex.getMessage());
+            log.error(errorMessage.toString(), ex);
+            tmpRispostaControlli.setDsErr(errorMessage.toString());
+            tmpRispostaControlli.setrBoolean(false);
 
-	    // Gestione degli errori sulle close()
-	    for (Throwable suppressed : ex.getSuppressed()) {
-		log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
-		errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
-			.append(suppressed.getMessage());
-		tmpRispostaControlli.setDsErr(errorMessage.toString());
-		tmpRispostaControlli.setrBoolean(false);
-	    }
-	} catch (JsonProcessingException ex) {
-	    tmpRispostaControlli.setCodErr("ERR");
-	    tmpRispostaControlli
-		    .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: "
-			    + ex.getMessage());
-	    log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
-	    tmpRispostaControlli.setrBoolean(false);
-	}
-	return tmpRispostaControlli;
+            // Gestione degli errori sulle close()
+            for (Throwable suppressed : ex.getSuppressed()) {
+                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
+                errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
+                        .append(suppressed.getMessage());
+                tmpRispostaControlli.setDsErr(errorMessage.toString());
+                tmpRispostaControlli.setrBoolean(false);
+            }
+        } catch (JsonProcessingException ex) {
+            tmpRispostaControlli.setCodErr("ERR");
+            tmpRispostaControlli
+                    .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: "
+                            + ex.getMessage());
+            log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
+            tmpRispostaControlli.setrBoolean(false);
+        }
+        return tmpRispostaControlli;
     }
 
     // MAC#27513
     public RispostaControlli manageMessageGroupingInFormatoJson(ConnectionFactory connectionFactory,
-	    Queue queue, Object objectToSerializeInJson, String tipoPayload, String groupId) {
-	RispostaControlli tmpRispostaControlli = new RispostaControlli();
-	tmpRispostaControlli.setrBoolean(false);
+            Queue queue, Object objectToSerializeInJson, String tipoPayload, String groupId) {
+        RispostaControlli tmpRispostaControlli = new RispostaControlli();
+        tmpRispostaControlli.setrBoolean(false);
 
-	try (Connection connection = connectionFactory.createConnection();
-		Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-		MessageProducer messageProducer = session.createProducer(queue)) {
-	    TextMessage textMessage = session.createTextMessage();
-	    textMessage.setStringProperty("JMSXGroupID", groupId);
-	    // app selector
-	    textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
-	    textMessage.setStringProperty("tipoPayload", tipoPayload);
-	    ObjectMapper jsonMapper = new ObjectMapper();
-	    textMessage.setText(jsonMapper.writeValueAsString(objectToSerializeInJson));
-	    log.debug(String.format("JmsProducer [JSON] %s", textMessage.getText()));
-	    messageProducer.send(textMessage);
-	    log.debug(String.format("JmsProducer messaggio inviato con groupId %s", groupId));
-	    tmpRispostaControlli.setrBoolean(true);
-	} catch (JMSException ex) {
-	    tmpRispostaControlli.setCodErr("ERR");
-	    StringBuilder errorMessage = new StringBuilder();
-	    errorMessage
-		    .append(String.format(
-			    "Errore nell'invio del messaggio con groupId %s in coda: ", groupId))
-		    .append(ex.getMessage());
-	    log.error(errorMessage.toString(), ex);
-	    tmpRispostaControlli.setDsErr(errorMessage.toString());
-	    tmpRispostaControlli.setrBoolean(false);
+        try (Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                MessageProducer messageProducer = session.createProducer(queue)) {
+            TextMessage textMessage = session.createTextMessage();
+            textMessage.setStringProperty("JMSXGroupID", groupId);
+            // app selector
+            textMessage.setStringProperty(Costanti.JMSMsgProperties.MSG_K_APP, Constants.SACERWS);
+            textMessage.setStringProperty("tipoPayload", tipoPayload);
+            ObjectMapper jsonMapper = new ObjectMapper();
+            textMessage.setText(jsonMapper.writeValueAsString(objectToSerializeInJson));
+            log.debug(String.format("JmsProducer [JSON] %s", textMessage.getText()));
+            messageProducer.send(textMessage);
+            log.debug(String.format("JmsProducer messaggio inviato con groupId %s", groupId));
+            tmpRispostaControlli.setrBoolean(true);
+        } catch (JMSException ex) {
+            tmpRispostaControlli.setCodErr("ERR");
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage
+                    .append(String.format(
+                            "Errore nell'invio del messaggio con groupId %s in coda: ", groupId))
+                    .append(ex.getMessage());
+            log.error(errorMessage.toString(), ex);
+            tmpRispostaControlli.setDsErr(errorMessage.toString());
+            tmpRispostaControlli.setrBoolean(false);
 
-	    // Gestione degli errori sulle close()
-	    for (Throwable suppressed : ex.getSuppressed()) {
-		log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
-		errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
-			.append(suppressed.getMessage());
-		tmpRispostaControlli.setDsErr(errorMessage.toString());
-		tmpRispostaControlli.setrBoolean(false);
-	    }
+            // Gestione degli errori sulle close()
+            for (Throwable suppressed : ex.getSuppressed()) {
+                log.error("Errore (trappato) JMS durante la chiusura delle risorse: ", suppressed);
+                errorMessage.append("\nErrore (trappato) JMS durante la chiusura delle risorse: ")
+                        .append(suppressed.getMessage());
+                tmpRispostaControlli.setDsErr(errorMessage.toString());
+                tmpRispostaControlli.setrBoolean(false);
+            }
 
-	} catch (JsonProcessingException ex) {
-	    tmpRispostaControlli.setCodErr("ERR");
-	    tmpRispostaControlli
-		    .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: "
-			    + ex.getMessage());
-	    log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
-	    tmpRispostaControlli.setrBoolean(false);
-	}
+        } catch (JsonProcessingException ex) {
+            tmpRispostaControlli.setCodErr("ERR");
+            tmpRispostaControlli
+                    .setDsErr("Errore nella serializzazione in JSON del messaggio per la coda: "
+                            + ex.getMessage());
+            log.error("Errore nella serializzazione in JSON del messaggio per la coda: ", ex);
+            tmpRispostaControlli.setrBoolean(false);
+        }
 
-	return tmpRispostaControlli;
+        return tmpRispostaControlli;
     }
     // MAC#27513
 

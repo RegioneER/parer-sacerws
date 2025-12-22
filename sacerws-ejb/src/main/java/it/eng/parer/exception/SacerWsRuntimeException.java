@@ -32,43 +32,43 @@ public class SacerWsRuntimeException extends RuntimeException {
     private final SacerWsErrorCategory category;
 
     public SacerWsRuntimeException() {
-	super();
-	this.category = SacerWsErrorCategory.INTERNAL_ERROR; // default
+        super();
+        this.category = SacerWsErrorCategory.INTERNAL_ERROR; // default
     }
 
     public SacerWsRuntimeException(SacerWsErrorCategory category) {
-	super();
-	this.category = category;
+        super();
+        this.category = category;
     }
 
     public SacerWsRuntimeException(String message, Throwable throwable,
-	    SacerWsErrorCategory category) {
-	super(message, throwable);
-	this.category = category;
+            SacerWsErrorCategory category) {
+        super(message, throwable);
+        this.category = category;
     }
 
     public SacerWsRuntimeException(Throwable throwable, SacerWsErrorCategory category) {
-	super(throwable);
-	this.category = category;
+        super(throwable);
+        this.category = category;
     }
 
     public SacerWsRuntimeException(String message, SacerWsErrorCategory category) {
-	super(message);
-	this.category = category;
+        super(message);
+        this.category = category;
     }
 
     public SacerWsErrorCategory getCategory() {
-	return category;
+        return category;
     }
 
     @Override
     public String getLocalizedMessage() {
-	return "[" + getCategory().toString() + "]" + "  " + super.getLocalizedMessage();
+        return "[" + getCategory().toString() + "]" + "  " + super.getLocalizedMessage();
     }
 
     @Override
     public String getMessage() {
-	return "[" + getCategory().toString() + "]" + "  " + super.getMessage();
+        return "[" + getCategory().toString() + "]" + "  " + super.getMessage();
     }
 
 }

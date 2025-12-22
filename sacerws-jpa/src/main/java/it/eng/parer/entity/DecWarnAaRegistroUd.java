@@ -53,43 +53,43 @@ public class DecWarnAaRegistroUd implements Serializable {
     @Id
     @Column(name = "ID_WARN_AA_REGISTRO_UNITA_DOC")
     @GenericGenerator(name = "SDEC_WARN_AA_REGISTRO_UD_ID_WARN_AA_REGISTRO_UNITA_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_WARN_AA_REGISTRO_UD"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_WARN_AA_REGISTRO_UD"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_WARN_AA_REGISTRO_UD_ID_WARN_AA_REGISTRO_UNITA_DOC_GENERATOR")
     public Long getIdWarnAaRegistroUnitaDoc() {
-	return this.idWarnAaRegistroUnitaDoc;
+        return this.idWarnAaRegistroUnitaDoc;
     }
 
     public void setIdWarnAaRegistroUnitaDoc(Long idWarnAaRegistroUnitaDoc) {
-	this.idWarnAaRegistroUnitaDoc = idWarnAaRegistroUnitaDoc;
+        this.idWarnAaRegistroUnitaDoc = idWarnAaRegistroUnitaDoc;
     }
 
     @Column(name = "AA_REGISTRO_UNITA_DOC")
     public BigDecimal getAaRegistroUnitaDoc() {
-	return this.aaRegistroUnitaDoc;
+        return this.aaRegistroUnitaDoc;
     }
 
     public void setAaRegistroUnitaDoc(BigDecimal aaRegistroUnitaDoc) {
-	this.aaRegistroUnitaDoc = aaRegistroUnitaDoc;
+        this.aaRegistroUnitaDoc = aaRegistroUnitaDoc;
     }
 
     @Column(name = "FL_WARN_AA_REGISTRO_UNITA_DOC", columnDefinition = "char(1)")
     public String getFlWarnAaRegistroUnitaDoc() {
-	return this.flWarnAaRegistroUnitaDoc;
+        return this.flWarnAaRegistroUnitaDoc;
     }
 
     public void setFlWarnAaRegistroUnitaDoc(String flWarnAaRegistroUnitaDoc) {
-	this.flWarnAaRegistroUnitaDoc = flWarnAaRegistroUnitaDoc;
+        this.flWarnAaRegistroUnitaDoc = flWarnAaRegistroUnitaDoc;
     }
 
     // bi-directional many-to-one association to DecAaRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_AA_REGISTRO_UNITA_DOC")
     public DecAaRegistroUnitaDoc getDecAaRegistroUnitaDoc() {
-	return this.decAaRegistroUnitaDoc;
+        return this.decAaRegistroUnitaDoc;
     }
 
     public void setDecAaRegistroUnitaDoc(DecAaRegistroUnitaDoc decAaRegistroUnitaDoc) {
-	this.decAaRegistroUnitaDoc = decAaRegistroUnitaDoc;
+        this.decAaRegistroUnitaDoc = decAaRegistroUnitaDoc;
     }
 }

@@ -48,72 +48,72 @@ public class DecUsoModelloXsdCompDoc implements Serializable {
     private DecTipoCompDoc decTipoCompDoc;
 
     public DecUsoModelloXsdCompDoc() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @GenericGenerator(name = "DEC_USO_MODELLO_XSD_COMP_DOC_IDUSOMODELLOXSDCOMPDOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_USO_MODELLO_XSD_COMP_DOC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_USO_MODELLO_XSD_COMP_DOC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEC_USO_MODELLO_XSD_COMP_DOC_IDUSOMODELLOXSDCOMPDOC_GENERATOR")
     @Column(name = "ID_USO_MODELLO_XSD_COMP_DOC")
     public Long getIdUsoModelloXsdCompDoc() {
-	return this.idUsoModelloXsdCompDoc;
+        return this.idUsoModelloXsdCompDoc;
     }
 
     public void setIdUsoModelloXsdCompDoc(Long idUsoModelloXsdCompDoc) {
-	this.idUsoModelloXsdCompDoc = idUsoModelloXsdCompDoc;
+        this.idUsoModelloXsdCompDoc = idUsoModelloXsdCompDoc;
     }
 
     @Column(name = "FL_STANDARD", columnDefinition = "CHAR")
     public String getFlStandard() {
-	return this.flStandard;
+        return this.flStandard;
     }
 
     public void setFlStandard(String flStandard) {
-	this.flStandard = flStandard;
+        this.flStandard = flStandard;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ISTITUZ")
     public Date getDtIstituz() {
-	return this.dtIstituz;
+        return this.dtIstituz;
     }
 
     public void setDtIstituz(Date dtIstituz) {
-	this.dtIstituz = dtIstituz;
+        this.dtIstituz = dtIstituz;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SOPPRES")
     public Date getDtSoppres() {
-	return this.dtSoppres;
+        return this.dtSoppres;
     }
 
     public void setDtSoppres(Date dtSoppres) {
-	this.dtSoppres = dtSoppres;
+        this.dtSoppres = dtSoppres;
     }
 
     // bi-directional many-to-one association to DecAaTipoFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_MODELLO_XSD_UD")
     public DecModelloXsdUd getDecModelloXsdUd() {
-	return this.decModelloXsdUd;
+        return this.decModelloXsdUd;
     }
 
     public void setDecModelloXsdUd(DecModelloXsdUd decModelloXsdUd) {
-	this.decModelloXsdUd = decModelloXsdUd;
+        this.decModelloXsdUd = decModelloXsdUd;
     }
 
     // bi-directional many-to-one association to DecModelloXsdFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_COMP_DOC")
     public DecTipoCompDoc getDecTipoCompDoc() {
-	return this.decTipoCompDoc;
+        return this.decTipoCompDoc;
     }
 
     public void setDecTipoCompDoc(DecTipoCompDoc decTipoCompDoc) {
-	this.decTipoCompDoc = decTipoCompDoc;
+        this.decTipoCompDoc = decTipoCompDoc;
     }
 
 }

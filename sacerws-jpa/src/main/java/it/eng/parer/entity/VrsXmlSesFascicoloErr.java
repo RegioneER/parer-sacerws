@@ -50,53 +50,53 @@ public class VrsXmlSesFascicoloErr implements Serializable {
     @Id
     @Column(name = "ID_XML_SES_FASCICOLO_ERR")
     @GenericGenerator(name = "SVRS_XML_SES_FASCICOLO_ERR_ID_XML_SES_FASCICOLO_ERR_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_FASCICOLO_ERR"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_XML_SES_FASCICOLO_ERR"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_XML_SES_FASCICOLO_ERR_ID_XML_SES_FASCICOLO_ERR_GENERATOR")
     public Long getIdXmlSesFascicoloErr() {
-	return this.idXmlSesFascicoloErr;
+        return this.idXmlSesFascicoloErr;
     }
 
     public void setIdXmlSesFascicoloErr(Long idXmlSesFascicoloErr) {
-	this.idXmlSesFascicoloErr = idXmlSesFascicoloErr;
+        this.idXmlSesFascicoloErr = idXmlSesFascicoloErr;
     }
 
     @Lob
     @Column(name = "BL_XML")
     public String getBlXml() {
-	return this.blXml;
+        return this.blXml;
     }
 
     public void setBlXml(String blXml) {
-	this.blXml = blXml;
+        this.blXml = blXml;
     }
 
     @Column(name = "CD_VERSIONE_XML")
     public String getCdVersioneXml() {
-	return this.cdVersioneXml;
+        return this.cdVersioneXml;
     }
 
     public void setCdVersioneXml(String cdVersioneXml) {
-	this.cdVersioneXml = cdVersioneXml;
+        this.cdVersioneXml = cdVersioneXml;
     }
 
     @Column(name = "TI_XML")
     public String getTiXml() {
-	return this.tiXml;
+        return this.tiXml;
     }
 
     public void setTiXml(String tiXml) {
-	this.tiXml = tiXml;
+        this.tiXml = tiXml;
     }
 
     // bi-directional many-to-one association to VrsSesFascicoloErr
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SES_FASCICOLO_ERR")
     public VrsSesFascicoloErr getVrsSesFascicoloErr() {
-	return this.vrsSesFascicoloErr;
+        return this.vrsSesFascicoloErr;
     }
 
     public void setVrsSesFascicoloErr(VrsSesFascicoloErr vrsSesFascicoloErr) {
-	this.vrsSesFascicoloErr = vrsSesFascicoloErr;
+        this.vrsSesFascicoloErr = vrsSesFascicoloErr;
     }
 }

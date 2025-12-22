@@ -25,34 +25,34 @@ public class AplVGetValParamDto implements Serializable {
     private String tiAppart;
 
     public AplVGetValParamDto() {
-	super();
-	// TODO Auto-generated constructor stub
+        super();
+        // TODO Auto-generated constructor stub
     }
 
     public AplVGetValParamDto(String dsValoreParamApplic, String tiAppart) {
-	super();
-	this.dsValoreParamApplic = dsValoreParamApplic;
-	this.tiAppart = tiAppart;
+        super();
+        this.dsValoreParamApplic = dsValoreParamApplic;
+        this.tiAppart = tiAppart;
     }
 
     public AplVGetValParamDto(String dsValoreParamApplic) {
-	super();
-	this.dsValoreParamApplic = dsValoreParamApplic;
+        super();
+        this.dsValoreParamApplic = dsValoreParamApplic;
     }
 
     public String getDsValoreParamApplic() {
-	return dsValoreParamApplic;
+        return dsValoreParamApplic;
     }
 
     public void setDsValoreParamApplic(String dsValoreParamApplic) {
-	this.dsValoreParamApplic = dsValoreParamApplic;
+        this.dsValoreParamApplic = dsValoreParamApplic;
     }
 
     public String getTiAppart() {
-	return tiAppart;
+        return tiAppart;
     }
 
     public void setTiAppart(String tiAppart) {
-	this.tiAppart = tiAppart;
+        this.tiAppart = tiAppart;
     }
 }
