@@ -49,143 +49,128 @@ public class ControlliPerFirmeTest {
 
     @Deployment
     public static Archive<?> createTestArchive_queryIsOk() {
-	return createEnterpriseArchive(ControlliPerFirmeTest.class.getSimpleName(),
-		createSacerWSJavaArchive(
-			Arrays.asList("it.eng.parer.firma.exception", "com.fasterxml.uuid.impl",
-				"org.apache.commons.text", "org.apache.commons.text.translate"),
-			ControlliPerFirme.class, ControlliPerFirmeTest.class),
-		createSacerLogJavaArchive());
-    }
-
-    @Test
-    void getOrgStrutt_queryIsOk() {
-	final RispostaControlli rispostaControlli = helper.getOrgStrutt(2L);
-	assertNotNull(rispostaControlli.getrObject());
+        return createEnterpriseArchive(ControlliPerFirmeTest.class.getSimpleName(),
+                createSacerWSJavaArchive(
+                        Arrays.asList("it.eng.parer.firma.exception", "com.fasterxml.uuid.impl",
+                                "org.apache.commons.text", "org.apache.commons.text.translate"),
+                        ControlliPerFirme.class, ControlliPerFirmeTest.class),
+                createSacerLogJavaArchive());
     }
 
     @Test
     void getOrgStruttAsEntity_queryIsOk() throws VerificaFirmaException {
-	helper.getOrgStruttAsEntity(0L);
-	assertTrue(true);
+        helper.getOrgStruttAsEntity(0L);
+        assertTrue(true);
     }
 
     @Test
     void getDecFormatoFileStandardAsEntity_queryIsOk() throws VerificaFirmaException {
-	helper.getDecFormatoFileStandardAsEntity(0L);
-	assertTrue(true);
+        helper.getDecFormatoFileStandardAsEntity(0L);
+        assertTrue(true);
     }
 
     @Test
     void confrontaFormati_queryIsOk() {
-	final RispostaControlli rispostaControlli = helper.confrontaFormati(ID_FORMATO_STD_PDF,
-		ID_FORMATO_DOC_PDF);
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper.confrontaFormati(ID_FORMATO_STD_PDF,
+                ID_FORMATO_DOC_PDF);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     void getDecEstensioneFiles_queryIsOk() throws VerificaFirmaException {
-	helper.getDecEstensioneFiles("PDF");
-	assertTrue(true);
+        helper.getDecEstensioneFiles("PDF");
+        assertTrue(true);
     }
 
     @Test
     void getDecFmtFileStdFromEstensioneFiles_queryIsOk() throws VerificaFirmaException {
-	helper.getDecFmtFileStdFromEstensioneFiles("PDF");
-	assertTrue(true);
+        helper.getDecFmtFileStdFromEstensioneFiles("PDF");
+        assertTrue(true);
     }
 
     @Test
     void getDecFmtFileStandardFromTikaMimes_queryIsOk() throws VerificaFirmaException {
-	helper.getDecFmtFileStandardFromTikaMimes("application/pdf");
-	assertTrue(true);
+        helper.getDecFmtFileStandardFromTikaMimes("application/pdf");
+        assertTrue(true);
     }
 
     @Test
     void getDecFmtFileStandardFromFmtMarcas_queryIsOk() throws VerificaFirmaException {
-	final HashSet<String> tiFormatoFirmaMarca = new HashSet<>();
-	tiFormatoFirmaMarca.add("pades");
-	helper.getDecFmtFileStandardFromFmtMarcas(tiFormatoFirmaMarca);
-	assertTrue(true);
+        final HashSet<String> tiFormatoFirmaMarca = new HashSet<>();
+        tiFormatoFirmaMarca.add("pades");
+        helper.getDecFmtFileStandardFromFmtMarcas(tiFormatoFirmaMarca);
+        assertTrue(true);
     }
 
     @Test
     void getDecFmtFileStandardFromFmtDocs_queryIsOk() throws VerificaFirmaException {
-	helper.getDecFmtFileStandardFromFmtDocs(ID_FORMATO_DOC_PDF, "chiaveComp",
-		"nmFormatoFileDoc");
-	assertTrue(true);
+        helper.getDecFmtFileStandardFromFmtDocs(ID_FORMATO_DOC_PDF, "chiaveComp",
+                "nmFormatoFileDoc");
+        assertTrue(true);
     }
 
     @Test
     void getDecFormatoFileDoc_queryIsOk() throws VerificaFirmaException {
-	helper.getDecFormatoFileDoc(0L);
-	assertTrue(true);
+        helper.getDecFormatoFileDoc(0L);
+        assertTrue(true);
     }
 
     @Test
     void getFirCertifCa_queryIsOk() throws VerificaFirmaException {
-	helper.getFirCertifCa(StringUtils.EMPTY, "dlDnIssuerCertifCa");
-	assertTrue(true);
+        helper.getFirCertifCa(StringUtils.EMPTY, "dlDnIssuerCertifCa");
+        assertTrue(true);
     }
 
     @Test
     void getFirCrl_queryIsOk() throws VerificaFirmaException {
-	final FirCertifCa firCertifCa = aFirCertifCa();
-	final String niSerialCrl = StringUtils.EMPTY;
-	final Date dtIniCrl = new Date();
-	final Date dtScadCrl = new Date();
-	helper.getFirCrl(firCertifCa, niSerialCrl, dtIniCrl, dtScadCrl);
-	assertTrue(true);
+        final FirCertifCa firCertifCa = aFirCertifCa();
+        final String niSerialCrl = StringUtils.EMPTY;
+        final Date dtIniCrl = new Date();
+        final Date dtScadCrl = new Date();
+        helper.getFirCrl(firCertifCa, niSerialCrl, dtIniCrl, dtScadCrl);
+        assertTrue(true);
     }
 
     private FirCertifCa aFirCertifCa() {
-	final FirCertifCa firCertifCa = new FirCertifCa();
-	firCertifCa.setIdCertifCa(0L);
-	return firCertifCa;
+        final FirCertifCa firCertifCa = new FirCertifCa();
+        firCertifCa.setIdCertifCa(0L);
+        return firCertifCa;
     }
 
     @Test
     void getFirCertifOcsp_queryIsOk() throws VerificaFirmaException {
-	helper.getFirCertifOcsp(aFirCertifCa(), StringUtils.EMPTY);
-	assertTrue(true);
+        helper.getFirCertifOcsp(aFirCertifCa(), StringUtils.EMPTY);
+        assertTrue(true);
     }
 
     @Test
     void getFirOcsp_queryIsOk() throws VerificaFirmaException {
-	final FirCertifOcsp firCertifOcsp = new FirCertifOcsp();
-	firCertifOcsp.setIdCertifOcsp(0l);
-	helper.getFirOcsp(firCertifOcsp, "dsCertifIssuerName", "dsCertifSerialBase64",
-		"dsCertifSkiBase64");
-	assertTrue(true);
+        final FirCertifOcsp firCertifOcsp = new FirCertifOcsp();
+        firCertifOcsp.setIdCertifOcsp(0l);
+        helper.getFirOcsp(firCertifOcsp, "dsCertifIssuerName", "dsCertifSerialBase64",
+                "dsCertifSkiBase64");
+        assertTrue(true);
     }
 
     @Test
     void getFirCertifFirmatario_queryIsOk() throws VerificaFirmaException {
-	helper.getFirCertifFirmatario(aFirCertifCa(), StringUtils.EMPTY);
-	assertTrue(true);
+        helper.getFirCertifFirmatario(aFirCertifCa(), StringUtils.EMPTY);
+        assertTrue(true);
     }
 
     @Test
     void getFirCertifFirmatarioIds_queryIsOk() throws VerificaFirmaException {
-	helper.getFirCertifFirmatarioIds(BigDecimal.ZERO, aFirCertifCa());
-	assertTrue(true);
+        helper.getFirCertifFirmatarioIds(BigDecimal.ZERO, aFirCertifCa());
+        assertTrue(true);
     }
 
     @Test
     void getDecServizioVerificaCompDoc_queryIsOk() throws VerificaFirmaException {
-	for (DecServizioVerificaCompDoc.CdServizioVerificaCompDoc cdService : DecServizioVerificaCompDoc.CdServizioVerificaCompDoc
-		.values()) {
-	    helper.getDecServizioVerificaCompDoc(cdService.name(), "cdLibrary");
-	}
-	assertTrue(true);
+        for (DecServizioVerificaCompDoc.CdServizioVerificaCompDoc cdService : DecServizioVerificaCompDoc.CdServizioVerificaCompDoc
+                .values()) {
+            helper.getDecServizioVerificaCompDoc(cdService.name(), "cdLibrary");
+        }
+        assertTrue(true);
     }
 
-    @Test
-    void retrieveOrgEnteFor_queryIsOk() {
-	final OrgStrut os = new OrgStrut();
-	os.setIdStrut(0L);
-	os.setOrgEnte(new OrgEnte());
-	os.getOrgEnte().setIdEnte(0l);
-	helper.retrieveOrgEnteFor(os);
-	assertTrue(true);
-    }
 }

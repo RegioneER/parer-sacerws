@@ -39,33 +39,33 @@ public class ControlliWSHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(
-		"ControlliWSHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
-			ControlliWSHelper.class, ControlliWSHelperTest.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(
+                "ControlliWSHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
+                        ControlliWSHelper.class, ControlliWSHelperTest.class),
+                createSacerLogJavaArchive());
     }
 
     @Test
     void caricaListaControlli_queryIsOk() {
-	final List<DecControlloWs> listaControlli = helper.caricaListaControlli();
-	assertFalse(listaControlli.isEmpty());
+        final List<DecControlloWs> listaControlli = helper.caricaListaControlli();
+        assertFalse(listaControlli.isEmpty());
     }
 
     @Test
     void caricaCdControlloWs_queryIsOk() {
-	try {
-	    helper.caricaCdControlloWs("NON_ESISTE");
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "No entity found for query"));
-	}
+        try {
+            helper.caricaCdControlloWs("NON_ESISTE");
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "No entity found for query"));
+        }
     }
 
     @Test
     void caricaCdControlloFamiglia_queryIsOk() {
-	try {
-	    helper.caricaCdControlloFamiglia("NON_ESISTE");
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "No entity found for query"));
-	}
+        try {
+            helper.caricaCdControlloFamiglia("NON_ESISTE");
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "No entity found for query"));
+        }
     }
 }

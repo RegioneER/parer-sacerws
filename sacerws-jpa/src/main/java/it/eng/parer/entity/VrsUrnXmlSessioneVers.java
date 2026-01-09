@@ -56,45 +56,45 @@ public class VrsUrnXmlSessioneVers implements Serializable {
     @Id
     @Column(name = "ID_URN_XML_SESSIONE_VERS")
     @GenericGenerator(name = "SVRS_URN_XML_SESSIONE_VERS_ID_URN_XML_SESSIONE_VERS_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_URN_XML_SESSIONE_VERS"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SVRS_URN_XML_SESSIONE_VERS"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SVRS_URN_XML_SESSIONE_VERS_ID_URN_XML_SESSIONE_VERS_GENERATOR")
     public Long getIdUrnXmlSessionVers() {
-	return this.idUrnXmlSessionVers;
+        return this.idUrnXmlSessionVers;
     }
 
     public void setIdUrnXmlSessionVers(Long idUrnXmlSessionVers) {
-	this.idUrnXmlSessionVers = idUrnXmlSessionVers;
+        this.idUrnXmlSessionVers = idUrnXmlSessionVers;
     }
 
     @Column(name = "DS_URN")
     public String getDsUrn() {
-	return this.dsUrn;
+        return this.dsUrn;
     }
 
     public void setDsUrn(String dsUrn) {
-	this.dsUrn = dsUrn;
+        this.dsUrn = dsUrn;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_URN")
     public TiUrnXmlSessioneVers getTiUrn() {
-	return this.tiUrn;
+        return this.tiUrn;
     }
 
     public void setTiUrn(TiUrnXmlSessioneVers tiUrnXmlSessioneVers) {
-	this.tiUrn = tiUrnXmlSessioneVers;
+        this.tiUrn = tiUrnXmlSessioneVers;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_XML_DATI_SESSIONE_VERS")
     public VrsXmlDatiSessioneVers getVrsXmlDatiSessioneVers() {
-	return this.vrsXmlDatiSessioneVers;
+        return this.vrsXmlDatiSessioneVers;
     }
 
     public void setVrsXmlDatiSessioneVers(VrsXmlDatiSessioneVers vrsXmlDatiSessioneVers) {
-	this.vrsXmlDatiSessioneVers = vrsXmlDatiSessioneVers;
+        this.vrsXmlDatiSessioneVers = vrsXmlDatiSessioneVers;
     }
 
 }

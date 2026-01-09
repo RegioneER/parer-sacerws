@@ -25,6 +25,6 @@ public interface FileStorageBackend extends BackendStorage {
 
     @Override
     default STORAGE_TYPE getType() {
-	return STORAGE_TYPE.FILE;
+        return STORAGE_TYPE.FILE;
     }
 }

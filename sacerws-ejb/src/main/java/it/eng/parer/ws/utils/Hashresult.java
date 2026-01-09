@@ -31,51 +31,51 @@ public class Hashresult {
     private byte[] hashSha512;
 
     public byte[] getHashMd5() {
-	return hashMd5;
+        return hashMd5;
     }
 
     public void setHashMd5(byte[] hashMd5) {
-	this.hashMd5 = hashMd5;
+        this.hashMd5 = hashMd5;
     }
 
     public byte[] getHashSha1() {
-	return hashSha1;
+        return hashSha1;
     }
 
     public void setHashSha1(byte[] hashSha1) {
-	this.hashSha1 = hashSha1;
+        this.hashSha1 = hashSha1;
     }
 
     public byte[] getHashSha224() {
-	return hashSha224;
+        return hashSha224;
     }
 
     public void setHashSha224(byte[] hashSha224) {
-	this.hashSha224 = hashSha224;
+        this.hashSha224 = hashSha224;
     }
 
     public byte[] getHashSha256() {
-	return hashSha256;
+        return hashSha256;
     }
 
     public void setHashSha256(byte[] hashSha256) {
-	this.hashSha256 = hashSha256;
+        this.hashSha256 = hashSha256;
     }
 
     public byte[] getHashSha384() {
-	return hashSha384;
+        return hashSha384;
     }
 
     public void setHashSha384(byte[] hashSha384) {
-	this.hashSha384 = hashSha384;
+        this.hashSha384 = hashSha384;
     }
 
     public byte[] getHashSha512() {
-	return hashSha512;
+        return hashSha512;
     }
 
     public void setHashSha512(byte[] hashSha512) {
-	this.hashSha512 = hashSha512;
+        this.hashSha512 = hashSha512;
     }
 
 }

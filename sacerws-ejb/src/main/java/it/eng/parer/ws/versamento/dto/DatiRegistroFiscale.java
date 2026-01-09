@@ -27,27 +27,27 @@ public class DatiRegistroFiscale {
     private boolean flRegistroFisc;
 
     public long getIdOrgStrut() {
-	return idOrgStrut;
+        return idOrgStrut;
     }
 
     public void setIdOrgStrut(long idOrgStrut) {
-	this.idOrgStrut = idOrgStrut;
+        this.idOrgStrut = idOrgStrut;
     }
 
     public long getIdRegistroUnitaDoc() {
-	return idRegistroUnitaDoc;
+        return idRegistroUnitaDoc;
     }
 
     public void setIdRegistroUnitaDoc(long idRegistroUnitaDoc) {
-	this.idRegistroUnitaDoc = idRegistroUnitaDoc;
+        this.idRegistroUnitaDoc = idRegistroUnitaDoc;
     }
 
     public boolean isFlRegistroFisc() {
-	return flRegistroFisc;
+        return flRegistroFisc;
     }
 
     public void setFlRegistroFisc(boolean flRegistroFisc) {
-	this.flRegistroFisc = flRegistroFisc;
+        this.flRegistroFisc = flRegistroFisc;
     }
 
 }

@@ -14,10 +14,19 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the ARO_LOG_STATO_CONSERV_UD database table.
@@ -45,87 +54,87 @@ public class AroLogStatoConservUd implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_LOG_STATO_CONSERV_UD")
     public long getIdLogStatoConservUd() {
-	return this.idLogStatoConservUd;
+        return this.idLogStatoConservUd;
     }
 
     public void setIdLogStatoConservUd(long idLogStatoConservUd) {
-	this.idLogStatoConservUd = idLogStatoConservUd;
+        this.idLogStatoConservUd = idLogStatoConservUd;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-	return this.aaKeyUnitaDoc;
+        return this.aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     @Column(name = "DT_STATO")
     public Timestamp getDtStato() {
-	return this.dtStato;
+        return this.dtStato;
     }
 
     public void setDtStato(Timestamp dtStato) {
-	this.dtStato = dtStato;
+        this.dtStato = dtStato;
     }
 
     // bi-directional many-to-one association to OrgSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SUB_STRUT")
     public OrgSubStrut getOrgSubStrut() {
-	return this.orgSubStrut;
+        return this.orgSubStrut;
     }
 
     public void setOrgSubStrut(OrgSubStrut orgSubStrut) {
-	this.orgSubStrut = orgSubStrut;
+        this.orgSubStrut = orgSubStrut;
     }
 
     @Column(name = "NM_AGENTE")
     public String getNmAgente() {
-	return this.nmAgente;
+        return this.nmAgente;
     }
 
     public void setNmAgente(String nmAgente) {
-	this.nmAgente = nmAgente;
+        this.nmAgente = nmAgente;
     }
 
     @Column(name = "TI_EVENTO")
     public String getTiEvento() {
-	return this.tiEvento;
+        return this.tiEvento;
     }
 
     public void setTiEvento(String tiEvento) {
-	this.tiEvento = tiEvento;
+        this.tiEvento = tiEvento;
     }
 
     @Column(name = "TI_MOD")
     public String getTiMod() {
-	return this.tiMod;
+        return this.tiMod;
     }
 
     public void setTiMod(String tiMod) {
-	this.tiMod = tiMod;
+        this.tiMod = tiMod;
     }
 
     @Column(name = "TI_STATO_CONSERVAZIONE")
     public String getTiStatoConservazione() {
-	return this.tiStatoConservazione;
+        return this.tiStatoConservazione;
     }
 
     public void setTiStatoConservazione(String tiStatoConservazione) {
-	this.tiStatoConservazione = tiStatoConservazione;
+        this.tiStatoConservazione = tiStatoConservazione;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
 }

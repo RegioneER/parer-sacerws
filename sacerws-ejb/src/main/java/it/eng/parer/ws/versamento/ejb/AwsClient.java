@@ -56,13 +56,13 @@ public class AwsClient {
 
     private S3Client lookupClient(URI storageAddress, String accessKeyId, String secretKey) {
 
-	final CacheKey key = new CacheKey(storageAddress, accessKeyId, secretKey);
+        final CacheKey key = new CacheKey(storageAddress, accessKeyId, secretKey);
 
-	S3Client client = clientCache.computeIfAbsent(key,
-		k -> createS3Client(storageAddress, accessKeyId, secretKey));
-	log.debug("Sto per effettuare il collegamento all'endpoint S3 [{}] dal thread {}",
-		storageAddress, Thread.currentThread().getName());
-	return client;
+        S3Client client = clientCache.computeIfAbsent(key,
+                k -> createS3Client(storageAddress, accessKeyId, secretKey));
+        log.debug("Sto per effettuare il collegamento all'endpoint S3 [{}] dal thread {}",
+                storageAddress, Thread.currentThread().getName());
+        return client;
 
     }
 
@@ -73,17 +73,17 @@ public class AwsClient {
      */
     private S3Client createS3Client(URI storageAddress, String accessKeyId, String secretKey) {
 
-	final AwsCredentialsProvider credProvider = StaticCredentialsProvider
-		.create(AwsBasicCredentials.create(accessKeyId, secretKey));
+        final AwsCredentialsProvider credProvider = StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(accessKeyId, secretKey));
 
-	return S3Client.builder().endpointOverride(storageAddress).region(Region.US_EAST_1)
-		.credentialsProvider(credProvider).forcePathStyle(true)
-		.responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
-		.requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
-		.httpClientBuilder(ApacheHttpClient.builder().maxConnections(maxConnections())
-			.connectionTimeout(connectionTimeoutOfMinutes())
-			.socketTimeout(socketTimeoutOfMinutes()))
-		.build();
+        return S3Client.builder().endpointOverride(storageAddress).region(Region.US_EAST_1)
+                .credentialsProvider(credProvider).forcePathStyle(true)
+                .responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
+                .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
+                .httpClientBuilder(ApacheHttpClient.builder().maxConnections(maxConnections())
+                        .connectionTimeout(connectionTimeoutOfMinutes())
+                        .socketTimeout(socketTimeoutOfMinutes()))
+                .build();
     }
 
     /**
@@ -94,10 +94,10 @@ public class AwsClient {
      *
      */
     private final Integer maxConnections() {
-	final String longParameterString = configurationHelper
-		.getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_MAX_CONNECTIONS);
-	return NumberUtils.isDigits(longParameterString) ? Integer.valueOf(longParameterString)
-		: 100; // default
+        final String longParameterString = configurationHelper
+                .getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_MAX_CONNECTIONS);
+        return NumberUtils.isDigits(longParameterString) ? Integer.valueOf(longParameterString)
+                : 100; // default
     }
 
     /**
@@ -108,10 +108,10 @@ public class AwsClient {
      *
      */
     private final Duration connectionTimeoutOfMinutes() {
-	final String longParameterString = configurationHelper
-		.getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_CONNECTION_TIMEOUT);
-	return Duration.ofMinutes(
-		NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString) : 1L); // default
+        final String longParameterString = configurationHelper
+                .getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_CONNECTION_TIMEOUT);
+        return Duration.ofMinutes(
+                NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString) : 1L); // default
     }
 
     /**
@@ -122,11 +122,11 @@ public class AwsClient {
      *
      */
     private final Duration socketTimeoutOfMinutes() {
-	final String longParameterString = configurationHelper
-		.getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_SOCKET_TIMEOUT);
-	return Duration.ofMinutes(
-		NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString)
-			: 10L); // default
+        final String longParameterString = configurationHelper
+                .getValoreParamApplicByApplic(ParametroApplDB.S3_CLIENT_SOCKET_TIMEOUT);
+        return Duration.ofMinutes(
+                NumberUtils.isDigits(longParameterString) ? Long.valueOf(longParameterString)
+                        : 10L); // default
     }
 
     /**
@@ -139,60 +139,60 @@ public class AwsClient {
      * @return client S3 configurato
      */
     public S3Client getClient(URI storageAddress, String accessKeyId, String secretKey) {
-	return lookupClient(storageAddress, accessKeyId, secretKey);
+        return lookupClient(storageAddress, accessKeyId, secretKey);
     }
 
     @PreDestroy
     private void clear() {
-	for (S3Client s3Client : clientCache.values()) {
-	    if (s3Client != null) {
-		s3Client.close();
-	    }
-	}
+        for (S3Client s3Client : clientCache.values()) {
+            if (s3Client != null) {
+                s3Client.close();
+            }
+        }
     }
 
     private static class CacheKey {
 
-	private URI storageAddress;
-	private String accessKeyId;
-	private String secretKey;
+        private URI storageAddress;
+        private String accessKeyId;
+        private String secretKey;
 
-	public CacheKey(URI storageAddress, String accessKeyId, String secretKey) {
-	    this.storageAddress = storageAddress;
-	    this.accessKeyId = accessKeyId;
-	    this.secretKey = secretKey;
-	}
+        public CacheKey(URI storageAddress, String accessKeyId, String secretKey) {
+            this.storageAddress = storageAddress;
+            this.accessKeyId = accessKeyId;
+            this.secretKey = secretKey;
+        }
 
-	@Override
-	public int hashCode() {
-	    final int prime = 31;
-	    int result = 1;
-	    result = prime * result + ((storageAddress == null) ? 0 : storageAddress.hashCode());
-	    result = prime * result + ((accessKeyId == null) ? 0 : accessKeyId.hashCode());
-	    result = prime * result + ((secretKey == null) ? 0 : secretKey.hashCode());
-	    return result;
-	}
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((storageAddress == null) ? 0 : storageAddress.hashCode());
+            result = prime * result + ((accessKeyId == null) ? 0 : accessKeyId.hashCode());
+            result = prime * result + ((secretKey == null) ? 0 : secretKey.hashCode());
+            return result;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj) {
-		return true;
-	    }
-	    if (obj == null) {
-		return false;
-	    }
-	    if (getClass() != obj.getClass()) {
-		return false;
-	    }
-	    final CacheKey other = (CacheKey) obj;
-	    if (!Objects.equals(this.accessKeyId, other.accessKeyId)) {
-		return false;
-	    }
-	    if (!Objects.equals(this.secretKey, other.secretKey)) {
-		return false;
-	    }
-	    return Objects.equals(this.storageAddress, other.storageAddress);
-	}
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final CacheKey other = (CacheKey) obj;
+            if (!Objects.equals(this.accessKeyId, other.accessKeyId)) {
+                return false;
+            }
+            if (!Objects.equals(this.secretKey, other.secretKey)) {
+                return false;
+            }
+            return Objects.equals(this.storageAddress, other.storageAddress);
+        }
     }
 
 }

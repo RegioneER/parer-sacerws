@@ -66,72 +66,72 @@ public class ElvFascDaElabElenco implements Serializable {
     @Id
     @Column(name = "ID_FASC_DA_ELAB_ELENCO")
     @GenericGenerator(name = "SELV_FASC_DA_ELAB_ELENCO_ID_FASC_DA_ELAB_ELENCO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_FASC_DA_ELAB_ELENCO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_FASC_DA_ELAB_ELENCO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SELV_FASC_DA_ELAB_ELENCO_ID_FASC_DA_ELAB_ELENCO_GENERATOR")
     public Long getIdFascDaElabElenco() {
-	return this.idFascDaElabElenco;
+        return this.idFascDaElabElenco;
     }
 
     public void setIdFascDaElabElenco(Long idFascDaElabElenco) {
-	this.idFascDaElabElenco = idFascDaElabElenco;
+        this.idFascDaElabElenco = idFascDaElabElenco;
     }
 
     @Column(name = "AA_FASCICOLO")
     public BigDecimal getAaFascicolo() {
-	return this.aaFascicolo;
+        return this.aaFascicolo;
     }
 
     public void setAaFascicolo(BigDecimal aaFascicolo) {
-	this.aaFascicolo = aaFascicolo;
+        this.aaFascicolo = aaFascicolo;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_VERS_FASCICOLO")
     public Date getTsVersFascicolo() {
-	return this.tsVersFascicolo;
+        return this.tsVersFascicolo;
     }
 
     public void setTsVersFascicolo(Date tsVersFascicolo) {
-	this.tsVersFascicolo = tsVersFascicolo;
+        this.tsVersFascicolo = tsVersFascicolo;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_STATO_FASC_DA_ELAB")
     public TiStatoFascDaElab getTiStatoFascDaElab() {
-	return this.tiStatoFascDaElab;
+        return this.tiStatoFascDaElab;
     }
 
     public void setTiStatoFascDaElab(TiStatoFascDaElab tiStatoFascDaElab) {
-	this.tiStatoFascDaElab = tiStatoFascDaElab;
+        this.tiStatoFascDaElab = tiStatoFascDaElab;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 
     @Column(name = "ID_TIPO_FASCICOLO")
     public BigDecimal getIdTipoFascicolo() {
-	return this.idTipoFascicolo;
+        return this.idTipoFascicolo;
     }
 
     public void setIdTipoFascicolo(BigDecimal idTipoFascicolo) {
-	this.idTipoFascicolo = idTipoFascicolo;
+        this.idTipoFascicolo = idTipoFascicolo;
     }
 }

@@ -32,31 +32,31 @@ public class VerificaFirmaWrapperGenericException extends Exception {
     private final transient VerificaFirmaWrapper wrapper;
 
     public VerificaFirmaWrapperGenericException(final VerificaFirmaWrapper wrapper) {
-	super();
-	this.wrapper = wrapper;
+        super();
+        this.wrapper = wrapper;
     }
 
     public VerificaFirmaWrapperGenericException(Throwable ex, final VerificaFirmaWrapper wrapper) {
-	super(ex);
-	this.wrapper = wrapper;
+        super(ex);
+        this.wrapper = wrapper;
     }
 
     public VerificaFirmaWrapperGenericException(String message,
-	    final VerificaFirmaWrapper wrapper) {
-	super(message);
-	this.wrapper = wrapper;
+            final VerificaFirmaWrapper wrapper) {
+        super(message);
+        this.wrapper = wrapper;
     }
 
     public VerificaFirmaWrapper getVerificaFirmaWrapper() {
-	return wrapper;
+        return wrapper;
     }
 
     @Override
     public String getMessage() {
-	return "Servizio di verifica firma " + wrapper.getAdditionalInfo().getServiceCode()
-		+ " [versione=" + wrapper.getServiceVersion() + ", libreria="
-		+ wrapper.getLibraryVersion() + "] errore durante elaborazione report verifica "
-		+ super.getMessage();
+        return "Servizio di verifica firma " + wrapper.getAdditionalInfo().getServiceCode()
+                + " [versione=" + wrapper.getServiceVersion() + ", libreria="
+                + wrapper.getLibraryVersion() + "] errore durante elaborazione report verifica "
+                + super.getMessage();
     }
 
 }

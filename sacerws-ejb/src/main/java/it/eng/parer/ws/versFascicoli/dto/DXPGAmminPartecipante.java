@@ -20,33 +20,33 @@ public class DXPGAmminPartecipante {
     String tipoCodice;
 
     public String getDenominazione() {
-	return denominazione;
+        return denominazione;
     }
 
     public void setDenominazione(String denominazione) {
-	this.denominazione = denominazione;
+        this.denominazione = denominazione;
     }
 
     public String getCodice() {
-	return codice;
+        return codice;
     }
 
     public void setCodice(String codice) {
-	this.codice = codice;
+        this.codice = codice;
     }
 
     public String getTipoCodice() {
-	return tipoCodice;
+        return tipoCodice;
     }
 
     public void setTipoCodice(String tipoCodice) {
-	this.tipoCodice = tipoCodice;
+        this.tipoCodice = tipoCodice;
     }
 
     @Override
     public String toString() {
 
-	return denominazione + " - " + codice + " - " + tipoCodice;
+        return denominazione + " - " + codice + " - " + tipoCodice;
 
     }
 

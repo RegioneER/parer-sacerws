@@ -52,46 +52,46 @@ public class OrgPartitionStrut implements Serializable {
     @Id
     @Column(name = "ID_PARTITION_STRUT")
     @GenericGenerator(name = "SORG_PARTITION_STRUT_ID_PARTITION_STRUT_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION_STRUT"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_PARTITION_STRUT"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_PARTITION_STRUT_ID_PARTITION_STRUT_GENERATOR")
     public Long getIdPartitionStrut() {
-	return this.idPartitionStrut;
+        return this.idPartitionStrut;
     }
 
     public void setIdPartitionStrut(Long idPartitionStrut) {
-	this.idPartitionStrut = idPartitionStrut;
+        this.idPartitionStrut = idPartitionStrut;
     }
 
     @Column(name = "TI_PARTITION")
     public String getTiPartition() {
-	return this.tiPartition;
+        return this.tiPartition;
     }
 
     public void setTiPartition(String tiPartition) {
-	this.tiPartition = tiPartition;
+        this.tiPartition = tiPartition;
     }
 
     // bi-directional many-to-one association to OrgPartition
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PARTITION")
     public OrgPartition getOrgPartition() {
-	return this.orgPartition;
+        return this.orgPartition;
     }
 
     public void setOrgPartition(OrgPartition orgPartition) {
-	this.orgPartition = orgPartition;
+        this.orgPartition = orgPartition;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
 }

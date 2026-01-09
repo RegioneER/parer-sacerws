@@ -40,51 +40,51 @@ public class KeySizeFascUtility {
 
     public KeySizeFascUtility(CSVersatore csv, CSChiaveFasc csc, String sistema) {
 
-	int numKeyOrd = this.calcolaMaxLenNumeroKeyOrd(csc);
-	int numUrn = this.calcolaMaxLenNumeroURN(csv, csc, sistema);
-	maxLenNumero = numKeyOrd < numUrn ? numKeyOrd : numUrn;
+        int numKeyOrd = this.calcolaMaxLenNumeroKeyOrd(csc);
+        int numUrn = this.calcolaMaxLenNumeroURN(csv, csc, sistema);
+        maxLenNumero = numKeyOrd < numUrn ? numKeyOrd : numUrn;
 
-	lenURN = this.calcolaURN(csv, csc, sistema).length();
+        lenURN = this.calcolaURN(csv, csc, sistema).length();
 
     }
 
     public int getMaxLenNumero() {
-	return maxLenNumero;
+        return maxLenNumero;
     }
 
     public int getLenURN() {
-	return lenURN;
+        return lenURN;
     }
 
     public int getLenPath() {
-	return lenPath;
+        return lenPath;
     }
 
     private int calcolaMaxLenNumeroKeyOrd(CSChiaveFasc chiave) {
-	String tmpChiaveOrd;
-	if (chiave.getNumero().length() <= MAX_LEN_NUMERO_IN_CHIAVEORD) {
-	    tmpChiaveOrd = +chiave.getAnno() + "-" + chiave.getNumero();
-	} else {
-	    /*
-	     * prova a rifare il controllo troncando il <codice fascicolo> a 75 caratteri. codice
-	     * fascicolo???
-	     */
-	    tmpChiaveOrd = chiave.getAnno() + "-"
-		    + chiave.getNumero().substring(0, MAX_LEN_NUMERO_IN_CHIAVEORD);
-	}
+        String tmpChiaveOrd;
+        if (chiave.getNumero().length() <= MAX_LEN_NUMERO_IN_CHIAVEORD) {
+            tmpChiaveOrd = +chiave.getAnno() + "-" + chiave.getNumero();
+        } else {
+            /*
+             * prova a rifare il controllo troncando il <codice fascicolo> a 75 caratteri. codice
+             * fascicolo???
+             */
+            tmpChiaveOrd = chiave.getAnno() + "-"
+                    + chiave.getNumero().substring(0, MAX_LEN_NUMERO_IN_CHIAVEORD);
+        }
 
-	return MAX_LEN_CHIAVEORD - tmpChiaveOrd.length();
+        return MAX_LEN_CHIAVEORD - tmpChiaveOrd.length();
     }
 
     private int calcolaMaxLenNumeroURN(CSVersatore versatore, CSChiaveFasc chiave, String sistema) {
-	return MAX_LEN_URN - this.calcolaURN(versatore, chiave, sistema).length();
+        return MAX_LEN_URN - this.calcolaURN(versatore, chiave, sistema).length();
     }
 
     private String calcolaURN(CSVersatore versatore, CSChiaveFasc chiave, String sistema) {
-	String chiaveComp = MessaggiWSFormat.formattaChiaveFascicolo(versatore, chiave, sistema);
-	String chiaveSIP = MessaggiWSFormat.formattaUrnIndiceSipFasc(chiaveComp,
-		Costanti.UrnFormatter.URN_INDICE_SIP_V2);
-	return chiaveSIP.toString();
+        String chiaveComp = MessaggiWSFormat.formattaChiaveFascicolo(versatore, chiave, sistema);
+        String chiaveSIP = MessaggiWSFormat.formattaUrnIndiceSipFasc(chiaveComp,
+                Costanti.UrnFormatter.URN_INDICE_SIP_V2);
+        return chiaveSIP.toString();
     }
 
     // TODO: serve????

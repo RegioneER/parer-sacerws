@@ -32,53 +32,53 @@ public class DatiSpecLinkOsKeyMap implements Serializable {
     private String tipiEntitaSacer;
 
     public DatiSpecLinkOsKeyMap(Long idEntitySacer, String tipiEntitaSacer) {
-	this.idEntitySacer = idEntitySacer;
-	this.tipiEntitaSacer = tipiEntitaSacer;
+        this.idEntitySacer = idEntitySacer;
+        this.tipiEntitaSacer = tipiEntitaSacer;
     }
 
     public Long getIdEntitySacer() {
-	return idEntitySacer;
+        return idEntitySacer;
     }
 
     public void setIdEntitySacer(Long idEntitySacer) {
-	this.idEntitySacer = idEntitySacer;
+        this.idEntitySacer = idEntitySacer;
     }
 
     public String getTipiEntitaSacer() {
-	return tipiEntitaSacer;
+        return tipiEntitaSacer;
     }
 
     public void setTipiEntitaSacer(String tipiEntitaSacer) {
-	this.tipiEntitaSacer = tipiEntitaSacer;
+        this.tipiEntitaSacer = tipiEntitaSacer;
     }
 
     @Override
     public int hashCode() {
-	int hash = 5;
-	hash = 67 * hash + Objects.hashCode(this.idEntitySacer);
-	hash = 67 * hash + Objects.hashCode(this.tipiEntitaSacer);
-	return hash;
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.idEntitySacer);
+        hash = 67 * hash + Objects.hashCode(this.tipiEntitaSacer);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final DatiSpecLinkOsKeyMap other = (DatiSpecLinkOsKeyMap) obj;
-	if (!Objects.equals(this.tipiEntitaSacer, other.tipiEntitaSacer)) {
-	    return false;
-	}
-	if (!Objects.equals(this.idEntitySacer, other.idEntitySacer)) {
-	    return false;
-	}
-	return true;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DatiSpecLinkOsKeyMap other = (DatiSpecLinkOsKeyMap) obj;
+        if (!Objects.equals(this.tipiEntitaSacer, other.tipiEntitaSacer)) {
+            return false;
+        }
+        if (!Objects.equals(this.idEntitySacer, other.idEntitySacer)) {
+            return false;
+        }
+        return true;
     }
 
 }

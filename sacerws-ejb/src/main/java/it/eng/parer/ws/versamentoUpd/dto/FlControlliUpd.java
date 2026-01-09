@@ -31,43 +31,43 @@ public class FlControlliUpd {
     boolean flProfiloUdObbData;
 
     public boolean isFlAbilitaUpdMeta() {
-	return flAbilitaUpdMeta;
+        return flAbilitaUpdMeta;
     }
 
     public void setFlAbilitaUpdMeta(boolean flAbilitaUpdMeta) {
-	this.flAbilitaUpdMeta = flAbilitaUpdMeta;
+        this.flAbilitaUpdMeta = flAbilitaUpdMeta;
     }
 
     public boolean isFlAccettaUpdMetaInark() {
-	return flAccettaUpdMetaInark;
+        return flAccettaUpdMetaInark;
     }
 
     public void setFlAccettaUpdMetaInark(boolean flAccettaUpdMetaInark) {
-	this.flAccettaUpdMetaInark = flAccettaUpdMetaInark;
+        this.flAccettaUpdMetaInark = flAccettaUpdMetaInark;
     }
 
     public boolean isFlForzaUpdMetaInark() {
-	return flForzaUpdMetaInark;
+        return flForzaUpdMetaInark;
     }
 
     public void setFlForzaUpdMetaInark(boolean flForzaUpdMetaInark) {
-	this.flForzaUpdMetaInark = flForzaUpdMetaInark;
+        this.flForzaUpdMetaInark = flForzaUpdMetaInark;
     }
 
     public boolean isFlProfiloUdObbOggetto() {
-	return flProfiloUdObbOggetto;
+        return flProfiloUdObbOggetto;
     }
 
     public void setFlProfiloUdObbOggetto(boolean flProfiloUdObbOggetto) {
-	this.flProfiloUdObbOggetto = flProfiloUdObbOggetto;
+        this.flProfiloUdObbOggetto = flProfiloUdObbOggetto;
     }
 
     public boolean isFlProfiloUdObbData() {
-	return flProfiloUdObbData;
+        return flProfiloUdObbData;
     }
 
     public void setFlProfiloUdObbData(boolean flProfiloUdObbData) {
-	this.flProfiloUdObbData = flProfiloUdObbData;
+        this.flProfiloUdObbData = flProfiloUdObbData;
     }
 
 }

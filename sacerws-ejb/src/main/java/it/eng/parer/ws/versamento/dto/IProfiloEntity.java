@@ -25,7 +25,7 @@ public interface IProfiloEntity {
      * @return true se presente almeno un profilo
      */
     public default boolean hasXsdProfile() {
-	return getIdRecUsoXsdProfiloNormativo() != null;
+        return getIdRecUsoXsdProfiloNormativo() != null;
     }
 
     /* id "tipizzati" per i profili esistenti */

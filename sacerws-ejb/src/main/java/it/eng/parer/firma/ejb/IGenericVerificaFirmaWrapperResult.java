@@ -37,7 +37,7 @@ public interface IGenericVerificaFirmaWrapperResult {
      * @throws VerificaFirmaException eccezione generica
      */
     VerificaFirmaWrapper invokeVerifica(InvokeVerificaRule rule, InvokeVerificaInput in,
-	    AbsVersamentoExt versamento) throws VerificaFirmaException;
+            AbsVersamentoExt versamento) throws VerificaFirmaException;
 
     void buildAdditionalInfoOnVFWrapper(VerificaFirmaWrapper wrapper) throws VerificaFirmaException;
 

@@ -109,370 +109,370 @@ public class RecupSessDubbieUpdVersamento {
     //
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void recuperaSessioneErrata(RispostaWSUpdVers rispostaWs, UpdVersamentoExt versamento) {
-	// questo codice ha senso solo per le sesioni DUBBIE, per capire se è
-	// è possibile recuperare i dati essenziali per il salvataggio di una sessione
-	// FALLITA pur non avendoli ricavati durante il normale processo del WS
-	if (rispostaWs.getStatoSessioneVersamento() == IRispostaWS.StatiSessioneVersEnum.DUBBIA) {
-	    rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ERRATA);
+        // questo codice ha senso solo per le sesioni DUBBIE, per capire se è
+        // è possibile recuperare i dati essenziali per il salvataggio di una sessione
+        // FALLITA pur non avendoli ricavati durante il normale processo del WS
+        if (rispostaWs.getStatoSessioneVersamento() == IRispostaWS.StatiSessioneVersEnum.DUBBIA) {
+            rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.ERRATA);
 
-	    // verifico se le credenziali o la versione ws inserite sono errate
-	    // e devo quindi ricalcolare tutto
-	    // OR
-	    // verifico se sono fallito per un errore del parser
-	    if (versamento.getUtente() == null || versamento.getVersamento() == null) {
-		// recupero dati
-		this.recuperaDatiDaXml(versamento);
-		// recupero struttura
-		if (!this.recuperaStrutturaDaVersatore(versamento)) {
-		    return;
-		}
-		// recupero tipo ud, registro e tipo doc princ
-		this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
-		// verifica partizione
-		if (!this.verificaPartizionamentoStruttura(versamento)) {
-		    return;
-		}
-		// verifica esistenza unita doc
-		if (this.verificaCtrlStruttPartz(versamento)) {
-		    this.recuperaUnitaDoc(versamento, rispostaWs);
-		}
-	    }
+            // verifico se le credenziali o la versione ws inserite sono errate
+            // e devo quindi ricalcolare tutto
+            // OR
+            // verifico se sono fallito per un errore del parser
+            if (versamento.getUtente() == null || versamento.getVersamento() == null) {
+                // recupero dati
+                this.recuperaDatiDaXml(versamento);
+                // recupero struttura
+                if (!this.recuperaStrutturaDaVersatore(versamento)) {
+                    return;
+                }
+                // recupero tipo ud, registro e tipo doc princ
+                this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
+                // verifica partizione
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
+                    return;
+                }
+                // verifica esistenza unita doc
+                if (this.verificaCtrlStruttPartz(versamento)) {
+                    this.recuperaUnitaDoc(versamento, rispostaWs);
+                }
+            }
 
-	    // verifico se ho effettuato il marshall ma non ho un id struttura
-	    // avviene se versatore e/o versione xml non coincidono con la chiamata ws
-	    if (versamento.getVersamento() != null
-		    && versamento.getStrutturaUpdVers().getIdStruttura() < 1) {
-		if (!this.recuperaStrutturaDaVersatore(versamento)) {
-		    return;
-		}
-		// verifica partizione
-		if (!this.verificaPartizionamentoStruttura(versamento)) {
-		    return;
-		}
-		// recupero tipo ud, registro e tipo doc princ
-		this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
-		// verifica esistenza unita doc
-		if (this.verificaCtrlStruttPartz(versamento)) {
-		    this.recuperaUnitaDoc(versamento, rispostaWs);
-		}
-	    }
+            // verifico se ho effettuato il marshall ma non ho un id struttura
+            // avviene se versatore e/o versione xml non coincidono con la chiamata ws
+            if (versamento.getVersamento() != null
+                    && versamento.getStrutturaUpdVers().getIdStruttura() < 1) {
+                if (!this.recuperaStrutturaDaVersatore(versamento)) {
+                    return;
+                }
+                // verifica partizione
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
+                    return;
+                }
+                // recupero tipo ud, registro e tipo doc princ
+                this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
+                // verifica esistenza unita doc
+                if (this.verificaCtrlStruttPartz(versamento)) {
+                    this.recuperaUnitaDoc(versamento, rispostaWs);
+                }
+            }
 
-	    // verifico se ho l'idstruttura ma il versatore non è valido
-	    // (avviene se la struttura è template o se il versatore non è autorizzato ad usarla)
-	    if (versamento.getVersamento() != null
-		    && versamento.getStrutturaUpdVers().getIdStruttura() > 0
-		    && !versamento.getStrutturaUpdVers().isVersatoreVerificato()) {
-		// recupero tipo ud, registro e tipo doc princ
-		this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
-		// verifica partizione
-		if (!this.verificaPartizionamentoStruttura(versamento)) {
-		    return;
-		}
-		// verifica esistenza unita doc
-		if (this.verificaCtrlStruttPartz(versamento)) {
-		    this.recuperaUnitaDoc(versamento, rispostaWs);
-		}
-	    }
+            // verifico se ho l'idstruttura ma il versatore non è valido
+            // (avviene se la struttura è template o se il versatore non è autorizzato ad usarla)
+            if (versamento.getVersamento() != null
+                    && versamento.getStrutturaUpdVers().getIdStruttura() > 0
+                    && !versamento.getStrutturaUpdVers().isVersatoreVerificato()) {
+                // recupero tipo ud, registro e tipo doc princ
+                this.recuperaTipologiaUDRegDocPrinc(versamento, rispostaWs);
+                // verifica partizione
+                if (!this.verificaPartizionamentoStruttura(versamento)) {
+                    return;
+                }
+                // verifica esistenza unita doc
+                if (this.verificaCtrlStruttPartz(versamento)) {
+                    this.recuperaUnitaDoc(versamento, rispostaWs);
+                }
+            }
 
-	    // sono sopravvissuto ai controlli, quindi posso dichiarare la sessione come FALLITA
-	    // dal momento che ho recuperato e verificato tutti gli elementi necessari alla sua
-	    // registrazione
-	    rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.FALLITA);
-	}
+            // sono sopravvissuto ai controlli, quindi posso dichiarare la sessione come FALLITA
+            // dal momento che ho recuperato e verificato tutti gli elementi necessari alla sua
+            // registrazione
+            rispostaWs.setStatoSessioneVersamento(IRispostaWS.StatiSessioneVersEnum.FALLITA);
+        }
     }
 
     private void recuperaDatiDaXml(UpdVersamentoExt versamento) {
-	if (versamento.getDatiXml() != null) {
-	    CSVersatore tmpVersatore = new CSVersatore();
-	    // init
-	    tmpVersatore.setAmbiente("");
-	    tmpVersatore.setEnte("");
-	    tmpVersatore.setStruttura("");
+        if (versamento.getDatiXml() != null) {
+            CSVersatore tmpVersatore = new CSVersatore();
+            // init
+            tmpVersatore.setAmbiente("");
+            tmpVersatore.setEnte("");
+            tmpVersatore.setStruttura("");
 
-	    CSChiave tmpChiave = new CSChiave();
-	    // init
-	    tmpChiave.setAnno(BigDecimal.ZERO.longValue());
-	    tmpChiave.setNumero("");
-	    tmpChiave.setTipoRegistro("");
+            CSChiave tmpChiave = new CSChiave();
+            // init
+            tmpChiave.setAnno(BigDecimal.ZERO.longValue());
+            tmpChiave.setNumero("");
+            tmpChiave.setTipoRegistro("");
 
-	    String tipologiaUnitaDoc = "";
-	    String tipologiaDocPrinc = "";
-	    boolean cercaTipoUd = true;
-	    boolean cercaDocPrinc = true;
-	    try {
-		Node tmpDati = this.convertStringToDocument(versamento.getDatiXml().trim());
+            String tipologiaUnitaDoc = "";
+            String tipologiaDocPrinc = "";
+            boolean cercaTipoUd = true;
+            boolean cercaDocPrinc = true;
+            try {
+                Node tmpDati = this.convertStringToDocument(versamento.getDatiXml().trim());
 
-		XPathFactory xpathfactory = XPathFactory.newInstance();
-		XPath xpath = xpathfactory.newXPath();
+                XPathFactory xpathfactory = XPathFactory.newInstance();
+                XPath xpath = xpathfactory.newXPath();
 
-		XPathExpression expr = xpath.compile("//Intestazione/Versatore/Ambiente/text()");
-		NodeList nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tmpVersatore.setAmbiente(nodes.item(i).getNodeValue());
-		}
-		//
-		expr = xpath.compile("//Intestazione/Versatore/Ente/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tmpVersatore.setEnte(nodes.item(i).getNodeValue());
-		}
-		//
-		expr = xpath.compile("//Intestazione/Versatore/Struttura/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tmpVersatore.setStruttura(nodes.item(i).getNodeValue());
-		}
-		// cerca la chiave (o almeno le parti da cui è definita)
-		expr = xpath.compile("//Intestazione/Chiave/Anno/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    String tmpString = nodes.item(i).getNodeValue();
-		    if (tmpString.matches("-?\\d+")) {
-			tmpChiave.setAnno(Long.parseLong(tmpString));
-		    }
-		}
-		//
-		expr = xpath.compile("//Intestazione/Chiave/Numero/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tmpChiave.setNumero(nodes.item(i).getNodeValue());
-		}
-		// memorizzo il tipo registro, se definito
-		expr = xpath.compile("//Intestazione/Chiave/TipoRegistro/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tmpChiave.setTipoRegistro(nodes.item(i).getNodeValue());
-		}
-		// memorizzo il tipo unità documentaria, se esiste
-		expr = xpath.compile("//Intestazione/TipologiaUnitaDocumentaria/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tipologiaUnitaDoc = nodes.item(i).getNodeValue();
-		}
-		cercaTipoUd = cercaTipoUd && nodes.getLength() != 0;
+                XPathExpression expr = xpath.compile("//Intestazione/Versatore/Ambiente/text()");
+                NodeList nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tmpVersatore.setAmbiente(nodes.item(i).getNodeValue());
+                }
+                //
+                expr = xpath.compile("//Intestazione/Versatore/Ente/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tmpVersatore.setEnte(nodes.item(i).getNodeValue());
+                }
+                //
+                expr = xpath.compile("//Intestazione/Versatore/Struttura/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tmpVersatore.setStruttura(nodes.item(i).getNodeValue());
+                }
+                // cerca la chiave (o almeno le parti da cui è definita)
+                expr = xpath.compile("//Intestazione/Chiave/Anno/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    String tmpString = nodes.item(i).getNodeValue();
+                    if (tmpString.matches("-?\\d+")) {
+                        tmpChiave.setAnno(Long.parseLong(tmpString));
+                    }
+                }
+                //
+                expr = xpath.compile("//Intestazione/Chiave/Numero/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tmpChiave.setNumero(nodes.item(i).getNodeValue());
+                }
+                // memorizzo il tipo registro, se definito
+                expr = xpath.compile("//Intestazione/Chiave/TipoRegistro/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tmpChiave.setTipoRegistro(nodes.item(i).getNodeValue());
+                }
+                // memorizzo il tipo unità documentaria, se esiste
+                expr = xpath.compile("//Intestazione/TipologiaUnitaDocumentaria/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tipologiaUnitaDoc = nodes.item(i).getNodeValue();
+                }
+                cercaTipoUd = cercaTipoUd && nodes.getLength() != 0;
 
-		// memorizzo il tipo doc principale, se esiste
-		expr = xpath
-			.compile("//UnitaDocumentaria/DocumentoPrincipale/TipoDocumento/text()");
-		nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
-		for (int i = 0; i < nodes.getLength(); i++) {
-		    tipologiaDocPrinc = nodes.item(i).getNodeValue();
-		}
-		cercaDocPrinc = cercaDocPrinc && nodes.getLength() != 0;
+                // memorizzo il tipo doc principale, se esiste
+                expr = xpath
+                        .compile("//UnitaDocumentaria/DocumentoPrincipale/TipoDocumento/text()");
+                nodes = (NodeList) expr.evaluate(tmpDati, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    tipologiaDocPrinc = nodes.item(i).getNodeValue();
+                }
+                cercaDocPrinc = cercaDocPrinc && nodes.getLength() != 0;
 
-	    } catch (XPathExpressionException ex) {
-		log.error("errore xpath!!", ex);
-	    } catch (Exception ex) {
-		log.error("errore generico, " + "ma a questo punto ormai tutto è perduto, "
-			+ "inutile notificarlo: ", ex);
-	    }
+            } catch (XPathExpressionException ex) {
+                log.error("errore xpath!!", ex);
+            } catch (Exception ex) {
+                log.error("errore generico, " + "ma a questo punto ormai tutto è perduto, "
+                        + "inutile notificarlo: ", ex);
+            }
 
-	    // setto sempre una struttura "fittizzia" con ciò che è stato recuperato per i controlli
-	    // successivi
-	    versamento.getStrutturaUpdVers().setVersatoreNonverificato(tmpVersatore);
-	    // setto sempre una chiave "fittizzia" con ciò che è stato recuperato per i controlli
-	    // successivi
-	    versamento.getStrutturaUpdVers().setChiaveNonVerificata(tmpChiave);
+            // setto sempre una struttura "fittizzia" con ciò che è stato recuperato per i controlli
+            // successivi
+            versamento.getStrutturaUpdVers().setVersatoreNonverificato(tmpVersatore);
+            // setto sempre una chiave "fittizzia" con ciò che è stato recuperato per i controlli
+            // successivi
+            versamento.getStrutturaUpdVers().setChiaveNonVerificata(tmpChiave);
 
-	    if (cercaTipoUd) {
-		versamento.getStrutturaUpdVers()
-			.setDescTipologiaUnitaDocumentariaNonVerificata(tipologiaUnitaDoc);
-	    }
-	    if (cercaDocPrinc) {
-		versamento.getStrutturaUpdVers()
-			.setDescTipoDocPrincipaleNonVerificato(tipologiaDocPrinc);
-	    }
-	}
+            if (cercaTipoUd) {
+                versamento.getStrutturaUpdVers()
+                        .setDescTipologiaUnitaDocumentariaNonVerificata(tipologiaUnitaDoc);
+            }
+            if (cercaDocPrinc) {
+                versamento.getStrutturaUpdVers()
+                        .setDescTipoDocPrincipaleNonVerificato(tipologiaDocPrinc);
+            }
+        }
     }
 
     private boolean recuperaStrutturaDaVersatore(UpdVersamentoExt versamento) {
-	boolean prosegui = false; // i dati successivi senza struttura non potranno essere
-				  // recuperati
-	long idStruttura;
-	CSVersatore tmpVersatore = versamento.getStrutturaUpdVers().getVersatoreNonverificato();
-	RispostaControlli rispostaControlli = controlliSemantici.checkIdStrut(tmpVersatore,
-		Costanti.TipiWSPerControlli.AGGIORNAMENTO_VERSAMENTO,
-		versamento.getStrutturaUpdVers().getDataVersamento());
-	if (rispostaControlli.getrLongExtended() > 0) {
-	    idStruttura = rispostaControlli.getrLongExtended();
-	    versamento.getStrutturaUpdVers().setIdStruttura(idStruttura);
-	    prosegui = true;
+        boolean prosegui = false; // i dati successivi senza struttura non potranno essere
+        // recuperati
+        long idStruttura;
+        CSVersatore tmpVersatore = versamento.getStrutturaUpdVers().getVersatoreNonverificato();
+        RispostaControlli rispostaControlli = controlliSemantici.checkIdStrut(tmpVersatore,
+                Costanti.TipiWSPerControlli.AGGIORNAMENTO_VERSAMENTO,
+                versamento.getStrutturaUpdVers().getDataVersamento());
+        if (rispostaControlli.getrLongExtended() > 0) {
+            idStruttura = rispostaControlli.getrLongExtended();
+            versamento.getStrutturaUpdVers().setIdStruttura(idStruttura);
+            prosegui = true;
 
-	    // esito positivo
-	    versamento.addControlloOkOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
-	    versamento.addControlloOkOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
-	    versamento.addControlloOkOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA));
-	    //
-	} else {
+            // esito positivo
+            versamento.addControlloOkOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
+            versamento.addControlloOkOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
+            versamento.addControlloOkOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA));
+            //
+        } else {
 
-	    // tipologie di errore -> relativo controllo
-	    switch (rispostaControlli.getCodErr()) {
-	    case MessaggiWSBundle.UD_001_001:
-		// ambiente
-		// aggiunta su controlli generali
-		versamento.addEsitoControlloOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE),
-			SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
-			rispostaControlli.getDsErr());
-		break;
-	    case MessaggiWSBundle.UD_001_002:
-		// ente
-		// aggiunta su controlli generali
-		versamento.addEsitoControlloOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE),
-			SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
-			rispostaControlli.getDsErr());
+            // tipologie di errore -> relativo controllo
+            switch (rispostaControlli.getCodErr()) {
+            case MessaggiWSBundle.UD_001_001:
+                // ambiente
+                // aggiunta su controlli generali
+                versamento.addEsitoControlloOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE),
+                        SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
+                        rispostaControlli.getDsErr());
+                break;
+            case MessaggiWSBundle.UD_001_002:
+                // ente
+                // aggiunta su controlli generali
+                versamento.addEsitoControlloOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE),
+                        SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
+                        rispostaControlli.getDsErr());
 
-		// check su ambiente superato
-		// aggiunta su controlli generali
-		versamento.addControlloOkOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
+                // check su ambiente superato
+                // aggiunta su controlli generali
+                versamento.addControlloOkOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
 
-		break;
-	    case MessaggiWSBundle.UD_001_003:
-	    case MessaggiWSBundle.UD_001_015:
-		// struttura
-		// aggiunta su controlli generali
-		versamento.addEsitoControlloOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA),
-			SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
-			rispostaControlli.getDsErr());
-		// controllo struttura KO (non si effettuano ulteriori verifiche)
-		// check su ambiente/ente superato
-		// aggiunta su controlli generali
-		versamento.addControlloOkOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
-		versamento.addControlloOkOnGenerali(
-			ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
+                break;
+            case MessaggiWSBundle.UD_001_003:
+            case MessaggiWSBundle.UD_001_015:
+                // struttura
+                // aggiunta su controlli generali
+                versamento.addEsitoControlloOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA),
+                        SeverityEnum.ERROR, TipiEsitoErrore.NEGATIVO, rispostaControlli.getCodErr(),
+                        rispostaControlli.getDsErr());
+                // controllo struttura KO (non si effettuano ulteriori verifiche)
+                // check su ambiente/ente superato
+                // aggiunta su controlli generali
+                versamento.addControlloOkOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_AMBIENTE));
+                versamento.addControlloOkOnGenerali(
+                        ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_ENTE));
 
-		break;
-	    default:
-		// niente da fare negli altri casi
-		break;
-	    }
-	}
+                break;
+            default:
+                // niente da fare negli altri casi
+                break;
+            }
+        }
 
-	return prosegui;
+        return prosegui;
     }
 
     private boolean verificaPartizionamentoStruttura(UpdVersamentoExt versamento) {
-	boolean trovato = false;
-	CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
-	if (verificaCSChiave(tagCSChiave)
-		&& versamento.getStrutturaUpdVers().getIdStruttura() > 0) {
-	    trovato = true;
-	    /*
-	     * MEV 30089 - non faccio più controlli sulle partizioni, ci sono partizionamenti
-	     * automatici
-	     */
-	    versamento.addControlloOkOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_PARTIZIONI));
-	}
-	return trovato;
+        boolean trovato = false;
+        CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
+        if (verificaCSChiave(tagCSChiave)
+                && versamento.getStrutturaUpdVers().getIdStruttura() > 0) {
+            trovato = true;
+            /*
+             * MEV 30089 - non faccio più controlli sulle partizioni, ci sono partizionamenti
+             * automatici
+             */
+            versamento.addControlloOkOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_PARTIZIONI));
+        }
+        return trovato;
     }
 
     private boolean verificaCSChiave(CSChiave tagCSChiave) {
-	return tagCSChiave.getAnno() > 0 && StringUtils.isNotBlank(tagCSChiave.getNumero())
-		&& StringUtils.isNotBlank(tagCSChiave.getTipoRegistro());
+        return tagCSChiave.getAnno() > 0 && StringUtils.isNotBlank(tagCSChiave.getNumero())
+                && StringUtils.isNotBlank(tagCSChiave.getTipoRegistro());
     }
 
     private void recuperaTipologiaUDRegDocPrinc(UpdVersamentoExt versamento,
-	    RispostaWSUpdVers rispostaWs) {
-	boolean trovato = true;
-	RispostaControlli tmpRispostaControlli = null;
-	String descTipologiaUnitaDocumentariaNonVerificata = versamento.getStrutturaUpdVers()
-		.getDescTipologiaUnitaDocumentariaNonVerificata();
+            RispostaWSUpdVers rispostaWs) {
+        boolean trovato = true;
+        RispostaControlli tmpRispostaControlli = null;
+        String descTipologiaUnitaDocumentariaNonVerificata = versamento.getStrutturaUpdVers()
+                .getDescTipologiaUnitaDocumentariaNonVerificata();
 
-	// se esiste un tipo ud recuperato in precedenza
-	if (StringUtils.isNotBlank(descTipologiaUnitaDocumentariaNonVerificata)) {
-	    tmpRispostaControlli = controlliSemantici.checkTipologiaUD(
-		    descTipologiaUnitaDocumentariaNonVerificata, "dummy",
-		    versamento.getStrutturaUpdVers().getIdStruttura());
-	    if (tmpRispostaControlli.isrBoolean()) {
-		// salvo id individuato
-		versamento.getStrutturaUpdVers()
-			.setIdTipologiaUnitaDocumentaria(tmpRispostaControlli.getrLong());
-		versamento.getStrutturaUpdVers().setDescTipologiaUnitaDocumentaria(
-			tmpRispostaControlli.getrStringExtended());
-	    }
-	}
+        // se esiste un tipo ud recuperato in precedenza
+        if (StringUtils.isNotBlank(descTipologiaUnitaDocumentariaNonVerificata)) {
+            tmpRispostaControlli = controlliSemantici.checkTipologiaUD(
+                    descTipologiaUnitaDocumentariaNonVerificata, "dummy",
+                    versamento.getStrutturaUpdVers().getIdStruttura());
+            if (tmpRispostaControlli.isrBoolean()) {
+                // salvo id individuato
+                versamento.getStrutturaUpdVers()
+                        .setIdTipologiaUnitaDocumentaria(tmpRispostaControlli.getrLong());
+                versamento.getStrutturaUpdVers().setDescTipologiaUnitaDocumentaria(
+                        tmpRispostaControlli.getrStringExtended());
+            }
+        }
 
-	// recupero id tipo ud "sconosciuto"
-	tmpRispostaControlli = controlliSemantici.checkTipologiaUD(UpdCostanti.TIPOUD_SCONOSCIUTO,
-		"dummy", versamento.getStrutturaUpdVers().getIdStruttura());
+        // recupero id tipo ud "sconosciuto"
+        tmpRispostaControlli = controlliSemantici.checkTipologiaUD(UpdCostanti.TIPOUD_SCONOSCIUTO,
+                "dummy", versamento.getStrutturaUpdVers().getIdStruttura());
 
-	// esiste il tipo sconosciuto
-	if (tmpRispostaControlli.isrBoolean()) {
-	    // salvo idtipofascicolo individuato
-	    versamento.getStrutturaUpdVers().setIdTipoUDUnknown(tmpRispostaControlli.getrLong());
-	} else {
-	    trovato = false;
-	}
-	//
-	CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
-	// se esiste una chiave con registro
-	if (StringUtils.isNotBlank(tagCSChiave.getTipoRegistro())) {
-	    // recupero id registro
-	    tmpRispostaControlli = controlliSemantici.checkTipoRegistro(
-		    tagCSChiave.getTipoRegistro(), "dummy",
-		    versamento.getStrutturaUpdVers().getIdStruttura());
-	    //
-	    if (tmpRispostaControlli.isrBoolean()) {
-		// salvo id individuato
-		versamento.getStrutturaUpdVers().setIdRegistro(tmpRispostaControlli.getrLong());
-	    }
-	}
-	// tipologia reg "Sconosciuto"
-	tmpRispostaControlli = controlliSemantici.checkTipoRegistro(UpdCostanti.TIPOREG_SCONOSCIUTO,
-		"dummy", versamento.getStrutturaUpdVers().getIdStruttura());
+        // esiste il tipo sconosciuto
+        if (tmpRispostaControlli.isrBoolean()) {
+            // salvo idtipofascicolo individuato
+            versamento.getStrutturaUpdVers().setIdTipoUDUnknown(tmpRispostaControlli.getrLong());
+        } else {
+            trovato = false;
+        }
+        //
+        CSChiave tagCSChiave = versamento.getStrutturaUpdVers().getChiaveNonVerificata();
+        // se esiste una chiave con registro
+        if (StringUtils.isNotBlank(tagCSChiave.getTipoRegistro())) {
+            // recupero id registro
+            tmpRispostaControlli = controlliSemantici.checkTipoRegistro(
+                    tagCSChiave.getTipoRegistro(), "dummy",
+                    versamento.getStrutturaUpdVers().getIdStruttura());
+            //
+            if (tmpRispostaControlli.isrBoolean()) {
+                // salvo id individuato
+                versamento.getStrutturaUpdVers().setIdRegistro(tmpRispostaControlli.getrLong());
+            }
+        }
+        // tipologia reg "Sconosciuto"
+        tmpRispostaControlli = controlliSemantici.checkTipoRegistro(UpdCostanti.TIPOREG_SCONOSCIUTO,
+                "dummy", versamento.getStrutturaUpdVers().getIdStruttura());
 
-	// esiste il tipo sconosciuto
-	if (tmpRispostaControlli.isrBoolean()) {
-	    // salvo idtipofascicolo individuato
-	    versamento.getStrutturaUpdVers().setIdTipoREGUnknown(tmpRispostaControlli.getrLong());
-	} else {
-	    trovato = false;
-	}
-	//
-	String descTipoDocPrincipaleNonVerificato = versamento.getStrutturaUpdVers()
-		.getDescTipoDocPrincipaleNonVerificato();
+        // esiste il tipo sconosciuto
+        if (tmpRispostaControlli.isrBoolean()) {
+            // salvo idtipofascicolo individuato
+            versamento.getStrutturaUpdVers().setIdTipoREGUnknown(tmpRispostaControlli.getrLong());
+        } else {
+            trovato = false;
+        }
+        //
+        String descTipoDocPrincipaleNonVerificato = versamento.getStrutturaUpdVers()
+                .getDescTipoDocPrincipaleNonVerificato();
 
-	// tag presente su XML di versamento
-	if (StringUtils.isNotBlank(descTipoDocPrincipaleNonVerificato)) {
-	    tmpRispostaControlli = controlliSemantici.checkTipoDocumento(
-		    descTipoDocPrincipaleNonVerificato,
-		    versamento.getStrutturaUpdVers().getIdStruttura(), true, "dummydoc");
+        // tag presente su XML di versamento
+        if (StringUtils.isNotBlank(descTipoDocPrincipaleNonVerificato)) {
+            tmpRispostaControlli = controlliSemantici.checkTipoDocumento(
+                    descTipoDocPrincipaleNonVerificato,
+                    versamento.getStrutturaUpdVers().getIdStruttura(), true, "dummydoc");
 
-	    if (tmpRispostaControlli.isrBoolean()) {
-		// salvo tipo doc princ individuato
-		versamento.getStrutturaUpdVers()
-			.setIdTipoDocPrincipale(tmpRispostaControlli.getrLong());
-	    }
-	}
-	// tipo doc principale "Sconosciuto"
-	tmpRispostaControlli = controlliSemantici.checkTipoDocumento(
-		UpdCostanti.TIPDOC_PRINCIPALE_SCONOSCIUTO,
-		versamento.getStrutturaUpdVers().getIdStruttura(), true, "dummydoc");
+            if (tmpRispostaControlli.isrBoolean()) {
+                // salvo tipo doc princ individuato
+                versamento.getStrutturaUpdVers()
+                        .setIdTipoDocPrincipale(tmpRispostaControlli.getrLong());
+            }
+        }
+        // tipo doc principale "Sconosciuto"
+        tmpRispostaControlli = controlliSemantici.checkTipoDocumento(
+                UpdCostanti.TIPDOC_PRINCIPALE_SCONOSCIUTO,
+                versamento.getStrutturaUpdVers().getIdStruttura(), true, "dummydoc");
 
-	// esiste il tipo sconosciuto
-	if (tmpRispostaControlli.isrBoolean()) {
-	    // salvo id scoscosciuto
-	    versamento.getStrutturaUpdVers()
-		    .setIdTipoDOCPRINCUnknown(tmpRispostaControlli.getrLong());
-	} else {
-	    trovato = false;
-	}
+        // esiste il tipo sconosciuto
+        if (tmpRispostaControlli.isrBoolean()) {
+            // salvo id scoscosciuto
+            versamento.getStrutturaUpdVers()
+                    .setIdTipoDOCPRINCUnknown(tmpRispostaControlli.getrLong());
+        } else {
+            trovato = false;
+        }
 
-	// esisto errore struttura su tipo "sconosciuto"
-	if (!trovato) {
-	    versamento.addEsitoControlloOnGeneraliBundle(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA),
-		    rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO, MessaggiWSBundle.UD_001_018,
-		    versamento.getStrutturaUpdVers().getVersatoreNonverificato().getStruttura());
-	}
+        // esisto errore struttura su tipo "sconosciuto"
+        if (!trovato) {
+            versamento.addEsitoControlloOnGeneraliBundle(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_STRUTTURA),
+                    rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO, MessaggiWSBundle.UD_001_018,
+                    versamento.getStrutturaUpdVers().getVersatoreNonverificato().getStruttura());
+        }
     }
 
     /**
@@ -484,67 +484,67 @@ public class RecupSessDubbieUpdVersamento {
      * @param rispostaWs
      */
     private void recuperaUnitaDoc(UpdVersamentoExt versamento, RispostaWSUpdVers rispostaWs) {
-	StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
-	CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
+        StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
+        CompRapportoUpdVers myEsito = rispostaWs.getCompRapportoUpdVers();
 
-	// controlla prensa chiave UD
-	RispostaControlli rispostaControlli = updVersamentoControlli.checkChiaveAndTipoDocPrinc(
-		strutturaUpdVers.getChiaveNonVerificata(), strutturaUpdVers.getIdStruttura(),
-		ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE);
-	// trovato
-	if (!rispostaControlli.isrBoolean()) {
+        // controlla prensa chiave UD
+        RispostaControlli rispostaControlli = updVersamentoControlli.checkChiaveAndTipoDocPrinc(
+                strutturaUpdVers.getChiaveNonVerificata(), strutturaUpdVers.getIdStruttura(),
+                ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE);
+        // trovato
+        if (!rispostaControlli.isrBoolean()) {
 
-	    // si assume il LOCK ESCLUSIVO su UNITA_DOC determinata
-	    Map<String, Object> properties = new HashMap<>();
-	    properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
-	    entityManager.find(AroUnitaDoc.class, rispostaControlli.getrLong(),
-		    LockModeType.PESSIMISTIC_WRITE, properties);
+            // si assume il LOCK ESCLUSIVO su UNITA_DOC determinata
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(Constants.JAVAX_PERSISTENCE_LOCK_TIMEOUT, 25000);
+            entityManager.find(AroUnitaDoc.class, rispostaControlli.getrLong(),
+                    LockModeType.PESSIMISTIC_WRITE, properties);
 
-	    // set esito positivo
-	    versamento.addControlloOkOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_CHIAVEUD));
+            // set esito positivo
+            versamento.addControlloOkOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_CHIAVEUD));
 
-	    // recupero unita doc
-	    strutturaUpdVers.setIdUd(rispostaControlli.getrLong());
+            // recupero unita doc
+            strutturaUpdVers.setIdUd(rispostaControlli.getrLong());
 
-	    // recupero tipo UD
-	    strutturaUpdVers.setDescTipologiaUnitaDocumentariaNonVerificata(
-		    rispostaControlli.getrStringExtended());
+            // recupero tipo UD
+            strutturaUpdVers.setDescTipologiaUnitaDocumentariaNonVerificata(
+                    rispostaControlli.getrStringExtended());
 
-	    // recupero ID tipo UD
-	    strutturaUpdVers.setIdTipoUDNonVerificata(rispostaControlli.getrLongExtended());
+            // recupero ID tipo UD
+            strutturaUpdVers.setIdTipoUDNonVerificata(rispostaControlli.getrLongExtended());
 
-	    // recupero tipo conservazione
-	    strutturaUpdVers.setTipoConservazione((String) rispostaControlli.getrMap()
-		    .get(RispostaControlli.ValuesOnrMap.TI_CONSERVAZIONE.name()));
+            // recupero tipo conservazione
+            strutturaUpdVers.setTipoConservazione((String) rispostaControlli.getrMap()
+                    .get(RispostaControlli.ValuesOnrMap.TI_CONSERVAZIONE.name()));
 
-	    // recupero ID tipo reg
-	    strutturaUpdVers.setIdRegistro((long) rispostaControlli.getrMap()
-		    .get(RispostaControlli.ValuesOnrMap.ID_REGISTROUD.name()));
+            // recupero ID tipo reg
+            strutturaUpdVers.setIdRegistro((long) rispostaControlli.getrMap()
+                    .get(RispostaControlli.ValuesOnrMap.ID_REGISTROUD.name()));
 
-	    // recupero Sistema Mig (
-	    strutturaUpdVers.setSistemaDiMigrazione((String) rispostaControlli.getrMap()
-		    .get(RispostaControlli.ValuesOnrMap.NM_SISTEMAMIGRAZ.name()));
+            // recupero Sistema Mig (
+            strutturaUpdVers.setSistemaDiMigrazione((String) rispostaControlli.getrMap()
+                    .get(RispostaControlli.ValuesOnrMap.NM_SISTEMAMIGRAZ.name()));
 
-	    // recupero id doc princ
-	    strutturaUpdVers.setIdTipoDocPrincipale((long) rispostaControlli.getrMap()
-		    .get(RispostaControlli.ValuesOnrMap.ID_TIPO_DOC_PRINC.name()));
+            // recupero id doc princ
+            strutturaUpdVers.setIdTipoDocPrincipale((long) rispostaControlli.getrMap()
+                    .get(RispostaControlli.ValuesOnrMap.ID_TIPO_DOC_PRINC.name()));
 
-	    // recupero Stato Conservazione
-	    strutturaUpdVers.setStatoConservazioneUnitaDoc(
-		    (CostantiDB.StatoConservazioneUnitaDoc) rispostaControlli.getrObject());
+            // recupero Stato Conservazione
+            strutturaUpdVers.setStatoConservazioneUnitaDoc(
+                    (CostantiDB.StatoConservazioneUnitaDoc) rispostaControlli.getrObject());
 
-	    // aggiunta flag su riposta
-	    myEsito.getParametriAggiornamento()
-		    .setForzaCollegamento(strutturaUpdVers.isFlForzaCollegamento());
+            // aggiunta flag su riposta
+            myEsito.getParametriAggiornamento()
+                    .setForzaCollegamento(strutturaUpdVers.isFlForzaCollegamento());
 
-	} else {
-	    // esito negativo
-	    versamento.addEsitoControlloOnGenerali(
-		    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_CHIAVEUD),
-		    rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO,
-		    rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-	}
+        } else {
+            // esito negativo
+            versamento.addEsitoControlloOnGenerali(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_INTS_CHIAVEUD),
+                    rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO,
+                    rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+        }
 
     }
 
@@ -554,53 +554,53 @@ public class RecupSessDubbieUpdVersamento {
      * @return true/false con risultato di verifica della partizione struttura
      */
     private boolean verificaCtrlStruttPartz(UpdVersamentoExt versamento) {
-	boolean hasOneError = false;
-	hasOneError = versamento.anyMatchEsitoControlli(versamento.getControlliGenerali().stream()
-		.filter(c -> c.getCdControllo().equals(ControlliWSBundle.CTRL_INTS_STRUTTURA)
-			&& c.getCdControllo().equals(ControlliWSBundle.CTRL_INTS_PARTIZIONI))
-		.collect(Collectors.toList()), VoceDiErrore.TipiEsitoErrore.NEGATIVO);
-	return !hasOneError;
+        boolean hasOneError = false;
+        hasOneError = versamento.anyMatchEsitoControlli(versamento.getControlliGenerali().stream()
+                .filter(c -> c.getCdControllo().equals(ControlliWSBundle.CTRL_INTS_STRUTTURA)
+                        && c.getCdControllo().equals(ControlliWSBundle.CTRL_INTS_PARTIZIONI))
+                .collect(Collectors.toList()), VoceDiErrore.TipiEsitoErrore.NEGATIVO);
+        return !hasOneError;
     }
 
     private Document convertStringToDocument(String xmlStr) {
-	try {
-	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	    // XXE: This is the PRIMARY defense. If DTDs (doctypes) are disallowed,
-	    // almost all XML entity attacks are prevented
-	    final String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
-	    dbf.setFeature(FEATURE, true);
-	    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            // XXE: This is the PRIMARY defense. If DTDs (doctypes) are disallowed,
+            // almost all XML entity attacks are prevented
+            final String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+            dbf.setFeature(FEATURE, true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
 
-	    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-	    // ... and these as well, per Timothy Morgan's 2014 paper:
-	    // "XML Schema, DTD, and Entity Attacks" (see reference below)
-	    dbf.setXIncludeAware(false);
-	    dbf.setExpandEntityReferences(false);
-	    // As stated in the documentation, "Feature for Secure Processing (FSP)" is the central
-	    // mechanism that will
-	    // help you safeguard XML processing. It instructs XML processors, such as parsers,
-	    // validators,
-	    // and transformers, to try and process XML securely, and the FSP can be used as an
-	    // alternative to
-	    // dbf.setExpandEntityReferences(false); to allow some safe level of Entity Expansion
-	    // Exists from JDK6.
-	    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-	    // ... and, per Timothy Morgan:
-	    // "If for some reason support for inline DOCTYPEs are a requirement, then
-	    // ensure the entity settings are disabled (as shown above) and beware that SSRF
-	    // attacks
-	    // (http://cwe.mitre.org/data/definitions/918.html) and denial
-	    // of service attacks (such as billion laughs or decompression bombs via "jar:")
-	    // are a risk."
-	    DocumentBuilder builder;
-	    builder = dbf.newDocumentBuilder();
-	    return builder.parse(new InputSource(new StringReader(xmlStr)));
-	} catch (IOException | ParserConfigurationException | SAXException e) {
-	    // in caso di eccezione non faccio nulla:
-	    // è perfettamente accettabile che questa stringa, che ha già fallito una
-	    // validazione, non sia well-formed e provochi uh'eccezione.
-	}
-	return null;
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            // ... and these as well, per Timothy Morgan's 2014 paper:
+            // "XML Schema, DTD, and Entity Attacks" (see reference below)
+            dbf.setXIncludeAware(false);
+            dbf.setExpandEntityReferences(false);
+            // As stated in the documentation, "Feature for Secure Processing (FSP)" is the central
+            // mechanism that will
+            // help you safeguard XML processing. It instructs XML processors, such as parsers,
+            // validators,
+            // and transformers, to try and process XML securely, and the FSP can be used as an
+            // alternative to
+            // dbf.setExpandEntityReferences(false); to allow some safe level of Entity Expansion
+            // Exists from JDK6.
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            // ... and, per Timothy Morgan:
+            // "If for some reason support for inline DOCTYPEs are a requirement, then
+            // ensure the entity settings are disabled (as shown above) and beware that SSRF
+            // attacks
+            // (http://cwe.mitre.org/data/definitions/918.html) and denial
+            // of service attacks (such as billion laughs or decompression bombs via "jar:")
+            // are a risk."
+            DocumentBuilder builder;
+            builder = dbf.newDocumentBuilder();
+            return builder.parse(new InputSource(new StringReader(xmlStr)));
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            // in caso di eccezione non faccio nulla:
+            // è perfettamente accettabile che questa stringa, che ha già fallito una
+            // validazione, non sia well-formed e provochi uh'eccezione.
+        }
+        return null;
     }
 
 }

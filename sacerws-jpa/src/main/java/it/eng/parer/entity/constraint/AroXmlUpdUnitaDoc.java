@@ -29,7 +29,7 @@ public final class AroXmlUpdUnitaDoc {
      * ti_xml_upd_unita_doc IN ('RICHIESTA', 'RISPOSTA')
      */
     public enum TiXmlUpdUnitaDoc {
-	RICHIESTA, RISPOSTA
+        RICHIESTA, RISPOSTA
     }
 
 }

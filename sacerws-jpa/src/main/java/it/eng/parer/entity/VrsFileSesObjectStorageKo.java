@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 public class VrsFileSesObjectStorageKo implements Serializable {
 
     public VrsFileSesObjectStorageKo() {
-	super();
+        super();
     }
 
     private Long idVrsFileSesObjectStorageKo;
@@ -37,67 +37,67 @@ public class VrsFileSesObjectStorageKo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_VRS_FILE_SES_OBJECT_STORAGE_KO")
     public Long getIdVrsFileSesObjectStorageKo() {
-	return idVrsFileSesObjectStorageKo;
+        return idVrsFileSesObjectStorageKo;
     }
 
     public void setIdVrsFileSesObjectStorageKo(Long idVrsFileSesObjectStorageKo) {
-	this.idVrsFileSesObjectStorageKo = idVrsFileSesObjectStorageKo;
+        this.idVrsFileSesObjectStorageKo = idVrsFileSesObjectStorageKo;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FILE_SESSIONE_KO")
     public VrsFileSessioneKo getFileSessioneKo() {
-	return fileSessioneKo;
+        return fileSessioneKo;
     }
 
     public void setFileSessioneKo(VrsFileSessioneKo fileSessioneKo) {
-	this.fileSessioneKo = fileSessioneKo;
+        this.fileSessioneKo = fileSessioneKo;
     }
 
     @Column(name = "NM_TENANT")
     public String getNmTenant() {
-	return nmTenant;
+        return nmTenant;
     }
 
     public void setNmTenant(String nmTenant) {
-	this.nmTenant = nmTenant;
+        this.nmTenant = nmTenant;
     }
 
     @Column(name = "NM_BUCKET")
     public String getNmBucket() {
-	return nmBucket;
+        return nmBucket;
     }
 
     public void setNmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
+        this.nmBucket = nmBucket;
     }
 
     @Column(name = "CD_KEY_FILE")
     public String getNmKeyFile() {
-	return nmKeyFile;
+        return nmKeyFile;
     }
 
     public void setNmKeyFile(String nmKeyFile) {
-	this.nmKeyFile = nmKeyFile;
+        this.nmKeyFile = nmKeyFile;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
 }

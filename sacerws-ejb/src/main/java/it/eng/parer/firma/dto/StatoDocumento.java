@@ -25,14 +25,14 @@ public class StatoDocumento {
     public boolean docEsitoCompHasWar = false;
 
     public StatoDocumento() {
-	super();
+        super();
     }
 
     public void reset() {
-	verFirmeCompCodiceEsitoNeg = false;
-	verFirmeCompCodiceEsitoWar = false;
-	docEsitoCompHasNeg = false;
-	docEsitoCompHasWar = false;
+        verFirmeCompCodiceEsitoNeg = false;
+        verFirmeCompCodiceEsitoWar = false;
+        docEsitoCompHasNeg = false;
+        docEsitoCompHasWar = false;
     }
 
     /*
@@ -42,13 +42,13 @@ public class StatoDocumento {
      */
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + (docEsitoCompHasNeg ? 1231 : 1237);
-	result = prime * result + (docEsitoCompHasWar ? 1231 : 1237);
-	result = prime * result + (verFirmeCompCodiceEsitoNeg ? 1231 : 1237);
-	result = prime * result + (verFirmeCompCodiceEsitoWar ? 1231 : 1237);
-	return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (docEsitoCompHasNeg ? 1231 : 1237);
+        result = prime * result + (docEsitoCompHasWar ? 1231 : 1237);
+        result = prime * result + (verFirmeCompCodiceEsitoNeg ? 1231 : 1237);
+        result = prime * result + (verFirmeCompCodiceEsitoWar ? 1231 : 1237);
+        return result;
     }
 
     /*
@@ -58,21 +58,21 @@ public class StatoDocumento {
      */
     @Override
     public boolean equals(Object obj) {
-	if (this == obj)
-	    return true;
-	if (obj == null)
-	    return false;
-	if (getClass() != obj.getClass())
-	    return false;
-	StatoDocumento other = (StatoDocumento) obj;
-	if (docEsitoCompHasNeg != other.docEsitoCompHasNeg)
-	    return false;
-	if (docEsitoCompHasWar != other.docEsitoCompHasWar)
-	    return false;
-	if (verFirmeCompCodiceEsitoNeg != other.verFirmeCompCodiceEsitoNeg)
-	    return false;
-	if (verFirmeCompCodiceEsitoWar != other.verFirmeCompCodiceEsitoWar)
-	    return false;
-	return true;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        StatoDocumento other = (StatoDocumento) obj;
+        if (docEsitoCompHasNeg != other.docEsitoCompHasNeg)
+            return false;
+        if (docEsitoCompHasWar != other.docEsitoCompHasWar)
+            return false;
+        if (verFirmeCompCodiceEsitoNeg != other.verFirmeCompCodiceEsitoNeg)
+            return false;
+        if (verFirmeCompCodiceEsitoWar != other.verFirmeCompCodiceEsitoWar)
+            return false;
+        return true;
     }
 }

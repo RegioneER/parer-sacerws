@@ -88,101 +88,101 @@ public class DecXsdDatiSpec implements Serializable {
     @Column(name = "ID_XSD_DATI_SPEC")
     @XmlID
     @GenericGenerator(name = "SDEC_XSD_DATI_SPEC_ID_XSD_DATI_SPEC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_XSD_DATI_SPEC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_XSD_DATI_SPEC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_XSD_DATI_SPEC_ID_XSD_DATI_SPEC_GENERATOR")
     public Long getIdXsdDatiSpec() {
-	return this.idXsdDatiSpec;
+        return this.idXsdDatiSpec;
     }
 
     public void setIdXsdDatiSpec(Long idXsdDatiSpec) {
-	this.idXsdDatiSpec = idXsdDatiSpec;
+        this.idXsdDatiSpec = idXsdDatiSpec;
     }
 
     @Lob()
     @Column(name = "BL_XSD")
     public String getBlXsd() {
-	return this.blXsd;
+        return this.blXsd;
     }
 
     public void setBlXsd(String blXsd) {
-	this.blXsd = blXsd;
+        this.blXsd = blXsd;
     }
 
     @Column(name = "CD_VERSIONE_XSD")
     public String getCdVersioneXsd() {
-	return this.cdVersioneXsd;
+        return this.cdVersioneXsd;
     }
 
     public void setCdVersioneXsd(String cdVersioneXsd) {
-	this.cdVersioneXsd = cdVersioneXsd;
+        this.cdVersioneXsd = cdVersioneXsd;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ISTITUZ")
     public Date getDtIstituz() {
-	return dtIstituz;
+        return dtIstituz;
     }
 
     public void setDtIstituz(Date dtIstituz) {
-	this.dtIstituz = dtIstituz;
+        this.dtIstituz = dtIstituz;
     }
 
     @Column(name = "DT_SOPPRES")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getDtSoppres() {
-	return dtSoppres;
+        return dtSoppres;
     }
 
     public void setDtSoppres(Date dtSoppres) {
-	this.dtSoppres = dtSoppres;
+        this.dtSoppres = dtSoppres;
     }
 
     @Column(name = "NM_SISTEMA_MIGRAZ")
     public String getNmSistemaMigraz() {
-	return this.nmSistemaMigraz;
+        return this.nmSistemaMigraz;
     }
 
     public void setNmSistemaMigraz(String nmSistemaMigraz) {
-	this.nmSistemaMigraz = nmSistemaMigraz;
+        this.nmSistemaMigraz = nmSistemaMigraz;
     }
 
     @Column(name = "TI_ENTITA_SACER")
     public String getTiEntitaSacer() {
-	return this.tiEntitaSacer;
+        return this.tiEntitaSacer;
     }
 
     public void setTiEntitaSacer(String tiEntitaSacer) {
-	this.tiEntitaSacer = tiEntitaSacer;
+        this.tiEntitaSacer = tiEntitaSacer;
     }
 
     @Column(name = "TI_USO_XSD")
     public String getTiUsoXsd() {
-	return this.tiUsoXsd;
+        return this.tiUsoXsd;
     }
 
     public void setTiUsoXsd(String tiUsoXsd) {
-	this.tiUsoXsd = tiUsoXsd;
+        this.tiUsoXsd = tiUsoXsd;
     }
 
     @Column(name = "DS_VERSIONE_XSD")
     public String getDsVersioneXsd() {
-	return dsVersioneXsd;
+        return dsVersioneXsd;
     }
 
     public void setDsVersioneXsd(String dsVersioneXsd) {
-	this.dsVersioneXsd = dsVersioneXsd;
+        this.dsVersioneXsd = dsVersioneXsd;
     }
 
     // bi-directional many-to-one association to AroUsoXsdDatiSpec
     @OneToMany(mappedBy = "decXsdDatiSpec")
     @XmlTransient
     public List<AroUsoXsdDatiSpec> getAroUsoXsdDatiSpecs() {
-	return this.aroUsoXsdDatiSpecs;
+        return this.aroUsoXsdDatiSpecs;
     }
 
     public void setAroUsoXsdDatiSpecs(List<AroUsoXsdDatiSpec> aroUsoXsdDatiSpecs) {
-	this.aroUsoXsdDatiSpecs = aroUsoXsdDatiSpecs;
+        this.aroUsoXsdDatiSpecs = aroUsoXsdDatiSpecs;
     }
 
     // bi-directional many-to-one association to DecXsdAttribDatiSpec
@@ -190,55 +190,55 @@ public class DecXsdDatiSpec implements Serializable {
     @OrderBy("niOrdAttrib ASC")
     @XmlIDREF
     public List<DecXsdAttribDatiSpec> getDecXsdAttribDatiSpecs() {
-	return this.decXsdAttribDatiSpecs;
+        return this.decXsdAttribDatiSpecs;
     }
 
     public void setDecXsdAttribDatiSpecs(List<DecXsdAttribDatiSpec> decXsdAttribDatiSpecs) {
-	this.decXsdAttribDatiSpecs = decXsdAttribDatiSpecs;
+        this.decXsdAttribDatiSpecs = decXsdAttribDatiSpecs;
     }
 
     // bi-directional many-to-one association to DecTipoCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_COMP_DOC")
     public DecTipoCompDoc getDecTipoCompDoc() {
-	return this.decTipoCompDoc;
+        return this.decTipoCompDoc;
     }
 
     public void setDecTipoCompDoc(DecTipoCompDoc decTipoCompDoc) {
-	this.decTipoCompDoc = decTipoCompDoc;
+        this.decTipoCompDoc = decTipoCompDoc;
     }
 
     // bi-directional many-to-one association to DecTipoDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC")
     public DecTipoDoc getDecTipoDoc() {
-	return this.decTipoDoc;
+        return this.decTipoDoc;
     }
 
     public void setDecTipoDoc(DecTipoDoc decTipoDoc) {
-	this.decTipoDoc = decTipoDoc;
+        this.decTipoDoc = decTipoDoc;
     }
 
     // bi-directional many-to-one association to DecTipoUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_UNITA_DOC")
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
-	return this.decTipoUnitaDoc;
+        return this.decTipoUnitaDoc;
     }
 
     public void setDecTipoUnitaDoc(DecTipoUnitaDoc decTipoUnitaDoc) {
-	this.decTipoUnitaDoc = decTipoUnitaDoc;
+        this.decTipoUnitaDoc = decTipoUnitaDoc;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
 }

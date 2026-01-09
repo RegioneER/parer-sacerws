@@ -28,12 +28,12 @@ public class WSDescUpdVers implements IWSDesc {
 
     @Override
     public String getVersione() {
-	return Costanti.WS_AGGIORNAMENTO_VERS_VRSN;
+        return Costanti.WS_AGGIORNAMENTO_VERS_VRSN;
     }
 
     @Override
     public String getNomeWs() {
-	return Costanti.WS_AGGIORNAMENTO_VERS_NOME;
+        return Costanti.WS_AGGIORNAMENTO_VERS_NOME;
     }
 
     // @Override

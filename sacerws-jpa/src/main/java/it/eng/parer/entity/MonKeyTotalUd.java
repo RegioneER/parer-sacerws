@@ -69,99 +69,99 @@ public class MonKeyTotalUd implements Serializable {
     @Id
     @Column(name = "ID_KEY_TOTAL_UD")
     @GenericGenerator(name = "SMON_KEY_TOTAL_UD_ID_KEY_TOTAL_UD_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_KEY_TOTAL_UD"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SMON_KEY_TOTAL_UD"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SMON_KEY_TOTAL_UD_ID_KEY_TOTAL_UD_GENERATOR")
     public Long getIdKeyTotalUd() {
-	return this.idKeyTotalUd;
+        return this.idKeyTotalUd;
     }
 
     public void setIdKeyTotalUd(Long idKeyTotalUd) {
-	this.idKeyTotalUd = idKeyTotalUd;
+        this.idKeyTotalUd = idKeyTotalUd;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-	return this.aaKeyUnitaDoc;
+        return this.aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     @Temporal(TemporalType.DATE)
     @Column(name = "DT_LAST_UPD_UD")
     public Date getDtLastUpdUd() {
-	return this.dtLastUpdUd;
+        return this.dtLastUpdUd;
     }
 
     public void setDtLastUpdUd(Date dtLastUpdUd) {
-	this.dtLastUpdUd = dtLastUpdUd;
+        this.dtLastUpdUd = dtLastUpdUd;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     // bi-directional many-to-one association to OrgSubStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SUB_STRUT")
     public OrgSubStrut getOrgSubStrut() {
-	return this.orgSubStrut;
+        return this.orgSubStrut;
     }
 
     public void setOrgSubStrut(OrgSubStrut orgSubStrut) {
-	this.orgSubStrut = orgSubStrut;
+        this.orgSubStrut = orgSubStrut;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC_PRINC")
     public DecTipoDoc getDecTipoDocPrinc() {
-	return this.decTipoDocPrinc;
+        return this.decTipoDocPrinc;
     }
 
     public void setDecTipoDocPrinc(DecTipoDoc decTipoDocPrinc) {
-	this.decTipoDocPrinc = decTipoDocPrinc;
+        this.decTipoDocPrinc = decTipoDocPrinc;
     }
 
     // bi-directional many-to-one association to DecRegistroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_REGISTRO_UNITA_DOC")
     public DecRegistroUnitaDoc getDecRegistroUnitaDoc() {
-	return this.decRegistroUnitaDoc;
+        return this.decRegistroUnitaDoc;
     }
 
     public void setDecRegistroUnitaDoc(DecRegistroUnitaDoc decRegistroUnitaDoc) {
-	this.decRegistroUnitaDoc = decRegistroUnitaDoc;
+        this.decRegistroUnitaDoc = decRegistroUnitaDoc;
     }
 
     // bi-directional many-to-one association to IamUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_UNITA_DOC")
     public DecTipoUnitaDoc getDecTipoUnitaDoc() {
-	return this.decTipoUnitaDoc;
+        return this.decTipoUnitaDoc;
     }
 
     public void setDecTipoUnitaDoc(DecTipoUnitaDoc decTipoUnitaDoc) {
-	this.decTipoUnitaDoc = decTipoUnitaDoc;
+        this.decTipoUnitaDoc = decTipoUnitaDoc;
     }
 
     // bi-directional many-to-one association to MonContaSesUpdUd
     @OneToMany(mappedBy = "monKeyTotalUd")
     public List<MonContaSesUpdUd> getMonContaSesUpdUds() {
-	return this.monContaSesUpdUds;
+        return this.monContaSesUpdUds;
     }
 
     public void setMonContaSesUpdUds(List<MonContaSesUpdUd> monContaSesUpdUds) {
-	this.monContaSesUpdUds = monContaSesUpdUds;
+        this.monContaSesUpdUds = monContaSesUpdUds;
     }
 
 }

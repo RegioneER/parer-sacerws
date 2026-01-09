@@ -94,6 +94,8 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, 
     private boolean versatoreVerificato = false;
     //
     private boolean trovatiIdDocDuplicati;
+    //
+    private boolean flagAbilitaLogStatoConserv = false;
 
     // Nota : solo in presenza di documento e quindi del tag mi aspetto di
     // effettuare il controllo
@@ -119,452 +121,460 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, 
 
     @Override
     public long getIdRecXsdDatiSpec() {
-	return this.idRecXsdDatiSpec;
+        return this.idRecXsdDatiSpec;
     }
 
     @Override
     public void setIdRecXsdDatiSpec(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpec = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpec = idRecXsdDatiSpec;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecifici() {
-	return this.datiSpecifici;
+        return this.datiSpecifici;
     }
 
     @Override
     public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
-	this.datiSpecifici = datiSpecifici;
+        this.datiSpecifici = datiSpecifici;
     }
 
     @Override
     public long getIdRecXsdDatiSpecMigrazione() {
-	return this.idRecXsdDatiSpecMigrazione;
+        return this.idRecXsdDatiSpecMigrazione;
     }
 
     @Override
     public void setIdRecXsdDatiSpecMigrazione(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpec;
     }
 
     public long getIdRecAggiornamentoDB() {
-	return this.idRecAggiornamentoDB;
+        return this.idRecAggiornamentoDB;
     }
 
     public void setIdRecAggiornamentoDB(long idRecAggiornamentoDB) {
-	this.idRecAggiornamentoDB = idRecAggiornamentoDB;
+        this.idRecAggiornamentoDB = idRecAggiornamentoDB;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
-	return this.datiSpecificiMigrazione;
+        return this.datiSpecificiMigrazione;
     }
 
     @Override
     public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
-	this.datiSpecificiMigrazione = datiSpecificiMigrazione;
+        this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 
     public Date getDataVersamento() {
-	return dataVersamento;
+        return dataVersamento;
     }
 
     public void setDataVersamento(Date dataVersamento) {
-	this.dataVersamento = dataVersamento;
+        this.dataVersamento = dataVersamento;
     }
 
     public long getIdUd() {
-	return idUd;
+        return idUd;
     }
 
     public void setIdUd(long idUd) {
-	this.idUd = idUd;
+        this.idUd = idUd;
     }
 
     public long getIdStruttura() {
-	return idStruttura;
+        return idStruttura;
     }
 
     public void setIdStruttura(long idStruttura) {
-	this.idStruttura = idStruttura;
+        this.idStruttura = idStruttura;
     }
 
     public long getIdUser() {
-	return idUser;
+        return idUser;
     }
 
     public void setIdUser(long idUser) {
-	this.idUser = idUser;
+        this.idUser = idUser;
     }
 
     public long getIdOrgEnteConv() {
-	return idOrgEnteConv;
+        return idOrgEnteConv;
     }
 
     public void setIdOrgEnteConv(long idOrgEnteConv) {
-	this.idOrgEnteConv = idOrgEnteConv;
+        this.idOrgEnteConv = idOrgEnteConv;
     }
 
     public boolean isVersatoreVerificato() {
-	return versatoreVerificato;
+        return versatoreVerificato;
     }
 
     public void setVersatoreVerificato(boolean versatoreVerificato) {
-	this.versatoreVerificato = versatoreVerificato;
+        this.versatoreVerificato = versatoreVerificato;
     }
 
     public CSVersatore getVersatoreNonverificato() {
-	return versatoreNonverificato;
+        return versatoreNonverificato;
     }
 
     public void setVersatoreNonverificato(CSVersatore versatoreNonverificato) {
-	this.versatoreNonverificato = versatoreNonverificato;
+        this.versatoreNonverificato = versatoreNonverificato;
     }
 
     public CSChiave getChiaveNonVerificata() {
-	return chiaveNonVerificata;
+        return chiaveNonVerificata;
     }
 
     public void setChiaveNonVerificata(CSChiave chiaveNonVerificata) {
-	this.chiaveNonVerificata = chiaveNonVerificata;
+        this.chiaveNonVerificata = chiaveNonVerificata;
     }
 
     public String getVersioneIndiceSipNonVerificata() {
-	return versioneIndiceSipNonVerificata;
+        return versioneIndiceSipNonVerificata;
     }
 
     public void setVersioneIndiceSipNonVerificata(String versioneIndiceSipNonVerificata) {
-	this.versioneIndiceSipNonVerificata = versioneIndiceSipNonVerificata;
+        this.versioneIndiceSipNonVerificata = versioneIndiceSipNonVerificata;
     }
 
     public String getUrnPartChiaveUd() {
-	return urnPartChiaveUd;
+        return urnPartChiaveUd;
     }
 
     public void setUrnPartChiaveUd(String urnUD) {
-	this.urnPartChiaveUd = urnUD;
+        this.urnPartChiaveUd = urnUD;
     }
 
     public String getDescTipologiaUnitaDocumentariaNonVerificata() {
-	return descTipologiaUnitaDocumentariaNonVerificata;
+        return descTipologiaUnitaDocumentariaNonVerificata;
     }
 
     public void setDescTipologiaUnitaDocumentariaNonVerificata(
-	    String descTipologiaUnitaDocumentariaNonVerificata) {
-	this.descTipologiaUnitaDocumentariaNonVerificata = descTipologiaUnitaDocumentariaNonVerificata;
+            String descTipologiaUnitaDocumentariaNonVerificata) {
+        this.descTipologiaUnitaDocumentariaNonVerificata = descTipologiaUnitaDocumentariaNonVerificata;
     }
 
     public List<UpdUnitaDocColl> getUnitaDocCollegate() {
-	if (unitaDocCollegate == null) {
-	    unitaDocCollegate = new ArrayList<>(0);
-	}
-	return unitaDocCollegate;
+        if (unitaDocCollegate == null) {
+            unitaDocCollegate = new ArrayList<>(0);
+        }
+        return unitaDocCollegate;
     }
 
     public void setUnitaDocCollegate(List<UpdUnitaDocColl> unitaDocCollegate) {
-	this.unitaDocCollegate = unitaDocCollegate;
+        this.unitaDocCollegate = unitaDocCollegate;
     }
 
     public List<UpdDocumentoVers> getDocumentiAttesi() {
-	if (documentiAttesi == null) {
-	    documentiAttesi = new ArrayList<>(0);
-	}
-	return documentiAttesi;
+        if (documentiAttesi == null) {
+            documentiAttesi = new ArrayList<>(0);
+        }
+        return documentiAttesi;
     }
 
     public void setDocumentiAttesi(List<UpdDocumentoVers> documentiAttesi) {
-	this.documentiAttesi = documentiAttesi;
+        this.documentiAttesi = documentiAttesi;
     }
 
     public Map<String, UpdComponenteVers> getComponentiAttesi() {
-	if (componentiAttesi == null) {
-	    componentiAttesi = new HashMap<>(0);
-	}
-	return componentiAttesi;
+        if (componentiAttesi == null) {
+            componentiAttesi = new HashMap<>(0);
+        }
+        return componentiAttesi;
     }
 
     public void setComponentiAttesi(Map<String, UpdComponenteVers> sottoComponentiAttesi) {
-	this.componentiAttesi = sottoComponentiAttesi;
+        this.componentiAttesi = sottoComponentiAttesi;
     }
 
     public Map<String, UpdComponenteVers> getSottoComponentiAttesi() {
-	if (sottoComponentiAttesi == null) {
-	    sottoComponentiAttesi = new HashMap<>(0);
-	}
-	return componentiAttesi;
+        if (sottoComponentiAttesi == null) {
+            sottoComponentiAttesi = new HashMap<>(0);
+        }
+        return componentiAttesi;
     }
 
     public void setSottoComponentiAttesi(Map<String, UpdComponenteVers> sottoComponentiAttesi) {
-	this.sottoComponentiAttesi = sottoComponentiAttesi;
+        this.sottoComponentiAttesi = sottoComponentiAttesi;
     }
 
     public boolean isTrovatiIdDocDuplicati() {
-	return trovatiIdDocDuplicati;
+        return trovatiIdDocDuplicati;
     }
 
     public void setTrovatiIdDocDuplicati(boolean trovatiIdDocDuplicati) {
-	this.trovatiIdDocDuplicati = trovatiIdDocDuplicati;
+        this.trovatiIdDocDuplicati = trovatiIdDocDuplicati;
     }
 
     public Boolean isCorrAllegatiDichiarati() {
-	return corrAllegatiDichiarati;
+        return corrAllegatiDichiarati;
     }
 
     public void setCorrAllegatiDichiarati(Boolean corrAllegatiDichiarati) {
-	this.corrAllegatiDichiarati = corrAllegatiDichiarati;
+        this.corrAllegatiDichiarati = corrAllegatiDichiarati;
     }
 
     public Boolean isCorrAnnessiDichiarati() {
-	return corrAnnessiDichiarati;
+        return corrAnnessiDichiarati;
     }
 
     public void setCorrAnnessiDichiarati(Boolean corrAnnessiDichiarati) {
-	this.corrAnnessiDichiarati = corrAnnessiDichiarati;
+        this.corrAnnessiDichiarati = corrAnnessiDichiarati;
     }
 
     public Boolean isCorrAnnotazioniDichiarati() {
-	return corrAnnotazioniDichiarati;
+        return corrAnnotazioniDichiarati;
     }
 
     public void setCorrAnnotazioniDichiarati(Boolean corrAnnotazioniDichiarati) {
-	this.corrAnnotazioniDichiarati = corrAnnotazioniDichiarati;
+        this.corrAnnotazioniDichiarati = corrAnnotazioniDichiarati;
     }
 
     public String getSistemaDiMigrazione() {
-	return sistemaDiMigrazione;
+        return sistemaDiMigrazione;
     }
 
     public void setSistemaDiMigrazione(String sistemaDiMigrazione) {
-	this.sistemaDiMigrazione = sistemaDiMigrazione;
+        this.sistemaDiMigrazione = sistemaDiMigrazione;
     }
 
     public String getTipoConservazione() {
-	return tipoConservazione;
+        return tipoConservazione;
     }
 
     public void setTipoConservazione(String tipoConservazione) {
-	this.tipoConservazione = tipoConservazione;
+        this.tipoConservazione = tipoConservazione;
     }
 
     public String getNoteAggiornamento() {
-	return noteAggiornamento;
+        return noteAggiornamento;
     }
 
     public void setNoteAggiornamento(String noteAggiornamento) {
-	this.noteAggiornamento = noteAggiornamento;
+        this.noteAggiornamento = noteAggiornamento;
     }
 
     public String getHashIndiceSipXml() {
-	return hashIndiceSipXml;
+        return hashIndiceSipXml;
     }
 
     public void setHashIndiceSipXml(String hashIndiceSipXml) {
-	this.hashIndiceSipXml = hashIndiceSipXml;
+        this.hashIndiceSipXml = hashIndiceSipXml;
     }
 
     public String getAlgoritmoHashIndiceSIP() {
-	return algoritmoHashIndiceSIP;
+        return algoritmoHashIndiceSIP;
     }
 
     public void setAlgoritmoHashIndiceSIP(String algoritmoHashIndiceSIP) {
-	this.algoritmoHashIndiceSIP = algoritmoHashIndiceSIP;
+        this.algoritmoHashIndiceSIP = algoritmoHashIndiceSIP;
     }
 
     public String getEncodingHashIndiceSIP() {
-	return encodingHashIndiceSIP;
+        return encodingHashIndiceSIP;
     }
 
     public void setEncodingHashIndiceSIP(String encodingHashIndiceSIP) {
-	this.encodingHashIndiceSIP = encodingHashIndiceSIP;
+        this.encodingHashIndiceSIP = encodingHashIndiceSIP;
     }
 
     public long getIdTipologiaUnitaDocumentaria() {
-	return idTipologiaUnitaDocumentaria;
+        return idTipologiaUnitaDocumentaria;
     }
 
     public void setIdTipologiaUnitaDocumentaria(long idTipologiaUnitaDocumentaria) {
-	this.idTipologiaUnitaDocumentaria = idTipologiaUnitaDocumentaria;
+        this.idTipologiaUnitaDocumentaria = idTipologiaUnitaDocumentaria;
     }
 
     public String getDescTipologiaUnitaDocumentaria() {
-	return descTipologiaUnitaDocumentaria;
+        return descTipologiaUnitaDocumentaria;
     }
 
     public void setDescTipologiaUnitaDocumentaria(String descTipologiaUnitaDocumentaria) {
-	this.descTipologiaUnitaDocumentaria = descTipologiaUnitaDocumentaria;
+        this.descTipologiaUnitaDocumentaria = descTipologiaUnitaDocumentaria;
     }
 
     public String getDescTipologiaUnitaDocumentariaUnknown() {
-	return descTipologiaUnitaDocumentariaUnknown;
+        return descTipologiaUnitaDocumentariaUnknown;
     }
 
     public void setDescTipologiaUnitaDocumentariaUnknown(
-	    String descTipologiaUnitaDocumentariaUnknown) {
-	this.descTipologiaUnitaDocumentariaUnknown = descTipologiaUnitaDocumentariaUnknown;
+            String descTipologiaUnitaDocumentariaUnknown) {
+        this.descTipologiaUnitaDocumentariaUnknown = descTipologiaUnitaDocumentariaUnknown;
     }
 
     public CostantiDB.TipoSalvataggioFile getTipoSalvataggioFile() {
-	return tipoSalvataggioFile;
+        return tipoSalvataggioFile;
     }
 
     public void setTipoSalvataggioFile(CostantiDB.TipoSalvataggioFile tipoSalvataggioFile) {
-	this.tipoSalvataggioFile = tipoSalvataggioFile;
+        this.tipoSalvataggioFile = tipoSalvataggioFile;
     }
 
     public long getIdRegistro() {
-	return idRegistro;
+        return idRegistro;
     }
 
     public void setIdRegistro(long idRegistro) {
-	this.idRegistro = idRegistro;
+        this.idRegistro = idRegistro;
     }
 
     public FlControlliUpd getFlControlliUpd() {
-	return flControlliUpd;
+        return flControlliUpd;
     }
 
     public void setFlControlliUpd(FlControlliUpd flControlliUpd) {
-	this.flControlliUpd = flControlliUpd;
+        this.flControlliUpd = flControlliUpd;
     }
 
     public CostantiDB.StatoConservazioneUnitaDoc getStatoConservazioneUnitaDoc() {
-	return statoConservazioneUnitaDoc;
+        return statoConservazioneUnitaDoc;
     }
 
     public void setStatoConservazioneUnitaDoc(
-	    CostantiDB.StatoConservazioneUnitaDoc statoConservazioneUnitaDoc) {
-	this.statoConservazioneUnitaDoc = statoConservazioneUnitaDoc;
+            CostantiDB.StatoConservazioneUnitaDoc statoConservazioneUnitaDoc) {
+        this.statoConservazioneUnitaDoc = statoConservazioneUnitaDoc;
     }
 
     public AroUpdUDTiStatoUpdElencoVers getTiStatoUpdElencoVers() {
-	return tiStatoUpdElencoVers;
+        return tiStatoUpdElencoVers;
     }
 
     public void setTiStatoUpdElencoVers(AroUpdUDTiStatoUpdElencoVers tiStatoUpdElencoVers) {
-	this.tiStatoUpdElencoVers = tiStatoUpdElencoVers;
+        this.tiStatoUpdElencoVers = tiStatoUpdElencoVers;
     }
 
     public Boolean isFlForzaAggiornamento() {
-	return flForzaAggiornamento;
+        return flForzaAggiornamento;
     }
 
     public void setFlForzaAggiornamento(Boolean flForzaAggiornamento) {
-	this.flForzaAggiornamento = flForzaAggiornamento;
+        this.flForzaAggiornamento = flForzaAggiornamento;
     }
 
     public Boolean isFlForzaCollegamento() {
-	return flForzaCollegamento;
+        return flForzaCollegamento;
     }
 
     public void setFlForzaCollegamento(Boolean flForzaCollegamento) {
-	this.flForzaCollegamento = flForzaCollegamento;
+        this.flForzaCollegamento = flForzaCollegamento;
     }
 
     public long getIdTipoUDNonVerificata() {
-	return idTipoUDNonVerificata;
+        return idTipoUDNonVerificata;
     }
 
     public void setIdTipoUDNonVerificata(long idTipoUDNonVerificata) {
-	this.idTipoUDNonVerificata = idTipoUDNonVerificata;
+        this.idTipoUDNonVerificata = idTipoUDNonVerificata;
     }
 
     public long getIdTipoUDUnknown() {
-	return idTipoUDUnknown;
+        return idTipoUDUnknown;
     }
 
     public void setIdTipoUDUnknown(long idTipoUDUnknown) {
-	this.idTipoUDUnknown = idTipoUDUnknown;
+        this.idTipoUDUnknown = idTipoUDUnknown;
     }
 
     public long getIdTipoREGUnknown() {
-	return idTipoREGUnknown;
+        return idTipoREGUnknown;
     }
 
     public void setIdTipoREGUnknown(long idTipoREGUnknown) {
-	this.idTipoREGUnknown = idTipoREGUnknown;
+        this.idTipoREGUnknown = idTipoREGUnknown;
     }
 
     public long getIdTipoDOCPRINCUnknown() {
-	return idTipoDOCPRINCUnknown;
+        return idTipoDOCPRINCUnknown;
     }
 
     public void setIdTipoDOCPRINCUnknown(long idTipoDOCPRINCUnknown) {
-	this.idTipoDOCPRINCUnknown = idTipoDOCPRINCUnknown;
+        this.idTipoDOCPRINCUnknown = idTipoDOCPRINCUnknown;
     }
 
     public String getDescTipoDocPrincipaleNonVerificato() {
-	return descTipoDocPrincipaleNonVerificato;
+        return descTipoDocPrincipaleNonVerificato;
     }
 
     public void setDescTipoDocPrincipaleNonVerificato(String descTipoDocPrincipaleNonVerificato) {
-	this.descTipoDocPrincipaleNonVerificato = descTipoDocPrincipaleNonVerificato;
+        this.descTipoDocPrincipaleNonVerificato = descTipoDocPrincipaleNonVerificato;
     }
 
     public String getUrnPartVersatore() {
-	return urnPartVersatore;
+        return urnPartVersatore;
     }
 
     public void setUrnPartVersatore(String urnPartVersatore) {
-	this.urnPartVersatore = urnPartVersatore;
+        this.urnPartVersatore = urnPartVersatore;
     }
 
     public long getIdTipoDocPrincipale() {
-	return idTipoDocPrincipale;
+        return idTipoDocPrincipale;
     }
 
     public void setIdTipoDocPrincipale(long idTipoDocPrincipale) {
-	this.idTipoDocPrincipale = idTipoDocPrincipale;
+        this.idTipoDocPrincipale = idTipoDocPrincipale;
     }
 
     public String getTipoAggiornamento() {
-	return tipoAggiornamento;
+        return tipoAggiornamento;
     }
 
     public void setTipoAggiornamento(String tipoAggiornamento) {
-	this.tipoAggiornamento = tipoAggiornamento;
+        this.tipoAggiornamento = tipoAggiornamento;
     }
 
     public String getCdKeyNormalized() {
-	return cdKeyNormalized;
+        return cdKeyNormalized;
     }
 
     public void setCdKeyNormalized(String cdKeyNormalized) {
-	this.cdKeyNormalized = cdKeyNormalized;
+        this.cdKeyNormalized = cdKeyNormalized;
     }
 
     public Date getDtVersMax() {
-	return dtVersMax;
+        return dtVersMax;
     }
 
     public void setDtVersMax(Date dtVersMax) {
-	this.dtVersMax = dtVersMax;
+        this.dtVersMax = dtVersMax;
     }
 
     public Date getDtInizioCalcoloNewUrn() {
-	return dtInizioCalcoloNewUrn;
+        return dtInizioCalcoloNewUrn;
     }
 
     public void setDtInizioCalcoloNewUrn(Date dtInizioCalcoloNewUrn) {
-	this.dtInizioCalcoloNewUrn = dtInizioCalcoloNewUrn;
+        this.dtInizioCalcoloNewUrn = dtInizioCalcoloNewUrn;
     }
 
     @Override
     public String getDatiC14NProfNormXml() {
-	return datiC14NProfNormXml;
+        return datiC14NProfNormXml;
     }
 
     @Override
     public void setDatiC14NProfNormXml(String datiC14NProfNormXml) {
-	this.datiC14NProfNormXml = datiC14NProfNormXml;
+        this.datiC14NProfNormXml = datiC14NProfNormXml;
     }
 
     @Override
     public Long getIdRecUsoXsdProfiloNormativo() {
-	return idRecUsoXsdProfiloNormativo;
+        return idRecUsoXsdProfiloNormativo;
     }
 
     @Override
     public void setIdRecUsoXsdProfiloNormativo(Long idRecUsoXsdProfiloNormativo) {
-	this.idRecUsoXsdProfiloNormativo = idRecUsoXsdProfiloNormativo;
+        this.idRecUsoXsdProfiloNormativo = idRecUsoXsdProfiloNormativo;
+    }
+
+    public boolean isFlagAbilitaLogStatoConserv() {
+        return flagAbilitaLogStatoConserv;
+    }
+
+    public void setFlagAbilitaLogStatoConserv(boolean flagAbilitaLogStatoConserv) {
+        this.flagAbilitaLogStatoConserv = flagAbilitaLogStatoConserv;
     }
 }

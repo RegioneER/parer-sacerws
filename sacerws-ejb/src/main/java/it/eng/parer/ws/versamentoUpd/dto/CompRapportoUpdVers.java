@@ -51,216 +51,216 @@ public class CompRapportoUpdVers {
     EsitoNegativoAggiornamentoType rapportoKo;
 
     public CompRapportoUpdVers() {
-	esitoAggiornamento = new EsitoAggiornamento();
-	rapportoOk = new RapportoVersamentoType();
-	rapportoKo = new EsitoNegativoAggiornamentoType();
+        esitoAggiornamento = new EsitoAggiornamento();
+        rapportoOk = new RapportoVersamentoType();
+        rapportoKo = new EsitoNegativoAggiornamentoType();
     }
 
     public EsitoAggiornamento produciEsitoAggiornamento() {
-	if (rapportoKo.getEsitoGenerale() != null
-		&& rapportoKo.getEsitoGenerale().getCodiceEsito() != null
-		&& rapportoKo.getEsitoGenerale().getCodiceEsito() == CodiceEsitoType.NEGATIVO) {
-	    esitoAggiornamento.setRapportoVersamento(null);
-	    esitoAggiornamento.setEsitoNegativoAggiornamento(rapportoKo);
-	} else {
-	    esitoAggiornamento.setRapportoVersamento(rapportoOk);
-	    esitoAggiornamento.setEsitoNegativoAggiornamento(null);
-	}
-	return esitoAggiornamento;
+        if (rapportoKo.getEsitoGenerale() != null
+                && rapportoKo.getEsitoGenerale().getCodiceEsito() != null
+                && rapportoKo.getEsitoGenerale().getCodiceEsito() == CodiceEsitoType.NEGATIVO) {
+            esitoAggiornamento.setRapportoVersamento(null);
+            esitoAggiornamento.setEsitoNegativoAggiornamento(rapportoKo);
+        } else {
+            esitoAggiornamento.setRapportoVersamento(rapportoOk);
+            esitoAggiornamento.setEsitoNegativoAggiornamento(null);
+        }
+        return esitoAggiornamento;
     }
 
     public RapportoVersamentoType getRapportoOk() {
-	return rapportoOk;
+        return rapportoOk;
     }
 
     public EsitoNegativoAggiornamentoType getRapportoKo() {
-	return rapportoKo;
+        return rapportoKo;
     }
 
     //
     public String getVersioneRapportoVersamento() {
-	return esitoAggiornamento.getVersioneEsitoAggiornamento();
+        return esitoAggiornamento.getVersioneEsitoAggiornamento();
     }
 
     public void setVersioneRapportoVersamento(String value) {
-	esitoAggiornamento.setVersioneEsitoAggiornamento(value);
-	rapportoOk.setVersioneRapportoVersamento(value);
+        esitoAggiornamento.setVersioneEsitoAggiornamento(value);
+        rapportoOk.setVersioneRapportoVersamento(value);
     }
 
     public String getVersioneIndiceSIPAggiornamento() {
-	return esitoAggiornamento.getVersioneIndiceSIPAggiornamento();
+        return esitoAggiornamento.getVersioneIndiceSIPAggiornamento();
     }
 
     public void setVersioneIndiceSIPAggiornamento(String value) {
-	esitoAggiornamento.setVersioneIndiceSIPAggiornamento(value);
+        esitoAggiornamento.setVersioneIndiceSIPAggiornamento(value);
     }
 
     public XMLGregorianCalendar getDataRapportoVersamento() {
-	return esitoAggiornamento.getDataEsitoAggiornamento();
+        return esitoAggiornamento.getDataEsitoAggiornamento();
     }
 
     public void setDataRapportoVersamento(XMLGregorianCalendar value) {
-	esitoAggiornamento.setDataEsitoAggiornamento(value);
-	rapportoOk.setDataRapportoVersamento(value);
+        esitoAggiornamento.setDataEsitoAggiornamento(value);
+        rapportoOk.setDataRapportoVersamento(value);
     }
 
     // MEV#23176
     public String getURNSIP() {
-	return esitoAggiornamento.getURNSIP();
+        return esitoAggiornamento.getURNSIP();
     }
 
     public void setURNSIP(String value) {
-	esitoAggiornamento.setURNSIP(value);
-	rapportoOk.getSIP().setURNSIP(value);
+        esitoAggiornamento.setURNSIP(value);
+        rapportoOk.getSIP().setURNSIP(value);
     }
     // end MEV#23176
 
     //
     public String getIdentificativoRapportoVersamento() {
-	return rapportoOk.getIdentificativoRapportoVersamento();
+        return rapportoOk.getIdentificativoRapportoVersamento();
     }
 
     public void setIdentificativoRapportoVersamento(String value) {
-	rapportoOk.setIdentificativoRapportoVersamento(value);
+        rapportoOk.setIdentificativoRapportoVersamento(value);
     }
 
     public SIPType getSIP() {
-	return rapportoOk.getSIP();
+        return rapportoOk.getSIP();
     }
 
     public void setSIP(SIPType value) {
-	rapportoOk.setSIP(value);
+        rapportoOk.setSIP(value);
     }
 
     public String getURNIndiceSIP() {
-	return getSIP().getURNIndiceSIP();
+        return getSIP().getURNIndiceSIP();
     }
 
     public void setURNIndiceSIP(String value) {
-	getSIP().setURNIndiceSIP(value);
+        getSIP().setURNIndiceSIP(value);
     }
 
     public EsitoGeneralePositivoType getEsitoGeneralePositivo() {
-	return rapportoOk.getEsitoGenerale();
+        return rapportoOk.getEsitoGenerale();
     }
 
     public void setEsitoGeneralePositivo(EsitoGeneralePositivoType value) {
-	rapportoOk.setEsitoGenerale(value);
+        rapportoOk.setEsitoGenerale(value);
     }
 
     public EsitoGeneraleNegativoType getEsitoGeneraleNegativo() {
-	return rapportoKo.getEsitoGenerale();
+        return rapportoKo.getEsitoGenerale();
     }
 
     public void setEsitoGeneraleNegativo(EsitoGeneraleNegativoType value) {
-	rapportoKo.setEsitoGenerale(value);
+        rapportoKo.setEsitoGenerale(value);
     }
 
     public WarningsType getWarnings() {
-	return rapportoOk.getEsitoGenerale().getWarnings();
+        return rapportoOk.getEsitoGenerale().getWarnings();
     }
 
     public void setWarnings(WarningsType value) {
-	rapportoOk.getEsitoGenerale().setWarnings(value);
+        rapportoOk.getEsitoGenerale().setWarnings(value);
     }
 
     public ControlliType getControlliGenerali() {
-	return rapportoOk.getControlliGenerali();
+        return rapportoOk.getControlliGenerali();
     }
 
     public ControlliType getControlliGeneraliKo() {
-	return rapportoKo.getControlliGenerali();
+        return rapportoKo.getControlliGenerali();
     }
 
     public void setControlliGenerali(ControlliType value) {
-	rapportoKo.setControlliGenerali(value);
-	rapportoOk.setControlliGenerali(value);
+        rapportoKo.setControlliGenerali(value);
+        rapportoOk.setControlliGenerali(value);
     }
 
     public ControlliFallitiUlterioriType getControlliFallitiUlteriori() {
-	return rapportoKo.getControlliFallitiUlteriori();
+        return rapportoKo.getControlliFallitiUlteriori();
     }
 
     public void setControlliFallitiUlteriori(ControlliFallitiUlterioriType value) {
-	rapportoKo.setControlliFallitiUlteriori(value);
+        rapportoKo.setControlliFallitiUlteriori(value);
     }
 
     public UnitaDocumentariaType getUnitaDocumentaria() {
-	return rapportoOk.getUnitaDocumentaria();
+        return rapportoOk.getUnitaDocumentaria();
     }
 
     public UnitaDocumentariaType getUnitaDocumentariaKo() {
-	return rapportoKo.getUnitaDocumentaria();
+        return rapportoKo.getUnitaDocumentaria();
     }
 
     public void setUnitaDocumentaria(UnitaDocumentariaType value) {
-	rapportoKo.setUnitaDocumentaria(value);
-	rapportoOk.setUnitaDocumentaria(value);
+        rapportoKo.setUnitaDocumentaria(value);
+        rapportoOk.setUnitaDocumentaria(value);
     }
 
     public void setControlliUnitaDocumentaria(ControlliType value) {
-	getUnitaDocumentaria().setControlliUnitaDocumentaria(value);
-	getUnitaDocumentariaKo().setControlliUnitaDocumentaria(value);
+        getUnitaDocumentaria().setControlliUnitaDocumentaria(value);
+        getUnitaDocumentariaKo().setControlliUnitaDocumentaria(value);
     }
 
     public ControlliType getControlliUnitaDocumentaria() {
-	return getUnitaDocumentaria().getControlliUnitaDocumentaria();
+        return getUnitaDocumentaria().getControlliUnitaDocumentaria();
     }
 
     public ControlliType getControlliUnitaDocumentariaKo() {
-	return getUnitaDocumentariaKo().getControlliUnitaDocumentaria();
+        return getUnitaDocumentariaKo().getControlliUnitaDocumentaria();
     }
 
     public ParametriAggiornamentoType getParametriAggiornamento() {
-	if (rapportoOk.getParametriAggiornamento() == null
-		|| rapportoKo.getParametriAggiornamento() == null) {
-	    this.setParametriAggiornamentoType(new ParametriAggiornamentoType());
-	}
-	return rapportoOk.getParametriAggiornamento();
+        if (rapportoOk.getParametriAggiornamento() == null
+                || rapportoKo.getParametriAggiornamento() == null) {
+            this.setParametriAggiornamentoType(new ParametriAggiornamentoType());
+        }
+        return rapportoOk.getParametriAggiornamento();
     }
 
     private void setParametriAggiornamentoType(ParametriAggiornamentoType value) {
-	rapportoOk.setParametriAggiornamento(value);
-	rapportoKo.setParametriAggiornamento(value);
+        rapportoOk.setParametriAggiornamento(value);
+        rapportoKo.setParametriAggiornamento(value);
     }
 
     public String getIndiceSIP() {
-	return rapportoKo.getIndiceSIP();
+        return rapportoKo.getIndiceSIP();
     }
 
     public void setIndiceSIP(String value) {
-	rapportoKo.setIndiceSIP(value);
+        rapportoKo.setIndiceSIP(value);
     }
 
     public BigInteger getProgressivoAggiornamento() {
-	return getUnitaDocumentaria().getProgressivoAggiornamento();
+        return getUnitaDocumentaria().getProgressivoAggiornamento();
     }
 
     public void setProgressivoAggiornamento(BigInteger value) {
-	getUnitaDocumentaria().setProgressivoAggiornamento(value);
+        getUnitaDocumentaria().setProgressivoAggiornamento(value);
     }
 
     public String getRegistro() {
-	return rapportoOk.getUnitaDocumentaria().getChiave().getRegistro();
+        return rapportoOk.getUnitaDocumentaria().getChiave().getRegistro();
     }
 
     public void setRegistro(String value) {
-	rapportoOk.getUnitaDocumentaria().getChiave().setRegistro(value);
-	rapportoKo.getUnitaDocumentaria().getChiave().setRegistro(value);
+        rapportoOk.getUnitaDocumentaria().getChiave().setRegistro(value);
+        rapportoKo.getUnitaDocumentaria().getChiave().setRegistro(value);
     }
 
     public String getTipologiaUnitaDocumentaria() {
-	return rapportoOk.getUnitaDocumentaria().getChiave().getRegistro();
+        return rapportoOk.getUnitaDocumentaria().getChiave().getRegistro();
     }
 
     public void setTipologiaUnitaDocumentaria(String value) {
-	rapportoOk.getUnitaDocumentaria().setTipologiaUnitaDocumentaria(value);
-	rapportoKo.getUnitaDocumentaria().setTipologiaUnitaDocumentaria(value);
+        rapportoOk.getUnitaDocumentaria().setTipologiaUnitaDocumentaria(value);
+        rapportoKo.getUnitaDocumentaria().setTipologiaUnitaDocumentaria(value);
     }
 
     public void setDocumentiCollegati(DocumentoCollegatoType value) {
-	rapportoOk.getUnitaDocumentaria().setDocumentiCollegati(value);
-	rapportoKo.getUnitaDocumentaria().setDocumentiCollegati(value);
+        rapportoOk.getUnitaDocumentaria().setDocumentiCollegati(value);
+        rapportoKo.getUnitaDocumentaria().setDocumentiCollegati(value);
     }
 
     /*
@@ -270,71 +270,71 @@ public class CompRapportoUpdVers {
      * indifferente se da rapportoOk o da rapportoKo
      */
     public DocumentoCollegatoType getDocumentiCollegati() {
-	return getUnitaDocumentaria().getDocumentiCollegati();
+        return getUnitaDocumentaria().getDocumentiCollegati();
     }
 
     public void setDocumentiCollegati(List<UpdUnitaDocColl> unitaDocCollegate) {
-	DocumentoCollegatoType documentoCollegatoType = new DocumentoCollegatoType();
-	for (UpdUnitaDocColl aggUnitaDocColl : unitaDocCollegate) {
-	    DocumentoCollegatoType.DocumentoCollegato documentoCollegato = new DocumentoCollegatoType.DocumentoCollegato();
-	    ChiaveType chiave = new ChiaveType();
-	    chiave.setAnno(String.valueOf(aggUnitaDocColl.getAggChiave().getAnno()));
-	    chiave.setNumero(aggUnitaDocColl.getAggChiave().getNumero());
-	    chiave.setRegistro(aggUnitaDocColl.getAggChiave().getTipoRegistro());
-	    documentoCollegato.setChiaveCollegamento(chiave);
+        DocumentoCollegatoType documentoCollegatoType = new DocumentoCollegatoType();
+        for (UpdUnitaDocColl aggUnitaDocColl : unitaDocCollegate) {
+            DocumentoCollegatoType.DocumentoCollegato documentoCollegato = new DocumentoCollegatoType.DocumentoCollegato();
+            ChiaveType chiave = new ChiaveType();
+            chiave.setAnno(String.valueOf(aggUnitaDocColl.getAggChiave().getAnno()));
+            chiave.setNumero(aggUnitaDocColl.getAggChiave().getNumero());
+            chiave.setRegistro(aggUnitaDocColl.getAggChiave().getTipoRegistro());
+            documentoCollegato.setChiaveCollegamento(chiave);
 
-	    documentoCollegatoType.getDocumentoCollegato().add(documentoCollegato);
-	}
+            documentoCollegatoType.getDocumentoCollegato().add(documentoCollegato);
+        }
 
-	setDocumentiCollegati(documentoCollegatoType);
+        setDocumentiCollegati(documentoCollegatoType);
 
     }
 
     public void setUnitaDocumentariaVersatore(VersatoreType value) {
-	rapportoOk.getUnitaDocumentaria().setVersatore(value);
-	rapportoKo.getUnitaDocumentaria().setVersatore(value);
+        rapportoOk.getUnitaDocumentaria().setVersatore(value);
+        rapportoKo.getUnitaDocumentaria().setVersatore(value);
     }
 
     public VersatoreType getUnitaDocumentariaVersatore() {
-	return getUnitaDocumentaria().getVersatore();
+        return getUnitaDocumentaria().getVersatore();
     }
 
     public VersatoreType getUnitaDocumentariaVersatoreKo() {
-	return getUnitaDocumentariaKo().getVersatore();
+        return getUnitaDocumentariaKo().getVersatore();
     }
 
     public void setUnitaDocumentariaChiave(ChiaveType value) {
-	rapportoOk.getUnitaDocumentaria().setChiave(value);
-	rapportoKo.getUnitaDocumentaria().setChiave(value);
+        rapportoOk.getUnitaDocumentaria().setChiave(value);
+        rapportoKo.getUnitaDocumentaria().setChiave(value);
 
     }
 
     public ChiaveType getUnitaDocumentariaChiave() {
-	return getUnitaDocumentaria().getChiave();
+        return getUnitaDocumentaria().getChiave();
     }
 
     public ChiaveType getUnitaDocumentariaChiaveKo() {
-	return getUnitaDocumentariaKo().getChiave();
+        return getUnitaDocumentariaKo().getChiave();
     }
 
     public void setDocumentoPrincipale(DocumentoType documentoType) {
-	rapportoOk.getUnitaDocumentaria().setDocumentoPrincipale(documentoType);
-	rapportoKo.getUnitaDocumentaria().setDocumentoPrincipale(documentoType);
+        rapportoOk.getUnitaDocumentaria().setDocumentoPrincipale(documentoType);
+        rapportoKo.getUnitaDocumentaria().setDocumentoPrincipale(documentoType);
     }
 
     public DocumentoType getDocumentoPrincipale() {
-	return getUnitaDocumentaria().getDocumentoPrincipale();
+        return getUnitaDocumentaria().getDocumentoPrincipale();
     }
 
     public void resetControlliWithUD() {
 
-	// remove tag from response
-	rapportoKo.setControlliGenerali(null);
-	rapportoKo.setControlliFallitiUlteriori(null);
-	// remove UD
-	rapportoKo.setUnitaDocumentaria(null);
-	// remove Params
-	rapportoKo.setParametriAggiornamento(null);
+        // remove tag from response
+        rapportoKo.setControlliGenerali(null);
+        rapportoKo.setControlliFallitiUlteriori(null);
+        // remove UD
+        rapportoKo.setUnitaDocumentaria(null);
+        // remove Params
+        rapportoKo.setParametriAggiornamento(null);
 
     }
 

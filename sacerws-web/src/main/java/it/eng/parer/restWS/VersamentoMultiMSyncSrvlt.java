@@ -63,7 +63,7 @@ import it.eng.spagoCore.ConfigSingleton;
  * Servlet implementation class VersamentoMultiMSyncSrvlt
  */
 @WebServlet(urlPatterns = {
-	"/VersamentoMultiMedia" }, asyncSupported = true)
+        "/VersamentoMultiMedia" }, asyncSupported = true)
 public class VersamentoMultiMSyncSrvlt extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -82,26 +82,26 @@ public class VersamentoMultiMSyncSrvlt extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-	super.init(config);
-	// custom
-	uploadDir = ConfigSingleton.getInstance().getStringValue(WS_STAGING_UPLOAD_DIR.name());
-	salvaLogSessione = ConfigSingleton.getInstance()
-		.getBooleanValue(VERSAMENTO_SYNC_SAVE_LOG_SESSION.name());
-	maxRequestSize = ConfigSingleton.getInstance()
-		.getLongValue(VERSAMENTO_SYNC_MAX_REQUEST_SIZE.name());
-	maxFileSize = ConfigSingleton.getInstance()
-		.getLongValue(VERSAMENTO_SYNC_MAX_FILE_SIZE.name());
-	instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
+        super.init(config);
+        // custom
+        uploadDir = ConfigSingleton.getInstance().getStringValue(WS_STAGING_UPLOAD_DIR.name());
+        salvaLogSessione = ConfigSingleton.getInstance()
+                .getBooleanValue(VERSAMENTO_SYNC_SAVE_LOG_SESSION.name());
+        maxRequestSize = ConfigSingleton.getInstance()
+                .getLongValue(VERSAMENTO_SYNC_MAX_REQUEST_SIZE.name());
+        maxFileSize = ConfigSingleton.getInstance()
+                .getLongValue(VERSAMENTO_SYNC_MAX_FILE_SIZE.name());
+        instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-	    throws ServletException, IOException {
-	try {
-	    Response405.fancy405(resp, Response405.NomeWebServiceRest.VERSAMENTO_MM);
-	} catch (IOException e) {
-	    log.error("Errore generico", e);
-	}
+            throws ServletException, IOException {
+        try {
+            Response405.fancy405(resp, Response405.NomeWebServiceRest.VERSAMENTO_MM);
+        } catch (IOException e) {
+            log.error("Errore generico", e);
+        }
     }
 
     /**
@@ -112,231 +112,231 @@ public class VersamentoMultiMSyncSrvlt extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
-	SyncFakeSessn sessioneFinta = new SyncFakeSessn();
-	Iterator<FileItem> tmpIterator = null;
-	DiskFileItem tmpFileItem = null;
-	List<FileItem> fileItems = null;
+            throws ServletException, IOException {
+        SyncFakeSessn sessioneFinta = new SyncFakeSessn();
+        Iterator<FileItem> tmpIterator = null;
+        DiskFileItem tmpFileItem = null;
+        List<FileItem> fileItems = null;
 
-	RequestPrsr myRequestPrsr = new RequestPrsr();
-	EsitoVersamento myEsito = new EsitoVersamento();
-	RispostaWS rispostaWs = new RispostaWS();
-	VersamentoMMExt myVersamentoMMExt = new VersamentoMMExt();
-	myVersamentoMMExt.setDescrizione(new WSDescVersamentoMM());
-	AvanzamentoWs tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName,
-		AvanzamentoWs.Funzioni.VersamentoSync);
-	tmpAvanzamento.logAvanzamento();
+        RequestPrsr myRequestPrsr = new RequestPrsr();
+        EsitoVersamento myEsito = new EsitoVersamento();
+        RispostaWS rispostaWs = new RispostaWS();
+        VersamentoMMExt myVersamentoMMExt = new VersamentoMMExt();
+        myVersamentoMMExt.setDescrizione(new WSDescVersamentoMM());
+        AvanzamentoWs tmpAvanzamento = AvanzamentoWs.nuovoAvanzamentoWS(instanceName,
+                AvanzamentoWs.Funzioni.VersamentoSync);
+        tmpAvanzamento.logAvanzamento();
 
-	tmpAvanzamento.setFase("EJB recuperato").logAvanzamento();
+        tmpAvanzamento.setFase("EJB recuperato").logAvanzamento();
 
-	versamentoSync.init(rispostaWs, tmpAvanzamento, myVersamentoMMExt, myEsito);
-	myEsito = rispostaWs.getIstanzaEsito();
+        versamentoSync.init(rispostaWs, tmpAvanzamento, myVersamentoMMExt, myEsito);
+        myEsito = rispostaWs.getIstanzaEsito();
 
-	sessioneFinta.setSalvaSessione(salvaLogSessione);
-	sessioneFinta.setTmApertura(ZonedDateTime.now());
-	//
-	sessioneFinta.setIpChiamante(myRequestPrsr.leggiIpVersante(request));
+        sessioneFinta.setSalvaSessione(salvaLogSessione);
+        sessioneFinta.setTmApertura(ZonedDateTime.now());
+        //
+        sessioneFinta.setIpChiamante(myRequestPrsr.leggiIpVersante(request));
 
-	if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-	    // Check that we have a file upload request
-	    boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-	    if (isMultipart) {
-		// Create a factory for disk-based file items
-		DiskFileItemFactory factory = new DiskFileItemFactory();
+        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+            // Check that we have a file upload request
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            if (isMultipart) {
+                // Create a factory for disk-based file items
+                DiskFileItemFactory factory = new DiskFileItemFactory();
 
-		// maximum size that will be stored in memory
-		factory.setSizeThreshold(0);
-		//
-		factory.setRepository(new File(uploadDir));
-		// Create a new file upload handler
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		// maximum size before a FileUploadException will be thrown
-		upload.setSizeMax(maxRequestSize);
-		upload.setFileSizeMax(maxFileSize);
+                // maximum size that will be stored in memory
+                factory.setSizeThreshold(0);
+                //
+                factory.setRepository(new File(uploadDir));
+                // Create a new file upload handler
+                ServletFileUpload upload = new ServletFileUpload(factory);
+                // maximum size before a FileUploadException will be thrown
+                upload.setSizeMax(maxRequestSize);
+                upload.setFileSizeMax(maxFileSize);
 
-		tmpAvanzamento.setFase("Servlet pronta a ricevere i file").logAvanzamento();
+                tmpAvanzamento.setFase("Servlet pronta a ricevere i file").logAvanzamento();
 
-		try {
-		    sessioneFinta
-			    .setTipoSessioneVers(SyncFakeSessn.TipiSessioneVersamento.VERSAMENTO);
-		    sessioneFinta.setTipoDatiSessioneVers("XML_DOC");
+                try {
+                    sessioneFinta
+                            .setTipoSessioneVers(SyncFakeSessn.TipiSessioneVersamento.VERSAMENTO);
+                    sessioneFinta.setTipoDatiSessioneVers("XML_DOC");
 
-		    tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.TrasferimentoPayloadIn)
-			    .setFase("pronto a ricevere").logAvanzamento();
+                    tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.TrasferimentoPayloadIn)
+                            .setFase("pronto a ricevere").logAvanzamento();
 
-		    RequestPrsr.ReqPrsrConfig tmpPrsrConfig = RequestPrsr.createConfig();
-		    tmpPrsrConfig.setLeggiFile(false);
-		    tmpPrsrConfig.setLeggindiceMM(true);
-		    tmpPrsrConfig.setAvanzamentoWs(tmpAvanzamento);
-		    tmpPrsrConfig.setSessioneFinta(sessioneFinta);
-		    tmpPrsrConfig.setRequest(request);
-		    tmpPrsrConfig.setUploadHandler(upload);
-		    //
-		    fileItems = myRequestPrsr.parse(rispostaWs, tmpPrsrConfig);
-		    //
-		    if (rispostaWs.getSeverity() != SeverityEnum.OK) {
-			rispostaWs.setEsitoWsError(rispostaWs.getErrorCode(),
-				rispostaWs.getErrorMessage());
-		    }
+                    RequestPrsr.ReqPrsrConfig tmpPrsrConfig = RequestPrsr.createConfig();
+                    tmpPrsrConfig.setLeggiFile(false);
+                    tmpPrsrConfig.setLeggindiceMM(true);
+                    tmpPrsrConfig.setAvanzamentoWs(tmpAvanzamento);
+                    tmpPrsrConfig.setSessioneFinta(sessioneFinta);
+                    tmpPrsrConfig.setRequest(request);
+                    tmpPrsrConfig.setUploadHandler(upload);
+                    //
+                    fileItems = myRequestPrsr.parse(rispostaWs, tmpPrsrConfig);
+                    //
+                    if (rispostaWs.getSeverity() != SeverityEnum.OK) {
+                        rispostaWs.setEsitoWsError(rispostaWs.getErrorCode(),
+                                rispostaWs.getErrorMessage());
+                    }
 
-		    tmpAvanzamento
-			    .setCheckPoint(AvanzamentoWs.CheckPoints.VerificaStrutturaChiamataWs)
-			    .setFase("completata").logAvanzamento();
+                    tmpAvanzamento
+                            .setCheckPoint(AvanzamentoWs.CheckPoints.VerificaStrutturaChiamataWs)
+                            .setFase("completata").logAvanzamento();
 
-		    /*
-		     * *****************************************************************************
-		     * *** fine della verifica della struttura/signature del web service. Verifica
-		     * dei dati effettivamente versati
-		     * *****************************************************************************
-		     * ***
-		     */
-		    // testa se la versione è corretta
-		    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-			tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.VerificaSemantica)
-				.setFase("verifica versione").logAvanzamento();
+                    /*
+                     * *****************************************************************************
+                     * *** fine della verifica della struttura/signature del web service. Verifica
+                     * dei dati effettivamente versati
+                     * *****************************************************************************
+                     * ***
+                     */
+                    // testa se la versione è corretta
+                    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+                        tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.VerificaSemantica)
+                                .setFase("verifica versione").logAvanzamento();
 
-			versamentoSync.verificaVersione(sessioneFinta.getVersioneWS(), rispostaWs,
-				myVersamentoMMExt);
-		    }
+                        versamentoSync.verificaVersione(sessioneFinta.getVersioneWS(), rispostaWs,
+                                myVersamentoMMExt);
+                    }
 
-		    // testa le credenziali utente, tramite ejb
-		    myEsito = rispostaWs.getIstanzaEsito();
-		    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-			tmpAvanzamento.setFase("verifica credenziali").logAvanzamento();
-			versamentoSync.verificaCredenziali(sessioneFinta.getLoginName(),
-				sessioneFinta.getPassword(), sessioneFinta.getIpChiamante(),
-				rispostaWs, myVersamentoMMExt);
-		    }
+                    // testa le credenziali utente, tramite ejb
+                    myEsito = rispostaWs.getIstanzaEsito();
+                    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+                        tmpAvanzamento.setFase("verifica credenziali").logAvanzamento();
+                        versamentoSync.verificaCredenziali(sessioneFinta.getLoginName(),
+                                sessioneFinta.getPassword(), sessioneFinta.getIpChiamante(),
+                                rispostaWs, myVersamentoMMExt);
+                    }
 
-		    // verifica formale e semantica dell'XML indice MM
-		    myEsito = rispostaWs.getIstanzaEsito();
-		    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-			tmpAvanzamento.setFase("verifica xml indice").logAvanzamento();
-			versamentoSync.parseXMLIndiceMM(sessioneFinta, rispostaWs,
-				myVersamentoMMExt);
-		    }
+                    // verifica formale e semantica dell'XML indice MM
+                    myEsito = rispostaWs.getIstanzaEsito();
+                    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+                        tmpAvanzamento.setFase("verifica xml indice").logAvanzamento();
+                        versamentoSync.parseXMLIndiceMM(sessioneFinta, rispostaWs,
+                                myVersamentoMMExt);
+                    }
 
-		    // verifica formale e semantica dell'XML di versamento
-		    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-			tmpAvanzamento.setFase("verifica xml").logAvanzamento();
-			versamentoSync.parseXML(sessioneFinta, rispostaWs, myVersamentoMMExt);
-		    }
+                    // verifica formale e semantica dell'XML di versamento
+                    if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+                        tmpAvanzamento.setFase("verifica xml").logAvanzamento();
+                        versamentoSync.parseXML(sessioneFinta, rispostaWs, myVersamentoMMExt);
+                    }
 
-		    // verifica che tutti i componenti di tipo FILE dichiarati nell'XML abbiano
-		    // avuto un corrispondente
-		    // payload binario
-		    myEsito = rispostaWs.getIstanzaEsito();
-		    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-			sessioneFinta.setXmlOk(true);
-			tmpAvanzamento
-				.setCheckPoint(
-					AvanzamentoWs.CheckPoints.VerificaCoerenzaComponentiFile)
-				.setFase("verifica coerenza").logAvanzamento();
-			versamentoSync.verificaCoerenzaComponenti(rispostaWs, myVersamentoMMExt,
-				sessioneFinta, uploadDir);
-		    }
+                    // verifica che tutti i componenti di tipo FILE dichiarati nell'XML abbiano
+                    // avuto un corrispondente
+                    // payload binario
+                    myEsito = rispostaWs.getIstanzaEsito();
+                    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
+                        sessioneFinta.setXmlOk(true);
+                        tmpAvanzamento
+                                .setCheckPoint(
+                                        AvanzamentoWs.CheckPoints.VerificaCoerenzaComponentiFile)
+                                .setFase("verifica coerenza").logAvanzamento();
+                        versamentoSync.verificaCoerenzaComponenti(rispostaWs, myVersamentoMMExt,
+                                sessioneFinta, uploadDir);
+                    }
 
-		    // Se il backend di staging configurato è l'object storage qui avviene l'upload
-		    // Nota: questo a fronte dei componenti da versare (vedi
-		    // #versamentoSync.verificaCoerenzaComponenti)
-		    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-			tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.CopiaBackendStaging)
-				.setFase("inizio verifica/copia backend staging").logAvanzamento();
-			versamentoSync.uploadComponentiStaging(sessioneFinta);
+                    // Se il backend di staging configurato è l'object storage qui avviene l'upload
+                    // Nota: questo a fronte dei componenti da versare (vedi
+                    // #versamentoSync.verificaCoerenzaComponenti)
+                    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
+                        tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.CopiaBackendStaging)
+                                .setFase("inizio verifica/copia backend staging").logAvanzamento();
+                        versamentoSync.uploadComponentiStaging(sessioneFinta);
 
-			tmpAvanzamento.setFase("fine verifica/copia backend staging")
-				.logAvanzamento();
-		    }
+                        tmpAvanzamento.setFase("fine verifica/copia backend staging")
+                                .logAvanzamento();
+                    }
 
-		    // verifica che tutti i componenti di tipo FILE superino i controlli
-		    // crittografici
-		    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-			tmpAvanzamento
-				.setCheckPoint(AvanzamentoWs.CheckPoints.VerificaFirmeComponenti)
-				.setFase("inizio").logAvanzamento();
+                    // verifica che tutti i componenti di tipo FILE superino i controlli
+                    // crittografici
+                    if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
+                        tmpAvanzamento
+                                .setCheckPoint(AvanzamentoWs.CheckPoints.VerificaFirmeComponenti)
+                                .setFase("inizio").logAvanzamento();
 
-			versamentoSync.controllaFirmeAndHash(rispostaWs, myVersamentoMMExt);
+                        versamentoSync.controllaFirmeAndHash(rispostaWs, myVersamentoMMExt);
 
-			tmpAvanzamento.setFase("fine").logAvanzamento();
-		    }
+                        tmpAvanzamento.setFase("fine").logAvanzamento();
+                    }
 
-		    /*
-		     * salvataggio unificato di dati e sessione finta di versamento. avviene se non
-		     * ci sono errori nella signature della chiamata al WS. In tutti gli altri casi
-		     * viene invocata perché si tenta di salvare per lo meno la sessione di
-		     * versamento con gli errori. Da notare che entrambi i salvataggi possono essere
-		     * disattivati, l'uno tramite una property e l'altro tramite un tag dell'XML di
-		     * versamento.
-		     */
-		    if (rispostaWs.getErrorType() != RispostaWS.ErrorTypeEnum.WS_SIGNATURE) {
-			versamentoSync.salvaTutto(sessioneFinta, rispostaWs, myVersamentoMMExt);
-		    }
+                    /*
+                     * salvataggio unificato di dati e sessione finta di versamento. avviene se non
+                     * ci sono errori nella signature della chiamata al WS. In tutti gli altri casi
+                     * viene invocata perché si tenta di salvare per lo meno la sessione di
+                     * versamento con gli errori. Da notare che entrambi i salvataggi possono essere
+                     * disattivati, l'uno tramite una property e l'altro tramite un tag dell'XML di
+                     * versamento.
+                     */
+                    if (rispostaWs.getErrorType() != RispostaWS.ErrorTypeEnum.WS_SIGNATURE) {
+                        versamentoSync.salvaTutto(sessioneFinta, rispostaWs, myVersamentoMMExt);
+                    }
 
-		    // prepara risposta
-		    myEsito = rispostaWs.getIstanzaEsito();
+                    // prepara risposta
+                    myEsito = rispostaWs.getIstanzaEsito();
 
-		} catch (FileUploadException e1) {
-		    rispostaWs.setSeverity(SeverityEnum.ERROR);
-		    rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
-			    "Eccezione generica nella servlet versamento sync " + e1.getMessage());
-		    log.error("Eccezione nella servlet versamentoMM sync", e1);
-		} catch (Exception e1) {
-		    rispostaWs.setSeverity(SeverityEnum.ERROR);
-		    rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
-			    "Eccezione generica nella servlet versamento sync " + e1.getMessage());
-		    //
-		    SrvltHandlingException.handlingSocketErrors(
-			    Response405.NomeWebServiceRest.VERSAMENTO_MM, e1, rispostaWs);
-		    log.error("Eccezione generica nella servlet versamentoMM sync", e1);
-		} finally {
-		    if (fileItems != null) {
-			// elimina i file temporanei che compongono la request
-			tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Pulizia).setFase("")
-				.logAvanzamento();
-			tmpIterator = fileItems.iterator();
-			while (tmpIterator.hasNext()) {
-			    tmpFileItem = (DiskFileItem) tmpIterator.next();
-			    tmpFileItem.delete();
-			}
-		    }
+                } catch (FileUploadException e1) {
+                    rispostaWs.setSeverity(SeverityEnum.ERROR);
+                    rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
+                            "Eccezione generica nella servlet versamento sync " + e1.getMessage());
+                    log.error("Eccezione nella servlet versamentoMM sync", e1);
+                } catch (Exception e1) {
+                    rispostaWs.setSeverity(SeverityEnum.ERROR);
+                    rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666,
+                            "Eccezione generica nella servlet versamento sync " + e1.getMessage());
+                    //
+                    SrvltHandlingException.handlingSocketErrors(
+                            Response405.NomeWebServiceRest.VERSAMENTO_MM, e1, rispostaWs);
+                    log.error("Eccezione generica nella servlet versamentoMM sync", e1);
+                } finally {
+                    if (fileItems != null) {
+                        // elimina i file temporanei che compongono la request
+                        tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Pulizia).setFase("")
+                                .logAvanzamento();
+                        tmpIterator = fileItems.iterator();
+                        while (tmpIterator.hasNext()) {
+                            tmpFileItem = (DiskFileItem) tmpIterator.next();
+                            tmpFileItem.delete();
+                        }
+                    }
 
-		    if (myVersamentoMMExt.isContainerZip()
-			    && myVersamentoMMExt.getPathLocaleContenutoZip() != null) {
-			versamentoSync.pulisciZipTemp(rispostaWs, myVersamentoMMExt, sessioneFinta);
-		    }
-		    /*
-		     * nota, non c'è un else perché se i file non vengono estratti da uno zip ma
-		     * caricati direttamente dalle referenze indicate nel file indice, la rimozione
-		     * degli stessi deve essere a carico del chiamante.
-		     */
-		}
-	    } else {
-		rispostaWs.setSeverity(SeverityEnum.ERROR);
-		rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.WS_CHECK,
-			"La chiamata non è multipart/formdata ");
-		log.error(
-			"Errore nella servlet versamentoMM sync: la chiamata non è multipart/formdata ");
-	    }
-	}
+                    if (myVersamentoMMExt.isContainerZip()
+                            && myVersamentoMMExt.getPathLocaleContenutoZip() != null) {
+                        versamentoSync.pulisciZipTemp(rispostaWs, myVersamentoMMExt, sessioneFinta);
+                    }
+                    /*
+                     * nota, non c'è un else perché se i file non vengono estratti da uno zip ma
+                     * caricati direttamente dalle referenze indicate nel file indice, la rimozione
+                     * degli stessi deve essere a carico del chiamante.
+                     */
+                }
+            } else {
+                rispostaWs.setSeverity(SeverityEnum.ERROR);
+                rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.WS_CHECK,
+                        "La chiamata non è multipart/formdata ");
+                log.error(
+                        "Errore nella servlet versamentoMM sync: la chiamata non è multipart/formdata ");
+            }
+        }
 
-	// rispondi
-	tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.InvioRisposta).setFase("")
-		.logAvanzamento();
-	response.reset();
-	response.setStatus(HttpServletResponse.SC_OK);
-	response.setContentType("application/xml; charset=\"utf-8\"");
-	try (OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(response.getOutputStream(),
-		StandardCharsets.UTF_8);) {
+        // rispondi
+        tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.InvioRisposta).setFase("")
+                .logAvanzamento();
+        response.reset();
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/xml; charset=\"utf-8\"");
+        try (OutputStreamWriter tmpStreamWriter = new OutputStreamWriter(response.getOutputStream(),
+                StandardCharsets.UTF_8);) {
 
-	    Marshaller tmpMarshaller = xmlVersCache.getVersRespCtxforEsitoVersamento()
-		    .createMarshaller();
-	    tmpMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	    tmpMarshaller.marshal(myEsito, tmpStreamWriter);
+            Marshaller tmpMarshaller = xmlVersCache.getVersRespCtxforEsitoVersamento()
+                    .createMarshaller();
+            tmpMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            tmpMarshaller.marshal(myEsito, tmpStreamWriter);
 
-	} catch (Exception e) {
-	    log.error("Eccezione nella servlet versamentoMM sync", e);
-	}
+        } catch (Exception e) {
+            log.error("Eccezione nella servlet versamentoMM sync", e);
+        }
 
-	tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Fine).setFase("").logAvanzamento();
+        tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.Fine).setFase("").logAvanzamento();
     }
 }

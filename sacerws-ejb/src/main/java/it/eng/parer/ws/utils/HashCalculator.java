@@ -41,7 +41,7 @@ public class HashCalculator {
     private byte[] hashCalcolato = null;
 
     public byte[] getHashCalcolato() {
-	return hashCalcolato;
+        return hashCalcolato;
     }
 
     /**
@@ -56,16 +56,16 @@ public class HashCalculator {
      */
     @Deprecated
     public HashCalculator calculateHash(String str) throws NoSuchAlgorithmException, IOException {
-	try (InputStream is = IOUtils.toInputStream(str, StandardCharsets.UTF_8.name())) {
-	    return this.calculateSHA1(is);// base
-	}
+        try (InputStream is = IOUtils.toInputStream(str, StandardCharsets.UTF_8.name())) {
+            return this.calculateSHA1(is);// base
+        }
     }
 
     public HashCalculator calculateHashSHAX(String str, TipiHash tipiHash)
-	    throws NoSuchAlgorithmException, IOException {
-	try (InputStream is = IOUtils.toInputStream(str, StandardCharsets.UTF_8.name())) {
-	    return this.calculateSHAX(is, tipiHash);
-	}
+            throws NoSuchAlgorithmException, IOException {
+        try (InputStream is = IOUtils.toInputStream(str, StandardCharsets.UTF_8.name())) {
+            return this.calculateSHAX(is, tipiHash);
+        }
     }
 
     /**
@@ -80,16 +80,16 @@ public class HashCalculator {
      */
     @Deprecated
     public HashCalculator calculateHash(byte[] buf) throws NoSuchAlgorithmException, IOException {
-	try (ByteArrayInputStream bais = new ByteArrayInputStream(buf)) {
-	    return this.calculateSHA1(bais);
-	}
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(buf)) {
+            return this.calculateSHA1(bais);
+        }
     }
 
     public HashCalculator calculateHashSHAX(byte[] buf, TipiHash tipiHash)
-	    throws NoSuchAlgorithmException, IOException {
-	try (ByteArrayInputStream bais = new ByteArrayInputStream(buf)) {
-	    return this.calculateSHAX(bais, tipiHash);
-	}
+            throws NoSuchAlgorithmException, IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(buf)) {
+            return this.calculateSHAX(bais, tipiHash);
+        }
     }
 
     /**
@@ -105,8 +105,8 @@ public class HashCalculator {
      */
     @Deprecated
     private HashCalculator calculateSHA1(InputStream is)
-	    throws NoSuchAlgorithmException, IOException {
-	return calculateSHAX(is, TipiHash.SHA_1);
+            throws NoSuchAlgorithmException, IOException {
+        return calculateSHAX(is, TipiHash.SHA_1);
     }
 
     /**
@@ -122,25 +122,25 @@ public class HashCalculator {
      * @throws IOException              errore generico di tipo IO
      */
     public HashCalculator calculateSHAX(InputStream is, TipiHash tipiHash)
-	    throws NoSuchAlgorithmException, IOException {
-	MessageDigest md = MessageDigest.getInstance(tipiHash.descrivi());
-	int ch;
-	int BUFFER_SIZE = 10 * 1024 * 1024;
+            throws NoSuchAlgorithmException, IOException {
+        MessageDigest md = MessageDigest.getInstance(tipiHash.descrivi());
+        int ch;
+        int BUFFER_SIZE = 10 * 1024 * 1024;
 
-	try (DigestInputStream dis = new DigestInputStream(is, md)) {
-	    logger.debug("Provider {}, {}", md.getProvider(), md.getAlgorithm());
+        try (DigestInputStream dis = new DigestInputStream(is, md)) {
+            logger.debug("Provider {}, {}", md.getProvider(), md.getAlgorithm());
 
-	    byte[] buffer = new byte[BUFFER_SIZE];
-	    while ((ch = dis.read(buffer)) != -1) {
-		logger.trace("Letti {} bytes", ch);
-	    }
-	}
-	hashCalcolato = md.digest();
-	return this;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            while ((ch = dis.read(buffer)) != -1) {
+                logger.trace("Letti {} bytes", ch);
+            }
+        }
+        hashCalcolato = md.digest();
+        return this;
     }
 
     public String toHexBinary() {
-	return BinEncUtility.encodeUTF8HexString(hashCalcolato);
+        return BinEncUtility.encodeUTF8HexString(hashCalcolato);
     }
 
 }

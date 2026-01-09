@@ -55,46 +55,46 @@ public class DecUsoFormatoFileStandard implements Serializable {
     @Id
     @Column(name = "ID_USO_FORMATO_FILE_AMMESSO")
     @GenericGenerator(name = "SDEC_USO_FORMATO_FILE_STANDARD_ID_USO_FORMATO_FILE_AMMESSO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_USO_FORMATO_FILE_STANDARD"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_USO_FORMATO_FILE_STANDARD"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SDEC_USO_FORMATO_FILE_STANDARD_ID_USO_FORMATO_FILE_AMMESSO_GENERATOR")
     public Long getIdUsoFormatoFileAmmesso() {
-	return this.idUsoFormatoFileAmmesso;
+        return this.idUsoFormatoFileAmmesso;
     }
 
     public void setIdUsoFormatoFileAmmesso(Long idUsoFormatoFileAmmesso) {
-	this.idUsoFormatoFileAmmesso = idUsoFormatoFileAmmesso;
+        this.idUsoFormatoFileAmmesso = idUsoFormatoFileAmmesso;
     }
 
     @Column(name = "NI_ORD_USO")
     public BigDecimal getNiOrdUso() {
-	return this.niOrdUso;
+        return this.niOrdUso;
     }
 
     public void setNiOrdUso(BigDecimal niOrdUso) {
-	this.niOrdUso = niOrdUso;
+        this.niOrdUso = niOrdUso;
     }
 
     // bi-directional many-to-one association to DecFormatoFileDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_DOC")
     public DecFormatoFileDoc getDecFormatoFileDoc() {
-	return this.decFormatoFileDoc;
+        return this.decFormatoFileDoc;
     }
 
     public void setDecFormatoFileDoc(DecFormatoFileDoc decFormatoFileDoc) {
-	this.decFormatoFileDoc = decFormatoFileDoc;
+        this.decFormatoFileDoc = decFormatoFileDoc;
     }
 
     // bi-directional many-to-one association to DecFormatoFileStandard
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FORMATO_FILE_STANDARD")
     public DecFormatoFileStandard getDecFormatoFileStandard() {
-	return this.decFormatoFileStandard;
+        return this.decFormatoFileStandard;
     }
 
     public void setDecFormatoFileStandard(DecFormatoFileStandard decFormatoFileStandard) {
-	this.decFormatoFileStandard = decFormatoFileStandard;
+        this.decFormatoFileStandard = decFormatoFileStandard;
     }
 
 }

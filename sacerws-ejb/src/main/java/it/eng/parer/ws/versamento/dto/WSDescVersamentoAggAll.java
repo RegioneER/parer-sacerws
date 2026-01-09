@@ -27,12 +27,12 @@ public class WSDescVersamentoAggAll implements IWSDesc {
 
     @Override
     public String getVersione() {
-	return Costanti.WS_AGGIUNTA_VRSN;
+        return Costanti.WS_AGGIUNTA_VRSN;
     }
 
     @Override
     public String getNomeWs() {
-	return Costanti.WS_AGGIUNTA_DOC_NOME;
+        return Costanti.WS_AGGIUNTA_DOC_NOME;
     }
 
     // @Override

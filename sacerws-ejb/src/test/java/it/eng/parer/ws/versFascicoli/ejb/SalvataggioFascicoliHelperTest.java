@@ -44,15 +44,15 @@ import it.eng.parer.ws.xml.versfascicolo.IntestazioneType;
 public class SalvataggioFascicoliHelperTest {
     @Deployment
     public static Archive<?> createTestArchive() {
-	JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(Collections.emptyList(),
-		SalvataggioFascicoliHelper.class, SalvataggioFascicoliHelperTest.class,
-		XmlFascCache.class, AppServerInstance.class, LogSessioneFascicoliHelper.class,
-		LogSessioneFascicoliHelperTest.class, XmlFascCache.class, ControlliSemantici.class,
-		MessaggiWSCache.class);
-	sacerWSJavaArchive.addPackages(true, "org.apache.commons.io",
-		"it.eng.parer.ws.xml.versfascicolo", "it.eng.parer.ws.versFascicoli.dto");
-	return createEnterpriseArchive("SalvataggioFascicoliHelperTest", sacerWSJavaArchive,
-		createSacerLogJavaArchive());
+        JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(Collections.emptyList(),
+                SalvataggioFascicoliHelper.class, SalvataggioFascicoliHelperTest.class,
+                XmlFascCache.class, AppServerInstance.class, LogSessioneFascicoliHelper.class,
+                LogSessioneFascicoliHelperTest.class, XmlFascCache.class, ControlliSemantici.class,
+                MessaggiWSCache.class);
+        sacerWSJavaArchive.addPackages(true, "org.apache.commons.io",
+                "it.eng.parer.ws.xml.versfascicolo", "it.eng.parer.ws.versFascicoli.dto");
+        return createEnterpriseArchive("SalvataggioFascicoliHelperTest", sacerWSJavaArchive,
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -60,19 +60,19 @@ public class SalvataggioFascicoliHelperTest {
 
     @Test
     void salvaWarningAATipoFascicolo_queryIsOk() {
-	VersFascicoloExt versamento = mockVersFascicoloExt();
-	final RispostaControlli rispostaControlli = helper.salvaWarningAATipoFascicolo(versamento);
-	assertTrue(rispostaControlli.isrBoolean());
+        VersFascicoloExt versamento = mockVersFascicoloExt();
+        final RispostaControlli rispostaControlli = helper.salvaWarningAATipoFascicolo(versamento);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     private VersFascicoloExt mockVersFascicoloExt() {
-	VersFascicoloExt versamento = new VersFascicoloExt();
-	versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
-	versamento.getStrutturaComponenti().setConfigNumFasc(new ConfigNumFasc(230L));
-	versamento.setVersamento(new IndiceSIPFascicolo());
-	versamento.getVersamento().setIntestazione(new IntestazioneType());
-	versamento.getVersamento().getIntestazione().setChiave(new ChiaveType());
-	versamento.getVersamento().getIntestazione().getChiave().setAnno(2018);
-	return versamento;
+        VersFascicoloExt versamento = new VersFascicoloExt();
+        versamento.setStrutturaComponenti(new StrutturaVersFascicolo());
+        versamento.getStrutturaComponenti().setConfigNumFasc(new ConfigNumFasc(230L));
+        versamento.setVersamento(new IndiceSIPFascicolo());
+        versamento.getVersamento().setIntestazione(new IntestazioneType());
+        versamento.getVersamento().getIntestazione().setChiave(new ChiaveType());
+        versamento.getVersamento().getIntestazione().getChiave().setAnno(2018);
+        return versamento;
     }
 }

@@ -36,40 +36,40 @@ public class SalvataggioUpdVersamentoIniHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
-		Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
-			"it.eng.parer.ws.versamentoUpd.ext", "it.eng.parer.ws.xml.versUpdReq",
-			"it.eng.parer.ws.xml.versUpdResp", "it.eng.parer.ws.xml.versReq",
-			"it.eng.parer.ws.xml.versReqMultiMedia", "it.eng.parer.ws.xml.versResp"),
-		SalvataggioUpdVersamentoIniHelper.class,
-		SalvataggioUpdVersamentoIniHelperTest.class,
-		it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoBaseHelper.class,
-		it.eng.parer.ws.ejb.XmlUpdVersCache.class, it.eng.parer.ws.ejb.XmlVersCache.class,
-		it.eng.parer.util.ejb.AppServerInstance.class,
-		it.eng.parer.ws.versamentoUpd.ejb.help.LogSessioneUpdVersamentoHelper.class,
-		it.eng.parer.ws.ejb.ControlliSemantici.class,
-		it.eng.parer.util.ejb.help.ConfigurationHelper.class,
-		it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
-		it.eng.parer.util.DateUtilsConverter.class,
-		it.eng.parer.ws.xml.versReqMultiMedia.IndiceMM.class)
-		.addAsResource(
-			LogSessioneSyncTest.class.getClassLoader()
-				.getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
-			"/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5.xsd")
-		.addAsResource(
-			LogSessioneSyncTest.class.getClassLoader()
-				.getResource("WSResponseAggiornamentoVersamento_1.5.xsd"),
-			"it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd")
-		.addAsResource(
-			LogSessioneSyncTest.class.getClassLoader()
-				.getResource("WSRequestVersamento.xsd"),
-			"/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
-		.addAsResource(
-			LogSessioneSyncTest.class.getClassLoader()
-				.getResource("WSResponseVersamento.xsd"),
-			"/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd");
-	return createEnterpriseArchive(SalvataggioUpdVersamentoIniHelperTest.class.getSimpleName(),
-		sacerWSJavaArchive, createSacerLogJavaArchive());
+        final JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(
+                Arrays.asList("it.eng.parer.ws.versamentoUpd.ext",
+                        "it.eng.parer.ws.versamentoUpd.ext", "it.eng.parer.ws.xml.versUpdReq",
+                        "it.eng.parer.ws.xml.versUpdResp", "it.eng.parer.ws.xml.versReq",
+                        "it.eng.parer.ws.xml.versReqMultiMedia", "it.eng.parer.ws.xml.versResp"),
+                SalvataggioUpdVersamentoIniHelper.class,
+                SalvataggioUpdVersamentoIniHelperTest.class,
+                it.eng.parer.ws.versamentoUpd.ejb.help.SalvataggioUpdVersamentoBaseHelper.class,
+                it.eng.parer.ws.ejb.XmlUpdVersCache.class, it.eng.parer.ws.ejb.XmlVersCache.class,
+                it.eng.parer.util.ejb.AppServerInstance.class,
+                it.eng.parer.ws.versamentoUpd.ejb.help.LogSessioneUpdVersamentoHelper.class,
+                it.eng.parer.ws.ejb.ControlliSemantici.class,
+                it.eng.parer.util.ejb.help.ConfigurationHelper.class,
+                it.eng.parerxml.xsd.FileXSD.class, it.eng.parerxml.xsd.FileXSDUtil.class,
+                it.eng.parer.util.DateUtilsConverter.class,
+                it.eng.parer.ws.xml.versReqMultiMedia.IndiceMM.class)
+                .addAsResource(
+                        LogSessioneSyncTest.class.getClassLoader()
+                                .getResource("WSRequestAggiornamentoVersamento_1.5.xsd"),
+                        "/it/eng/parer/ws/xml/versAggiornamentoReq/WSRequestAggiornamentoVersamento_1.5.xsd")
+                .addAsResource(
+                        LogSessioneSyncTest.class.getClassLoader()
+                                .getResource("WSResponseAggiornamentoVersamento_1.5.xsd"),
+                        "it/eng/parer/ws/xml/versAggiornamentoResp/WSResponseAggiornamentoVersamento_1.5.xsd")
+                .addAsResource(
+                        LogSessioneSyncTest.class.getClassLoader()
+                                .getResource("WSRequestVersamento.xsd"),
+                        "/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
+                .addAsResource(
+                        LogSessioneSyncTest.class.getClassLoader()
+                                .getResource("WSResponseVersamento.xsd"),
+                        "/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd");
+        return createEnterpriseArchive(SalvataggioUpdVersamentoIniHelperTest.class.getSimpleName(),
+                sacerWSJavaArchive, createSacerLogJavaArchive());
     }
 
     @EJB
@@ -77,19 +77,19 @@ public class SalvataggioUpdVersamentoIniHelperTest {
 
     @Test
     public void getAroVersIniUnitaDoc() {
-	final RispostaControlli rispostaControlli = helper.getAroVersIniUnitaDoc(0L);
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper.getAroVersIniUnitaDoc(0L);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void getAroVersIniDoc() {
-	final RispostaControlli rispostaControlli = helper.getAroVersIniDoc(0L, 0L);
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper.getAroVersIniDoc(0L, 0L);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 
     @Test
     public void getAroVersIniComp() {
-	final RispostaControlli rispostaControlli = helper.getAroVersIniComp(0L, 0L);
-	assertTrue(rispostaControlli.isrBoolean());
+        final RispostaControlli rispostaControlli = helper.getAroVersIniComp(0L, 0L);
+        assertTrue(rispostaControlli.isrBoolean());
     }
 }

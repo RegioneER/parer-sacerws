@@ -70,152 +70,152 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
 
     @Override
     public VerificaFirmaWrapper invokeVerifica(InvokeVerificaRule rule, InvokeVerificaInput in,
-	    AbsVersamentoExt versamento) throws VerificaFirmaException {
+            AbsVersamentoExt versamento) throws VerificaFirmaException {
 
-	/**
-	 * SCENARIO DEFAULT
-	 *
-	 * eseguiVerificaFirma = SI
-	 *
-	 * PRIORITARIO = EIDAS -> SE IGNOTO = CRYPTO
-	 *
-	 * SCENARIO SOLO CRYPTO
-	 *
-	 * eseguiVerificaFirmaSoloCrypto = SI eseguiVerificaFirma = NO
-	 *
-	 * SCENARI "PARTICOLARI" (= CRYPTO)
-	 *
-	 * detached con sottocomponente FIRMA e MARCA o sottocomponente MARCA (marca temporale
-	 * TSD/TSR), multi sottocomponenti FIRMA (>1)
-	 *
-	 */
-	// solo crypto
-	if (rule.isEseguiVerificaFirmaOnlyCrypto() || rule.isHasMultipleFirmaDetached()
-		|| rule.isHasFirmaAndMarcaDetached() || rule.isHasMarcaDetached()) {
-	    //
-	    return invokeCrypto(in, versamento);
-	} else /* tutti gli altri casi */ {
-	    /*
-	     * Scenari:
-	     *
-	     * 1) EIDAS riesce ad effettuare la verifica sul file
-	     *
-	     * 2) EIDAS non riesce ad effettaure la verifica sul file nei seguenti casi: a) gli
-	     * endpoint configurati non rispondono
-	     *
-	     * b) l'endpoint restituisce errore
-	     *
-	     * c) la risposta dell'endpoint non è completa
-	     *
-	     * Nei casi sopra descritti si tenta di effettuare la validazione su crypto se anche
-	     * questa va male verrà restituito un esito negativo con codice FIRMA_006_001
-	     */
-	    VerificaFirmaWrapper wrapper = invokeEidas(in, versamento);
-	    // firme individuate (altrimenti tenta su crypto)
-	    if (wrapper != null && BooleanUtils.isTrue(wrapper.isSignsDetected())) {
-		return wrapper;
-	    } else {
-		return invokeCrypto(in, versamento);
-	    }
-	}
+        /**
+         * SCENARIO DEFAULT
+         *
+         * eseguiVerificaFirma = SI
+         *
+         * PRIORITARIO = EIDAS -> SE IGNOTO = CRYPTO
+         *
+         * SCENARIO SOLO CRYPTO
+         *
+         * eseguiVerificaFirmaSoloCrypto = SI eseguiVerificaFirma = NO
+         *
+         * SCENARI "PARTICOLARI" (= CRYPTO)
+         *
+         * detached con sottocomponente FIRMA e MARCA o sottocomponente MARCA (marca temporale
+         * TSD/TSR), multi sottocomponenti FIRMA (>1)
+         *
+         */
+        // solo crypto
+        if (rule.isEseguiVerificaFirmaOnlyCrypto() || rule.isHasMultipleFirmaDetached()
+                || rule.isHasFirmaAndMarcaDetached() || rule.isHasMarcaDetached()) {
+            //
+            return invokeCrypto(in, versamento);
+        } else /* tutti gli altri casi */ {
+            /*
+             * Scenari:
+             *
+             * 1) EIDAS riesce ad effettuare la verifica sul file
+             *
+             * 2) EIDAS non riesce ad effettaure la verifica sul file nei seguenti casi: a) gli
+             * endpoint configurati non rispondono
+             *
+             * b) l'endpoint restituisce errore
+             *
+             * c) la risposta dell'endpoint non è completa
+             *
+             * Nei casi sopra descritti si tenta di effettuare la validazione su crypto se anche
+             * questa va male verrà restituito un esito negativo con codice FIRMA_006_001
+             */
+            VerificaFirmaWrapper wrapper = invokeEidas(in, versamento);
+            // firme individuate (altrimenti tenta su crypto)
+            if (wrapper != null && BooleanUtils.isTrue(wrapper.isSignsDetected())) {
+                return wrapper;
+            } else {
+                return invokeCrypto(in, versamento);
+            }
+        }
     }
 
     private VerificaFirmaWrapper invokeEidas(InvokeVerificaInput in, AbsVersamentoExt versamento) {
-	VerificaFirmaWrapper wrapper = null;
-	try {
-	    wrapper = eidasInvoker.verificaAndWrapIt(in.getComponenteVers(),
-		    in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
-		    in.getAbilitazioni(), in.getDataDiRiferimento(), Boolean.FALSE/* default */,
-		    in.getUuid(), versamento);
-	} catch (VerificaFirmaConnectionException ex) {
-	    /* Errore su invocazione (GRAVE) */
-	    LOG.warn("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
-	    /* Si passa ad invocazione CRYPTO..... */
-	} catch (VerificaFirmaGenericInvokeException epex) {
-	    /* Errore restituito da endpoint (gestito) */
-	    LOG.debug("Risposta con errore restituito da verifica firma {}", epex.getCdService(),
-		    epex);
-	    /* Si passa ad invocazione CRYPTO..... */
-	} catch (VerificaFirmaWrapperResNotFoundException
-		| VerificaFirmaWrapperGenericException wrapex) {
-	    /* Errore restituito da endpoint o su wrapping della risposta */
-	    LOG.warn("Errore generico", wrapex);
-	    /* Si passa ad invocazione CRYPTO..... */
-	}
-	return wrapper;
+        VerificaFirmaWrapper wrapper = null;
+        try {
+            wrapper = eidasInvoker.verificaAndWrapIt(in.getComponenteVers(),
+                    in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
+                    in.getAbilitazioni(), in.getDataDiRiferimento(), Boolean.FALSE/* default */,
+                    in.getUuid(), versamento);
+        } catch (VerificaFirmaConnectionException ex) {
+            /* Errore su invocazione (GRAVE) */
+            LOG.warn("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
+            /* Si passa ad invocazione CRYPTO..... */
+        } catch (VerificaFirmaGenericInvokeException epex) {
+            /* Errore restituito da endpoint (gestito) */
+            LOG.debug("Risposta con errore restituito da verifica firma {}", epex.getCdService(),
+                    epex);
+            /* Si passa ad invocazione CRYPTO..... */
+        } catch (VerificaFirmaWrapperResNotFoundException
+                | VerificaFirmaWrapperGenericException wrapex) {
+            /* Errore restituito da endpoint o su wrapping della risposta */
+            LOG.warn("Errore generico", wrapex);
+            /* Si passa ad invocazione CRYPTO..... */
+        }
+        return wrapper;
     }
 
     private VerificaFirmaWrapper invokeCrypto(InvokeVerificaInput in, AbsVersamentoExt versamento)
-	    throws VerificaFirmaException {
-	try {
-	    return cryptoInvoker.verificaAndWrapIt(in.getComponenteVers(),
-		    in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
-		    in.getAbilitazioni(), in.getDataDiRiferimento(), in.isVerificaAllaDataDiFirma(),
-		    in.getUuid(), versamento);
-	} catch (VerificaFirmaGenericInvokeException | VerificaFirmaWrapperResNotFoundException
-		| VerificaFirmaWrapperGenericException cpex) {
-	    /* Errore restituito da endpoint o su wrapping della risposta */
-	    // tutte le verifiche sono fallite, esco!
-	    throw new VerificaFirmaException(MessaggiWSBundle.FIRMA_006_002,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.FIRMA_006_002,
-			    in.getComponenteVers().getChiaveComp()),
-		    cpex);
-	} catch (VerificaFirmaConnectionException ex) {
-	    /* GRAVE : Endpoint non raggiunto (chiamata fallita) */
-	    // tutte le verifiche sono fallite, esco!
-	    throw new VerificaFirmaException(MessaggiWSBundle.FIRMA_006_001,
-		    MessaggiWSBundle.getString(MessaggiWSBundle.FIRMA_006_001, ex.getCdService()),
-		    ex);
-	}
+            throws VerificaFirmaException {
+        try {
+            return cryptoInvoker.verificaAndWrapIt(in.getComponenteVers(),
+                    in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
+                    in.getAbilitazioni(), in.getDataDiRiferimento(), in.isVerificaAllaDataDiFirma(),
+                    in.getUuid(), versamento);
+        } catch (VerificaFirmaGenericInvokeException | VerificaFirmaWrapperResNotFoundException
+                | VerificaFirmaWrapperGenericException cpex) {
+            /* Errore restituito da endpoint o su wrapping della risposta */
+            // tutte le verifiche sono fallite, esco!
+            throw new VerificaFirmaException(MessaggiWSBundle.FIRMA_006_002,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.FIRMA_006_002,
+                            in.getComponenteVers().getChiaveComp()),
+                    cpex);
+        } catch (VerificaFirmaConnectionException ex) {
+            /* GRAVE : Endpoint non raggiunto (chiamata fallita) */
+            // tutte le verifiche sono fallite, esco!
+            throw new VerificaFirmaException(MessaggiWSBundle.FIRMA_006_001,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.FIRMA_006_001, ex.getCdService()),
+                    ex);
+        }
     }
 
     @Override
     public void buildAdditionalInfoOnVFWrapper(VerificaFirmaWrapper wrapper)
-	    throws VerificaFirmaException {
+            throws VerificaFirmaException {
 
-	// wrapper
-	addAdditionalInfoOnWrapper(wrapper);
+        // wrapper
+        addAdditionalInfoOnWrapper(wrapper);
 
-	// forEach busta
-	for (VFBusta busta : wrapper.getVFBusta()) {
-	    busta.setAdditionalInfo(new VFAdditionalInfoBustaType());
-	    // FIRMA
-	    for (VFFirmaCompType firmaCompType : busta.getFirmaComps()) {
+        // forEach busta
+        for (VFBusta busta : wrapper.getVFBusta()) {
+            busta.setAdditionalInfo(new VFAdditionalInfoBustaType());
+            // FIRMA
+            for (VFFirmaCompType firmaCompType : busta.getFirmaComps()) {
 
-		// all additional info needed
-		addAdditionalInfoOnVFirma(firmaCompType);
+                // all additional info needed
+                addAdditionalInfoOnVFirma(firmaCompType);
 
-		// contro firma
-		for (VFFirmaCompType controFirmaCompType : firmaCompType
-			.getControfirmaFirmaFiglios()) {
-		    // all additional info needed
-		    addAdditionalInfoOnVFirma(controFirmaCompType);
-		}
-	    }
+                // contro firma
+                for (VFFirmaCompType controFirmaCompType : firmaCompType
+                        .getControfirmaFirmaFiglios()) {
+                    // all additional info needed
+                    addAdditionalInfoOnVFirma(controFirmaCompType);
+                }
+            }
 
-	    // MARCA
-	    for (VFMarcaCompType marcaCompType : busta.getMarcaComps()) {
-		// CA
-		VFCertifCaType certifTsa = marcaCompType.getCertifTsa();
-		builAdditionalInfoCa(certifTsa);
-		// CRL
-		VFCrlType crlTsa = marcaCompType.getCrlTsa();
-		buildAdditionalInfoCrl(crlTsa);
-		// OCSP
-		VFOcspType ocspTsa = marcaCompType.getOcspTsa();
-		buildAdditionalInfoOcsp(ocspTsa);
-	    }
-	}
+            // MARCA
+            for (VFMarcaCompType marcaCompType : busta.getMarcaComps()) {
+                // CA
+                VFCertifCaType certifTsa = marcaCompType.getCertifTsa();
+                builAdditionalInfoCa(certifTsa);
+                // CRL
+                VFCrlType crlTsa = marcaCompType.getCrlTsa();
+                buildAdditionalInfoCrl(crlTsa);
+                // OCSP
+                VFOcspType ocspTsa = marcaCompType.getOcspTsa();
+                buildAdditionalInfoOcsp(ocspTsa);
+            }
+        }
 
     }
 
     private void addAdditionalInfoOnWrapper(VerificaFirmaWrapper wrapper)
-	    throws VerificaFirmaException {
-	DecServizioVerificaCompDoc servizioVerificaCompDoc = controlliPerFirme
-		.getDecServizioVerificaCompDoc(wrapper.getAdditionalInfo().getServiceCode(),
-			wrapper.getLibraryVersion());
-	wrapper.getAdditionalInfo()
-		.setIdServizioFirmaCompDoc(servizioVerificaCompDoc.getIdServizioVerificaCompDoc());
+            throws VerificaFirmaException {
+        DecServizioVerificaCompDoc servizioVerificaCompDoc = controlliPerFirme
+                .getDecServizioVerificaCompDoc(wrapper.getAdditionalInfo().getServiceCode(),
+                        wrapper.getLibraryVersion());
+        wrapper.getAdditionalInfo()
+                .setIdServizioFirmaCompDoc(servizioVerificaCompDoc.getIdServizioVerificaCompDoc());
     }
 
     /**
@@ -224,129 +224,129 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
      * @throws VerificaFirmaException
      */
     private void addAdditionalInfoOnVFirma(VFFirmaCompType firmaCompType)
-	    throws VerificaFirmaException {
-	if (firmaCompType.getMarcaComps() != null) {
-	    for (VFMarcaCompType marcaCompType : firmaCompType.getMarcaComps()) {
-		// CA
-		VFCertifCaType certifTsa = marcaCompType.getCertifTsa();
-		builAdditionalInfoCa(certifTsa);
-		// CRL
-		VFCrlType crlTsa = marcaCompType.getCrlTsa();
-		buildAdditionalInfoCrl(crlTsa);
-		// OCSP
-		VFOcspType ocspTsa = marcaCompType.getOcspTsa();
-		buildAdditionalInfoOcsp(ocspTsa);
-	    }
-	}
-	// CA
-	VFCertifCaType certifCa = firmaCompType.getCertifCa();
-	builAdditionalInfoCa(certifCa);
-	// CRL CA
-	VFCrlType crlCa = firmaCompType.getCrlCertifCa();
-	buildAdditionalInfoCrl(crlCa);
-	// CRL
-	VFCrlType crl = firmaCompType.getCrl();
-	buildAdditionalInfoCrl(crl);
-	// OCSP CA
-	VFOcspType ocspTsa = firmaCompType.getOcspCertifCa();
-	buildAdditionalInfoOcsp(ocspTsa);
-	// OCSP
-	VFOcspType ocsp = firmaCompType.getOcsp();
-	buildAdditionalInfoOcsp(ocsp);
+            throws VerificaFirmaException {
+        if (firmaCompType.getMarcaComps() != null) {
+            for (VFMarcaCompType marcaCompType : firmaCompType.getMarcaComps()) {
+                // CA
+                VFCertifCaType certifTsa = marcaCompType.getCertifTsa();
+                builAdditionalInfoCa(certifTsa);
+                // CRL
+                VFCrlType crlTsa = marcaCompType.getCrlTsa();
+                buildAdditionalInfoCrl(crlTsa);
+                // OCSP
+                VFOcspType ocspTsa = marcaCompType.getOcspTsa();
+                buildAdditionalInfoOcsp(ocspTsa);
+            }
+        }
+        // CA
+        VFCertifCaType certifCa = firmaCompType.getCertifCa();
+        builAdditionalInfoCa(certifCa);
+        // CRL CA
+        VFCrlType crlCa = firmaCompType.getCrlCertifCa();
+        buildAdditionalInfoCrl(crlCa);
+        // CRL
+        VFCrlType crl = firmaCompType.getCrl();
+        buildAdditionalInfoCrl(crl);
+        // OCSP CA
+        VFOcspType ocspTsa = firmaCompType.getOcspCertifCa();
+        buildAdditionalInfoOcsp(ocspTsa);
+        // OCSP
+        VFOcspType ocsp = firmaCompType.getOcsp();
+        buildAdditionalInfoOcsp(ocsp);
 
-	// FIRMATARIO
-	VFCertifFirmatarioType certifFirmatarioType = firmaCompType.getCertifFirmatario();
-	buildAdditionalInfoFirmatario(certifFirmatarioType, certifCa);
+        // FIRMATARIO
+        VFCertifFirmatarioType certifFirmatarioType = firmaCompType.getCertifFirmatario();
+        buildAdditionalInfoFirmatario(certifFirmatarioType, certifCa);
     }
 
     private void builAdditionalInfoCa(VFCertifCaType ca) throws VerificaFirmaException {
-	if (ca != null) {
-	    FirCertifCa firCertifCa = getFirCertifCa(ca);
+        if (ca != null) {
+            FirCertifCa firCertifCa = getFirCertifCa(ca);
 
-	    if (firCertifCa != null) {
-		ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
-		ca.getAdditionalInfo()
-			.setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
-	    }
-	}
+            if (firCertifCa != null) {
+                ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
+                ca.getAdditionalInfo()
+                        .setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
+            }
+        }
     }
 
     private FirCertifCa getFirCertifCa(VFCertifCaType ca) throws VerificaFirmaException {
-	FirCertifCa firCertifCa = null;
-	if (ca != null) {
-	    firCertifCa = controlliPerFirme.getFirCertifCa(ca.getDsSerialCertifCa(),
-		    ca.getDlDnIssuerCertifCa());
-	}
-	return firCertifCa;
+        FirCertifCa firCertifCa = null;
+        if (ca != null) {
+            firCertifCa = controlliPerFirme.getFirCertifCa(ca.getDsSerialCertifCa(),
+                    ca.getDlDnIssuerCertifCa());
+        }
+        return firCertifCa;
     }
 
     private void buildAdditionalInfoFirmatario(VFCertifFirmatarioType certifFirmatarioType,
-	    VFCertifCaType certifCa) throws VerificaFirmaException {
-	if (certifFirmatarioType != null) {
-	    FirCertifCa firCertifCa = getFirCertifCa(certifCa);
+            VFCertifCaType certifCa) throws VerificaFirmaException {
+        if (certifFirmatarioType != null) {
+            FirCertifCa firCertifCa = getFirCertifCa(certifCa);
 
-	    if (firCertifCa != null) {
-		FirCertifFirmatario firCertifFirmatario = controlliPerFirme.getFirCertifFirmatario(
-			firCertifCa, certifFirmatarioType.getDsSerialCertifFirmatario());
-		if (firCertifFirmatario != null) {
-		    certifFirmatarioType
-			    .setAdditionalInfo(new VFAdditionalInfoCertifFirmatarioType());
+            if (firCertifCa != null) {
+                FirCertifFirmatario firCertifFirmatario = controlliPerFirme.getFirCertifFirmatario(
+                        firCertifCa, certifFirmatarioType.getDsSerialCertifFirmatario());
+                if (firCertifFirmatario != null) {
+                    certifFirmatarioType
+                            .setAdditionalInfo(new VFAdditionalInfoCertifFirmatarioType());
 
-		    certifFirmatarioType.getAdditionalInfo().setIdCertifFirmatario(
-			    BigInteger.valueOf(firCertifFirmatario.getIdCertifFirmatario()));
-		}
-	    }
-	}
+                    certifFirmatarioType.getAdditionalInfo().setIdCertifFirmatario(
+                            BigInteger.valueOf(firCertifFirmatario.getIdCertifFirmatario()));
+                }
+            }
+        }
     }
 
     private void buildAdditionalInfoCrl(VFCrlType crl) throws VerificaFirmaException {
-	if (crl != null) {
-	    VFCertifCaType ca = crl.getCertifCa();
-	    FirCertifCa firCertifCa = getFirCertifCa(ca);
+        if (crl != null) {
+            VFCertifCaType ca = crl.getCertifCa();
+            FirCertifCa firCertifCa = getFirCertifCa(ca);
 
-	    if (firCertifCa != null) {
-		ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
-		ca.getAdditionalInfo()
-			.setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
+            if (firCertifCa != null) {
+                ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
+                ca.getAdditionalInfo()
+                        .setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
 
-		FirCrl firCrl = controlliPerFirme.getFirCrl(firCertifCa, crl.getDsSerialCrl(),
-			XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtIniCrl()),
-			XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtScadCrl()));
-		if (firCrl != null) {
-		    crl.setAdditionalInfo(new VFAdditionalInfoCrlType());
-		    crl.getAdditionalInfo().setIdCrl(BigInteger.valueOf(firCrl.getIdCrl()));
-		}
+                FirCrl firCrl = controlliPerFirme.getFirCrl(firCertifCa, crl.getDsSerialCrl(),
+                        XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtIniCrl()),
+                        XmlDateUtility.xmlGregorianCalendarToDate(crl.getDtScadCrl()));
+                if (firCrl != null) {
+                    crl.setAdditionalInfo(new VFAdditionalInfoCrlType());
+                    crl.getAdditionalInfo().setIdCrl(BigInteger.valueOf(firCrl.getIdCrl()));
+                }
 
-	    }
-	}
+            }
+        }
     }
 
     private void buildAdditionalInfoOcsp(VFOcspType ocsp) throws VerificaFirmaException {
-	if (ocsp != null) {
-	    VFCertifCaType ca = ocsp.getCertifOcsp().getCertifCa();
-	    FirCertifCa firCertifCa = getFirCertifCa(ca);
+        if (ocsp != null) {
+            VFCertifCaType ca = ocsp.getCertifOcsp().getCertifCa();
+            FirCertifCa firCertifCa = getFirCertifCa(ca);
 
-	    if (firCertifCa != null) {
-		ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
-		ca.getAdditionalInfo()
-			.setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
+            if (firCertifCa != null) {
+                ca.setAdditionalInfo(new VFAdditionalInfoCertifCaType());
+                ca.getAdditionalInfo()
+                        .setIdCertifCa(BigInteger.valueOf(firCertifCa.getIdCertifCa()));
 
-		FirCertifOcsp firCertifOcsp = controlliPerFirme.getFirCertifOcsp(firCertifCa,
-			ocsp.getCertifOcsp().getDsSerialCertifOcsp());
-		if (firCertifOcsp != null) {
-		    ocsp.getCertifOcsp().setAdditionalInfo(new VFAdditionalInfoCertifOcspType());
-		    ocsp.getCertifOcsp().getAdditionalInfo()
-			    .setIdCertifOcsp(BigInteger.valueOf(firCertifOcsp.getIdCertifOcsp()));
-		}
+                FirCertifOcsp firCertifOcsp = controlliPerFirme.getFirCertifOcsp(firCertifCa,
+                        ocsp.getCertifOcsp().getDsSerialCertifOcsp());
+                if (firCertifOcsp != null) {
+                    ocsp.getCertifOcsp().setAdditionalInfo(new VFAdditionalInfoCertifOcspType());
+                    ocsp.getCertifOcsp().getAdditionalInfo()
+                            .setIdCertifOcsp(BigInteger.valueOf(firCertifOcsp.getIdCertifOcsp()));
+                }
 
-		FirOcsp firOcsp = controlliPerFirme.getFirOcsp(firCertifOcsp,
-			ocsp.getDsCertifIssuername(), ocsp.getDsCertifSerialBase64(),
-			ocsp.getDsCertifSkiBase64());
-		if (firOcsp != null) {
-		    ocsp.setAdditionalInfo(new VFAdditionalInfoOcspType());
-		    ocsp.getAdditionalInfo().setIdOcsp(BigInteger.valueOf(firOcsp.getIdOcsp()));
-		}
-	    }
-	}
+                FirOcsp firOcsp = controlliPerFirme.getFirOcsp(firCertifOcsp,
+                        ocsp.getDsCertifIssuername(), ocsp.getDsCertifSerialBase64(),
+                        ocsp.getDsCertifSkiBase64());
+                if (firOcsp != null) {
+                    ocsp.setAdditionalInfo(new VFAdditionalInfoOcspType());
+                    ocsp.getAdditionalInfo().setIdOcsp(BigInteger.valueOf(firOcsp.getIdOcsp()));
+                }
+            }
+        }
     }
 }

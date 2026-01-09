@@ -33,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecControlloWs;
-import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
-import it.eng.parer.exception.SacerWsRuntimeException;
 
 @SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliWSHelper")
@@ -48,44 +46,34 @@ public class ControlliWSHelper {
     private EntityManager entityManager;
 
     public List<DecControlloWs> caricaListaControlli() {
-	String qlString = "SELECT e FROM DecControlloWs e ";
-	Query query = entityManager.createQuery(qlString);
+        String qlString = "SELECT e FROM DecControlloWs e ";
+        Query query = entityManager.createQuery(qlString);
 
-	return query.getResultList();
+        return query.getResultList();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public DecControlloWs caricaCdControlloWs(String cdControlloWs) {
-	DecControlloWs tmperr = null;
+        DecControlloWs tmperr = null;
 
-	try {
-	    Query query = entityManager.createNamedQuery("DecControlloWs.findByCdControlloWs",
-		    DecControlloWs.class);
-	    query.setParameter("cdControlloWs", cdControlloWs);
-	    tmperr = (DecControlloWs) query.getSingleResult();
-	} catch (RuntimeException ex) {
-	    throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
-	}
+        Query query = entityManager.createNamedQuery("DecControlloWs.findByCdControlloWs",
+                DecControlloWs.class);
+        query.setParameter("cdControlloWs", cdControlloWs);
+        tmperr = (DecControlloWs) query.getSingleResult();
 
-	return tmperr;
+        return tmperr;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<DecControlloWs> caricaCdControlloFamiglia(String cdFamigliaControllo) {
-	List<DecControlloWs> tmperr = null;
+        List<DecControlloWs> tmperr = null;
 
-	try {
-	    Query query = entityManager.createNamedQuery("DecControlloWs.findByCdFamigliaControllo",
-		    DecControlloWs.class);
-	    query.setParameter("cdFamigliaControllo", cdFamigliaControllo);
-	    tmperr = query.getResultList();
-	} catch (RuntimeException ex) {
-	    // log.fatal("ControlliWSHelper.caricaControlloFamiglia fallita! ", ex);
-	    log.error("ControlliWSHelper.caricaControlloFamiglia fallita! ", ex);
-	    throw ex;
-	}
+        Query query = entityManager.createNamedQuery("DecControlloWs.findByCdFamigliaControllo",
+                DecControlloWs.class);
+        query.setParameter("cdFamigliaControllo", cdFamigliaControllo);
+        tmperr = query.getResultList();
 
-	return tmperr;
+        return tmperr;
     }
 
 }

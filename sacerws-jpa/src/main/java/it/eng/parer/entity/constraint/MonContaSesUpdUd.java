@@ -32,7 +32,7 @@ public final class MonContaSesUpdUd {
      * ti_stato_udp_ud_ IN ('IN_ATTESA_SCHED', 'NON_SELEZ_SCHED', 'TOTALE')
      */
     public enum TiStatoUdpUdMonContaSesUpdUd {
-	IN_ATTESA_SCHED, NON_SELEZ_SCHED, TOTALE
+        IN_ATTESA_SCHED, NON_SELEZ_SCHED, TOTALE
     }
 
 }

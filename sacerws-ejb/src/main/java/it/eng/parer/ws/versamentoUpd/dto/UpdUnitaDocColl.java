@@ -47,21 +47,21 @@ public class UpdUnitaDocColl extends UnitaDocColl {
 
     //
     public void aggiungiDescrizioneUnivoca(String descrizione) {
-	descrizioni.add(descrizione);
+        descrizioni.add(descrizione);
     }
 
     public String generaDescrizione() {
-	// la descrizione del collegamento è la somma delle descrizioni uniche
-	// di tutti i riferimenti alla UD oggetto del collegamento.
-	return StringUtils.join(descrizioni.toArray(), "-");
+        // la descrizione del collegamento è la somma delle descrizioni uniche
+        // di tutti i riferimenti alla UD oggetto del collegamento.
+        return StringUtils.join(descrizioni.toArray(), "-");
     }
 
     public ChiaveType getAggChiave() {
-	return aggChiave;
+        return aggChiave;
     }
 
     public void setAggChiave(ChiaveType aggChiave) {
-	this.aggChiave = aggChiave;
+        this.aggChiave = aggChiave;
     }
 
 }

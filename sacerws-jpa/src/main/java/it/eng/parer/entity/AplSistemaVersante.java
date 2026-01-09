@@ -51,51 +51,51 @@ public class AplSistemaVersante implements Serializable {
     @Id
     @Column(name = "ID_SISTEMA_VERSANTE")
     public Long getIdSistemaVersante() {
-	return this.idSistemaVersante;
+        return this.idSistemaVersante;
     }
 
     public void setIdSistemaVersante(Long idSistemaVersante) {
-	this.idSistemaVersante = idSistemaVersante;
+        this.idSistemaVersante = idSistemaVersante;
     }
 
     @XmlTransient
     @Column(name = "CD_VERSIONE")
     public String getCdVersione() {
-	return this.cdVersione;
+        return this.cdVersione;
     }
 
     public void setCdVersione(String cdVersione) {
-	this.cdVersione = cdVersione;
+        this.cdVersione = cdVersione;
     }
 
     @XmlTransient
     @Column(name = "DS_SISTEMA_VERSANTE")
     public String getDsSistemaVersante() {
-	return this.dsSistemaVersante;
+        return this.dsSistemaVersante;
     }
 
     public void setDsSistemaVersante(String dsSistemaVersante) {
-	this.dsSistemaVersante = dsSistemaVersante;
+        this.dsSistemaVersante = dsSistemaVersante;
     }
 
     @Column(name = "NM_SISTEMA_VERSANTE")
     public String getNmSistemaVersante() {
-	return this.nmSistemaVersante;
+        return this.nmSistemaVersante;
     }
 
     public void setNmSistemaVersante(String nmSistemaVersante) {
-	this.nmSistemaVersante = nmSistemaVersante;
+        this.nmSistemaVersante = nmSistemaVersante;
     }
 
     // bi-directional many-to-one association to UsrUser
     @OneToMany(mappedBy = "aplSistemaVersante")
     @XmlTransient
     public List<UsrUser> getUsrUsers() {
-	return this.usrUsers;
+        return this.usrUsers;
     }
 
     public void setUsrUsers(List<UsrUser> usrUsers) {
-	this.usrUsers = usrUsers;
+        this.usrUsers = usrUsers;
     }
 
 }

@@ -29,7 +29,7 @@ public final class VrsErrUpdUnitaDocKo {
      * ti_err IN ('FATALE', 'WARNING')
      */
     public enum TiErrVrsErrUpdUnitaDocKo {
-	FATALE, WARNING
+        FATALE, WARNING
     }
 
 }

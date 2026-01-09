@@ -30,62 +30,62 @@ public class ControlloWSResp implements Serializable {
     private BigDecimal niOrd;
 
     public ControlloWSResp() {
-	super();
+        super();
     }
 
     public ControlloWSResp(String cdCategoria, String cdControllo, String cdFamiglia,
-	    String dsControllo, BigDecimal niOrd) {
-	super();
-	this.cdCategoria = cdCategoria;
-	this.cdControllo = cdControllo;
-	this.cdFamiglia = cdFamiglia;
-	this.dsControllo = dsControllo;
-	this.niOrd = niOrd;
+            String dsControllo, BigDecimal niOrd) {
+        super();
+        this.cdCategoria = cdCategoria;
+        this.cdControllo = cdControllo;
+        this.cdFamiglia = cdFamiglia;
+        this.dsControllo = dsControllo;
+        this.niOrd = niOrd;
     }
 
     public String getCdFamiglia() {
-	return cdFamiglia;
+        return cdFamiglia;
     }
 
     public void setCdFamiglia(String cdFamiglia) {
-	this.cdFamiglia = cdFamiglia;
+        this.cdFamiglia = cdFamiglia;
     }
 
     public String getDsControllo() {
-	return dsControllo;
+        return dsControllo;
     }
 
     public void setDsControllo(String dsControllo) {
-	this.dsControllo = dsControllo;
+        this.dsControllo = dsControllo;
     }
 
     public BigDecimal getNiOrd() {
-	return niOrd;
+        return niOrd;
     }
 
     public void setNiOrd(BigDecimal niOrd) {
-	this.niOrd = niOrd;
+        this.niOrd = niOrd;
     }
 
     public String getCdControllo() {
-	return cdControllo;
+        return cdControllo;
     }
 
     public void setCdControllo(String cdControllo) {
-	this.cdControllo = cdControllo;
+        this.cdControllo = cdControllo;
     }
 
     public String getCdCategoria() {
-	return cdCategoria;
+        return cdCategoria;
     }
 
     public void setCdCategoria(String cdCategoria) {
-	this.cdCategoria = cdCategoria;
+        this.cdCategoria = cdCategoria;
     }
 
     @Override
     public String toString() {
-	return cdCategoria + " - " + dsControllo;
+        return cdCategoria + " - " + dsControllo;
     }
 
 }

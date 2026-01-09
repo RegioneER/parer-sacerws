@@ -35,44 +35,44 @@ public interface IVerificaFirmaWrapperResultStrategy<E extends Object> {
 
     // business logic
     default VerificaFirmaWrapper fromVerificaOutOnWrapper(E esito) throws NoSuchMethodException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	VerificaFirmaWrapper localWrapper = new VerificaFirmaWrapper();
-	this.fromVerificaOutOnWrapper(esito, localWrapper);
-	return localWrapper;
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        VerificaFirmaWrapper localWrapper = new VerificaFirmaWrapper();
+        this.fromVerificaOutOnWrapper(esito, localWrapper);
+        return localWrapper;
     }
 
     void fromVerificaOutOnWrapper(E esito, VerificaFirmaWrapper wrapper)
-	    throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException;
+            throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException;
 
     default VerificaFirmaWrapper buildVFWrapper(E result, boolean isDetached)
-	    throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaWrapperGenericException,
-	    VerificaFirmaConnectionException {
+            throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaWrapperGenericException,
+            VerificaFirmaConnectionException {
 
-	if (result == null) {
-	    LOG.error("Esito {} verifica firma non presente ! ", getCode());
-	    throw new VerificaFirmaWrapperResNotFoundException(
-		    "Esito (" + getCode() + ") verifica firma non presente ! ", getCode());
-	}
+        if (result == null) {
+            LOG.error("Esito {} verifica firma non presente ! ", getCode());
+            throw new VerificaFirmaWrapperResNotFoundException(
+                    "Esito (" + getCode() + ") verifica firma non presente ! ", getCode());
+        }
 
-	// init wrapper
-	VerificaFirmaWrapper wrapper = new VerificaFirmaWrapper();
-	// additional info
-	VFAdditionalInfoWrapperType additionalInfoWrapperType = new VFAdditionalInfoWrapperType();
-	wrapper.setAdditionalInfo(additionalInfoWrapperType);
-	//
-	additionalInfoWrapperType.setServiceCode(getCode());
-	additionalInfoWrapperType.setIsDetached(isDetached);
-	try {
-	    LOG.debug("Inizio popolamento esito da [ {} ]", getCode());
-	    // populate with output firma
-	    fromVerificaOutOnWrapper(result, wrapper);
-	    LOG.debug("Termine popolamento esito da [{}]", getCode());
-	} catch (Exception ex) {
-	    throw new VerificaFirmaWrapperGenericException(ex, wrapper);
-	}
+        // init wrapper
+        VerificaFirmaWrapper wrapper = new VerificaFirmaWrapper();
+        // additional info
+        VFAdditionalInfoWrapperType additionalInfoWrapperType = new VFAdditionalInfoWrapperType();
+        wrapper.setAdditionalInfo(additionalInfoWrapperType);
+        //
+        additionalInfoWrapperType.setServiceCode(getCode());
+        additionalInfoWrapperType.setIsDetached(isDetached);
+        try {
+            LOG.debug("Inizio popolamento esito da [ {} ]", getCode());
+            // populate with output firma
+            fromVerificaOutOnWrapper(result, wrapper);
+            LOG.debug("Termine popolamento esito da [{}]", getCode());
+        } catch (Exception ex) {
+            throw new VerificaFirmaWrapperGenericException(ex, wrapper);
+        }
 
-	return wrapper;
+        return wrapper;
     }
 
 }

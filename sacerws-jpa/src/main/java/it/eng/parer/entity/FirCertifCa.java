@@ -84,137 +84,137 @@ public class FirCertifCa implements Serializable {
     @Id
     @Column(name = "ID_CERTIF_CA")
     @GenericGenerator(name = "SFIR_CERTIF_CA_ID_CERTIF_CA_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CERTIF_CA"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_CERTIF_CA"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFIR_CERTIF_CA_ID_CERTIF_CA_GENERATOR")
     public Long getIdCertifCa() {
-	return this.idCertifCa;
+        return this.idCertifCa;
     }
 
     public void setIdCertifCa(Long idCertifCa) {
-	this.idCertifCa = idCertifCa;
+        this.idCertifCa = idCertifCa;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_FIN_VAL_CERTIF_CA")
     public Date getDtFinValCertifCa() {
-	return this.dtFinValCertifCa;
+        return this.dtFinValCertifCa;
     }
 
     public void setDtFinValCertifCa(Date dtFinValCertifCa) {
-	this.dtFinValCertifCa = dtFinValCertifCa;
+        this.dtFinValCertifCa = dtFinValCertifCa;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_INI_VAL_CERTIF_CA")
     public Date getDtIniValCertifCa() {
-	return this.dtIniValCertifCa;
+        return this.dtIniValCertifCa;
     }
 
     public void setDtIniValCertifCa(Date dtIniValCertifCa) {
-	this.dtIniValCertifCa = dtIniValCertifCa;
+        this.dtIniValCertifCa = dtIniValCertifCa;
     }
 
     @Column(name = "DS_SERIAL_CERTIF_CA")
     public String getDsSerialCertifCa() {
-	return this.dsSerialCertifCa;
+        return this.dsSerialCertifCa;
     }
 
     public void setDsSerialCertifCa(String dsSerialCertifCa) {
-	this.dsSerialCertifCa = dsSerialCertifCa;
+        this.dsSerialCertifCa = dsSerialCertifCa;
     }
 
     @Column(name = "DS_SUBJECT_KEY_ID")
     public String getDsSubjectKeyId() {
-	return dsSubjectKeyId;
+        return dsSubjectKeyId;
     }
 
     public void setDsSubjectKeyId(String dsSubjectKeyId) {
-	this.dsSubjectKeyId = dsSubjectKeyId;
+        this.dsSubjectKeyId = dsSubjectKeyId;
     }
 
     @Column(name = "DL_DN_ISSUER_CERTIF_CA")
     public String getDlDnIssuerCertifCa() {
-	return dlDnIssuerCertifCa;
+        return dlDnIssuerCertifCa;
     }
 
     public void setDlDnIssuerCertifCa(String dlDnIssuerCertifCa) {
-	this.dlDnIssuerCertifCa = dlDnIssuerCertifCa;
+        this.dlDnIssuerCertifCa = dlDnIssuerCertifCa;
     }
 
     @Column(name = "DL_DN_SUBJECT_CERTIF_CA")
     public String getDlDnSubjectCertifCa() {
-	return dlDnSubjectCertifCa;
+        return dlDnSubjectCertifCa;
     }
 
     public void setDlDnSubjectCertifCa(String dlDnSubjectCertifCa) {
-	this.dlDnSubjectCertifCa = dlDnSubjectCertifCa;
+        this.dlDnSubjectCertifCa = dlDnSubjectCertifCa;
     }
 
     // bi-directional many-to-one association to FirCertifFirmatario
     @OneToMany(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<FirCertifFirmatario> getFirCertifFirmatarios() {
-	return this.firCertifFirmatarios;
+        return this.firCertifFirmatarios;
     }
 
     public void setFirCertifFirmatarios(List<FirCertifFirmatario> firCertifFirmatarios) {
-	this.firCertifFirmatarios = firCertifFirmatarios;
+        this.firCertifFirmatarios = firCertifFirmatarios;
     }
 
     // bi-directional many-to-one association to FirCrl
     @OneToMany(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<FirCrl> getFirCrls() {
-	return this.firCrls;
+        return this.firCrls;
     }
 
     public void setFirCrls(List<FirCrl> firCrls) {
-	this.firCrls = firCrls;
+        this.firCrls = firCrls;
     }
 
     // bi-directional many-to-one association to FirCrl
     @OneToMany(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<FirCertifOcsp> getFirCertifOcsps() {
-	return this.firCertifOcsps;
+        return this.firCertifOcsps;
     }
 
     public void setFirCertifOcsps(List<FirCertifOcsp> firCertifOcsps) {
-	this.firCertifOcsps = firCertifOcsps;
+        this.firCertifOcsps = firCertifOcsps;
     }
 
     // bi-directional one-to-one association to FirFilePerFirma
     @OneToOne(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
     public FirFilePerFirma getFirFilePerFirma() {
-	return this.firFilePerFirma;
+        return this.firFilePerFirma;
     }
 
     public void setFirFilePerFirma(FirFilePerFirma firFilePerFirma) {
-	this.firFilePerFirma = firFilePerFirma;
+        this.firFilePerFirma = firFilePerFirma;
     }
 
     // bi-directional many-to-one association to FirUrlDistribCrl
     @OneToMany(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<FirUrlDistribCrl> getFirUrlDistribCrls() {
-	return this.firUrlDistribCrls;
+        return this.firUrlDistribCrls;
     }
 
     public void setFirUrlDistribCrls(List<FirUrlDistribCrl> firUrlDistribCrls) {
-	this.firUrlDistribCrls = firUrlDistribCrls;
+        this.firUrlDistribCrls = firUrlDistribCrls;
     }
 
     // bi-directional many-to-one association to FirUrlDistribCrl
     @OneToMany(mappedBy = "firCertifCa", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<FirUrlDistribOcsp> getFirUrlDistribOcsps() {
-	return this.firUrlDistribOcsps;
+        return this.firUrlDistribOcsps;
     }
 
     public void setFirUrlDistribOcsps(List<FirUrlDistribOcsp> firUrlDistribOcsps) {
-	this.firUrlDistribOcsps = firUrlDistribOcsps;
+        this.firUrlDistribOcsps = firUrlDistribOcsps;
     }
 
     /**
@@ -226,13 +226,13 @@ public class FirCertifCa implements Serializable {
      */
     @PrePersist
     void preInsert() {
-	this.dtFinValCertifCa = NeverendingDateConverter.verifyOverZoneId(this.dtFinValCertifCa,
-		TimeZone.getTimeZone("UTC").toZoneId());
+        this.dtFinValCertifCa = NeverendingDateConverter.verifyOverZoneId(this.dtFinValCertifCa,
+                TimeZone.getTimeZone("UTC").toZoneId());
     }
 
     @PreUpdate
     void preUpdate() {
-	this.dtFinValCertifCa = NeverendingDateConverter.verifyOverZoneId(this.dtFinValCertifCa,
-		TimeZone.getTimeZone("UTC").toZoneId());
+        this.dtFinValCertifCa = NeverendingDateConverter.verifyOverZoneId(this.dtFinValCertifCa,
+                TimeZone.getTimeZone("UTC").toZoneId());
     }
 }

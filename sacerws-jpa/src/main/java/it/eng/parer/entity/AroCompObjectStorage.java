@@ -56,63 +56,63 @@ public class AroCompObjectStorage implements Serializable {
     @Id
     @Column(name = "ID_COMP_OBJECT_STORAGE")
     @GenericGenerator(name = "SARO_COMP_OBJECT_STORAGE_ID_COMP_OBJECT_STORAGE_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_COMP_OBJECT_STORAGE"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_COMP_OBJECT_STORAGE"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_COMP_OBJECT_STORAGE_ID_COMP_OBJECT_STORAGE_GENERATOR")
     public Long getIdCompObjectStorage() {
-	return this.idCompObjectStorage;
+        return this.idCompObjectStorage;
     }
 
     public void setIdCompObjectStorage(Long idCompObjectStorage) {
-	this.idCompObjectStorage = idCompObjectStorage;
+        this.idCompObjectStorage = idCompObjectStorage;
     }
 
     @Column(name = "CD_KEY_FILE")
     public String getCdKeyFile() {
-	return this.cdKeyFile;
+        return this.cdKeyFile;
     }
 
     public void setCdKeyFile(String cdKeyFile) {
-	this.cdKeyFile = cdKeyFile;
+        this.cdKeyFile = cdKeyFile;
     }
 
     @Column(name = "NM_BUCKET")
     public String getNmBucket() {
-	return this.nmBucket;
+        return this.nmBucket;
     }
 
     public void setNmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
+        this.nmBucket = nmBucket;
     }
 
     @Column(name = "NM_TENANT")
     public String getNmTenant() {
-	return this.nmTenant;
+        return this.nmTenant;
     }
 
     public void setNmTenant(String nmTenant) {
-	this.nmTenant = nmTenant;
+        this.nmTenant = nmTenant;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_COMP_DOC")
     public AroCompDoc getAroCompDoc() {
-	return this.aroCompDoc;
+        return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-	this.aroCompDoc = aroCompDoc;
+        this.aroCompDoc = aroCompDoc;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 
 }

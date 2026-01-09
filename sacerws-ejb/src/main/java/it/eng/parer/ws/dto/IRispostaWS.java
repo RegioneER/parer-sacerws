@@ -28,39 +28,39 @@ public interface IRispostaWS extends Serializable {
 
     public enum SeverityEnum {
 
-	OK, WARNING, ERROR
+        OK, WARNING, ERROR
     }
 
     public enum ErrorTypeEnum {
 
-	NOERROR, WS_DATA, WS_SIGNATURE, DB_FATAL
+        NOERROR, WS_DATA, WS_SIGNATURE, DB_FATAL
     }
 
     public enum StatiSessioneVersEnum {
-	/**
-	 * la sessione non può essere salvata per mancanza di elementi fondamentali
-	 */
-	ASSENTE,
-	/**
-	 * la sessione verrà salvata come ERRATA, mancanza di metadati identificativi
-	 */
-	ERRATA,
-	/**
-	 * la sessione è ERRATA ma si deve tentare un recupero per convertirla in FALLITA
-	 */
-	DUBBIA,
-	/**
-	 * il versamento è fallito ma ci sono i metadati identificativi di base
-	 */
-	FALLITA,
-	/**
-	 * il versamento è fallito con errore FATALE, verrà scritto sulle sessioni errate
-	 */
-	FATALE,
-	/**
-	 * il versamento è andato a buon fine.
-	 */
-	OK
+        /**
+         * la sessione non può essere salvata per mancanza di elementi fondamentali
+         */
+        ASSENTE,
+        /**
+         * la sessione verrà salvata come ERRATA, mancanza di metadati identificativi
+         */
+        ERRATA,
+        /**
+         * la sessione è ERRATA ma si deve tentare un recupero per convertirla in FALLITA
+         */
+        DUBBIA,
+        /**
+         * il versamento è fallito ma ci sono i metadati identificativi di base
+         */
+        FALLITA,
+        /**
+         * il versamento è fallito con errore FATALE, verrà scritto sulle sessioni errate
+         */
+        FATALE,
+        /**
+         * il versamento è andato a buon fine.
+         */
+        OK
     }
 
     String getErrorCode();

@@ -50,10 +50,10 @@ public interface IVerificaFirmaInvoker {
      * @throws VerificaFirmaGenericInvokeException      eccezione generica durante chiamata endpoint
      */
     VerificaFirmaWrapper verificaAndWrapIt(ComponenteVers componenteVers,
-	    List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
-	    Map<String, Boolean> controlliAbilitati, ZonedDateTime dataVersamento,
-	    boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
-	    throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
-	    VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException;
+            List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
+            Map<String, Boolean> controlliAbilitati, ZonedDateTime dataVersamento,
+            boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
+            throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
+            VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException;
 
 }

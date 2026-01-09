@@ -27,6 +27,6 @@ public final class FasRespFascicolo {
      * Tipo oggetto responsabile
      */
     public enum TiOggResp {
-	FASCICOLO, PROC_AMMIN
+        FASCICOLO, PROC_AMMIN
     }
 }

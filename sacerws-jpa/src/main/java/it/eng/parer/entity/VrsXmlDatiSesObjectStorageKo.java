@@ -23,7 +23,7 @@ public class VrsXmlDatiSesObjectStorageKo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public VrsXmlDatiSesObjectStorageKo() {
-	super();
+        super();
     }
 
     private Long idXmlDatiSesObjectStorageKo;
@@ -38,66 +38,66 @@ public class VrsXmlDatiSesObjectStorageKo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_XML_DATI_SES_OBJECT_STORAGE_KO")
     public Long getIdXmlDatiSesObjectStorageKo() {
-	return idXmlDatiSesObjectStorageKo;
+        return idXmlDatiSesObjectStorageKo;
     }
 
     public void setIdXmlDatiSesObjectStorageKo(Long idXmlDatiSesObjectStorageKo) {
-	this.idXmlDatiSesObjectStorageKo = idXmlDatiSesObjectStorageKo;
+        this.idXmlDatiSesObjectStorageKo = idXmlDatiSesObjectStorageKo;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DATI_SESSIONE_VERS_KO")
     public VrsDatiSessioneVersKo getDatiSessioneVersKo() {
-	return datiSessioneVersKo;
+        return datiSessioneVersKo;
     }
 
     public void setDatiSessioneVersKo(VrsDatiSessioneVersKo datiSessioneVersKo) {
-	this.datiSessioneVersKo = datiSessioneVersKo;
+        this.datiSessioneVersKo = datiSessioneVersKo;
     }
 
     @Column(name = "NM_TENANT")
     public String getNmTenant() {
-	return nmTenant;
+        return nmTenant;
     }
 
     public void setNmTenant(String nmTenant) {
-	this.nmTenant = nmTenant;
+        this.nmTenant = nmTenant;
     }
 
     @Column(name = "NM_BUCKET")
     public String getNmBucket() {
-	return nmBucket;
+        return nmBucket;
     }
 
     public void setNmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
+        this.nmBucket = nmBucket;
     }
 
     @Column(name = "CD_KEY_FILE")
     public String getNmKeyFile() {
-	return nmKeyFile;
+        return nmKeyFile;
     }
 
     public void setNmKeyFile(String nmKeyFile) {
-	this.nmKeyFile = nmKeyFile;
+        this.nmKeyFile = nmKeyFile;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 }

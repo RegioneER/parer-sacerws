@@ -77,254 +77,254 @@ public class StrutturaVersFascicolo implements java.io.Serializable, IDatiSpecEn
     private Long idVoceTitol;
 
     public Date getDataVersamento() {
-	return dataVersamento;
+        return dataVersamento;
     }
 
     public void setDataVersamento(Date dataVersamento) {
-	this.dataVersamento = dataVersamento;
+        this.dataVersamento = dataVersamento;
     }
 
     public long getIdStruttura() {
-	return idStruttura;
+        return idStruttura;
     }
 
     public void setIdStruttura(long idStruttura) {
-	this.idStruttura = idStruttura;
+        this.idStruttura = idStruttura;
     }
 
     public long getIdUser() {
-	return idUser;
+        return idUser;
     }
 
     public void setIdUser(long idUser) {
-	this.idUser = idUser;
+        this.idUser = idUser;
     }
 
     public long getIdTipoFascicolo() {
-	return idTipoFascicolo;
+        return idTipoFascicolo;
     }
 
     public void setIdTipoFascicolo(long idTipoFascicolo) {
-	this.idTipoFascicolo = idTipoFascicolo;
+        this.idTipoFascicolo = idTipoFascicolo;
     }
 
     public long getIdAATipoFasc() {
-	return idAATipoFasc;
+        return idAATipoFasc;
     }
 
     public void setIdAATipoFasc(long idAATipoFasc) {
-	this.idAATipoFasc = idAATipoFasc;
+        this.idAATipoFasc = idAATipoFasc;
     }
 
     public long getIdIamAbilTipoDato() {
-	return idIamAbilTipoDato;
+        return idIamAbilTipoDato;
     }
 
     public void setIdIamAbilTipoDato(long idIamAbilTipoDato) {
-	this.idIamAbilTipoDato = idIamAbilTipoDato;
+        this.idIamAbilTipoDato = idIamAbilTipoDato;
     }
 
     public boolean isVersatoreVerificato() {
-	return versatoreVerificato;
+        return versatoreVerificato;
     }
 
     public void setVersatoreVerificato(boolean versatoreVerificato) {
-	this.versatoreVerificato = versatoreVerificato;
+        this.versatoreVerificato = versatoreVerificato;
     }
 
     public String getVersioneIndiceSipNonVerificata() {
-	return versioneIndiceSipNonVerificata;
+        return versioneIndiceSipNonVerificata;
     }
 
     public void setVersioneIndiceSipNonVerificata(String versioneIndiceSipNonVerificata) {
-	this.versioneIndiceSipNonVerificata = versioneIndiceSipNonVerificata;
+        this.versioneIndiceSipNonVerificata = versioneIndiceSipNonVerificata;
     }
 
     public String getTipoFascicoloNonverificato() {
-	return tipoFascicoloNonverificato;
+        return tipoFascicoloNonverificato;
     }
 
     public void setTipoFascicoloNonverificato(String tipoFascicoloNonverificato) {
-	this.tipoFascicoloNonverificato = tipoFascicoloNonverificato;
+        this.tipoFascicoloNonverificato = tipoFascicoloNonverificato;
     }
 
     public CSVersatore getVersatoreNonverificato() {
-	return versatoreNonverificato;
+        return versatoreNonverificato;
     }
 
     public void setVersatoreNonverificato(CSVersatore versatoreNonverificato) {
-	this.versatoreNonverificato = versatoreNonverificato;
+        this.versatoreNonverificato = versatoreNonverificato;
     }
 
     public CSChiaveFasc getChiaveNonVerificata() {
-	return chiaveNonVerificata;
+        return chiaveNonVerificata;
     }
 
     public void setChiaveNonVerificata(CSChiaveFasc chiaveNonVerificata) {
-	this.chiaveNonVerificata = chiaveNonVerificata;
+        this.chiaveNonVerificata = chiaveNonVerificata;
     }
 
     public String getUrnPartChiaveFascicolo() {
-	return urnPartChiaveFascicolo;
+        return urnPartChiaveFascicolo;
     }
 
     public void setUrnPartChiaveFascicolo(String urnPartChiaveFascicolo) {
-	this.urnPartChiaveFascicolo = urnPartChiaveFascicolo;
+        this.urnPartChiaveFascicolo = urnPartChiaveFascicolo;
     }
 
     public List<Long> getUnitaDocElencate() {
-	return unitaDocElencate;
+        return unitaDocElencate;
     }
 
     public void setUnitaDocElencate(List<Long> unitaDocElencate) {
-	this.unitaDocElencate = unitaDocElencate;
+        this.unitaDocElencate = unitaDocElencate;
     }
 
     public long getIdRecXsdProfiloArchivistico() {
-	return idRecXsdProfiloArchivistico;
+        return idRecXsdProfiloArchivistico;
     }
 
     public void setIdRecXsdProfiloArchivistico(long idRecXsdProfiloArchivistico) {
-	this.idRecXsdProfiloArchivistico = idRecXsdProfiloArchivistico;
+        this.idRecXsdProfiloArchivistico = idRecXsdProfiloArchivistico;
     }
 
     public long getIdRecxsdProfiloGenerale() {
-	return idRecxsdProfiloGenerale;
+        return idRecxsdProfiloGenerale;
     }
 
     public void setIdRecxsdProfiloGenerale(long idRecxsdProfiloGenerale) {
-	this.idRecxsdProfiloGenerale = idRecxsdProfiloGenerale;
+        this.idRecxsdProfiloGenerale = idRecxsdProfiloGenerale;
     }
 
     public DatiXmlProfiloGenerale getDatiXmlProfiloGenerale() {
-	return datiXmlProfiloGenerale;
+        return datiXmlProfiloGenerale;
     }
 
     public void setDatiXmlProfiloGenerale(DatiXmlProfiloGenerale datiXmlProfiloGenerale) {
-	this.datiXmlProfiloGenerale = datiXmlProfiloGenerale;
+        this.datiXmlProfiloGenerale = datiXmlProfiloGenerale;
     }
 
     public DatiXmlProfiloArchivistico getDatiXmlProfiloArchivistico() {
-	return datiXmlProfiloArchivistico;
+        return datiXmlProfiloArchivistico;
     }
 
     public void setDatiXmlProfiloArchivistico(
-	    DatiXmlProfiloArchivistico datiXmlProfiloArchivistico) {
-	this.datiXmlProfiloArchivistico = datiXmlProfiloArchivistico;
+            DatiXmlProfiloArchivistico datiXmlProfiloArchivistico) {
+        this.datiXmlProfiloArchivistico = datiXmlProfiloArchivistico;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecifici() {
-	return datiSpecifici;
+        return datiSpecifici;
     }
 
     @Override
     public void setDatiSpecifici(Map<String, DatoSpecifico> datiSpecifici) {
-	this.datiSpecifici = datiSpecifici;
+        this.datiSpecifici = datiSpecifici;
     }
 
     @Override
     public Map<String, DatoSpecifico> getDatiSpecificiMigrazione() {
-	return datiSpecificiMigrazione;
+        return datiSpecificiMigrazione;
     }
 
     @Override
     public void setDatiSpecificiMigrazione(Map<String, DatoSpecifico> datiSpecificiMigrazione) {
-	this.datiSpecificiMigrazione = datiSpecificiMigrazione;
+        this.datiSpecificiMigrazione = datiSpecificiMigrazione;
     }
 
     @Override
     public long getIdRecXsdDatiSpec() {
 
-	return idRecXsdDatiSpec;
+        return idRecXsdDatiSpec;
     }
 
     @Override
     public long getIdRecXsdDatiSpecMigrazione() {
 
-	return idRecXsdDatiSpecMigrazione;
+        return idRecXsdDatiSpecMigrazione;
     }
 
     @Override
     public void setIdRecXsdDatiSpec(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpec = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpec = idRecXsdDatiSpec;
     }
 
     @Override
     public void setIdRecXsdDatiSpecMigrazione(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpecMigrazione = idRecXsdDatiSpec;
     }
 
     public FlControlliFasc getFlControlliFasc() {
-	return flControlliFasc;
+        return flControlliFasc;
     }
 
     public void setFlControlliFasc(FlControlliFasc flControlliFasc) {
-	this.flControlliFasc = flControlliFasc;
+        this.flControlliFasc = flControlliFasc;
     }
 
     public ConfigNumFasc getConfigNumFasc() {
-	return configNumFasc;
+        return configNumFasc;
     }
 
     public void setConfigNumFasc(ConfigNumFasc configNumFasc) {
-	this.configNumFasc = configNumFasc;
+        this.configNumFasc = configNumFasc;
     }
 
     public Long getProgressivoCalcolato() {
-	return progressivoCalcolato;
+        return progressivoCalcolato;
     }
 
     public void setProgressivoCalcolato(Long progressivoCalcolato) {
-	this.progressivoCalcolato = progressivoCalcolato;
+        this.progressivoCalcolato = progressivoCalcolato;
     }
 
     public boolean isWarningFormatoNumero() {
-	return warningFormatoNumero;
+        return warningFormatoNumero;
     }
 
     public void setWarningFormatoNumero(boolean warningFormatoNumero) {
-	this.warningFormatoNumero = warningFormatoNumero;
+        this.warningFormatoNumero = warningFormatoNumero;
     }
 
     public String getKeyOrdCalcolata() {
-	return keyOrdCalcolata;
+        return keyOrdCalcolata;
     }
 
     public void setKeyOrdCalcolata(String keyOrdCalcolata) {
-	this.keyOrdCalcolata = keyOrdCalcolata;
+        this.keyOrdCalcolata = keyOrdCalcolata;
     }
 
     public List<FascicoloLink> getFascicoliLinked() {
-	return fascicoliLinked;
+        return fascicoliLinked;
     }
 
     public void setFascicoliLinked(List<FascicoloLink> fascicoliLinked) {
-	this.fascicoliLinked = fascicoliLinked;
+        this.fascicoliLinked = fascicoliLinked;
     }
 
     public long getIdOrgEnteConv() {
-	return idOrgEnteConv;
+        return idOrgEnteConv;
     }
 
     public void setIdOrgEnteConv(long idOrgEnteConv) {
-	this.idOrgEnteConv = idOrgEnteConv;
+        this.idOrgEnteConv = idOrgEnteConv;
     }
 
     public Long getIdVoceTitol() {
-	return idVoceTitol;
+        return idVoceTitol;
     }
 
     public void setIdVoceTitol(Long idVoceTitol) {
-	this.idVoceTitol = idVoceTitol;
+        this.idVoceTitol = idVoceTitol;
     }
 
     public String getUrnPartChiaveFascicoloNormalized() {
-	return urnPartChiaveFascicoloNormalized;
+        return urnPartChiaveFascicoloNormalized;
     }
 
     public void setUrnPartChiaveFascicoloNormalized(String urnPartChiaveFascicoloNormalized) {
-	this.urnPartChiaveFascicoloNormalized = urnPartChiaveFascicoloNormalized;
+        this.urnPartChiaveFascicoloNormalized = urnPartChiaveFascicoloNormalized;
     }
 
 }

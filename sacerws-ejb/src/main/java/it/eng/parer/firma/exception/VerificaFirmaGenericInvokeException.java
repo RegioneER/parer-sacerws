@@ -21,7 +21,7 @@ package it.eng.parer.firma.exception;
  * @author sinatti_s
  */
 public class VerificaFirmaGenericInvokeException extends Exception
-	implements IVerificaFirmaInvokeException {
+        implements IVerificaFirmaInvokeException {
 
     /**
      *
@@ -32,46 +32,46 @@ public class VerificaFirmaGenericInvokeException extends Exception
     private final String url;
 
     public VerificaFirmaGenericInvokeException(final String cdService, final String url) {
-	super();
-	this.cdService = cdService;
-	this.url = url;
+        super();
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaGenericInvokeException(String message, Throwable cause,
-	    final String cdService, final String url) {
-	super(message, cause);
-	this.cdService = cdService;
-	this.url = url;
+            final String cdService, final String url) {
+        super(message, cause);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaGenericInvokeException(String message, final String cdService,
-	    final String url) {
-	super(message);
-	this.cdService = cdService;
-	this.url = url;
+            final String url) {
+        super(message);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaGenericInvokeException(Throwable cause, final String cdService,
-	    final String url) {
-	super(cause);
-	this.cdService = cdService;
-	this.url = url;
+            final String url) {
+        super(cause);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     @Override
     public String getCdService() {
-	return cdService;
+        return cdService;
     }
 
     @Override
     public String getUrl() {
-	return url;
+        return url;
     }
 
     @Override
     public String getMessage() {
-	return "Servizio di verifica firma " + getCdService()
-		+ " errore generico su gestione risposta da endpoint " + getUrl();
+        return "Servizio di verifica firma " + getCdService()
+                + " errore generico su gestione risposta da endpoint " + getUrl();
     }
 
 }

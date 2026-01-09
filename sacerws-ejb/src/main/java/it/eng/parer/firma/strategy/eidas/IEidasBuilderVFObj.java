@@ -51,8 +51,8 @@ public interface IEidasBuilderVFObj<T extends Object> {
      *
      */
     public T build(EidasWSReportsDTOTree eidasReportsDto, VerificaFirmaWrapper vfWrapper,
-	    SignatureWrapper signatureW, Optional<TimestampWrapper> timestampW,
-	    ZonedDateTime dataDiRiferimento, BigDecimal[] pgs) throws NoSuchMethodException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+            SignatureWrapper signatureW, Optional<TimestampWrapper> timestampW,
+            ZonedDateTime dataDiRiferimento, BigDecimal[] pgs) throws NoSuchMethodException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 
 }

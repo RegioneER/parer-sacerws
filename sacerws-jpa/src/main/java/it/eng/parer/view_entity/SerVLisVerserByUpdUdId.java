@@ -25,49 +25,49 @@ public class SerVLisVerserByUpdUdId implements Serializable {
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 97 * hash + Objects.hashCode(this.idUnitaDoc);
-	hash = 97 * hash + Objects.hashCode(this.idVerSerie);
-	return hash;
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.idUnitaDoc);
+        hash = 97 * hash + Objects.hashCode(this.idVerSerie);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final SerVLisVerserByUpdUdId other = (SerVLisVerserByUpdUdId) obj;
-	if (!Objects.equals(this.idUnitaDoc, other.idUnitaDoc)) {
-	    return false;
-	}
-	return Objects.equals(this.idVerSerie, other.idVerSerie);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SerVLisVerserByUpdUdId other = (SerVLisVerserByUpdUdId) obj;
+        if (!Objects.equals(this.idUnitaDoc, other.idUnitaDoc)) {
+            return false;
+        }
+        return Objects.equals(this.idVerSerie, other.idVerSerie);
     }
 
     private BigDecimal idUnitaDoc;
 
     @Column(name = "ID_UNITA_DOC")
     public BigDecimal getIdUnitaDoc() {
-	return idUnitaDoc;
+        return idUnitaDoc;
     }
 
     public void setIdUnitaDoc(BigDecimal idUnitaDoc) {
-	this.idUnitaDoc = idUnitaDoc;
+        this.idUnitaDoc = idUnitaDoc;
     }
 
     private BigDecimal idVerSerie;
 
     @Column(name = "ID_VER_SERIE")
     public BigDecimal getIdVerSerie() {
-	return idVerSerie;
+        return idVerSerie;
     }
 
     public void setIdVerSerie(BigDecimal idVerSerie) {
-	this.idVerSerie = idVerSerie;
+        this.idVerSerie = idVerSerie;
     }
 }

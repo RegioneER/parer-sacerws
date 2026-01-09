@@ -55,51 +55,51 @@ public class DecReportServizioVerificaCompDoc implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEC_REPORT_SERVIZIO_VERIFICA_COMP_DOC_ID_REPORT_SERVIZIO_VERIFICA_COMP_DOC_GENERATOR")
     @Column(name = "ID_REPORT_SERVIZIO_VERIFICA_COMP_DOC")
     public Long getIdReportServizioVerificaCompDoc() {
-	return this.idReportServizioVerificaCompDoc;
+        return this.idReportServizioVerificaCompDoc;
     }
 
     public void setIdReportServizioVerificaCompDoc(Long idReportServizioVerificaCompDoc) {
-	this.idReportServizioVerificaCompDoc = idReportServizioVerificaCompDoc;
+        this.idReportServizioVerificaCompDoc = idReportServizioVerificaCompDoc;
     }
 
     @Lob
     @Column(name = "BL_XSLT")
     public String getBlXsltReport() {
-	return this.blXslt;
+        return this.blXslt;
     }
 
     public void setBlXsltReport(String blXslt) {
-	this.blXslt = blXslt;
+        this.blXslt = blXslt;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_REPORT")
     public TiReportServizioVerificaCompDoc getTiReport() {
-	return this.tiReport;
+        return this.tiReport;
     }
 
     public void setTiReport(TiReportServizioVerificaCompDoc tiReport) {
-	this.tiReport = tiReport;
+        this.tiReport = tiReport;
     }
 
     @ManyToOne
     @JoinColumn(name = "ID_SERVIZIO_VERIFICA_COMP_DOC")
     public DecServizioVerificaCompDoc getDecServizioVerificaCompDoc() {
-	return this.decServizioVerificaCompDoc;
+        return this.decServizioVerificaCompDoc;
     }
 
     public void setDecServizioVerificaCompDoc(
-	    DecServizioVerificaCompDoc decServizioVerificaCompDoc) {
-	this.decServizioVerificaCompDoc = decServizioVerificaCompDoc;
+            DecServizioVerificaCompDoc decServizioVerificaCompDoc) {
+        this.decServizioVerificaCompDoc = decServizioVerificaCompDoc;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_FORMATO")
     public TiFormatoServizioVerificaCompDoc getTiFormato() {
-	return tiFormato;
+        return tiFormato;
     }
 
     public void setTiFormato(TiFormatoServizioVerificaCompDoc tiFormato) {
-	this.tiFormato = tiFormato;
+        this.tiFormato = tiFormato;
     }
 }

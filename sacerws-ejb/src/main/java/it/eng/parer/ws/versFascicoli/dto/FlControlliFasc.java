@@ -34,75 +34,75 @@ public class FlControlliFasc {
     boolean flForzaContrNumero;
 
     public boolean isFlAbilitaContrClassif() {
-	return flAbilitaContrClassif;
+        return flAbilitaContrClassif;
     }
 
     public void setFlAbilitaContrClassif(boolean flAbilitaContrClassif) {
-	this.flAbilitaContrClassif = flAbilitaContrClassif;
+        this.flAbilitaContrClassif = flAbilitaContrClassif;
     }
 
     public boolean isFlAbilitaContrColleg() {
-	return flAbilitaContrColleg;
+        return flAbilitaContrColleg;
     }
 
     public void setFlAbilitaContrColleg(boolean flAbilitaContrColleg) {
-	this.flAbilitaContrColleg = flAbilitaContrColleg;
+        this.flAbilitaContrColleg = flAbilitaContrColleg;
     }
 
     public boolean isFlAbilitaContrNumero() {
-	return flAbilitaContrNumero;
+        return flAbilitaContrNumero;
     }
 
     public void setFlAbilitaContrNumero(boolean flAbilitaContrNumero) {
-	this.flAbilitaContrNumero = flAbilitaContrNumero;
+        this.flAbilitaContrNumero = flAbilitaContrNumero;
     }
 
     public boolean isFlAccettaContrClassifNeg() {
-	return flAccettaContrClassifNeg;
+        return flAccettaContrClassifNeg;
     }
 
     public void setFlAccettaContrClassifNeg(boolean flAccettaContrClassifNeg) {
-	this.flAccettaContrClassifNeg = flAccettaContrClassifNeg;
+        this.flAccettaContrClassifNeg = flAccettaContrClassifNeg;
     }
 
     public boolean isFlAccettaContrCollegNeg() {
-	return flAccettaContrCollegNeg;
+        return flAccettaContrCollegNeg;
     }
 
     public void setFlAccettaContrCollegNeg(boolean flAccettaContrCollegNeg) {
-	this.flAccettaContrCollegNeg = flAccettaContrCollegNeg;
+        this.flAccettaContrCollegNeg = flAccettaContrCollegNeg;
     }
 
     public boolean isFlAccettaContrNumeroNeg() {
-	return flAccettaContrNumeroNeg;
+        return flAccettaContrNumeroNeg;
     }
 
     public void setFlAccettaContrNumeroNeg(boolean flAccettaContrNumeroNeg) {
-	this.flAccettaContrNumeroNeg = flAccettaContrNumeroNeg;
+        this.flAccettaContrNumeroNeg = flAccettaContrNumeroNeg;
     }
 
     public boolean isFlForzaContrFlassif() {
-	return flForzaContrFlassif;
+        return flForzaContrFlassif;
     }
 
     public void setFlForzaContrFlassif(boolean flForzaContrFlassif) {
-	this.flForzaContrFlassif = flForzaContrFlassif;
+        this.flForzaContrFlassif = flForzaContrFlassif;
     }
 
     public boolean isFlForzaContrColleg() {
-	return flForzaContrColleg;
+        return flForzaContrColleg;
     }
 
     public void setFlForzaContrColleg(boolean flForzaContrColleg) {
-	this.flForzaContrColleg = flForzaContrColleg;
+        this.flForzaContrColleg = flForzaContrColleg;
     }
 
     public boolean isFlForzaContrNumero() {
-	return flForzaContrNumero;
+        return flForzaContrNumero;
     }
 
     public void setFlForzaContrNumero(boolean flForzaContrNumero) {
-	this.flForzaContrNumero = flForzaContrNumero;
+        this.flForzaContrNumero = flForzaContrNumero;
     }
 
 }

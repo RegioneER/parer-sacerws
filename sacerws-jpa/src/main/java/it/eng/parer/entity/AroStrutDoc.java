@@ -63,75 +63,75 @@ public class AroStrutDoc implements Serializable {
     @Id
     @Column(name = "ID_STRUT_DOC")
     @GenericGenerator(name = "SARO_STRUT_DOC_ID_STRUT_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_STRUT_DOC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_STRUT_DOC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_STRUT_DOC_ID_STRUT_DOC_GENERATOR")
     public Long getIdStrutDoc() {
-	return this.idStrutDoc;
+        return this.idStrutDoc;
     }
 
     public void setIdStrutDoc(Long idStrutDoc) {
-	this.idStrutDoc = idStrutDoc;
+        this.idStrutDoc = idStrutDoc;
     }
 
     @Column(name = "FL_STRUT_ORIG", columnDefinition = "char(1)")
     public String getFlStrutOrig() {
-	return this.flStrutOrig;
+        return this.flStrutOrig;
     }
 
     public void setFlStrutOrig(String flStrutOrig) {
-	this.flStrutOrig = flStrutOrig;
+        this.flStrutOrig = flStrutOrig;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "NI_ORD_STRUT_DOC")
     public BigDecimal getNiOrdStrutDoc() {
-	return this.niOrdStrutDoc;
+        return this.niOrdStrutDoc;
     }
 
     public void setNiOrdStrutDoc(BigDecimal niOrdStrutDoc) {
-	this.niOrdStrutDoc = niOrdStrutDoc;
+        this.niOrdStrutDoc = niOrdStrutDoc;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @OneToMany(mappedBy = "aroStrutDoc", cascade = {
-	    CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
     public List<AroCompDoc> getAroCompDocs() {
-	return this.aroCompDocs;
+        return this.aroCompDocs;
     }
 
     public void setAroCompDocs(List<AroCompDoc> aroCompDocs) {
-	this.aroCompDocs = aroCompDocs;
+        this.aroCompDocs = aroCompDocs;
     }
 
     // bi-directional many-to-one association to AroDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DOC")
     public AroDoc getAroDoc() {
-	return this.aroDoc;
+        return this.aroDoc;
     }
 
     public void setAroDoc(AroDoc aroDoc) {
-	this.aroDoc = aroDoc;
+        this.aroDoc = aroDoc;
     }
 
     // bi-directional many-to-one association to DecTipoStrutDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_STRUT_DOC")
     public DecTipoStrutDoc getDecTipoStrutDoc() {
-	return this.decTipoStrutDoc;
+        return this.decTipoStrutDoc;
     }
 
     public void setDecTipoStrutDoc(DecTipoStrutDoc decTipoStrutDoc) {
-	this.decTipoStrutDoc = decTipoStrutDoc;
+        this.decTipoStrutDoc = decTipoStrutDoc;
     }
 
 }

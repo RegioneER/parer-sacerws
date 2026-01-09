@@ -36,23 +36,23 @@ public class MessaggiWSHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(
-		"MessaggiWSHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
-			MessaggiWSHelper.class, MessaggiWSHelperTest.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(
+                "MessaggiWSHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
+                        MessaggiWSHelper.class, MessaggiWSHelperTest.class),
+                createSacerLogJavaArchive());
     }
 
     @Test
     void caricaListaErrori() {
-	assertNotNull(helper.caricaListaErrori());
+        assertNotNull(helper.caricaListaErrori());
     }
 
     @Test
     void caricaDecErrore() {
-	try {
-	    helper.caricaDecErrore("NON ESISTE");
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "No entity found for query"));
-	}
+        try {
+            helper.caricaDecErrore("NON ESISTE");
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "No entity found for query"));
+        }
     }
 }

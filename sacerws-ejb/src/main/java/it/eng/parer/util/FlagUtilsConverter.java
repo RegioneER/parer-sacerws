@@ -19,11 +19,11 @@ import static it.eng.parer.util.Constants.FLAG_TRUE;
 public class FlagUtilsConverter {
 
     private FlagUtilsConverter() {
-	throw new IllegalStateException("Classe di utility");
+        throw new IllegalStateException("Classe di utility");
     }
 
     public static String booleanToFlag(Boolean b) {
-	return Boolean.TRUE.equals(b) ? FLAG_TRUE : FLAG_FALSE;
+        return Boolean.TRUE.equals(b) ? FLAG_TRUE : FLAG_FALSE;
     }
 
 }

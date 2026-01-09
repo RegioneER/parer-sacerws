@@ -45,17 +45,17 @@ public class SrvltHandlingException {
      */
 
     public static void handlingSocketErrors(NomeWebServiceRest ws, Exception e1,
-	    IRispostaWS rispostaWs) {
-	//
-	if (e1 instanceof SocketTimeoutException || e1 instanceof SocketException
-		|| e1 instanceof ConnectException || e1 instanceof InterruptedIOException) {
+            IRispostaWS rispostaWs) {
+        //
+        if (e1 instanceof SocketTimeoutException || e1 instanceof SocketException
+                || e1 instanceof ConnectException || e1 instanceof InterruptedIOException) {
 
-	    rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666N, ws.toString(),
-		    e1.getClass().getName() + (StringUtils.isNotBlank(e1.getMessage())
-			    ? " (" + e1.getMessage() + ")"
-			    : ""));
+            rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666N, ws.toString(),
+                    e1.getClass().getName() + (StringUtils.isNotBlank(e1.getMessage())
+                            ? " (" + e1.getMessage() + ")"
+                            : ""));
 
-	}
+        }
     }
 
 }

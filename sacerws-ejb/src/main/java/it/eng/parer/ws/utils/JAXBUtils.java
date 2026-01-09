@@ -24,16 +24,16 @@ import org.apache.commons.lang3.StringUtils;
 public class JAXBUtils {
 
     private JAXBUtils() {
-	throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class");
     }
 
     // standard di estrazione valore stringa di un elemento opzionale con
     // nillable=true
     // default null if black or null or not present
     public static String getStringValFromJAXBElement(JAXBElement<String> node) {
-	return node != null && !node.isNil() && StringUtils.isNotBlank(node.getValue())
-		? node.getValue()
-		: null;
+        return node != null && !node.isNil() && StringUtils.isNotBlank(node.getValue())
+                ? node.getValue()
+                : null;
 
     }
 

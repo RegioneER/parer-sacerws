@@ -40,41 +40,41 @@ public class ElencoVersamentoFascicoliHelper {
     private EntityManager em;
 
     public void insertFascicoloOnCodaDaElab(FasFascicolo fascicolo, long idTipoFasc,
-	    TiStatoFascDaElab status) {
-	ElvFascDaElabElenco fascVersDaElab = new ElvFascDaElabElenco();
-	fascVersDaElab.setFasFascicolo(fascicolo);
-	fascVersDaElab.setIdTipoFascicolo(new BigDecimal(idTipoFasc));
-	fascVersDaElab.setTiStatoFascDaElab(status);
-	fascVersDaElab.setIdStrut(new BigDecimal(fascicolo.getOrgStrut().getIdStrut()));
-	fascVersDaElab.setAaFascicolo(fascicolo.getAaFascicolo());
-	fascVersDaElab.setTsVersFascicolo(fascicolo.getTsFineSes());
+            TiStatoFascDaElab status) {
+        ElvFascDaElabElenco fascVersDaElab = new ElvFascDaElabElenco();
+        fascVersDaElab.setFasFascicolo(fascicolo);
+        fascVersDaElab.setIdTipoFascicolo(new BigDecimal(idTipoFasc));
+        fascVersDaElab.setTiStatoFascDaElab(status);
+        fascVersDaElab.setIdStrut(new BigDecimal(fascicolo.getOrgStrut().getIdStrut()));
+        fascVersDaElab.setAaFascicolo(fascicolo.getAaFascicolo());
+        fascVersDaElab.setTsVersFascicolo(fascicolo.getTsFineSes());
 
-	fascicolo.getElvFascDaElabElencos().add(fascVersDaElab);
-	em.persist(fascVersDaElab);
-	em.flush();
+        fascicolo.getElvFascDaElabElencos().add(fascVersDaElab);
+        em.persist(fascVersDaElab);
+        em.flush();
     }
 
     public void insertFascicoloOnStatoCons(FasFascicolo fascicolo, TiStatoConservazione status) {
-	FasStatoConservFascicolo statoConservFascicolo = new FasStatoConservFascicolo();
-	statoConservFascicolo.setFasFascicolo(fascicolo);
-	statoConservFascicolo.setIamUser(fascicolo.getIamUser());
-	statoConservFascicolo.setTiStatoConservazione(status);
-	statoConservFascicolo.setTsStato(fascicolo.getTsFineSes());
+        FasStatoConservFascicolo statoConservFascicolo = new FasStatoConservFascicolo();
+        statoConservFascicolo.setFasFascicolo(fascicolo);
+        statoConservFascicolo.setIamUser(fascicolo.getIamUser());
+        statoConservFascicolo.setTiStatoConservazione(status);
+        statoConservFascicolo.setTsStato(fascicolo.getTsFineSes());
 
-	fascicolo.getFasStatoConservFascicoloElencos().add(statoConservFascicolo);
-	em.persist(statoConservFascicolo);
-	em.flush();
+        fascicolo.getFasStatoConservFascicoloElencos().add(statoConservFascicolo);
+        em.persist(statoConservFascicolo);
+        em.flush();
     }
 
     public void insertFascicoloOnStatoElenco(FasFascicolo fascicolo, TiStatoFascElenco status) {
-	FasStatoFascicoloElenco statoFascicoloElenco = new FasStatoFascicoloElenco();
-	statoFascicoloElenco.setFasFascicolo(fascicolo);
-	statoFascicoloElenco.setIamUser(fascicolo.getIamUser());
-	statoFascicoloElenco.setTiStatoFascElencoVers(status);
-	statoFascicoloElenco.setTsStato(fascicolo.getTsFineSes());
+        FasStatoFascicoloElenco statoFascicoloElenco = new FasStatoFascicoloElenco();
+        statoFascicoloElenco.setFasFascicolo(fascicolo);
+        statoFascicoloElenco.setIamUser(fascicolo.getIamUser());
+        statoFascicoloElenco.setTiStatoFascElencoVers(status);
+        statoFascicoloElenco.setTsStato(fascicolo.getTsFineSes());
 
-	fascicolo.getFasStatoFascicoloElencos().add(statoFascicoloElenco);
-	em.persist(statoFascicoloElenco);
-	em.flush();
+        fascicolo.getFasStatoFascicoloElencos().add(statoFascicoloElenco);
+        em.persist(statoFascicoloElenco);
+        em.flush();
     }
 }

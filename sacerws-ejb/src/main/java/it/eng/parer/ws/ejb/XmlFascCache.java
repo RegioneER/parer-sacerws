@@ -35,6 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.xml.versfascicolo.IndiceSIPFascicolo;
 import it.eng.parer.ws.xml.versfascicoloresp.EsitoVersamentoFascicolo;
 
@@ -49,7 +51,7 @@ public class XmlFascCache {
 
     private static final Logger log = LoggerFactory.getLogger(XmlFascCache.class);
 
-    private final String URL_SCHEMA_REQUEST_FASCICOLO = "/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo.xsd";
+    private static final String URL_SCHEMA_REQUEST_FASCICOLO = "/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo.xsd";
 
     //
     JAXBContext versReqFascicoloCtx;
@@ -59,42 +61,41 @@ public class XmlFascCache {
 
     @PostConstruct
     protected void initSingleton() {
-	InputStream tmpInputStream = null;
-	try {
-	    log.info("Inizializzazione singleton XmlFascCache...");
+        InputStream tmpInputStream = null;
+        try {
+            log.info("Inizializzazione singleton XmlFascCache...");
 
-	    versReqFascicoloCtx = JAXBContext.newInstance(IndiceSIPFascicolo.class);
+            versReqFascicoloCtx = JAXBContext.newInstance(IndiceSIPFascicolo.class);
 
-	    versRespFascicoloCtx = JAXBContext.newInstance(EsitoVersamentoFascicolo.class);
+            versRespFascicoloCtx = JAXBContext.newInstance(EsitoVersamentoFascicolo.class);
 
-	    ClassLoader tmpClassLoader = getClass().getClassLoader();
-	    tmpInputStream = tmpClassLoader.getResourceAsStream(URL_SCHEMA_REQUEST_FASCICOLO);
-	    SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	    sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-	    sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-	    versReqFascicoloSchema = sf.newSchema(new StreamSource(tmpInputStream));
-	    log.info("Inizializzazione singleton XmlFascCache... completata.");
-	} catch (Exception ex) {
-	    log.error("Inizializzazione singleton XmlFascCache fallita! ", ex);
-	    throw new RuntimeException(ex);
-	} finally {
-	    IOUtils.closeQuietly(tmpInputStream);
-	}
+            ClassLoader tmpClassLoader = getClass().getClassLoader();
+            tmpInputStream = tmpClassLoader.getResourceAsStream(URL_SCHEMA_REQUEST_FASCICOLO);
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            versReqFascicoloSchema = sf.newSchema(new StreamSource(tmpInputStream));
+            log.info("Inizializzazione singleton XmlFascCache... completata.");
+        } catch (Exception ex) {
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
+        } finally {
+            IOUtils.closeQuietly(tmpInputStream);
+        }
     }
 
     @Lock(LockType.READ)
     public JAXBContext getVersReqFascicoloCtx() {
-	return versReqFascicoloCtx;
+        return versReqFascicoloCtx;
     }
 
     @Lock(LockType.READ)
     public JAXBContext getVersRespFascicoloCtx() {
-	return versRespFascicoloCtx;
+        return versRespFascicoloCtx;
     }
 
     @Lock(LockType.READ)
     public Schema getVersReqFascicoloSchema() {
-	return versReqFascicoloSchema;
+        return versReqFascicoloSchema;
     }
 
 }

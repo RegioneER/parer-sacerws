@@ -56,97 +56,97 @@ public class InvokeVerificaRule implements Serializable {
     private Map<String, Boolean> abilitazioni = defaultAbilitazioni();
 
     public static InvokeVerificaRule defaultRule() {
-	return new InvokeVerificaRule();
+        return new InvokeVerificaRule();
     }
 
     private static Map<String, Boolean> defaultAbilitazioni() {
-	return Stream.of(new Object[][] {
-		{
-			ParametroApplFl.FL_ABILITA_CONTR_CRITTOG_VERS, true },
-		{
-			ParametroApplFl.FL_ABILITA_CONTR_TRUST_VERS, true },
-		{
-			ParametroApplFl.FL_ABILITA_CONTR_CERTIF_VERS, true },
-		{
-			ParametroApplFl.FL_ABILITA_CONTR_REVOCA_VERS, true },
-		{
-			ParametroApplFl.FL_EIDAS_INCLUDI_FILEBASE64, true },
-		{
-			ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64, true } })
-		.collect(Collectors.toMap(data -> (String) data[0], data -> (Boolean) data[1]));
+        return Stream.of(new Object[][] {
+                {
+                        ParametroApplFl.FL_ABILITA_CONTR_CRITTOG_VERS, true },
+                {
+                        ParametroApplFl.FL_ABILITA_CONTR_TRUST_VERS, true },
+                {
+                        ParametroApplFl.FL_ABILITA_CONTR_CERTIF_VERS, true },
+                {
+                        ParametroApplFl.FL_ABILITA_CONTR_REVOCA_VERS, true },
+                {
+                        ParametroApplFl.FL_EIDAS_INCLUDI_FILEBASE64, true },
+                {
+                        ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64, true } })
+                .collect(Collectors.toMap(data -> (String) data[0], data -> (Boolean) data[1]));
     }
 
     public boolean isHasMarcaDetached() {
-	return hasMarcaDetached;
+        return hasMarcaDetached;
     }
 
     public void setHasMarcaDetached(boolean hasMarcaDetached) {
-	this.hasMarcaDetached = hasMarcaDetached;
+        this.hasMarcaDetached = hasMarcaDetached;
     }
 
     public boolean isHasMultipleFirmaDetached() {
-	return hasMultipleFirmaDetached;
+        return hasMultipleFirmaDetached;
     }
 
     public void setHasMultipleFirmaDetached(boolean hasMultipleFirmaDetached) {
-	this.hasMultipleFirmaDetached = hasMultipleFirmaDetached;
+        this.hasMultipleFirmaDetached = hasMultipleFirmaDetached;
     }
 
     public boolean isVerificaAllaDataDiFirma() {
-	return verificaAllaDataDiFirma;
+        return verificaAllaDataDiFirma;
     }
 
     public void setVerificaAllaDataDiFirma(boolean verificaAllaDataDiFirma) {
-	this.verificaAllaDataDiFirma = verificaAllaDataDiFirma;
+        this.verificaAllaDataDiFirma = verificaAllaDataDiFirma;
     }
 
     public boolean isHasFirmaAndMarcaDetached() {
-	return hasFirmaAndMarcaDetached;
+        return hasFirmaAndMarcaDetached;
     }
 
     public void setHasFirmaAndMarcaDetached(boolean hasFirmaAndMarcaDetached) {
-	this.hasFirmaAndMarcaDetached = hasFirmaAndMarcaDetached;
+        this.hasFirmaAndMarcaDetached = hasFirmaAndMarcaDetached;
     }
 
     public InvokeVerificaRule withEseguiVerificaFirmaOnlyCrypto(
-	    final boolean eseguiVerificaFirmaOnlyCrypto) {
-	setEseguiVerificaFirmaOnlyCrypto(eseguiVerificaFirmaOnlyCrypto);
-	return this;
+            final boolean eseguiVerificaFirmaOnlyCrypto) {
+        setEseguiVerificaFirmaOnlyCrypto(eseguiVerificaFirmaOnlyCrypto);
+        return this;
     }
 
     public InvokeVerificaRule withHasMultipleFirmaDetached(final boolean hasMultipleFirmaDetached) {
-	setHasMultipleFirmaDetached(hasMultipleFirmaDetached);
-	return this;
+        setHasMultipleFirmaDetached(hasMultipleFirmaDetached);
+        return this;
     }
 
     public InvokeVerificaRule withHasMarcaDetached(final boolean hasMarcaDetached) {
-	setHasMarcaDetached(hasMarcaDetached);
-	return this;
+        setHasMarcaDetached(hasMarcaDetached);
+        return this;
     }
 
     public InvokeVerificaRule withVerificaAllaDataFirma(final boolean verificaAllaDataDiFirma) {
-	setVerificaAllaDataDiFirma(verificaAllaDataDiFirma);
-	return this;
+        setVerificaAllaDataDiFirma(verificaAllaDataDiFirma);
+        return this;
     }
 
     public InvokeVerificaRule withFirmaAndMarcaDetached(final boolean hasFirmaAndMarcaDetached) {
-	setHasFirmaAndMarcaDetached(hasFirmaAndMarcaDetached);
-	return this;
+        setHasFirmaAndMarcaDetached(hasFirmaAndMarcaDetached);
+        return this;
     }
 
     public Map<String, Boolean> getAbilitazioni() {
-	return abilitazioni;
+        return abilitazioni;
     }
 
     public void setAbilitazioni(Map<String, Boolean> abilitazioni) {
-	this.abilitazioni = abilitazioni;
+        this.abilitazioni = abilitazioni;
     }
 
     public boolean isEseguiVerificaFirmaOnlyCrypto() {
-	return eseguiVerificaFirmaOnlyCrypto;
+        return eseguiVerificaFirmaOnlyCrypto;
     }
 
     public void setEseguiVerificaFirmaOnlyCrypto(boolean eseguiVerificaFirmaOnlyCrypto) {
-	this.eseguiVerificaFirmaOnlyCrypto = eseguiVerificaFirmaOnlyCrypto;
+        this.eseguiVerificaFirmaOnlyCrypto = eseguiVerificaFirmaOnlyCrypto;
     }
 }

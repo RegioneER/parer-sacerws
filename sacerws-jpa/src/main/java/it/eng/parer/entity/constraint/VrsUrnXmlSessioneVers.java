@@ -23,7 +23,7 @@ public final class VrsUrnXmlSessioneVers {
     }
 
     public enum TiUrnXmlSessioneVers {
-	ORIGINALE, NORMALIZZATO, INIZIALE
+        ORIGINALE, NORMALIZZATO, INIZIALE
     }
 
 }
