@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.4'
+publiccodeYmlVersion: '0.5'
 categories:
   - data-collection
   - data-visualization
@@ -25,29 +25,21 @@ description:
 developmentStatus: stable
 intendedAudience:
   countries:
-    - it
-it:
-  conforme:
-    gdpr: false
-    lineeGuidaDesign: false
-    misureMinimeSicurezza: false
-    modelloInteroperabilita: false
+    - IT
+IT:
   countryExtensionVersion: '0.2'
   piattaforme:
     anpr: false
     cie: false
     pagopa: false
     spid: false
-  riuso:
-    codiceIPA: r_emiro
 landingURL: 'https://github.com/RegioneER/parer-sacer'
 legal:
   license: AGPL-3.0-or-later
   mainCopyrightOwner: Regione Emilia-Romagna
-  repoOwner: Regione Emilia-Romagna
 localisation:
   availableLanguages:
-    - it
+    - IT
   localisationReady: true
 logo: |-
   https://raw.githubusercontent.com/RegioneER/parer-sacerws/master/src/docs/rer-logo.png

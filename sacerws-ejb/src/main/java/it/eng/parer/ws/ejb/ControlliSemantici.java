@@ -696,46 +696,6 @@ public class ControlliSemantici {
         return rispostaControlli;
     }
 
-    public RispostaControlli getIdRegistroUnitaDoc(String nomeTipoRegistro, long idStruttura) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-
-        List<DecRegistroUnitaDoc> tipoRegistroUDs = null;
-
-        try {
-            String queryStr = "select tud " + "from DecRegistroUnitaDoc tud "
-                    + "where tud.orgStrut.idStrut = :idStrutIn "
-                    + " and tud.cdRegistroUnitaDoc = :cdRegistroUnitaDoc "
-                    + " and tud.dtIstituz <= :dataDiOggiIn "
-                    + " and tud.dtSoppres > :dataDiOggiIn ";
-
-            javax.persistence.Query query = entityManager.createQuery(queryStr,
-                    DecRegistroUnitaDoc.class);
-            query.setParameter("idStrutIn", idStruttura);
-            query.setParameter("cdRegistroUnitaDoc", nomeTipoRegistro);
-            query.setParameter("dataDiOggiIn", new Date());
-            tipoRegistroUDs = query.getResultList();
-
-            if (tipoRegistroUDs.isEmpty()) {
-                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                        "Registro non trovato: " + nomeTipoRegistro));
-                return rispostaControlli;
-            }
-
-            rispostaControlli.setrLong(tipoRegistroUDs.get(0).getIdRegistroUnitaDoc());
-            rispostaControlli.setrBoolean(true);
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliSemantici.getIdRegistroUnitaDoc: " + e.getMessage()));
-            log.error("Eccezione nella lettura della tabella di decodifica ", e);
-        }
-
-        return rispostaControlli;
-    }
-
     public RispostaControlli caricaRegistroAnno(String nomeTipoRegistro, String descKey, Long anno,
             long idRegistroUnitaDoc) {
         return this.caricaRegistroAnno(nomeTipoRegistro, descKey, anno, idRegistroUnitaDoc, null);

@@ -952,12 +952,6 @@ public class VersamentoExtAggAllPrsr {
                     .logAvanzamento();
         }
 
-        // verifico che l'utente sia abilitato a tipologia ud, tipo doc e registro
-        //
-        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
-            this.controllaTipoDatoUserOrg(myEsito, versamento, rispostaWs);
-        }
-
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             // prepara risposta con flag
             this.buildFlagsOnEsito(myEsito, versamento);
@@ -1135,72 +1129,5 @@ public class VersamentoExtAggAllPrsr {
         rispostaWs.setSeverity(SeverityEnum.ERROR);
         rispostaWs.setErrorCode(rispostaControlli.getCodErr());
         rispostaWs.setErrorMessage(rispostaControlli.getDsErr());
-    }
-
-    private void controllaTipoDatoUserOrg(EsitoVersAggAllegati myControlliVers,
-            VersamentoExtAggAll versamento, RispostaWSAggAll rispostaWs) {
-        DocumentoVers docVers = versamento.getStrutturaComponenti().getDocumentiAttesi().get(0);
-        Long idTipoDocPrincipale = docVers.getIdTipoDocumentoDB();
-
-        // Recupera idRegistro dal database
-        String registro = versamento.getVersamento().getIntestazione().getChiave()
-                .getTipoRegistro();
-        RispostaControlli rispostaControlli = controlliSemantici.getIdRegistroUnitaDoc(registro,
-                versamento.getStrutturaComponenti().getIdStruttura());
-
-        if (!rispostaControlli.isrBoolean()) {
-            rispostaWs.setSeverity(SeverityEnum.ERROR);
-            rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-            return;
-        }
-
-        long idRegistro = rispostaControlli.getrLong();
-
-        // Controllo abilitazioni per i tre tipi di dato
-        Map<Long, String> tipiDatoControlli = Map.of(
-                versamento.getStrutturaComponenti().getIdTipologiaUnitaDocumentaria(),
-                "TIPO_UNITA_DOC", idRegistro, "REGISTRO", idTipoDocPrincipale.longValue(),
-                "TIPO_DOC");
-
-        for (Map.Entry<Long, String> tipoDato : tipiDatoControlli.entrySet()) {
-            verificaAbilitazioneTipoDato(myControlliVers, versamento,
-                    versamento.getStrutturaComponenti().getIdStruttura(),
-                    versamento.getStrutturaComponenti().getIdUser(), tipoDato.getKey(),
-                    tipoDato.getValue(), rispostaWs);
-        }
-    }
-
-    private void verificaAbilitazioneTipoDato(EsitoVersAggAllegati myControlliVers,
-            VersamentoExtAggAll versamento, long idStrut, long idUser, long idTipoDatoApplic,
-            String nmClasseTipoDato, RispostaWSAggAll rispostaWs) {
-        UnitaDocAggAllegati vers = versamento.getVersamento();
-        RispostaControlli rispostaControlli = controlliEjb.checkAbilitazioniUtenteIamAbilTipoDato(
-                vers.getIntestazione().getChiave().getNumero(), idStrut, idUser, idTipoDatoApplic,
-                nmClasseTipoDato);
-
-        if (!rispostaControlli.isrBoolean()) {
-            setEsitoAbilitazioneTipoDato(myControlliVers, nmClasseTipoDato,
-                    ECEsitoPosNegType.NEGATIVO);
-            rispostaWs.setSeverity(SeverityEnum.ERROR);
-            rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
-        } else {
-            setEsitoAbilitazioneTipoDato(myControlliVers, nmClasseTipoDato,
-                    ECEsitoPosNegType.POSITIVO);
-        }
-    }
-
-    private void setEsitoAbilitazioneTipoDato(EsitoVersAggAllegati myControlliVers,
-            String nmClasseTipoDato, ECEsitoPosNegType esito) {
-        switch (nmClasseTipoDato) {
-        case "TIPO_UNITA_DOC":
-            myControlliVers.setEsitoAbilitazioneTipologiaUd(esito);
-            break;
-        case "TIPO_DOC":
-            myControlliVers.setEsitoAbilitazioneTipoDoc(esito);
-            break;
-        case "REGISTRO":
-            myControlliVers.setEsitoAbilitazioneRegistro(esito);
-            break;
-        }
     }
 }

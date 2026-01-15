@@ -497,46 +497,4 @@ public class ControlliWS {
         }
         return rs;
     }
-
-    public RispostaControlli checkAbilitazioniUtenteIamAbilTipoDato(String descKey,
-            long idStruttura, long idUser, long idTipoDatoApplic, String nmClasseTipoDato) {
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrBoolean(false);
-
-        List<IamAbilTipoDato> iamAbilTipoDatos = null;
-
-        try {
-            String queryStr = "select t from IamAbilTipoDato t "
-                    + "where t.iamAbilOrganiz.iamUser.idUserIam = :idUserIam "
-                    + "and t.iamAbilOrganiz.idOrganizApplic = :idOrganizApplic  "
-                    + "and t.idTipoDatoApplic = :idTipoDatoApplic  "
-                    + "and t.nmClasseTipoDato = :nmClasseTipoDato  ";
-            javax.persistence.Query query = entityManager.createQuery(queryStr,
-                    IamAbilTipoDato.class);
-            query.setParameter("idOrganizApplic", new BigDecimal(idStruttura));
-            query.setParameter("idUserIam", idUser);
-            query.setParameter("idTipoDatoApplic", new BigDecimal(idTipoDatoApplic));
-            query.setParameter("nmClasseTipoDato", nmClasseTipoDato);
-
-            iamAbilTipoDatos = query.getResultList();
-
-            // ottengo un risultato -> abilitato al tipo dato
-            if (iamAbilTipoDatos.size() == 1) {
-                rispostaControlli.setrLong(iamAbilTipoDatos.get(0).getIdAbilTipoDato());
-                rispostaControlli.setrBoolean(true);
-            } else {
-                rispostaControlli.setCodErr(MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                        MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001, descKey, nmClasseTipoDato));
-            }
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliWS.checkAbilitazioniUtenteIamAbilTipoDato: " + e.getMessage()));
-            log.error(ERRORE_TABELLA_DECODIFICA, e);
-        }
-
-        return rispostaControlli;
-    }
 }
