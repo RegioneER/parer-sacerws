@@ -32,86 +32,86 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 public class ArquillianTestUtils {
 
     public static void saveArchiveTo(Archive<WebArchive> testArchive, String path) {
-	testArchive.as(ZipExporter.class).exportTo(new File(path), true);
+        testArchive.as(ZipExporter.class).exportTo(new File(path), true);
     }
 
     public static JavaArchive createSacerLogJavaArchive() {
-	return ShrinkWrap.create(JavaArchive.class, "sacerlog.jar")
-		.addPackages(true, "it.eng.parer.sacerlog")
-		.addAsResource(ArquillianTestUtils.class.getClassLoader()
-			.getResource("ejb-jar-sacerlog.xml"), "META-INF/ejb-jar.xml")
-		.addAsResource(
-			ArquillianTestUtils.class.getClassLoader()
-				.getResource("WSRequestIndiceSIPFascicolo_1.0.xsd"),
-			"/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo_1.0.xsd");
+        return ShrinkWrap.create(JavaArchive.class, "sacerlog.jar")
+                .addPackages(true, "it.eng.parer.sacerlog")
+                .addAsResource(ArquillianTestUtils.class.getClassLoader()
+                        .getResource("ejb-jar-sacerlog.xml"), "META-INF/ejb-jar.xml")
+                .addAsResource(
+                        ArquillianTestUtils.class.getClassLoader()
+                                .getResource("WSRequestIndiceSIPFascicolo_1.0.xsd"),
+                        "/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo_1.0.xsd");
     }
 
     public static JavaArchive createPaginatorJavaArchive() {
-	return ShrinkWrap.create(JavaArchive.class, "paginator.jar")
-		.addPackages(true, "it.eng.paginator", "it.eng.spagoLite")
-		.addAsResource(ArquillianTestUtils.class.getClassLoader()
-			.getResource("ejb-jar-paginator.xml"), "META-INF/ejb-jar.xml");
+        return ShrinkWrap.create(JavaArchive.class, "paginator.jar")
+                .addPackages(true, "it.eng.paginator", "it.eng.spagoLite")
+                .addAsResource(ArquillianTestUtils.class.getClassLoader()
+                        .getResource("ejb-jar-paginator.xml"), "META-INF/ejb-jar.xml");
     }
 
     public static JavaArchive createSacerWSJavaArchive(List<String> packages, Class<?>... classes) {
-	JavaArchive sacerWsJavaArchive = ShrinkWrap.create(JavaArchive.class, "sacerWSEjb.jar");
-	sacerWsJavaArchive
-		.addPackages(true, "it.eng.parer.entity", "it.eng.parer.grantedEntity",
-			"it.eng.parer.view_entity", "it.eng.parer.util.ejb.help.dto",
-			"it.eng.parer.ws.versamentoUpd.dto", "it.eng.parer.ws.dto",
-			"it.eng.parer.ws.versamento.dto", "org.apache.commons.lang3",
-			"it.eng.parer.jboss.timer.common", "it.eng.parer.crypto.model.exceptions",
-			"it.eng.parer.eidas.model.exception", "org.apache.commons.text",
-			"com.fasterxml.uuid")
-		.addPackages(false, "it.eng.parer.sacerlog.entity",
-			"it.eng.parer.sacerlog.view_entity", "it.eng.parer.exception",
-			"it.eng.parer.ws.utils", "it.eng.parer.ws.versamentoUpd.utils",
-			"it.eng.sequences.hibernate")
-		.addAsResource(
-			ArquillianTestUtils.class.getClassLoader().getResource("persistence.xml"),
-			"META-INF/persistence.xml")
-		.addAsResource(
-			ArquillianTestUtils.class.getClassLoader().getResource("ejb-jar.xml"),
-			"META-INF/ejb-jar.xml")
-		.addClass("it.eng.ArquillianTestUtils")
-		.addClass(it.eng.parer.util.ejb.help.ConfigurationHelper.class)
-		.addClass(it.eng.spagoCore.util.UUIDMdcLogUtil.class)
-		.addClass("org.springframework.http.client.ClientHttpRequestInterceptor")
-		.addClass("org.springframework.retry.RetryCallback")
-		.addClass("org.springframework.http.HttpRequest")
-		.addClass("org.springframework.http.HttpMessage");
-	for (Class<?> c : classes) {
-	    sacerWsJavaArchive.addClass(c);
-	}
-	packages.parallelStream().forEach(sacerWsJavaArchive::addPackage);
-	return sacerWsJavaArchive;
+        JavaArchive sacerWsJavaArchive = ShrinkWrap.create(JavaArchive.class, "sacerWSEjb.jar");
+        sacerWsJavaArchive
+                .addPackages(true, "it.eng.parer.entity", "it.eng.parer.grantedEntity",
+                        "it.eng.parer.view_entity", "it.eng.parer.util.ejb.help.dto",
+                        "it.eng.parer.ws.versamentoUpd.dto", "it.eng.parer.ws.dto",
+                        "it.eng.parer.ws.versamento.dto", "org.apache.commons.lang3",
+                        "it.eng.parer.jboss.timer.common", "it.eng.parer.crypto.model.exceptions",
+                        "it.eng.parer.eidas.model.exception", "org.apache.commons.text",
+                        "com.fasterxml.uuid")
+                .addPackages(false, "it.eng.parer.sacerlog.entity",
+                        "it.eng.parer.sacerlog.view_entity", "it.eng.parer.exception",
+                        "it.eng.parer.ws.utils", "it.eng.parer.ws.versamentoUpd.utils",
+                        "it.eng.sequences.hibernate")
+                .addAsResource(
+                        ArquillianTestUtils.class.getClassLoader().getResource("persistence.xml"),
+                        "META-INF/persistence.xml")
+                .addAsResource(
+                        ArquillianTestUtils.class.getClassLoader().getResource("ejb-jar.xml"),
+                        "META-INF/ejb-jar.xml")
+                .addClass("it.eng.ArquillianTestUtils")
+                .addClass(it.eng.parer.util.ejb.help.ConfigurationHelper.class)
+                .addClass(it.eng.spagoCore.util.UUIDMdcLogUtil.class)
+                .addClass("org.springframework.http.client.ClientHttpRequestInterceptor")
+                .addClass("org.springframework.retry.RetryCallback")
+                .addClass("org.springframework.http.HttpRequest")
+                .addClass("org.springframework.http.HttpMessage");
+        for (Class<?> c : classes) {
+            sacerWsJavaArchive.addClass(c);
+        }
+        packages.parallelStream().forEach(sacerWsJavaArchive::addPackage);
+        return sacerWsJavaArchive;
     }
 
     public static EnterpriseArchive createEnterpriseArchive(String archiveName,
-	    JavaArchive... modules) {
-	EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, archiveName + ".ear")
-		.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
-	for (JavaArchive m : modules) {
-	    ear.addAsModule(m);
-	}
-	return ear;
+            JavaArchive... modules) {
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, archiveName + ".ear")
+                .addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+        for (JavaArchive m : modules) {
+            ear.addAsModule(m);
+        }
+        return ear;
     }
 
     public static boolean exceptionMessageContains(Exception e, String... messages) {
-	for (String m : messages) {
-	    final String message = e.getMessage() != null ? e.getMessage()
-		    : e.getClass().getSimpleName();
-	    if (message.contains(m)) {
-		return true;
-	    }
-	}
-	return false;
+        for (String m : messages) {
+            final String message = e.getMessage() != null ? e.getMessage()
+                    : e.getClass().getSimpleName();
+            if (message.contains(m)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void assertNoErr(RispostaControlli rispostaControlli) {
-	assertNotEquals(MessaggiWSBundle.ERR_666, rispostaControlli.getCodErr());
-	assertNotEquals(MessaggiWSBundle.ERR_666P, rispostaControlli.getCodErr());
-	assertNotEquals(MessaggiWSBundle.ERR_666N, rispostaControlli.getCodErr());
+        assertNotEquals(MessaggiWSBundle.ERR_666, rispostaControlli.getCodErr());
+        assertNotEquals(MessaggiWSBundle.ERR_666P, rispostaControlli.getCodErr());
+        assertNotEquals(MessaggiWSBundle.ERR_666N, rispostaControlli.getCodErr());
     }
 
 }

@@ -41,91 +41,91 @@ public class ConfigurationHelperTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(
-		"configurationHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
-			ConfigurationHelper.class, ConfigurationHelperTest.class),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(
+                "configurationHelperTest", createSacerWSJavaArchive(Collections.emptyList(),
+                        ConfigurationHelper.class, ConfigurationHelperTest.class),
+                createSacerLogJavaArchive());
     }
 
     @Test
     void getConfiguration_queryIsOk() {
-	try {
-	    Map<String, String> configuration = helper.getConfiguration();
-	    assertFalse(configuration.isEmpty());
-	} catch (ParamApplicNotFoundException e) {
-	    assertTrue(true);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            Map<String, String> configuration = helper.getConfiguration();
+            assertFalse(configuration.isEmpty());
+        } catch (ParamApplicNotFoundException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValue_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByApplic("NON_ESISTE");
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByApplic("NON_ESISTE");
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValueStrutAmbiente_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByStrut("NON_ESISTE", 0l, 0L);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByStrut("NON_ESISTE", 0l, 0L);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValueTipoUD_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByTipoUd("NON_ESISTE", 0L, 0L, 0L);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByTipoUd("NON_ESISTE", 0L, 0L, 0L);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValueAATipoFascicolo_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByAaTipoFasc("NON_ESISTE", 0L, 0L, 0L);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByAaTipoFasc("NON_ESISTE", 0L, 0L, 0L);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getValoreParamApplicByTiParamApplicAsMap_queryIsOk() {
-	Map<String, String> map = helper.getValoreParamApplicByTiParamApplicAsMap(
-		Arrays.asList(ParametroApplDB.TipoParametroAppl.IAM));
-	assertFalse(map.isEmpty());
+        Map<String, String> map = helper.getValoreParamApplicByTiParamApplicAsMap(
+                Arrays.asList(ParametroApplDB.TipoParametroAppl.IAM));
+        assertFalse(map.isEmpty());
     }
 
     @Test
     void getParamApplicValueAsFl_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByApplicAsFl("NON_ESISTE");
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByApplicAsFl("NON_ESISTE");
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValueAsFlTipoUD_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByTipoUdAsFl("NON_ESISTE", 0L, 0L, 0L);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByTipoUdAsFl("NON_ESISTE", 0L, 0L, 0L);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 
     @Test
     void getParamApplicValueAsFlAAFascicolo_queryIsOk() {
-	try {
-	    helper.getValoreParamApplicByAaTipoFascAsFl("NON_ESISTE", 0L, 0l, 0L);
-	} catch (Exception e) {
-	    assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
-	}
+        try {
+            helper.getValoreParamApplicByAaTipoFascAsFl("NON_ESISTE", 0L, 0l, 0L);
+        } catch (Exception e) {
+            assertTrue(exceptionMessageContains(e, "non definito o non valorizzato"));
+        }
     }
 }

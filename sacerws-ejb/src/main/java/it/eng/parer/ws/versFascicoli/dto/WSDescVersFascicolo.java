@@ -28,12 +28,12 @@ public class WSDescVersFascicolo implements IWSDesc {
 
     @Override
     public String getVersione() {
-	return Costanti.WS_VERS_FASCICOLO_VRSN;
+        return Costanti.WS_VERS_FASCICOLO_VRSN;
     }
 
     @Override
     public String getNomeWs() {
-	return Costanti.WS_VERS_FASCICOLO_NOME;
+        return Costanti.WS_VERS_FASCICOLO_NOME;
     }
 
     // @Override

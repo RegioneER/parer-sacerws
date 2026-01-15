@@ -64,80 +64,80 @@ public class FasRespFascicolo implements Serializable {
     @Id
     @Column(name = "ID_RESP_FASCICOLO")
     @GenericGenerator(name = "SFAS_RESP_FASCICOLO_ID_RESP_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_RESP_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_RESP_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFAS_RESP_FASCICOLO_ID_RESP_FASCICOLO_GENERATOR")
     public Long getIdRespFascicolo() {
-	return this.idRespFascicolo;
+        return this.idRespFascicolo;
     }
 
     public void setIdRespFascicolo(Long idRespFascicolo) {
-	this.idRespFascicolo = idRespFascicolo;
+        this.idRespFascicolo = idRespFascicolo;
     }
 
     @Column(name = "CD_RESP")
     public String getCdResp() {
-	return this.cdResp;
+        return this.cdResp;
     }
 
     public void setCdResp(String cdResp) {
-	this.cdResp = cdResp;
+        this.cdResp = cdResp;
     }
 
     @Column(name = "NM_COGN_RESP")
     public String getNmCognResp() {
-	return this.nmCognResp;
+        return this.nmCognResp;
     }
 
     public void setNmCognResp(String nmCognResp) {
-	this.nmCognResp = nmCognResp;
+        this.nmCognResp = nmCognResp;
     }
 
     @Column(name = "NM_NOME_RESP")
     public String getNmNomeResp() {
-	return this.nmNomeResp;
+        return this.nmNomeResp;
     }
 
     public void setNmNomeResp(String nmNomeResp) {
-	this.nmNomeResp = nmNomeResp;
+        this.nmNomeResp = nmNomeResp;
     }
 
     @Column(name = "TI_CD_RESP")
     public String getTiCdResp() {
-	return this.tiCdResp;
+        return this.tiCdResp;
     }
 
     public void setTiCdResp(String tiCdResp) {
-	this.tiCdResp = tiCdResp;
+        this.tiCdResp = tiCdResp;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_OGG_RESP")
     public TiOggResp getTiOggResp() {
-	return this.tiOggResp;
+        return this.tiOggResp;
     }
 
     public void setTiOggResp(TiOggResp tiOggResp) {
-	this.tiOggResp = tiOggResp;
+        this.tiOggResp = tiOggResp;
     }
 
     @Column(name = "TI_RESP")
     public String getTiResp() {
-	return this.tiResp;
+        return this.tiResp;
     }
 
     public void setTiResp(String tiResp) {
-	this.tiResp = tiResp;
+        this.tiResp = tiResp;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 }

@@ -35,12 +35,12 @@ import it.eng.parer.firma.helper.CryptoRestConfiguratorHelper;
 public class CryptoRestConfiguratorHelperTest {
     @Deployment
     public static Archive<?> createTestArchive() {
-	JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(Collections.emptyList(),
-		CryptoRestConfiguratorHelper.class, CryptoRestConfiguratorHelperTest.class,
-		it.eng.parer.util.ejb.help.ConfigurationHelper.class);
-	sacerWSJavaArchive.addPackage("it.eng.parer.retry");
-	return createEnterpriseArchive("CryptoRestConfiguratorHelperTest", sacerWSJavaArchive,
-		createSacerLogJavaArchive());
+        JavaArchive sacerWSJavaArchive = createSacerWSJavaArchive(Collections.emptyList(),
+                CryptoRestConfiguratorHelper.class, CryptoRestConfiguratorHelperTest.class,
+                it.eng.parer.util.ejb.help.ConfigurationHelper.class);
+        sacerWSJavaArchive.addPackage("it.eng.parer.retry");
+        return createEnterpriseArchive("CryptoRestConfiguratorHelperTest", sacerWSJavaArchive,
+                createSacerLogJavaArchive());
     }
 
     @EJB
@@ -48,53 +48,53 @@ public class CryptoRestConfiguratorHelperTest {
 
     @Test
     void getRetryTimeoutParam_queryIsOk() {
-	helper.getRetryTimeoutParam();
-	assertTrue(true);
+        helper.getRetryTimeoutParam();
+        assertTrue(true);
     }
 
     @Test
     void getMaxRetryParam_queryIsOk() {
-	helper.getMaxRetryParam();
-	assertTrue(true);
+        helper.getMaxRetryParam();
+        assertTrue(true);
     }
 
     @Test
     void getCircuitBreakerOpenTimeoutParam_queryIsOk() {
-	helper.getCircuitBreakerOpenTimeoutParam();
-	assertTrue(true);
+        helper.getCircuitBreakerOpenTimeoutParam();
+        assertTrue(true);
     }
 
     @Test
     void getCircuitBreakerResetTimeoutParam_queryIsOk() {
-	helper.getCircuitBreakerResetTimeoutParam();
-	assertTrue(true);
+        helper.getCircuitBreakerResetTimeoutParam();
+        assertTrue(true);
     }
 
     @Test
     void getPeriodoBackOffParam_queryIsOk() {
-	helper.getPeriodoBackOffParam();
-	assertTrue(true);
+        helper.getPeriodoBackOffParam();
+        assertTrue(true);
     }
 
     @Test
     void getClientTimeoutInMinutesParam_queryIsOk() {
-	helper.getClientTimeoutInMinutesParam();
-	assertTrue(true);
+        helper.getClientTimeoutInMinutesParam();
+        assertTrue(true);
     }
 
     @Test
     void isCompositePolicyOptimisticParam_queryIsOk() {
-	assertNotNull(helper.isCompositePolicyOptimisticParam());
+        assertNotNull(helper.isCompositePolicyOptimisticParam());
     }
 
     @Test
     void endPoints_queryIsOk() {
-	assertNotNull(helper.endPoints());
+        assertNotNull(helper.endPoints());
     }
 
     @Test
     void preferredEndpoint_queryIsOk() {
-	helper.preferredEndpoint();
-	assertTrue(true);
+        helper.preferredEndpoint();
+        assertTrue(true);
     }
 }

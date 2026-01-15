@@ -38,27 +38,27 @@ public class WsXmlValidationEventHandler implements ValidationEventHandler {
     String messaggio = null;
 
     public String getMessaggio() {
-	return messaggio;
+        return messaggio;
     }
 
     @Override
     public boolean handleEvent(ValidationEvent event) {
 
-	log.debug("\nErrore di validazione JAXB");
-	log.debug("SEVERITY:  {}", event.getSeverity());
-	log.debug("MESSAGE:  {}", event.getMessage());
-	log.debug("LINKED EXCEPTION: {0}", event.getLinkedException());
-	log.debug("LOCATOR");
-	log.debug("    LINE NUMBER:  {}", event.getLocator().getLineNumber());
-	log.debug("    COLUMN NUMBER:  {}", event.getLocator().getColumnNumber());
-	log.debug("    OFFSET:  {}", event.getLocator().getOffset());
-	log.debug("    OBJECT:  {}", event.getLocator().getObject());
-	log.debug("    NODE:  {}", event.getLocator().getNode());
-	log.debug("    URL:  {}", event.getLocator().getURL());
+        log.debug("\nErrore di validazione JAXB");
+        log.debug("SEVERITY:  {}", event.getSeverity());
+        log.debug("MESSAGE:  {}", event.getMessage());
+        log.debug("LINKED EXCEPTION: {0}", event.getLinkedException());
+        log.debug("LOCATOR");
+        log.debug("    LINE NUMBER:  {}", event.getLocator().getLineNumber());
+        log.debug("    COLUMN NUMBER:  {}", event.getLocator().getColumnNumber());
+        log.debug("    OFFSET:  {}", event.getLocator().getOffset());
+        log.debug("    OBJECT:  {}", event.getLocator().getObject());
+        log.debug("    NODE:  {}", event.getLocator().getNode());
+        log.debug("    URL:  {}", event.getLocator().getURL());
 
-	messaggio = event.getMessage();
+        messaggio = event.getMessage();
 
-	return false;
+        return false;
     }
 
 }

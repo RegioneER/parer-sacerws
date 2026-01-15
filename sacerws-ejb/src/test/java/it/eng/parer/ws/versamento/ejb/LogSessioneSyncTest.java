@@ -30,26 +30,26 @@ public class LogSessioneSyncTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-	return createEnterpriseArchive(LogSessioneSyncTest.class.getSimpleName(),
-		createSacerWSJavaArchive(
-			Arrays.asList("it.eng.parer.ws.versamento.ejb.oracleBlb",
-				"it.eng.parerxml.xsd", "it.eng.spagoLite.security.exception",
-				"it.eng.spagoLite.security", "it.eng.parer.idpjaas.logutils",
-				"org.apache.commons.io.output"),
-			LogSessioneSyncTest.class, LogSessioneSync.class,
-			it.eng.parer.ws.ejb.ControlliSemantici.class,
-			it.eng.parer.util.ejb.AppServerInstance.class,
-			org.apache.commons.io.IOUtils.class, it.eng.parer.ws.ejb.XmlVersCache.class)
-			.addPackages(true, "it.eng.parer.ws.xml")
-			.addAsResource(
-				LogSessioneSyncTest.class.getClassLoader()
-					.getResource("WSRequestVersamento.xsd"),
-				"/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
-			.addAsResource(
-				LogSessioneSyncTest.class.getClassLoader()
-					.getResource("WSResponseVersamento.xsd"),
-				"/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd"),
-		createSacerLogJavaArchive());
+        return createEnterpriseArchive(LogSessioneSyncTest.class.getSimpleName(),
+                createSacerWSJavaArchive(
+                        Arrays.asList("it.eng.parer.ws.versamento.ejb.oracleBlb",
+                                "it.eng.parerxml.xsd", "it.eng.spagoLite.security.exception",
+                                "it.eng.spagoLite.security", "it.eng.parer.idpjaas.logutils",
+                                "org.apache.commons.io.output"),
+                        LogSessioneSyncTest.class, LogSessioneSync.class,
+                        it.eng.parer.ws.ejb.ControlliSemantici.class,
+                        it.eng.parer.util.ejb.AppServerInstance.class,
+                        org.apache.commons.io.IOUtils.class, it.eng.parer.ws.ejb.XmlVersCache.class)
+                        .addPackages(true, "it.eng.parer.ws.xml")
+                        .addAsResource(
+                                LogSessioneSyncTest.class.getClassLoader()
+                                        .getResource("WSRequestVersamento.xsd"),
+                                "/it/eng/parer/ws/xml/versReq/WSRequestVersamento.xsd")
+                        .addAsResource(
+                                LogSessioneSyncTest.class.getClassLoader()
+                                        .getResource("WSResponseVersamento.xsd"),
+                                "/it/eng/parer/ws/xml/versResp/WSResponseVersamento.xsd"),
+                createSacerLogJavaArchive());
     }
 
     @EJB

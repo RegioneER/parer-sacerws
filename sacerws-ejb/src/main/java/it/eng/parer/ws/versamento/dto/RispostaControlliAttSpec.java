@@ -31,18 +31,18 @@ public class RispostaControlliAttSpec extends RispostaControlli {
     private HashMap<String, DatoSpecifico> datiSpecifici;
 
     public long getIdRecXsdDatiSpec() {
-	return idRecXsdDatiSpec;
+        return idRecXsdDatiSpec;
     }
 
     public void setIdRecXsdDatiSpec(long idRecXsdDatiSpec) {
-	this.idRecXsdDatiSpec = idRecXsdDatiSpec;
+        this.idRecXsdDatiSpec = idRecXsdDatiSpec;
     }
 
     public HashMap<String, DatoSpecifico> getDatiSpecifici() {
-	return datiSpecifici;
+        return datiSpecifici;
     }
 
     public void setDatiSpecifici(HashMap<String, DatoSpecifico> datiSpecifici) {
-	this.datiSpecifici = datiSpecifici;
+        this.datiSpecifici = datiSpecifici;
     }
 }

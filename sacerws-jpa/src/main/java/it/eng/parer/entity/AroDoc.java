@@ -89,370 +89,370 @@ public class AroDoc implements Serializable {
     private List<AroUpdDocUnitaDoc> aroUpdDocUnitaDocs = new ArrayList<>();
 
     public AroDoc() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @Column(name = "ID_DOC")
     @GenericGenerator(name = "ARO_DOC_ID_DOC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_DOC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_DOC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ARO_DOC_ID_DOC_GENERATOR")
     public Long getIdDoc() {
-	return this.idDoc;
+        return this.idDoc;
     }
 
     public void setIdDoc(Long idDoc) {
-	this.idDoc = idDoc;
+        this.idDoc = idDoc;
     }
 
     @Column(name = "CD_KEY_DOC_VERS")
     public String getCdKeyDocVers() {
-	return this.cdKeyDocVers;
+        return this.cdKeyDocVers;
     }
 
     public void setCdKeyDocVers(String cdKeyDocVers) {
-	this.cdKeyDocVers = cdKeyDocVers;
+        this.cdKeyDocVers = cdKeyDocVers;
     }
 
     @Column(name = "DL_DOC")
     public String getDlDoc() {
-	return this.dlDoc;
+        return this.dlDoc;
     }
 
     public void setDlDoc(String dlDoc) {
-	this.dlDoc = dlDoc;
+        this.dlDoc = dlDoc;
     }
 
     @Column(name = "DS_AUTORE_DOC")
     public String getDsAutoreDoc() {
-	return this.dsAutoreDoc;
+        return this.dsAutoreDoc;
     }
 
     public void setDsAutoreDoc(String dsAutoreDoc) {
-	this.dsAutoreDoc = dsAutoreDoc;
+        this.dsAutoreDoc = dsAutoreDoc;
     }
 
     @Column(name = "DS_MSG_ESITO_VERIF_FIRME")
     public String getDsMsgEsitoVerifFirme() {
-	return this.dsMsgEsitoVerifFirme;
+        return this.dsMsgEsitoVerifFirme;
     }
 
     public void setDsMsgEsitoVerifFirme(String dsMsgEsitoVerifFirme) {
-	this.dsMsgEsitoVerifFirme = dsMsgEsitoVerifFirme;
+        this.dsMsgEsitoVerifFirme = dsMsgEsitoVerifFirme;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ANNUL")
     public Date getDtAnnul() {
-	return this.dtAnnul;
+        return this.dtAnnul;
     }
 
     public void setDtAnnul(Date dtAnnul) {
-	this.dtAnnul = dtAnnul;
+        this.dtAnnul = dtAnnul;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_CREAZIONE")
     public Date getDtCreazione() {
-	return this.dtCreazione;
+        return this.dtCreazione;
     }
 
     public void setDtCreazione(Date dtCreazione) {
-	this.dtCreazione = dtCreazione;
+        this.dtCreazione = dtCreazione;
     }
 
     @Column(name = "FL_DOC_FIRMATO", columnDefinition = "char(1)")
     public String getFlDocFirmato() {
-	return this.flDocFirmato;
+        return this.flDocFirmato;
     }
 
     public void setFlDocFirmato(String flDocFirmato) {
-	this.flDocFirmato = flDocFirmato;
+        this.flDocFirmato = flDocFirmato;
     }
 
     @Column(name = "FL_DOC_FISC", columnDefinition = "char(1)")
     public String getFlDocFisc() {
-	return this.flDocFisc;
+        return this.flDocFisc;
     }
 
     public void setFlDocFisc(String flDocFisc) {
-	this.flDocFisc = flDocFisc;
+        this.flDocFisc = flDocFisc;
     }
 
     @Column(name = "FL_FORZA_ACCETTAZIONE", columnDefinition = "char(1)")
     public String getFlForzaAccettazione() {
-	return this.flForzaAccettazione;
+        return this.flForzaAccettazione;
     }
 
     public void setFlForzaAccettazione(String flForzaAccettazione) {
-	this.flForzaAccettazione = flForzaAccettazione;
+        this.flForzaAccettazione = flForzaAccettazione;
     }
 
     @Column(name = "FL_FORZA_CONSERVAZIONE", columnDefinition = "char(1)")
     public String getFlForzaConservazione() {
-	return this.flForzaConservazione;
+        return this.flForzaConservazione;
     }
 
     public void setFlForzaConservazione(String flForzaConservazione) {
-	this.flForzaConservazione = flForzaConservazione;
+        this.flForzaConservazione = flForzaConservazione;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "NM_SISTEMA_MIGRAZ")
     public String getNmSistemaMigraz() {
-	return this.nmSistemaMigraz;
+        return this.nmSistemaMigraz;
     }
 
     public void setNmSistemaMigraz(String nmSistemaMigraz) {
-	this.nmSistemaMigraz = nmSistemaMigraz;
+        this.nmSistemaMigraz = nmSistemaMigraz;
     }
 
     @Column(name = "NT_ANNUL")
     public String getNtAnnul() {
-	return this.ntAnnul;
+        return this.ntAnnul;
     }
 
     public void setNtAnnul(String ntAnnul) {
-	this.ntAnnul = ntAnnul;
+        this.ntAnnul = ntAnnul;
     }
 
     @Column(name = "NT_DOC")
     public String getNtDoc() {
-	return this.ntDoc;
+        return this.ntDoc;
     }
 
     public void setNtDoc(String ntDoc) {
-	this.ntDoc = ntDoc;
+        this.ntDoc = ntDoc;
     }
 
     @Column(name = "PG_DOC")
     public BigDecimal getPgDoc() {
-	return this.pgDoc;
+        return this.pgDoc;
     }
 
     public void setPgDoc(BigDecimal pgDoc) {
-	this.pgDoc = pgDoc;
+        this.pgDoc = pgDoc;
     }
 
     @Column(name = "NI_ORD_DOC")
     public BigDecimal getNiOrdDoc() {
-	return this.niOrdDoc;
+        return this.niOrdDoc;
     }
 
     public void setNiOrdDoc(BigDecimal niOrdDoc) {
-	this.niOrdDoc = niOrdDoc;
+        this.niOrdDoc = niOrdDoc;
     }
 
     @Column(name = "NI_RESET_STATO")
     public BigDecimal getNiResetStato() {
-	return this.niResetStato;
+        return this.niResetStato;
     }
 
     public void setNiResetStato(BigDecimal niResetStato) {
-	this.niResetStato = niResetStato;
+        this.niResetStato = niResetStato;
     }
 
     @Column(name = "TI_ANNUL")
     public String getTiAnnul() {
-	return this.tiAnnul;
+        return this.tiAnnul;
     }
 
     public void setTiAnnul(String tiAnnul) {
-	this.tiAnnul = tiAnnul;
+        this.tiAnnul = tiAnnul;
     }
 
     @Column(name = "TI_CONSERVAZIONE")
     public String getTiConservazione() {
-	return this.tiConservazione;
+        return this.tiConservazione;
     }
 
     public void setTiConservazione(String tiConservazione) {
-	this.tiConservazione = tiConservazione;
+        this.tiConservazione = tiConservazione;
     }
 
     @Column(name = "TI_CREAZIONE")
     public String getTiCreazione() {
-	return this.tiCreazione;
+        return this.tiCreazione;
     }
 
     public void setTiCreazione(String tiCreazione) {
-	this.tiCreazione = tiCreazione;
+        this.tiCreazione = tiCreazione;
     }
 
     @Column(name = "TI_DOC")
     public String getTiDoc() {
-	return this.tiDoc;
+        return this.tiDoc;
     }
 
     public void setTiDoc(String tiDoc) {
-	this.tiDoc = tiDoc;
+        this.tiDoc = tiDoc;
     }
 
     @Column(name = "TI_ESITO_VERIF_FIRME")
     public String getTiEsitoVerifFirme() {
-	return this.tiEsitoVerifFirme;
+        return this.tiEsitoVerifFirme;
     }
 
     public void setTiEsitoVerifFirme(String tiEsitoVerifFirme) {
-	this.tiEsitoVerifFirme = tiEsitoVerifFirme;
+        this.tiEsitoVerifFirme = tiEsitoVerifFirme;
     }
 
     @Column(name = "TI_STATO_DOC")
     public String getTiStatoDoc() {
-	return this.tiStatoDoc;
+        return this.tiStatoDoc;
     }
 
     public void setTiStatoDoc(String tiStatoDoc) {
-	this.tiStatoDoc = tiStatoDoc;
+        this.tiStatoDoc = tiStatoDoc;
     }
 
     @Column(name = "TI_STATO_DOC_ELENCO_VERS")
     public String getTiStatoDocElencoVers() {
-	return this.tiStatoDocElencoVers;
+        return this.tiStatoDocElencoVers;
     }
 
     public void setTiStatoDocElencoVers(String tiStatoDocElencoVers) {
-	this.tiStatoDocElencoVers = tiStatoDocElencoVers;
+        this.tiStatoDocElencoVers = tiStatoDocElencoVers;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_STATO_ELENCO_VERS")
     public Date getTsStatoElencoVers() {
-	return this.tsStatoElencoVers;
+        return this.tsStatoElencoVers;
     }
 
     public void setTsStatoElencoVers(Date tsStatoElencoVers) {
-	this.tsStatoElencoVers = tsStatoElencoVers;
+        this.tsStatoElencoVers = tsStatoElencoVers;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TS_LAST_RESET_STATO")
     public Date getTsLastResetStato() {
-	return this.tsLastResetStato;
+        return this.tsLastResetStato;
     }
 
     public void setTsLastResetStato(Date tsLastResetStato) {
-	this.tsLastResetStato = tsLastResetStato;
+        this.tsLastResetStato = tsLastResetStato;
     }
 
     @Column(name = "ID_TIPO_DOC", insertable = false, updatable = false)
     public Long getIdDecTipoDoc() {
-	return idDecTipoDoc;
+        return idDecTipoDoc;
     }
 
     public void setIdDecTipoDoc(Long idDecTipoDoc) {
-	this.idDecTipoDoc = idDecTipoDoc;
+        this.idDecTipoDoc = idDecTipoDoc;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
     // bi-directional many-to-one association to DecTipoDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TIPO_DOC")
     public DecTipoDoc getDecTipoDoc() {
-	return this.decTipoDoc;
+        return this.decTipoDoc;
     }
 
     public void setDecTipoDoc(DecTipoDoc decTipoDoc) {
-	this.decTipoDoc = decTipoDoc;
+        this.decTipoDoc = decTipoDoc;
     }
 
     // bi-directional many-to-one association to AroStrutDoc
     @OneToMany(mappedBy = "aroDoc")
     public List<AroStrutDoc> getAroStrutDocs() {
-	return this.aroStrutDocs;
+        return this.aroStrutDocs;
     }
 
     public void setAroStrutDocs(List<AroStrutDoc> aroStrutDocs) {
-	this.aroStrutDocs = aroStrutDocs;
+        this.aroStrutDocs = aroStrutDocs;
     }
 
     // bi-directional many-to-one association to AroUsoXsdDatiSpec
     @OneToMany(mappedBy = "aroDoc")
     public List<AroUsoXsdDatiSpec> getAroUsoXsdDatiSpecs() {
-	return this.aroUsoXsdDatiSpecs;
+        return this.aroUsoXsdDatiSpecs;
     }
 
     public void setAroUsoXsdDatiSpecs(List<AroUsoXsdDatiSpec> aroUsoXsdDatiSpecs) {
-	this.aroUsoXsdDatiSpecs = aroUsoXsdDatiSpecs;
+        this.aroUsoXsdDatiSpecs = aroUsoXsdDatiSpecs;
     }
 
     // bi-directional many-to-one association to AroWarnUnitaDoc
     @OneToMany(mappedBy = "aroDoc")
     public List<AroWarnUnitaDoc> getAroWarnUnitaDocs() {
-	return this.aroWarnUnitaDocs;
+        return this.aroWarnUnitaDocs;
     }
 
     public void setAroWarnUnitaDocs(List<AroWarnUnitaDoc> aroWarnUnitaDocs) {
-	this.aroWarnUnitaDocs = aroWarnUnitaDocs;
+        this.aroWarnUnitaDocs = aroWarnUnitaDocs;
     }
 
     // bi-directional many-to-one association to VrsSessioneVers
     @OneToMany(mappedBy = "aroDoc")
     public List<VrsSessioneVers> getVrsSessioneVers() {
-	return this.vrsSessioneVers;
+        return this.vrsSessioneVers;
     }
 
     public void setVrsSessioneVers(List<VrsSessioneVers> vrsSessioneVers) {
-	this.vrsSessioneVers = vrsSessioneVers;
+        this.vrsSessioneVers = vrsSessioneVers;
     }
 
     // bi-directional many-to-one association to ElvDocAggDaElabElenco
     @OneToMany(mappedBy = "aroDoc")
     public List<ElvDocAggDaElabElenco> getElvDocAggDaElabElencos() {
-	return this.elvDocAggDaElabElencos;
+        return this.elvDocAggDaElabElencos;
     }
 
     public void setElvDocAggDaElabElencos(List<ElvDocAggDaElabElenco> elvDocAggDaElabElencos) {
-	this.elvDocAggDaElabElencos = elvDocAggDaElabElencos;
+        this.elvDocAggDaElabElencos = elvDocAggDaElabElencos;
     }
 
     // bi-directional many-to-one association to AroVersIniDoc
     @OneToMany(mappedBy = "aroDoc")
     public List<AroVersIniDoc> getAroVersIniDocs() {
-	return this.aroVersIniDocs;
+        return this.aroVersIniDocs;
     }
 
     public void setAroVersIniDocs(List<AroVersIniDoc> aroVersIniDocs) {
-	this.aroVersIniDocs = aroVersIniDocs;
+        this.aroVersIniDocs = aroVersIniDocs;
     }
 
     // bi-directional many-to-one association to AroVersIniDoc
     @OneToMany(mappedBy = "aroDoc")
     public List<AroUpdDocUnitaDoc> getAroUpdDocUnitaDocs() {
-	return this.aroUpdDocUnitaDocs;
+        return this.aroUpdDocUnitaDocs;
     }
 
     public void setAroUpdDocUnitaDocs(List<AroUpdDocUnitaDoc> aroUpdDocUnitaDocs) {
-	this.aroUpdDocUnitaDocs = aroUpdDocUnitaDocs;
+        this.aroUpdDocUnitaDocs = aroUpdDocUnitaDocs;
     }
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     public AroXmlDocObjectStorage getAroXmlDocObjectStorage() {
-	return aroXmlDocObjectStorage;
+        return aroXmlDocObjectStorage;
     }
 
     public void setAroXmlDocObjectStorage(AroXmlDocObjectStorage aroXmlDocObjectStorage) {
-	this.aroXmlDocObjectStorage = aroXmlDocObjectStorage;
+        this.aroXmlDocObjectStorage = aroXmlDocObjectStorage;
     }
 
 }

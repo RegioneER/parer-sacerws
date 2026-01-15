@@ -29,7 +29,7 @@ public final class AroVersIniDatiSpec {
      * ti_uso_xsd IN ('MIGRAZ', 'VERS')
      */
     public enum TiUsoXsdAroVersIniDatiSpec {
-	MIGRAZ, VERS
+        MIGRAZ, VERS
     }
 
     /**
@@ -38,6 +38,6 @@ public final class AroVersIniDatiSpec {
      * ti_entita_sacer IN ('COMP', 'DOC', 'UNI_DOC')
      */
     public enum TiEntitaSacerAroVersIniDatiSpec {
-	COMP, DOC, UNI_DOC
+        COMP, DOC, UNI_DOC
     }
 }

@@ -30,42 +30,42 @@ public class CSVersatore implements java.io.Serializable {
     private String user;
 
     public String getSistemaConservazione() {
-	return sistemaConservazione;
+        return sistemaConservazione;
     }
 
     public void setSistemaConservazione(String sistemaConservazione) {
-	this.sistemaConservazione = sistemaConservazione;
+        this.sistemaConservazione = sistemaConservazione;
     }
 
     public String getAmbiente() {
-	return ambiente;
+        return ambiente;
     }
 
     public void setAmbiente(String ambiente) {
-	this.ambiente = ambiente;
+        this.ambiente = ambiente;
     }
 
     public String getEnte() {
-	return ente;
+        return ente;
     }
 
     public void setEnte(String ente) {
-	this.ente = ente;
+        this.ente = ente;
     }
 
     public String getStruttura() {
-	return struttura;
+        return struttura;
     }
 
     public void setStruttura(String struttura) {
-	this.struttura = struttura;
+        this.struttura = struttura;
     }
 
     public String getUser() {
-	return user;
+        return user;
     }
 
     public void setUser(String user) {
-	this.user = user;
+        this.user = user;
     }
 }

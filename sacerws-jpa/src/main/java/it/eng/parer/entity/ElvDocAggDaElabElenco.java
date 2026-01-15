@@ -57,43 +57,43 @@ public class ElvDocAggDaElabElenco extends ElvUdDocUpdDaElabElenco<AroDoc> imple
     @Id
     @Column(name = "ID_DOC_AGG_DA_ELAB_ELENCO")
     @GenericGenerator(name = "SELV_DOC_AGG_DA_ELAB_ELENCO_ID_DOC_AGG_DA_ELAB_ELENCO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_DOC_AGG_DA_ELAB_ELENCO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SELV_DOC_AGG_DA_ELAB_ELENCO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SELV_DOC_AGG_DA_ELAB_ELENCO_ID_DOC_AGG_DA_ELAB_ELENCO_GENERATOR")
     public Long getIdDocAggDaElabElenco() {
-	return this.idDocAggDaElabElenco;
+        return this.idDocAggDaElabElenco;
     }
 
     public void setIdDocAggDaElabElenco(Long idDocAggDaElabElenco) {
-	this.idDocAggDaElabElenco = idDocAggDaElabElenco;
+        this.idDocAggDaElabElenco = idDocAggDaElabElenco;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "TI_STATO_DOC_DA_ELAB")
     public String getTiStatoDocDaElab() {
-	return this.tiStatoDocDaElab;
+        return this.tiStatoDocDaElab;
     }
 
     public void setTiStatoDocDaElab(String tiStatoDocDaElab) {
-	this.tiStatoDocDaElab = tiStatoDocDaElab;
+        this.tiStatoDocDaElab = tiStatoDocDaElab;
     }
 
     // bi-directional many-to-one association to AroDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DOC")
     public AroDoc getAroDoc() {
-	return this.aroDoc;
+        return this.aroDoc;
     }
 
     public void setAroDoc(AroDoc aroDoc) {
-	this.aroDoc = aroDoc;
+        this.aroDoc = aroDoc;
     }
 }

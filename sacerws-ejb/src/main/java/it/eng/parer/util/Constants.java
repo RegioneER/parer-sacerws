@@ -40,42 +40,42 @@ public class Constants {
     // Enum per tipo sessione
     public enum TipoSessione {
 
-	VERSAMENTO, AGGIUNGI_DOCUMENTO
+        VERSAMENTO, AGGIUNGI_DOCUMENTO
     }
 
     // Enum per tipo entità sacer
     public enum TipoEntitaSacer {
 
-	UNI_DOC, DOC, COMP
+        UNI_DOC, DOC, COMP
     }
     // Enum per tipo sistema migrazione
 
     public enum TipoSisMigr {
 
-	ASC
+        ASC
     }
 
     // Enum per esito su calcoli nel monitoraggio
     public enum EsitoCalcolo {
 
-	OK, OKNOUPDATE
+        OK, OKNOUPDATE
     }
 
     // Enum per tipo dato
     public enum TipoDato {
 
-	REGISTRO, TIPO_UNITA_DOC, TIPO_DOC, TIPO_DOC_PRINC, SUB_STRUTTURA, TIPO_FASCICOLO,
-	TIPO_OBJECT
+        REGISTRO, TIPO_UNITA_DOC, TIPO_DOC, TIPO_DOC_PRINC, SUB_STRUTTURA, TIPO_FASCICOLO,
+        TIPO_OBJECT
     }
 
     public enum TiOperReplic {
 
-	INS, MOD, CANC
+        INS, MOD, CANC
     }
 
     public enum TiStatoReplic {
 
-	DA_REPLICARE, REPLICA_OK, REPLICA_NON_POSSIBILE, REPLICA_IN_ERRORE, REPLICA_IN_TIMEOUT
+        DA_REPLICARE, REPLICA_OK, REPLICA_NON_POSSIBILE, REPLICA_IN_ERRORE, REPLICA_IN_TIMEOUT
     }
 
     /*
@@ -84,7 +84,7 @@ public class Constants {
      */
     public enum TiDoc {
 
-	PRINCIPALE, ALLEGATO, ANNESSO, ANNOTAZIONE
+        PRINCIPALE, ALLEGATO, ANNESSO, ANNOTAZIONE
     }
 
 }

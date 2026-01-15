@@ -38,8 +38,8 @@ public class EidasErrorHandler extends DefaultResponseErrorHandler {
     private final ObjectMapper objectMapper;
 
     public EidasErrorHandler() {
-	objectMapper = new ObjectMapper();
-	objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /*
@@ -48,27 +48,28 @@ public class EidasErrorHandler extends DefaultResponseErrorHandler {
      */
     @Override
     public boolean hasError(ClientHttpResponse response) throws IOException {
-	return (response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR
-		|| response.getStatusCode() == HttpStatus.BAD_REQUEST
-		|| response.getStatusCode() == HttpStatus.EXPECTATION_FAILED);
+        return (response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR
+                || response.getStatusCode() == HttpStatus.BAD_REQUEST
+                || response.getStatusCode() == HttpStatus.EXPECTATION_FAILED
+                || response.getStatusCode() == HttpStatus.NOT_FOUND);
     }
 
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
-	EidasParerException exceptionFromJson = null;
-	try {
-	    exceptionFromJson = objectMapper.readValue(response.getBody(),
-		    EidasParerException.class);
-	    log.debug("Eccezione registrata {} con codice {}", exceptionFromJson,
-		    exceptionFromJson.getCode());
-	} catch (IOException e) {
-	    exceptionFromJson = new EidasParerException()
-		    .withCode(ParerError.ErrorCode.GENERIC_ERROR).withMessage("Errore "
-			    + response.getRawStatusCode() + ": " + response.getStatusCode().name());
-	    log.debug("Eccezione sull'oggetto di errore costruito", e);
-	}
+        EidasParerException exceptionFromJson = null;
+        try {
+            exceptionFromJson = objectMapper.readValue(response.getBody(),
+                    EidasParerException.class);
+            log.debug("Eccezione registrata {} con codice {} e http code {}", exceptionFromJson,
+                    exceptionFromJson.getCode(), response.getStatusCode());
+        } catch (IOException e) {
+            exceptionFromJson = new EidasParerException()
+                    .withCode(ParerError.ErrorCode.GENERIC_ERROR).withMessage("Errore "
+                            + response.getRawStatusCode() + ": " + response.getStatusCode().name());
+            log.debug("Eccezione sull'oggetto di errore costruito", e);
+        }
 
-	throw exceptionFromJson;
+        throw exceptionFromJson;
     }
 
 }

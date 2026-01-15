@@ -33,15 +33,15 @@ public class ParamApplicNotFoundException extends RuntimeException {
     private final String nmParamApplic;
 
     public ParamApplicNotFoundException(String message, String nmParamApplic) {
-	super(message);
-	this.nmParamApplic = nmParamApplic;
+        super(message);
+        this.nmParamApplic = nmParamApplic;
     }
 
     /**
      * @return the nmParamApplic
      */
     public String getNmParamApplic() {
-	return nmParamApplic;
+        return nmParamApplic;
     }
 
 }

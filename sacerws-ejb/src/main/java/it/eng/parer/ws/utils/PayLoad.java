@@ -40,55 +40,55 @@ public class PayLoad implements Serializable {
     private long dtCreazione;
 
     public PayLoad() {
-	// default
+        // default
     }
 
     public long getId() {
-	return id;
+        return id;
     }
 
     public void setId(long id) {
-	this.id = id;
+        this.id = id;
     }
 
     public long getIdStrut() {
-	return idStrut;
+        return idStrut;
     }
 
     public void setIdStrut(long idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     public String getTipoEntitaSacer() {
-	return tipoEntitaSacer;
+        return tipoEntitaSacer;
     }
 
     public void setTipoEntitaSacer(String tipoEntitaSacer) {
-	this.tipoEntitaSacer = tipoEntitaSacer;
+        this.tipoEntitaSacer = tipoEntitaSacer;
     }
 
     public String getStato() {
-	return stato;
+        return stato;
     }
 
     public void setStato(String stato) {
-	this.stato = stato;
+        this.stato = stato;
     }
 
     public long getAaKeyUnitaDoc() {
-	return aaKeyUnitaDoc;
+        return aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(long aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     public long getDtCreazione() {
-	return dtCreazione;
+        return dtCreazione;
     }
 
     public void setDtCreazione(long dtCreazione) {
-	this.dtCreazione = dtCreazione;
+        this.dtCreazione = dtCreazione;
     }
 
 }

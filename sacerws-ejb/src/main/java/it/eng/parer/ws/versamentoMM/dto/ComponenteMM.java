@@ -33,58 +33,58 @@ public class ComponenteMM {
     private byte[] hashForzato;
 
     public boolean isForzaFirmeFormati() {
-	return forzaFirmeFormati;
+        return forzaFirmeFormati;
     }
 
     public void setForzaFirmeFormati(boolean forzaFirmeFormati) {
-	this.forzaFirmeFormati = forzaFirmeFormati;
+        this.forzaFirmeFormati = forzaFirmeFormati;
     }
 
     public boolean isForzaHash() {
-	return forzaHash;
+        return forzaHash;
     }
 
     public void setForzaHash(boolean forzaHash) {
-	this.forzaHash = forzaHash;
+        this.forzaHash = forzaHash;
     }
 
     public String getId() {
-	return id;
+        return id;
     }
 
     public void setId(String id) {
-	this.id = id;
+        this.id = id;
     }
 
     public long getIdFormatoFileCalc() {
-	return idFormatoFileCalc;
+        return idFormatoFileCalc;
     }
 
     public void setIdFormatoFileCalc(long idFormatoFileCalc) {
-	this.idFormatoFileCalc = idFormatoFileCalc;
+        this.idFormatoFileCalc = idFormatoFileCalc;
     }
 
     public ComponenteType getMyComponenteMM() {
-	return myComponenteMM;
+        return myComponenteMM;
     }
 
     public void setMyComponenteMM(ComponenteType myComponenteMM) {
-	this.myComponenteMM = myComponenteMM;
+        this.myComponenteMM = myComponenteMM;
     }
 
     public ComponenteVers getRifComponenteVers() {
-	return rifComponenteVers;
+        return rifComponenteVers;
     }
 
     public void setRifComponenteVers(ComponenteVers rifComponenteVers) {
-	this.rifComponenteVers = rifComponenteVers;
+        this.rifComponenteVers = rifComponenteVers;
     }
 
     public byte[] getHashForzato() {
-	return hashForzato;
+        return hashForzato;
     }
 
     public void setHashForzato(byte[] hashForzato) {
-	this.hashForzato = hashForzato;
+        this.hashForzato = hashForzato;
     }
 }

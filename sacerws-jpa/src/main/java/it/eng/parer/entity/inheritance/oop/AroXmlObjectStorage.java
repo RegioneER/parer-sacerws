@@ -29,7 +29,7 @@ public class AroXmlObjectStorage implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public AroXmlObjectStorage() {
-	super();
+        super();
     }
 
     private DecBackend decBackend;
@@ -40,38 +40,38 @@ public class AroXmlObjectStorage implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 
     @Column(name = "NM_TENANT")
     public String getNmTenant() {
-	return nmTenant;
+        return nmTenant;
     }
 
     public void setNmTenant(String nmTenant) {
-	this.nmTenant = nmTenant;
+        this.nmTenant = nmTenant;
     }
 
     @Column(name = "NM_BUCKET")
     public String getNmBucket() {
-	return nmBucket;
+        return nmBucket;
     }
 
     public void setNmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
+        this.nmBucket = nmBucket;
     }
 
     @Column(name = "CD_KEY_FILE")
     public String getCdKeyFile() {
-	return cdKeyFile;
+        return cdKeyFile;
     }
 
     public void setCdKeyFile(String cdKeyFile) {
-	this.cdKeyFile = cdKeyFile;
+        this.cdKeyFile = cdKeyFile;
     }
 
 }

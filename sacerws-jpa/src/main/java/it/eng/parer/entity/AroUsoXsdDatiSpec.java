@@ -67,98 +67,98 @@ public class AroUsoXsdDatiSpec implements Serializable {
     @Id
     @Column(name = "ID_USO_XSD_DATI_SPEC")
     @GenericGenerator(name = "SARO_USO_XSD_DATI_SPEC_ID_USO_XSD_DATI_SPEC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_USO_XSD_DATI_SPEC"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_USO_XSD_DATI_SPEC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_USO_XSD_DATI_SPEC_ID_USO_XSD_DATI_SPEC_GENERATOR")
     public Long getIdUsoXsdDatiSpec() {
-	return this.idUsoXsdDatiSpec;
+        return this.idUsoXsdDatiSpec;
     }
 
     public void setIdUsoXsdDatiSpec(Long idUsoXsdDatiSpec) {
-	this.idUsoXsdDatiSpec = idUsoXsdDatiSpec;
+        this.idUsoXsdDatiSpec = idUsoXsdDatiSpec;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "TI_ENTITA_SACER")
     public String getTiEntitaSacer() {
-	return this.tiEntitaSacer;
+        return this.tiEntitaSacer;
     }
 
     public void setTiEntitaSacer(String tiEntitaSacer) {
-	this.tiEntitaSacer = tiEntitaSacer;
+        this.tiEntitaSacer = tiEntitaSacer;
     }
 
     @Column(name = "TI_USO_XSD")
     public String getTiUsoXsd() {
-	return this.tiUsoXsd;
+        return this.tiUsoXsd;
     }
 
     public void setTiUsoXsd(String tiUsoXsd) {
-	this.tiUsoXsd = tiUsoXsd;
+        this.tiUsoXsd = tiUsoXsd;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_COMP_DOC")
     public AroCompDoc getAroCompDoc() {
-	return this.aroCompDoc;
+        return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-	this.aroCompDoc = aroCompDoc;
+        this.aroCompDoc = aroCompDoc;
     }
 
     // bi-directional many-to-one association to AroDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DOC")
     public AroDoc getAroDoc() {
-	return this.aroDoc;
+        return this.aroDoc;
     }
 
     public void setAroDoc(AroDoc aroDoc) {
-	this.aroDoc = aroDoc;
+        this.aroDoc = aroDoc;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
     // bi-directional many-to-one association to DecXsdDatiSpec
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_XSD_DATI_SPEC")
     public DecXsdDatiSpec getDecXsdDatiSpec() {
-	return this.decXsdDatiSpec;
+        return this.decXsdDatiSpec;
     }
 
     public void setDecXsdDatiSpec(DecXsdDatiSpec decXsdDatiSpec) {
-	this.decXsdDatiSpec = decXsdDatiSpec;
+        this.decXsdDatiSpec = decXsdDatiSpec;
     }
 
     // bi-directional many-to-one association to AroValoreAttribDatiSpec
     @OneToMany(mappedBy = "aroUsoXsdDatiSpec", cascade = {
-	    CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     public List<AroValoreAttribDatiSpec> getAroValoreAttribDatiSpecs() {
-	return this.aroValoreAttribDatiSpecs;
+        return this.aroValoreAttribDatiSpecs;
     }
 
     public void setAroValoreAttribDatiSpecs(
-	    List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs) {
-	this.aroValoreAttribDatiSpecs = aroValoreAttribDatiSpecs;
+            List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs) {
+        this.aroValoreAttribDatiSpecs = aroValoreAttribDatiSpecs;
     }
 
 }

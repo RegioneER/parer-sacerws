@@ -55,55 +55,55 @@ public class FasWarnFascicolo implements Serializable {
     @Id
     @Column(name = "ID_WARN_FASCICOLO")
     @GenericGenerator(name = "SFAS_WARN_FASCICOLO_ID_WARN_FASCICOLO_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_WARN_FASCICOLO"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFAS_WARN_FASCICOLO"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFAS_WARN_FASCICOLO_ID_WARN_FASCICOLO_GENERATOR")
     public Long getIdWarnFascicolo() {
-	return this.idWarnFascicolo;
+        return this.idWarnFascicolo;
     }
 
     public void setIdWarnFascicolo(Long idWarnFascicolo) {
-	this.idWarnFascicolo = idWarnFascicolo;
+        this.idWarnFascicolo = idWarnFascicolo;
     }
 
     @Column(name = "DS_WARN")
     public String getDsWarn() {
-	return this.dsWarn;
+        return this.dsWarn;
     }
 
     public void setDsWarn(String dsWarn) {
-	this.dsWarn = dsWarn;
+        this.dsWarn = dsWarn;
     }
 
     @Column(name = "PG_WARN")
     public BigDecimal getPgWarn() {
-	return this.pgWarn;
+        return this.pgWarn;
     }
 
     public void setPgWarn(BigDecimal pgWarn) {
-	this.pgWarn = pgWarn;
+        this.pgWarn = pgWarn;
     }
 
     // bi-directional many-to-one association to DecErrSacer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ERR_SACER")
     public DecErrSacer getDecErrSacer() {
-	return this.decErrSacer;
+        return this.decErrSacer;
     }
 
     public void setDecErrSacer(DecErrSacer decErrSacer) {
-	this.decErrSacer = decErrSacer;
+        this.decErrSacer = decErrSacer;
     }
 
     // bi-directional many-to-one association to FasFascicolo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FASCICOLO")
     public FasFascicolo getFasFascicolo() {
-	return this.fasFascicolo;
+        return this.fasFascicolo;
     }
 
     public void setFasFascicolo(FasFascicolo fasFascicolo) {
-	this.fasFascicolo = fasFascicolo;
+        this.fasFascicolo = fasFascicolo;
     }
 
 }

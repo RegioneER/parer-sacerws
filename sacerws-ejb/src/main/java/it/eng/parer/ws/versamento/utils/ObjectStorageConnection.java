@@ -42,7 +42,7 @@ public class ObjectStorageConnection implements AutoCloseable {
      * @param secretKey      secret key S3
      */
     public ObjectStorageConnection(String storageAddress, String accessKeyId, String secretKey) {
-	this(URI.create(storageAddress), accessKeyId, secretKey);
+        this(URI.create(storageAddress), accessKeyId, secretKey);
     }
 
     /**
@@ -53,15 +53,15 @@ public class ObjectStorageConnection implements AutoCloseable {
      * @param secretKey      secret key S3
      */
     public ObjectStorageConnection(URI storageAddress, String accessKeyId, String secretKey) {
-	// create basic credentials
+        // create basic credentials
 
-	final AwsCredentialsProvider credProvider = StaticCredentialsProvider
-		.create(AwsBasicCredentials.create(accessKeyId, secretKey));
+        final AwsCredentialsProvider credProvider = StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(accessKeyId, secretKey));
 
-	log.info("Sto per effettuare il collegamento all'endpoint S3 [{}] dal thread {}",
-		storageAddress, Thread.currentThread().getName());
-	s3Client = S3Client.builder().endpointOverride(storageAddress).region(Region.US_EAST_1)
-		.credentialsProvider(credProvider).build();
+        log.info("Sto per effettuare il collegamento all'endpoint S3 [{}] dal thread {}",
+                storageAddress, Thread.currentThread().getName());
+        s3Client = S3Client.builder().endpointOverride(storageAddress).region(Region.US_EAST_1)
+                .credentialsProvider(credProvider).build();
     }
 
     /**
@@ -70,15 +70,15 @@ public class ObjectStorageConnection implements AutoCloseable {
      * @return client S3
      */
     public S3Client getS3Client() {
-	return s3Client;
+        return s3Client;
     }
 
     @Override
     public void close() throws Exception {
-	log.info("Close endpoint S3 dal thread {}", Thread.currentThread().getName());
-	if (s3Client != null) {
-	    s3Client.close();
-	}
+        log.info("Close endpoint S3 dal thread {}", Thread.currentThread().getName());
+        if (s3Client != null) {
+            s3Client.close();
+        }
 
     }
 

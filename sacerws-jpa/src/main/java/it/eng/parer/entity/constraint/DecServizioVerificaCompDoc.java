@@ -19,7 +19,7 @@ public final class DecServizioVerificaCompDoc {
     }
 
     public enum CdServizioVerificaCompDoc {
-	EIDAS, CRYPTO
+        EIDAS, CRYPTO
     }
 
 }

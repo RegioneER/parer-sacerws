@@ -27,12 +27,12 @@ public class WSDescVersamento implements IWSDesc {
 
     @Override
     public String getVersione() {
-	return Costanti.WS_VERSAMENTO_VRSN;
+        return Costanti.WS_VERSAMENTO_VRSN;
     }
 
     @Override
     public String getNomeWs() {
-	return Costanti.WS_VERSAMENTO_NOME;
+        return Costanti.WS_VERSAMENTO_NOME;
     }
 
     // @Override

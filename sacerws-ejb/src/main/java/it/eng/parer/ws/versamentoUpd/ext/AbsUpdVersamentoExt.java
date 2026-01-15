@@ -47,7 +47,7 @@ import it.eng.spagoLite.security.User;
  * @author sinatti_s
  */
 public abstract class AbsUpdVersamentoExt
-	implements IUpdVersamentoExt, IControlliWsMultipli, IAggiornamentiWsMultipli {
+        implements IUpdVersamentoExt, IControlliWsMultipli, IAggiornamentiWsMultipli {
 
     /**
      *
@@ -70,58 +70,58 @@ public abstract class AbsUpdVersamentoExt
     protected Set<ControlloEseguito> controlliFallitiUlteriori = new HashSet<ControlloEseguito>(0);
 
     protected Map<String, Set<ControlloEseguito>> controlliDocPrincipale = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliAllegati = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliAnnessi = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliAnnotazioni = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
 
     // componenti
     protected Map<String, Set<ControlloEseguito>> controlliComponenteDocPrincipale = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliComponenteAllegati = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliComponenteAnnessi = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
     protected Map<String, Set<ControlloEseguito>> controlliComponenteAnnotazioni = new HashMap<String, Set<ControlloEseguito>>(
-	    0);
+            0);
 
     // chiave -> Controlli
     protected Map<CSChiave, Set<ControlloEseguito>> controlliCollegamenti = new HashMap<CSChiave, Set<ControlloEseguito>>(
-	    0);
+            0);
 
     //
     protected Set<AggiornamentoEffettuato> aggiornamentiUnitaDocumentaria = new HashSet<AggiornamentoEffettuato>(
-	    0);
+            0);
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiDocPrincipale = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiCompDocPrincipale = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
 
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiAllegati = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiCompAllegati = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
 
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiAnnessi = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiCompAnnessi = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
 
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiAnnotazioni = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
     //
     protected Map<String, Set<AggiornamentoEffettuato>> aggiornamentiCompAnnotazioni = new HashMap<String, Set<AggiornamentoEffettuato>>(
-	    0);
+            0);
 
     /*
      * (non-Javadoc)
@@ -130,7 +130,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public String getLoginName() {
-	return loginName;
+        return loginName;
     }
 
     /*
@@ -140,7 +140,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void setLoginName(String loginName) {
-	this.loginName = loginName;
+        this.loginName = loginName;
     }
 
     /*
@@ -150,7 +150,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public User getUtente() {
-	return utente;
+        return utente;
     }
 
     /*
@@ -160,7 +160,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void setUtente(User utente) {
-	this.utente = utente;
+        this.utente = utente;
     }
 
     /*
@@ -170,7 +170,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public String getVersioneWsChiamata() {
-	return versioneWsChiamata;
+        return versioneWsChiamata;
     }
 
     /*
@@ -180,7 +180,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void setVersioneWsChiamata(String versioneWsChiamata) {
-	this.versioneWsChiamata = versioneWsChiamata;
+        this.versioneWsChiamata = versioneWsChiamata;
     }
 
     // public HashMap<String, String> getXmlDefaults() {
@@ -198,10 +198,10 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public StrutturaUpdVers getStrutturaUpdVers() {
-	if (strutturaUpdVers == null) {
-	    return new StrutturaUpdVers();
-	}
-	return strutturaUpdVers;
+        if (strutturaUpdVers == null) {
+            return new StrutturaUpdVers();
+        }
+        return strutturaUpdVers;
     }
 
     /*
@@ -212,7 +212,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void setStrutturaUpdVers(StrutturaUpdVers strutturaUpdVers) {
-	this.strutturaUpdVers = strutturaUpdVers;
+        this.strutturaUpdVers = strutturaUpdVers;
     }
 
     ////
@@ -228,23 +228,23 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnSistema(ControlloWSResp ctlrTypeWS, String errCode,
-	    String errMessage, Object... params) {
-	ControlloEseguito cft = buildControlloEseguito(getControlliGenerali(),
-		IRispostaWS.SeverityEnum.ERROR, VoceDiErrore.TipiEsitoErrore.NEGATIVO, ctlrTypeWS,
-		errCode, errMessage, params);
-	getControlliDiSistema().add(cft);
+            String errMessage, Object... params) {
+        ControlloEseguito cft = buildControlloEseguito(getControlliGenerali(),
+                IRispostaWS.SeverityEnum.ERROR, VoceDiErrore.TipiEsitoErrore.NEGATIVO, ctlrTypeWS,
+                errCode, errMessage, params);
+        getControlliDiSistema().add(cft);
     }
 
     // OK
     public void addControlloOkOnGenerali(ControlloWSResp ctlrTypeWS) {
-	addEsitoControlloOnGeneraliBundle(ctlrTypeWS, null, VoceDiErrore.TipiEsitoErrore.POSITIVO,
-		null);
+        addEsitoControlloOnGeneraliBundle(ctlrTypeWS, null, VoceDiErrore.TipiEsitoErrore.POSITIVO,
+                null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnGenerali(ControlloWSResp ctlrTypeWS) {
-	addEsitoControlloOnGeneraliBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, null);
+        addEsitoControlloOnGeneraliBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, null);
     }
 
     /*
@@ -258,11 +258,11 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnGenerali(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
-	    String errMessage, Object... params) {
-	ControlloEseguito cft = buildControlloEseguito(getControlliGenerali(), severity, esito,
-		ctlrTypeWS, errCode, errMessage, params);
-	getControlliGenerali().add(cft);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
+            String errMessage, Object... params) {
+        ControlloEseguito cft = buildControlloEseguito(getControlliGenerali(), severity, esito,
+                ctlrTypeWS, errCode, errMessage, params);
+        getControlliGenerali().add(cft);
     }
 
     /*
@@ -276,23 +276,23 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnFallitiUlteriori(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
-	    String errMessage, Object... params) {
-	ControlloEseguito cft = buildControlloEseguito(getControlliFallitiUlteriori(), severity,
-		esito, ctlrTypeWS, errCode, errMessage, params);
-	getControlliFallitiUlteriori().add(cft);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
+            String errMessage, Object... params) {
+        ControlloEseguito cft = buildControlloEseguito(getControlliFallitiUlteriori(), severity,
+                esito, ctlrTypeWS, errCode, errMessage, params);
+        getControlliFallitiUlteriori().add(cft);
     }
 
     // OK
     public void addControlloOkOnControlliUnitaDocumentaria(ControlloWSResp ctlrTypeWS) {
-	addEsitoControlloOnControlliUnitaDocumentariaBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, null);
+        addEsitoControlloOnControlliUnitaDocumentariaBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliUnitaDocumentaria(ControlloWSResp ctlrTypeWS) {
-	addEsitoControlloOnControlliUnitaDocumentariaBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, null);
+        addEsitoControlloOnControlliUnitaDocumentariaBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, null);
     }
 
     /*
@@ -306,25 +306,25 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliUnitaDocumentaria(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
-	    String errMessage, Object... params) {
-	ControlloEseguito cft = buildControlloEseguito(getControlliUnitaDocumentaria(), severity,
-		esito, ctlrTypeWS, errCode, errMessage, params);
-	getControlliUnitaDocumentaria().add(cft);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito, String errCode,
+            String errMessage, Object... params) {
+        ControlloEseguito cft = buildControlloEseguito(getControlliUnitaDocumentaria(), severity,
+                esito, ctlrTypeWS, errCode, errMessage, params);
+        getControlliUnitaDocumentaria().add(cft);
     }
 
     // OK
     public void addControlloOkOnControlliDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    String idDocumento) {
-	addEsitoControlloOnControlliDocPrincipaleBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
+            String idDocumento) {
+        addEsitoControlloOnControlliDocPrincipaleBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    String idDocumento) {
-	addEsitoControlloOnControlliDocPrincipaleBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
+            String idDocumento) {
+        addEsitoControlloOnControlliDocPrincipaleBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
     }
 
     /*
@@ -338,25 +338,25 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idDocumento, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliDocPrincipale(idDocumento);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliDocPrincipale().put(idDocumento, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idDocumento, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliDocPrincipale(idDocumento);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliDocPrincipale().put(idDocumento, cftS);
     }
 
     // OK
     public void addControlloOkOnControlliAllegati(ControlloWSResp ctlrTypeWS, String idDocumento) {
-	addEsitoControlloOnControlliAllegatiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
+        addEsitoControlloOnControlliAllegatiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliAllegati(ControlloWSResp ctlrTypeWS, String idDocumento) {
-	addEsitoControlloOnControlliAllegatiBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
+        addEsitoControlloOnControlliAllegatiBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
     }
 
     /*
@@ -370,50 +370,50 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliAllegati(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idDocumento, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliAllegato(idDocumento);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliAllegati().put(idDocumento, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idDocumento, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliAllegato(idDocumento);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliAllegati().put(idDocumento, cftS);
     }
 
     // OK
     public void addControlloOkOnControlliAnnessi(ControlloWSResp ctlrTypeWS, String idDocumento) {
-	addEsitoControlloOnControlliAnnessiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
+        addEsitoControlloOnControlliAnnessiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliAnnessi(ControlloWSResp ctlrTypeWS, String idDocumento) {
-	addEsitoControlloOnControlliAnnessiBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
+        addEsitoControlloOnControlliAnnessiBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
     }
 
     @Override
     public void addEsitoControlloOnControlliAnnessi(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idDocumento, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliAnnesso(idDocumento);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliAnnessi().put(idDocumento, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idDocumento, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliAnnesso(idDocumento);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliAnnessi().put(idDocumento, cftS);
     }
 
     // OK
     public void addControlloOkOnControlliAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    String idDocumento) {
-	addEsitoControlloOnControlliAnnotazioniBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
+            String idDocumento) {
+        addEsitoControlloOnControlliAnnotazioniBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, idDocumento, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    String idDocumento) {
-	addEsitoControlloOnControlliAnnotazioniBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
+            String idDocumento) {
+        addEsitoControlloOnControlliAnnotazioniBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idDocumento, null);
     }
 
     /*
@@ -427,28 +427,28 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idDocumento, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliAnnotazione(idDocumento);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliAnnotazioni().put(idDocumento, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idDocumento, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliAnnotazione(idDocumento);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliAnnotazioni().put(idDocumento, cftS);
     }
 
     // OK
     public void addControlloOkOnControlliComponentiDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiDocPrincipaleBundle(ctlrTypeWS,
-		IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
-		null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiDocPrincipaleBundle(ctlrTypeWS,
+                IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
+                null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliComponentiDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiDocPrincipaleBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiDocPrincipaleBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
     }
 
     /*
@@ -462,29 +462,29 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliComponentiDocPrincipale(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idComponente, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliComponenteDocPrincipale(idComponente);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliComponentiDocPrincipale().put(idComponente, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idComponente, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliComponenteDocPrincipale(idComponente);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliComponentiDocPrincipale().put(idComponente, cftS);
     }
 
     //
     // OK
     public void addControlloOkOnControlliComponentiAllegati(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAllegatiBundle(ctlrTypeWS,
-		IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
-		null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAllegatiBundle(ctlrTypeWS,
+                IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
+                null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliComponentiAllegati(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAllegatiBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAllegatiBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
     }
 
     /*
@@ -498,28 +498,28 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliComponentiAllegati(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idComponente, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliComponenteAllegati(idComponente);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliComponentiAllegati().put(idComponente, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idComponente, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliComponenteAllegati(idComponente);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliComponentiAllegati().put(idComponente, cftS);
     }
 
     //
     // OK
     public void addControlloOkOnControlliComponentiAnnessi(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAnnessiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente, null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAnnessiBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliComponentiAnnessi(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAnnessiBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAnnessiBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
     }
 
     /*
@@ -533,29 +533,29 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliComponentiAnnessi(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idComponente, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliComponenteAnnessi(idComponente);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliComponentiAnnessi().put(idComponente, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idComponente, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliComponenteAnnessi(idComponente);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliComponentiAnnessi().put(idComponente, cftS);
     }
 
     //
     // OK
     public void addControlloOkOnControlliComponentiAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAnnotazioniBundle(ctlrTypeWS,
-		IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
-		null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAnnotazioniBundle(ctlrTypeWS,
+                IRispostaWS.SeverityEnum.OK, VoceDiErrore.TipiEsitoErrore.POSITIVO, idComponente,
+                null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliComponentiAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    String idComponente) {
-	addEsitoControlloOnControlliComponentiAnnotazioniBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
+            String idComponente) {
+        addEsitoControlloOnControlliComponentiAnnotazioniBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, idComponente, null);
     }
 
     /*
@@ -569,27 +569,27 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliComponentiAnnotazioni(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    String idComponente, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliComponenteAnnotazioni(idComponente);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliComponentiAnnotazioni().put(idComponente, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            String idComponente, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliComponenteAnnotazioni(idComponente);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliComponentiAnnotazioni().put(idComponente, cftS);
     }
 
     // OK
     public void addControlloOkOnControlliCollegamento(ControlloWSResp ctlrTypeWS,
-	    CSChiave csChiave) {
-	addEsitoControlloOnControlliCollegamentoBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
-		VoceDiErrore.TipiEsitoErrore.POSITIVO, csChiave, null);
+            CSChiave csChiave) {
+        addEsitoControlloOnControlliCollegamentoBundle(ctlrTypeWS, IRispostaWS.SeverityEnum.OK,
+                VoceDiErrore.TipiEsitoErrore.POSITIVO, csChiave, null);
     }
 
     // NON_ATTIVATO
     public void addControlloNAOnControlliCollegamento(ControlloWSResp ctlrTypeWS,
-	    CSChiave csChiave) {
-	addEsitoControlloOnControlliCollegamentoBundle(ctlrTypeWS, null,
-		VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, csChiave, null);
+            CSChiave csChiave) {
+        addEsitoControlloOnControlliCollegamentoBundle(ctlrTypeWS, null,
+                VoceDiErrore.TipiEsitoErrore.NON_ATTIVATO, csChiave, null);
     }
 
     /*
@@ -603,13 +603,13 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addEsitoControlloOnControlliCollegamento(ControlloWSResp ctlrTypeWS,
-	    IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
-	    CSChiave csChiave, String errCode, String errMessage, Object... params) {
-	Set<ControlloEseguito> cftS = getControlliCollegamento(csChiave);
-	ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
-		errMessage, params);
-	cftS.add(cft);
-	getControlliCollegamenti().put(csChiave, cftS);
+            IRispostaWS.SeverityEnum severity, VoceDiErrore.TipiEsitoErrore esito,
+            CSChiave csChiave, String errCode, String errMessage, Object... params) {
+        Set<ControlloEseguito> cftS = getControlliCollegamento(csChiave);
+        ControlloEseguito cft = buildControlloEseguito(cftS, severity, esito, ctlrTypeWS, errCode,
+                errMessage, params);
+        cftS.add(cft);
+        getControlliCollegamenti().put(csChiave, cftS);
     }
 
     /*
@@ -621,94 +621,94 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public void addControlloOnWarnings(ControlloWSResp ctlrTypeWS, String errCode,
-	    String errMessage, Object... params) {
-	ControlloEseguito cft = buildControlloEseguito(getWarnings(),
-		IRispostaWS.SeverityEnum.WARNING, VoceDiErrore.TipiEsitoErrore.WARNING, ctlrTypeWS,
-		errCode, errMessage, params);
-	getWarnings().add(cft);
+            String errMessage, Object... params) {
+        ControlloEseguito cft = buildControlloEseguito(getWarnings(),
+                IRispostaWS.SeverityEnum.WARNING, VoceDiErrore.TipiEsitoErrore.WARNING, ctlrTypeWS,
+                errCode, errMessage, params);
+        getWarnings().add(cft);
     }
 
     protected void produciControlliFallitiFromGenUD(RispostaWSUpdVers rispostaWs) {
-	// exclude ESITO GENERALE
-	/*
-	 * Tutti i controlli con esisto NEGATIVO da controlligenerali+controlliud
-	 */
-	if (!getControlliGenerali().isEmpty()) {
-	    for (ControlloEseguito controllo : getControlliGenerali().stream()
-		    .filter(c -> c.getEsito().equals(VoceDiErrore.TipiEsitoErrore.NEGATIVO))
-		    .collect(Collectors.toList())) {
-		for (VoceDiErrore errore : controllo.getErrori()) {
-		    if (!verificaErrorePrinc(rispostaWs, controllo, errore)) {
-			addEsitoControlloOnFallitiUlteriori(
-				ControlliWSBundle.getControllo(controllo.getCdControllo()),
-				errore.getSeverity(), errore.getCodiceEsito(),
-				errore.getErrorCode(), errore.getErrorMessage());
-		    }
-		}
-	    }
-	}
+        // exclude ESITO GENERALE
+        /*
+         * Tutti i controlli con esisto NEGATIVO da controlligenerali+controlliud
+         */
+        if (!getControlliGenerali().isEmpty()) {
+            for (ControlloEseguito controllo : getControlliGenerali().stream()
+                    .filter(c -> c.getEsito().equals(VoceDiErrore.TipiEsitoErrore.NEGATIVO))
+                    .collect(Collectors.toList())) {
+                for (VoceDiErrore errore : controllo.getErrori()) {
+                    if (!verificaErrorePrinc(rispostaWs, controllo, errore)) {
+                        addEsitoControlloOnFallitiUlteriori(
+                                ControlliWSBundle.getControllo(controllo.getCdControllo()),
+                                errore.getSeverity(), errore.getCodiceEsito(),
+                                errore.getErrorCode(), errore.getErrorMessage());
+                    }
+                }
+            }
+        }
 
-	if (!getControlliUnitaDocumentaria().isEmpty()) {
-	    for (ControlloEseguito controllo : getControlliUnitaDocumentaria().stream()
-		    .filter(c -> c.getEsito().equals(VoceDiErrore.TipiEsitoErrore.NEGATIVO))
-		    .collect(Collectors.toList())) {
-		for (VoceDiErrore errore : controllo.getErrori()) {
-		    if (!verificaErrorePrinc(rispostaWs, controllo, errore)) {
-			addEsitoControlloOnFallitiUlteriori(
-				ControlliWSBundle.getControllo(controllo.getCdControllo()),
-				errore.getSeverity(), errore.getCodiceEsito(),
-				errore.getErrorCode(), errore.getErrorMessage());
-		    }
-		}
-	    }
-	}
+        if (!getControlliUnitaDocumentaria().isEmpty()) {
+            for (ControlloEseguito controllo : getControlliUnitaDocumentaria().stream()
+                    .filter(c -> c.getEsito().equals(VoceDiErrore.TipiEsitoErrore.NEGATIVO))
+                    .collect(Collectors.toList())) {
+                for (VoceDiErrore errore : controllo.getErrori()) {
+                    if (!verificaErrorePrinc(rispostaWs, controllo, errore)) {
+                        addEsitoControlloOnFallitiUlteriori(
+                                ControlliWSBundle.getControllo(controllo.getCdControllo()),
+                                errore.getSeverity(), errore.getCodiceEsito(),
+                                errore.getErrorCode(), errore.getErrorMessage());
+                    }
+                }
+            }
+        }
     }
 
     protected ControlliType produciElencoControlliType(Set<ControlloEseguito> controlli) {
-	ControlliType controlliType = null;
-	if (!controlli.isEmpty()) {
-	    controlliType = new ControlliType();
-	    // sort control list
-	    List<ControlloEseguito> sorted = sortControlli(controlli);
-	    for (ControlloEseguito controllo : sorted) {
-		ControlloType ctype = buildControlloType(controllo.getEsito().name(),
-			controllo.getDsControllo());
-		for (VoceDiErrore errore : controllo.getErrori()) {
-		    ErroreType etype = buildErrorType(errore.getErrorCode(),
-			    errore.getErrorMessage());
-		    ctype.getErrore().add(etype);
-		}
-		controlliType.getControllo().add(ctype);
-	    }
-	}
-	return controlliType;
+        ControlliType controlliType = null;
+        if (!controlli.isEmpty()) {
+            controlliType = new ControlliType();
+            // sort control list
+            List<ControlloEseguito> sorted = sortControlli(controlli);
+            for (ControlloEseguito controllo : sorted) {
+                ControlloType ctype = buildControlloType(controllo.getEsito().name(),
+                        controllo.getDsControllo());
+                for (VoceDiErrore errore : controllo.getErrori()) {
+                    ErroreType etype = buildErrorType(errore.getErrorCode(),
+                            errore.getErrorMessage());
+                    ctype.getErrore().add(etype);
+                }
+                controlliType.getControllo().add(ctype);
+            }
+        }
+        return controlliType;
     }
 
     protected AggiornamentiEffettuatiType produciAggiornamentiEffettuatiType(
-	    Set<AggiornamentoEffettuato> aggiornamenti) {
-	AggiornamentiEffettuatiType aggiornamentiEffettuatiType = null;
+            Set<AggiornamentoEffettuato> aggiornamenti) {
+        AggiornamentiEffettuatiType aggiornamentiEffettuatiType = null;
 
-	if (!aggiornamenti.isEmpty()) {
-	    aggiornamentiEffettuatiType = new AggiornamentiEffettuatiType();
-	    List<AggiornamentoEffettuato> aggiornamentiSorted = sortAggiornamentiEffettuati(
-		    aggiornamenti);
-	    for (AggiornamentoEffettuato aggiornamento : aggiornamentiSorted) {
-		aggiornamentiEffettuatiType.getAggiornamento().add(aggiornamento.getLabel());
-	    }
-	}
-	return aggiornamentiEffettuatiType;
+        if (!aggiornamenti.isEmpty()) {
+            aggiornamentiEffettuatiType = new AggiornamentiEffettuatiType();
+            List<AggiornamentoEffettuato> aggiornamentiSorted = sortAggiornamentiEffettuati(
+                    aggiornamenti);
+            for (AggiornamentoEffettuato aggiornamento : aggiornamentiSorted) {
+                aggiornamentiEffettuatiType.getAggiornamento().add(aggiornamento.getLabel());
+            }
+        }
+        return aggiornamentiEffettuatiType;
     }
 
     // sort aggiornamenti da effettuare
     protected List<AggiornamentoEffettuato> sortAggiornamentiEffettuati(
-	    Set<AggiornamentoEffettuato> aggiornamenti) {
-	List<AggiornamentoEffettuato> sortedList = new ArrayList<AggiornamentoEffettuato>(
-		aggiornamenti);
-	//
-	Collections.sort(sortedList, (c1, c2) -> c1.getNiOrd().compareTo(c2.getNiOrd()));
+            Set<AggiornamentoEffettuato> aggiornamenti) {
+        List<AggiornamentoEffettuato> sortedList = new ArrayList<AggiornamentoEffettuato>(
+                aggiornamenti);
+        //
+        Collections.sort(sortedList, (c1, c2) -> c1.getNiOrd().compareTo(c2.getNiOrd()));
 
-	// return sorted
-	return sortedList;
+        // return sorted
+        return sortedList;
     }
 
     /*
@@ -718,8 +718,8 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliDiSistema() {
-	// TODO Auto-generated method stub
-	return this.controlliDiSistema;
+        // TODO Auto-generated method stub
+        return this.controlliDiSistema;
     }
 
     /*
@@ -729,8 +729,8 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliGenerali() {
-	// TODO Auto-generated method stub
-	return this.controlliGenerali;
+        // TODO Auto-generated method stub
+        return this.controlliGenerali;
     }
 
     /*
@@ -740,8 +740,8 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliFallitiUlteriori() {
-	// TODO Auto-generated method stub
-	return this.controlliFallitiUlteriori;
+        // TODO Auto-generated method stub
+        return this.controlliFallitiUlteriori;
     }
 
     /*
@@ -751,7 +751,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<CSChiave, Set<ControlloEseguito>> getControlliCollegamenti() {
-	return this.controlliCollegamenti;
+        return this.controlliCollegamenti;
     }
 
     /*
@@ -762,9 +762,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliCollegamento(CSChiave csChiave) {
-	return getControlliCollegamenti().containsKey(csChiave)
-		? getControlliCollegamenti().get(csChiave)
-		: new HashSet<ControlloEseguito>();
+        return getControlliCollegamenti().containsKey(csChiave)
+                ? getControlliCollegamenti().get(csChiave)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -774,7 +774,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliDocPrincipale() {
-	return this.controlliDocPrincipale;
+        return this.controlliDocPrincipale;
     }
 
     /*
@@ -785,9 +785,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliDocPrincipale(String idDocumento) {
-	return getControlliDocPrincipale().containsKey(idDocumento)
-		? getControlliDocPrincipale().get(idDocumento)
-		: new HashSet<ControlloEseguito>();
+        return getControlliDocPrincipale().containsKey(idDocumento)
+                ? getControlliDocPrincipale().get(idDocumento)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -797,7 +797,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliAllegati() {
-	return this.controlliAllegati;
+        return this.controlliAllegati;
     }
 
     /*
@@ -808,9 +808,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliAllegato(String idDocumento) {
-	return getControlliAllegati().containsKey(idDocumento)
-		? getControlliAllegati().get(idDocumento)
-		: new HashSet<ControlloEseguito>();
+        return getControlliAllegati().containsKey(idDocumento)
+                ? getControlliAllegati().get(idDocumento)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -820,7 +820,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliAnnessi() {
-	return this.controlliAnnessi;
+        return this.controlliAnnessi;
     }
 
     /*
@@ -831,9 +831,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliAnnesso(String idDocumento) {
-	return getControlliAnnessi().containsKey(idDocumento)
-		? getControlliAnnessi().get(idDocumento)
-		: new HashSet<ControlloEseguito>();
+        return getControlliAnnessi().containsKey(idDocumento)
+                ? getControlliAnnessi().get(idDocumento)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -843,7 +843,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliAnnotazioni() {
-	return this.controlliAnnotazioni;
+        return this.controlliAnnotazioni;
     }
 
     /*
@@ -854,9 +854,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliAnnotazione(String idDocumento) {
-	return getControlliAnnotazioni().containsKey(idDocumento)
-		? getControlliAnnotazioni().get(idDocumento)
-		: new HashSet<ControlloEseguito>();
+        return getControlliAnnotazioni().containsKey(idDocumento)
+                ? getControlliAnnotazioni().get(idDocumento)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -867,7 +867,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliComponentiDocPrincipale() {
-	return this.controlliComponenteDocPrincipale;
+        return this.controlliComponenteDocPrincipale;
     }
 
     /*
@@ -878,9 +878,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliComponenteDocPrincipale(String idComponente) {
-	return getControlliComponentiDocPrincipale().containsKey(idComponente)
-		? getControlliComponentiDocPrincipale().get(idComponente)
-		: new HashSet<ControlloEseguito>();
+        return getControlliComponentiDocPrincipale().containsKey(idComponente)
+                ? getControlliComponentiDocPrincipale().get(idComponente)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -891,7 +891,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliComponentiAllegati() {
-	return this.controlliComponenteAllegati;
+        return this.controlliComponenteAllegati;
     }
 
     /*
@@ -902,9 +902,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliComponenteAllegati(String idComponente) {
-	return getControlliComponentiAllegati().containsKey(idComponente)
-		? getControlliComponentiAllegati().get(idComponente)
-		: new HashSet<ControlloEseguito>();
+        return getControlliComponentiAllegati().containsKey(idComponente)
+                ? getControlliComponentiAllegati().get(idComponente)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -914,7 +914,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliComponentiAnnessi() {
-	return this.controlliComponenteAnnessi;
+        return this.controlliComponenteAnnessi;
     }
 
     /*
@@ -925,9 +925,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliComponenteAnnessi(String idComponente) {
-	return getControlliComponentiAnnessi().containsKey(idComponente)
-		? getControlliComponentiAnnessi().get(idComponente)
-		: new HashSet<ControlloEseguito>();
+        return getControlliComponentiAnnessi().containsKey(idComponente)
+                ? getControlliComponentiAnnessi().get(idComponente)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -937,7 +937,7 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Map<String, Set<ControlloEseguito>> getControlliComponentiAnnotazioni() {
-	return this.controlliComponenteAnnotazioni;
+        return this.controlliComponenteAnnotazioni;
     }
 
     /*
@@ -948,9 +948,9 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliComponenteAnnotazioni(String idComponente) {
-	return getControlliComponentiAnnotazioni().containsKey(idComponente)
-		? getControlliComponentiAnnotazioni().get(idComponente)
-		: new HashSet<ControlloEseguito>();
+        return getControlliComponentiAnnotazioni().containsKey(idComponente)
+                ? getControlliComponentiAnnotazioni().get(idComponente)
+                : new HashSet<ControlloEseguito>();
     }
 
     /*
@@ -960,8 +960,8 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getControlliUnitaDocumentaria() {
-	// TODO Auto-generated method stub
-	return this.controlliDocumento;
+        // TODO Auto-generated method stub
+        return this.controlliDocumento;
     }
 
     /*
@@ -971,223 +971,223 @@ public abstract class AbsUpdVersamentoExt
      */
     @Override
     public Set<ControlloEseguito> getWarnings() {
-	// TODO Auto-generated method stub
-	return this.warnings;
+        // TODO Auto-generated method stub
+        return this.warnings;
     }
 
     @Override
     public void addAggiornamentoUnitaDocumentaria(AggiornamentoEffettuato aggiornamento) {
-	getAggiornamentiUnitaDocumentaria().add(aggiornamento);
+        getAggiornamentiUnitaDocumentaria().add(aggiornamento);
     }
 
     public abstract void addAggiornamentoDocumenti(AggiornamentoEffettuato aggiornamento,
-	    CategoriaDocumento catDoc, String key);
+            CategoriaDocumento catDoc, String key);
 
     public abstract void addAggiornamentoCompDocumenti(AggiornamentoEffettuato aggiornamento,
-	    CategoriaDocumento catDoc, String key);
+            CategoriaDocumento catDoc, String key);
 
     @Override
     public void addAggiornamentoDocPrincipale(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiDocPrincipale().containsKey(
-		key) ? getAggiornamentiDocPrincipale(key) : new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiDocPrincipale().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiDocPrincipale().containsKey(
+                key) ? getAggiornamentiDocPrincipale(key) : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiDocPrincipale().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoCompDocPrincipale(AggiornamentoEffettuato aggiornamento,
-	    String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompDocPrincipale()
-		.containsKey(key) ? getAggiornamentiCompDocPrincipale(key)
-			: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiCompDocPrincipale().put(key, aggiornamenti);
+            String key) {
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompDocPrincipale()
+                .containsKey(key) ? getAggiornamentiCompDocPrincipale(key)
+                        : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiCompDocPrincipale().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoAllegati(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAllegati().containsKey(key)
-		? getAggiornamentiAllegato(key)
-		: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiAllegati().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAllegati().containsKey(key)
+                ? getAggiornamentiAllegato(key)
+                : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiAllegati().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoCompAllegati(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAllegati().containsKey(key)
-		? getAggiornamentiCompAllegato(key)
-		: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiCompAllegati().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAllegati().containsKey(key)
+                ? getAggiornamentiCompAllegato(key)
+                : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiCompAllegati().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoAnnessi(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAnnessi().containsKey(key)
-		? getAggiornamentiAnnesso(key)
-		: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiAnnessi().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAnnessi().containsKey(key)
+                ? getAggiornamentiAnnesso(key)
+                : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiAnnessi().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoCompAnnessi(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAnnessi().containsKey(key)
-		? getAggiornamentiCompAnnesso(key)
-		: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiCompAnnessi().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAnnessi().containsKey(key)
+                ? getAggiornamentiCompAnnesso(key)
+                : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiCompAnnessi().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoAnnotazioni(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAnnotazioni().containsKey(key)
-		? getAggiornamentiAnnotazione(key)
-		: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiAnnotazioni().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiAnnotazioni().containsKey(key)
+                ? getAggiornamentiAnnotazione(key)
+                : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiAnnotazioni().put(key, aggiornamenti);
     }
 
     @Override
     public void addAggiornamentoCompAnnotazioni(AggiornamentoEffettuato aggiornamento, String key) {
-	// recupero aggiornamenti
-	Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAnnotazioni()
-		.containsKey(key) ? getAggiornamentiCompAnnotazione(key)
-			: new HashSet<AggiornamentoEffettuato>(0);
-	// aggiungo in lista
-	aggiornamenti.add(aggiornamento);
-	// aggiungo su mappa
-	getAggiornamentiCompAnnotazioni().put(key, aggiornamenti);
+        // recupero aggiornamenti
+        Set<AggiornamentoEffettuato> aggiornamenti = getAggiornamentiCompAnnotazioni()
+                .containsKey(key) ? getAggiornamentiCompAnnotazione(key)
+                        : new HashSet<AggiornamentoEffettuato>(0);
+        // aggiungo in lista
+        aggiornamenti.add(aggiornamento);
+        // aggiungo su mappa
+        getAggiornamentiCompAnnotazioni().put(key, aggiornamenti);
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiUnitaDocumentaria() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiUnitaDocumentaria;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiUnitaDocumentaria;
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiDocPrincipale() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiDocPrincipale;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiDocPrincipale;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiDocPrincipale(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiDocPrincipale.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiDocPrincipale.get(key);
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiCompDocPrincipale() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompDocPrincipale;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompDocPrincipale;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiCompDocPrincipale(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompDocPrincipale.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompDocPrincipale.get(key);
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiAllegati() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAllegati;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAllegati;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiAllegato(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAllegati.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAllegati.get(key);
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiCompAllegati() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiCompAllegato(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati.get(key);
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiAnnotazioni() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAnnotazioni;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAnnotazioni;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiAnnotazione(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAnnotazioni.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAnnotazioni.get(key);
     }
 
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiCompAnnotazioni() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiCompAnnotazione(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati.get(key);
     }
 
     //
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiAnnessi() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAnnessi;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAnnessi;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiAnnesso(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiAnnessi.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiAnnessi.get(key);
     }
 
     @Override
     public Map<String, Set<AggiornamentoEffettuato>> getAggiornamentiCompAnnessi() {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati;
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati;
     }
 
     @Override
     public Set<AggiornamentoEffettuato> getAggiornamentiCompAnnesso(String key) {
-	// TODO Auto-generated method stub
-	return this.aggiornamentiCompAllegati.get(key);
+        // TODO Auto-generated method stub
+        return this.aggiornamentiCompAllegati.get(key);
     }
 
 }

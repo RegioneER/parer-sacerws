@@ -23,7 +23,7 @@ import java.io.IOException;
  * @author sinatti_s
  */
 public class VerificaFirmaConnectionException extends IOException
-	implements IVerificaFirmaInvokeException {
+        implements IVerificaFirmaInvokeException {
 
     private static final long serialVersionUID = -8229661865982756916L;
 
@@ -31,46 +31,46 @@ public class VerificaFirmaConnectionException extends IOException
     private final String url;
 
     public VerificaFirmaConnectionException(final String cdService, final String url) {
-	super();
-	this.cdService = cdService;
-	this.url = url;
+        super();
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaConnectionException(String message, Throwable cause, final String cdService,
-	    final String url) {
-	super(message, cause);
-	this.cdService = cdService;
-	this.url = url;
+            final String url) {
+        super(message, cause);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaConnectionException(String message, final String cdService,
-	    final String url) {
-	super(message);
-	this.cdService = cdService;
-	this.url = url;
+            final String url) {
+        super(message);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     public VerificaFirmaConnectionException(Throwable cause, final String cdService,
-	    final String url) {
-	super(cause);
-	this.cdService = cdService;
-	this.url = url;
+            final String url) {
+        super(cause);
+        this.cdService = cdService;
+        this.url = url;
     }
 
     @Override
     public String getCdService() {
-	return cdService;
+        return cdService;
     }
 
     @Override
     public String getUrl() {
-	return url;
+        return url;
     }
 
     @Override
     public String getMessage() {
-	return "Servizio di verifica firma " + getCdService() + " non attivo o non raggiungibile ( "
-		+ getUrl() + ")";
+        return "Servizio di verifica firma " + getCdService() + " non attivo o non raggiungibile ( "
+                + getUrl() + ")";
     }
 
 }

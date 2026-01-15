@@ -68,90 +68,90 @@ public class OrgAmbiente implements Serializable {
     @Id
     @Column(name = "ID_AMBIENTE")
     @GenericGenerator(name = "SORG_AMBIENTE_ID_AMBIENTE_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_AMBIENTE"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SORG_AMBIENTE"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SORG_AMBIENTE_ID_AMBIENTE_GENERATOR")
     public Long getIdAmbiente() {
-	return this.idAmbiente;
+        return this.idAmbiente;
     }
 
     public void setIdAmbiente(Long idAmbiente) {
-	this.idAmbiente = idAmbiente;
+        this.idAmbiente = idAmbiente;
     }
 
     @Column(name = "DS_AMBIENTE")
     public String getDsAmbiente() {
-	return this.dsAmbiente;
+        return this.dsAmbiente;
     }
 
     public void setDsAmbiente(String dsAmbiente) {
-	this.dsAmbiente = dsAmbiente;
+        this.dsAmbiente = dsAmbiente;
     }
 
     @Column(name = "NM_AMBIENTE")
     public String getNmAmbiente() {
-	return this.nmAmbiente;
+        return this.nmAmbiente;
     }
 
     public void setNmAmbiente(String nmAmbiente) {
-	this.nmAmbiente = nmAmbiente;
+        this.nmAmbiente = nmAmbiente;
     }
 
     // bi-directional many-to-one association to OrgEnte
     @OneToMany(mappedBy = "orgAmbiente")
     public List<OrgEnte> getOrgEntes() {
-	return this.orgEntes;
+        return this.orgEntes;
     }
 
     public void setOrgEntes(List<OrgEnte> orgEntes) {
-	this.orgEntes = orgEntes;
+        this.orgEntes = orgEntes;
     }
 
     @Column(name = "DS_NOTE")
     public String getDsNote() {
-	return this.dsNote;
+        return this.dsNote;
     }
 
     public void setDsNote(String dsNote) {
-	this.dsNote = dsNote;
+        this.dsNote = dsNote;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_FIN_VAL")
     public Date getDtFinVal() {
-	return this.dtFinVal;
+        return this.dtFinVal;
     }
 
     public void setDtFinVal(Date dtFinVal) {
-	this.dtFinVal = dtFinVal;
+        this.dtFinVal = dtFinVal;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_INI_VAL")
     public Date getDtIniVal() {
-	return this.dtIniVal;
+        return this.dtIniVal;
     }
 
     public void setDtIniVal(Date dtIniVal) {
-	this.dtIniVal = dtIniVal;
+        this.dtIniVal = dtIniVal;
     }
 
     @Column(name = "ID_ENTE_CONSERV")
     public java.math.BigDecimal getIdEnteConserv() {
-	return this.idEnteConserv;
+        return this.idEnteConserv;
     }
 
     public void setIdEnteConserv(java.math.BigDecimal idEnteConserv) {
-	this.idEnteConserv = idEnteConserv;
+        this.idEnteConserv = idEnteConserv;
     }
 
     @Column(name = "ID_ENTE_GESTORE")
     public java.math.BigDecimal getIdEnteGestore() {
-	return this.idEnteGestore;
+        return this.idEnteGestore;
     }
 
     public void setIdEnteGestore(java.math.BigDecimal idEnteGestore) {
-	this.idEnteGestore = idEnteGestore;
+        this.idEnteGestore = idEnteGestore;
     }
 
 }

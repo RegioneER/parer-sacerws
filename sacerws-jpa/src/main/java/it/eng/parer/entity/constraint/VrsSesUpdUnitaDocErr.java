@@ -27,6 +27,6 @@ public final class VrsSesUpdUnitaDocErr {
      * Stato sessione ti_stato_ses IN ('NON_RISOLUBILE', 'NON_VERIFICATA', 'VERIFICATA')
      */
     public enum TiStatoSesVrsSesUpdUnitaDocErr {
-	NON_RISOLUBILE, NON_VERIFICATA, VERIFICATA
+        NON_RISOLUBILE, NON_VERIFICATA, VERIFICATA
     }
 }

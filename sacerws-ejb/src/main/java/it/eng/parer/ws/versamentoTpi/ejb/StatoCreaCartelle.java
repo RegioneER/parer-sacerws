@@ -30,43 +30,43 @@ public class StatoCreaCartelle {
     private String pathCartellaVersatore;
 
     public boolean isCreaCartellaData() {
-	return creaCartellaData;
+        return creaCartellaData;
     }
 
     public void setCreaCartellaData(boolean creaCartellaData) {
-	this.creaCartellaData = creaCartellaData;
+        this.creaCartellaData = creaCartellaData;
     }
 
     public boolean isCreaCartellaVersatore() {
-	return creaCartellaVersatore;
+        return creaCartellaVersatore;
     }
 
     public void setCreaCartellaVersatore(boolean creaCartellaVersatore) {
-	this.creaCartellaVersatore = creaCartellaVersatore;
+        this.creaCartellaVersatore = creaCartellaVersatore;
     }
 
     public Long getIdDtVers() {
-	return idDtVers;
+        return idDtVers;
     }
 
     public void setIdDtVers(Long idDtVers) {
-	this.idDtVers = idDtVers;
+        this.idDtVers = idDtVers;
     }
 
     public String getPathCartellaData() {
-	return pathCartellaData;
+        return pathCartellaData;
     }
 
     public void setPathCartellaData(String pathCartellaData) {
-	this.pathCartellaData = pathCartellaData;
+        this.pathCartellaData = pathCartellaData;
     }
 
     public String getPathCartellaVersatore() {
-	return pathCartellaVersatore;
+        return pathCartellaVersatore;
     }
 
     public void setPathCartellaVersatore(String pathCartellaVersatore) {
-	this.pathCartellaVersatore = pathCartellaVersatore;
+        this.pathCartellaVersatore = pathCartellaVersatore;
     }
 
 }

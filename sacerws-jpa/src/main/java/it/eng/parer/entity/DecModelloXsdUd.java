@@ -66,150 +66,150 @@ public class DecModelloXsdUd implements Serializable {
     private List<DecUsoModelloXsdCompDoc> decUsoModelloXsdCompDocs = new ArrayList<>();
 
     public DecModelloXsdUd() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @GenericGenerator(name = "DEC_MODELLO_XSD_UD_IDMODELLOXSDUD_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_MODELLO_XSD_UD"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SDEC_MODELLO_XSD_UD"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEC_MODELLO_XSD_UD_IDMODELLOXSDUD_GENERATOR")
     @Column(name = "ID_MODELLO_XSD_UD")
     public Long getIdModelloXsdUd() {
-	return this.idModelloXsdUd;
+        return this.idModelloXsdUd;
     }
 
     public void setIdModelloXsdUd(Long idModelloXsdUd) {
-	this.idModelloXsdUd = idModelloXsdUd;
+        this.idModelloXsdUd = idModelloXsdUd;
     }
 
     // bi-directional many-to-one association to AplSistemaMigraz
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SISTEMA_MIGRAZ")
     public AplSistemaMigraz getAplSistemaMigraz() {
-	return this.aplSistemaMigraz;
+        return this.aplSistemaMigraz;
     }
 
     public void setAplSistemaMigraz(AplSistemaMigraz aplSistemaMigraz) {
-	this.aplSistemaMigraz = aplSistemaMigraz;
+        this.aplSistemaMigraz = aplSistemaMigraz;
     }
 
     // bi-directional many-to-one association to OrgAmbiente
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_AMBIENTE")
     public OrgAmbiente getOrgAmbiente() {
-	return this.orgAmbiente;
+        return this.orgAmbiente;
     }
 
     public void setOrgAmbiente(OrgAmbiente orgAmbiente) {
-	this.orgAmbiente = orgAmbiente;
+        this.orgAmbiente = orgAmbiente;
     }
 
     @Column(name = "TI_USO_MODELLO_XSD")
     public String getTiUsoModelloXsd() {
-	return this.tiUsoModelloXsd;
+        return this.tiUsoModelloXsd;
     }
 
     public void setTiUsoModelloXsd(String tiUsoModelloXsd) {
-	this.tiUsoModelloXsd = tiUsoModelloXsd;
+        this.tiUsoModelloXsd = tiUsoModelloXsd;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_ISTITUZ")
     public Date getDtIstituz() {
-	return this.dtIstituz;
+        return this.dtIstituz;
     }
 
     public void setDtIstituz(Date dtIstituz) {
-	this.dtIstituz = dtIstituz;
+        this.dtIstituz = dtIstituz;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_MODELLO_XSD")
     public TiModelloXsdUd getTiModelloXsd() {
-	return this.tiModelloXsd;
+        return this.tiModelloXsd;
     }
 
     public void setTiModelloXsd(TiModelloXsdUd tiModelloXsd) {
-	this.tiModelloXsd = tiModelloXsd;
+        this.tiModelloXsd = tiModelloXsd;
     }
 
     @Column(name = "DS_XSD")
     public String getDsXsd() {
-	return this.dsXsd;
+        return this.dsXsd;
     }
 
     public void setDsXsd(String dsXsd) {
-	this.dsXsd = dsXsd;
+        this.dsXsd = dsXsd;
     }
 
     @Column(name = "CD_XSD")
     public String getCdXsd() {
-	return this.cdXsd;
+        return this.cdXsd;
     }
 
     public void setCdXsd(String cdXsd) {
-	this.cdXsd = cdXsd;
+        this.cdXsd = cdXsd;
     }
 
     @Lob
     @Column(name = "BL_XSD")
     public String getBlXsd() {
-	return this.blXsd;
+        return this.blXsd;
     }
 
     public void setBlXsd(String blXsd) {
-	this.blXsd = blXsd;
+        this.blXsd = blXsd;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_SOPPRES")
     public Date getDtSoppres() {
-	return this.dtSoppres;
+        return this.dtSoppres;
     }
 
     public void setDtSoppres(Date dtSoppres) {
-	this.dtSoppres = dtSoppres;
+        this.dtSoppres = dtSoppres;
     }
 
     @Column(name = "FL_DEFAULT", columnDefinition = "CHAR")
     public String getFlDefault() {
-	return this.flDefault;
+        return this.flDefault;
     }
 
     public void setFlDefault(String flDefault) {
-	this.flDefault = flDefault;
+        this.flDefault = flDefault;
     }
 
     // bi-directional many-to-one association to DecTipoRapprAmmesso
     @OneToMany(mappedBy = "decModelloXsdUd", cascade = CascadeType.PERSIST)
     public List<DecUsoModelloXsdUniDoc> getDecUsoModelloXsdUniDocs() {
-	return this.decUsoModelloXsdUniDocs;
+        return this.decUsoModelloXsdUniDocs;
     }
 
     public void setDecUsoModelloXsdUniDocs(List<DecUsoModelloXsdUniDoc> decUsoModelloXsdUniDocs) {
-	this.decUsoModelloXsdUniDocs = decUsoModelloXsdUniDocs;
+        this.decUsoModelloXsdUniDocs = decUsoModelloXsdUniDocs;
     }
 
     // bi-directional many-to-one association to DecTipoRapprAmmesso
     @OneToMany(mappedBy = "decModelloXsdUd", cascade = CascadeType.PERSIST)
     public List<DecUsoModelloXsdDoc> getDecUsoModelloXsdDocs() {
-	return this.decUsoModelloXsdDocs;
+        return this.decUsoModelloXsdDocs;
     }
 
     public void setDecUsoModelloXsdDocs(List<DecUsoModelloXsdDoc> decUsoModelloXsdDocs) {
-	this.decUsoModelloXsdDocs = decUsoModelloXsdDocs;
+        this.decUsoModelloXsdDocs = decUsoModelloXsdDocs;
     }
 
     // bi-directional many-to-one association to DecTipoRapprAmmesso
     @OneToMany(mappedBy = "decModelloXsdUd", cascade = CascadeType.PERSIST)
     public List<DecUsoModelloXsdCompDoc> getDecUsoModelloXsdCompDocs() {
-	return this.decUsoModelloXsdCompDocs;
+        return this.decUsoModelloXsdCompDocs;
     }
 
     public void setDecUsoModelloXsdCompDocs(
-	    List<DecUsoModelloXsdCompDoc> decUsoModelloXsdCompDocs) {
-	this.decUsoModelloXsdCompDocs = decUsoModelloXsdCompDocs;
+            List<DecUsoModelloXsdCompDoc> decUsoModelloXsdCompDocs) {
+        this.decUsoModelloXsdCompDocs = decUsoModelloXsdCompDocs;
     }
 
 }

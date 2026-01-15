@@ -29,23 +29,23 @@ public class VerificaFirmaException extends Exception {
     private final String descrizioneErrore;
 
     public VerificaFirmaException(final String codiceErrore, final String descrizioneErrore,
-	    Throwable cause) {
-	super(cause);
-	this.codiceErrore = codiceErrore;
-	this.descrizioneErrore = descrizioneErrore;
+            Throwable cause) {
+        super(cause);
+        this.codiceErrore = codiceErrore;
+        this.descrizioneErrore = descrizioneErrore;
     }
 
     public VerificaFirmaException(final String codiceErrore, final String descrizioneErrore) {
-	this.codiceErrore = codiceErrore;
-	this.descrizioneErrore = descrizioneErrore;
+        this.codiceErrore = codiceErrore;
+        this.descrizioneErrore = descrizioneErrore;
     }
 
     public String getCodiceErrore() {
-	return codiceErrore;
+        return codiceErrore;
     }
 
     public String getDescrizioneErrore() {
-	return descrizioneErrore;
+        return descrizioneErrore;
     }
 
 }

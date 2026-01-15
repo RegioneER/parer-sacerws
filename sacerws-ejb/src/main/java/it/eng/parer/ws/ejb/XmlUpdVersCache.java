@@ -65,61 +65,61 @@ public class XmlUpdVersCache {
 
     @PostConstruct
     protected void initSingleton() {
-	log.info("Inizializzazione singleton XmlUpdVersContext...");
+        log.info("Inizializzazione singleton XmlUpdVersContext...");
 
-	try {
-	    //
-	    versReqCtx_UDAggiornamento = JAXBContext
-		    .newInstance(IndiceSIPAggiornamentoUnitaDocumentaria.class);
+        try {
+            //
+            versReqCtx_UDAggiornamento = JAXBContext
+                    .newInstance(IndiceSIPAggiornamentoUnitaDocumentaria.class);
 
-	    //
-	    versRespCtx_EsitoAggiornamentoVersamento = JAXBContext
-		    .newInstance(EsitoAggiornamento.class);
+            //
+            versRespCtx_EsitoAggiornamentoVersamento = JAXBContext
+                    .newInstance(EsitoAggiornamento.class);
 
-	    //
-	    versReqCtx_DatiSpecifici = JAXBContext.newInstance(DatiSpecificiType.class);
+            //
+            versReqCtx_DatiSpecifici = JAXBContext.newInstance(DatiSpecificiType.class);
 
-	    //
-	    SchemaFactory schemaFctry = SchemaFactory
-		    .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	    schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-	    schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-	    aggVersReqSchema = schemaFctry
-		    .newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_REQ_XSD));
-	    aggVersRespSchema = schemaFctry
-		    .newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_RESP_XSD));
+            //
+            SchemaFactory schemaFctry = SchemaFactory
+                    .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFctry.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            aggVersReqSchema = schemaFctry
+                    .newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_REQ_XSD));
+            aggVersRespSchema = schemaFctry
+                    .newSchema(FileXSDUtil.getURLFileXSD(FileXSD.AGG_VERS_RESP_XSD));
 
-	    log.info("Inizializzazione singleton XmlUpdVersContext... completata.");
-	} catch (JAXBException | SAXException ex) {
-	    // log.fatal("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
-	    log.error("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
-	    throw new RuntimeException(ex);
-	}
+            log.info("Inizializzazione singleton XmlUpdVersContext... completata.");
+        } catch (JAXBException | SAXException ex) {
+            // log.fatal("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
+            log.error("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     // Returns JAXBContext of Request
     @Lock(LockType.READ)
     public JAXBContext getVersReqCtxforAggiornamentoUD() {
-	return versReqCtx_UDAggiornamento;
+        return versReqCtx_UDAggiornamento;
     }
 
     @Lock(LockType.READ)
     public JAXBContext getVersRespCtxforEsitoAggiornamentoVersamento() {
-	return versRespCtx_EsitoAggiornamentoVersamento;
+        return versRespCtx_EsitoAggiornamentoVersamento;
     }
 
     @Lock(LockType.READ)
     public JAXBContext getVersReqCtxforDatiSpecifici() {
-	return versReqCtx_DatiSpecifici;
+        return versReqCtx_DatiSpecifici;
     }
 
     @Lock(LockType.READ)
     public Schema getSchemaOfAggVersReq() {
-	return aggVersReqSchema;
+        return aggVersReqSchema;
     }
 
     @Lock(LockType.READ)
     public Schema getSchemaOfAggVersResp() {
-	return aggVersRespSchema;
+        return aggVersRespSchema;
     }
 }

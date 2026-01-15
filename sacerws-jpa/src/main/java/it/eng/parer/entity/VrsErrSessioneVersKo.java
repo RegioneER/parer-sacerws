@@ -49,75 +49,75 @@ public class VrsErrSessioneVersKo implements Serializable {
     @Column(name = "ID_ERR_SESSIONE_VERS_KO")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getIdErrSessioneVersKo() {
-	return this.idErrSessioneVersKo;
+        return this.idErrSessioneVersKo;
     }
 
     public void setIdErrSessioneVersKo(Long idErrSessioneVersKo) {
-	this.idErrSessioneVersKo = idErrSessioneVersKo;
+        this.idErrSessioneVersKo = idErrSessioneVersKo;
     }
 
     @Column(name = "CD_ERR")
     public String getCdErr() {
-	return this.cdErr;
+        return this.cdErr;
     }
 
     public void setCdErr(String cdErr) {
-	this.cdErr = cdErr;
+        this.cdErr = cdErr;
     }
 
     @Column(name = "DS_ERR")
     public String getDsErr() {
-	return this.dsErr;
+        return this.dsErr;
     }
 
     public void setDsErr(String dsErr) {
-	this.dsErr = dsErr;
+        this.dsErr = dsErr;
     }
 
     @Column(name = "FL_ERR_PRINC", columnDefinition = "char(1)")
     public String getFlErrPrinc() {
-	return this.flErrPrinc;
+        return this.flErrPrinc;
     }
 
     public void setFlErrPrinc(String flErrPrinc) {
-	this.flErrPrinc = flErrPrinc;
+        this.flErrPrinc = flErrPrinc;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "PG_ERR_SESSIONE_VERS")
     public BigDecimal getPgErrSessioneVers() {
-	return this.pgErrSessioneVers;
+        return this.pgErrSessioneVers;
     }
 
     public void setPgErrSessioneVers(BigDecimal pgErrSessioneVers) {
-	this.pgErrSessioneVers = pgErrSessioneVers;
+        this.pgErrSessioneVers = pgErrSessioneVers;
     }
 
     @Column(name = "TI_ERR")
     public String getTiErr() {
-	return this.tiErr;
+        return this.tiErr;
     }
 
     public void setTiErr(String tiErr) {
-	this.tiErr = tiErr;
+        this.tiErr = tiErr;
     }
 
     // bi-directional many-to-one association to VrsDatiSessioneVersKo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DATI_SESSIONE_VERS_KO")
     public VrsDatiSessioneVersKo getVrsDatiSessioneVersKo() {
-	return this.vrsDatiSessioneVersKo;
+        return this.vrsDatiSessioneVersKo;
     }
 
     public void setVrsDatiSessioneVersKo(VrsDatiSessioneVersKo vrsDatiSessioneVersKo) {
-	this.vrsDatiSessioneVersKo = vrsDatiSessioneVersKo;
+        this.vrsDatiSessioneVersKo = vrsDatiSessioneVersKo;
     }
 }

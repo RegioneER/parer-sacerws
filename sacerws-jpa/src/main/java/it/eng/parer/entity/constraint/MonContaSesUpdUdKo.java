@@ -29,7 +29,7 @@ public final class MonContaSesUpdUdKo {
      * ti_stato_udp_ud_ko IN ('NON_RISOLUBILE', 'NON_VERIFICATO', 'RISOLTO', 'VERIFICATO')
      */
     public enum TiStatoUdpUdKoMonContaSesUpdUdKo {
-	NON_RISOLUBILE, NON_VERIFICATO, RISOLTO, VERIFICATO
+        NON_RISOLUBILE, NON_VERIFICATO, RISOLTO, VERIFICATO
     }
 
 }

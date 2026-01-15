@@ -22,6 +22,6 @@ public interface DatabaseStorageBackend extends BackendStorage {
 
     @Override
     default STORAGE_TYPE getType() {
-	return STORAGE_TYPE.BLOB;
+        return STORAGE_TYPE.BLOB;
     }
 }

@@ -58,81 +58,81 @@ public class FirReport implements Serializable {
     private DecBackend decBackend;
 
     public FirReport() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @Column(name = "ID_FIR_REPORT")
     @GenericGenerator(name = "SFIR_REPORT_ID_FIR_REPORT_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_REPORT"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SFIR_REPORT"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SFIR_REPORT_ID_FIR_REPORT_GENERATOR")
     public Long getIdFirReport() {
-	return this.idFirReport;
+        return this.idFirReport;
     }
 
     public void setIdFirReport(Long idFirReport) {
-	this.idFirReport = idFirReport;
+        this.idFirReport = idFirReport;
     }
 
     @Lob()
     @Column(name = "BL_CONTENUTO_REPORT")
     public byte[] getBlContenutoReport() {
-	return blContenutoReport;
+        return blContenutoReport;
     }
 
     public void setBlContenutoReport(byte[] blContenutoReport) {
-	this.blContenutoReport = blContenutoReport;
+        this.blContenutoReport = blContenutoReport;
     }
 
     @Column(name = "CD_KEY_FILE")
     public String getCdKeyFile() {
-	return this.cdKeyFile;
+        return this.cdKeyFile;
     }
 
     public void setCdKeyFile(String cdKeyFile) {
-	this.cdKeyFile = cdKeyFile;
+        this.cdKeyFile = cdKeyFile;
     }
 
     @Column(name = "NM_BUCKET")
     public String getNmBucket() {
-	return this.nmBucket;
+        return this.nmBucket;
     }
 
     public void setNmBucket(String nmBucket) {
-	this.nmBucket = nmBucket;
+        this.nmBucket = nmBucket;
     }
 
     // bi-directional many-to-one association to AroCompDoc
     @ManyToOne
     @JoinColumn(name = "ID_COMP_DOC")
     public AroCompDoc getAroCompDoc() {
-	return this.aroCompDoc;
+        return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-	this.aroCompDoc = aroCompDoc;
+        this.aroCompDoc = aroCompDoc;
     }
 
     // bi-directional many-to-one association to DecReportServizioVerificaCompDoc
     @OneToMany(mappedBy = "firReport", cascade = {
-	    CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE,
-	    CascadeType.REFRESH }, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.REFRESH }, fetch = FetchType.LAZY)
     public List<FirUrnReport> getFirUrnReports() {
-	return firUrnReports;
+        return firUrnReports;
     }
 
     public void setFirUrnReports(List<FirUrnReport> firUrnReports) {
-	this.firUrnReports = firUrnReports;
+        this.firUrnReports = firUrnReports;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_DEC_BACKEND")
     public DecBackend getDecBackend() {
-	return decBackend;
+        return decBackend;
     }
 
     public void setDecBackend(DecBackend decBackend) {
-	this.decBackend = decBackend;
+        this.decBackend = decBackend;
     }
 }

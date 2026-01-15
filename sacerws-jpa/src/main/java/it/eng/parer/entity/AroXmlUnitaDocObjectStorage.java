@@ -30,7 +30,7 @@ public class AroXmlUnitaDocObjectStorage extends AroXmlObjectStorage {
     private static final long serialVersionUID = 1L;
 
     public AroXmlUnitaDocObjectStorage() {
-	super();
+        super();
     }
 
     private Long idUnitaDoc;
@@ -39,21 +39,21 @@ public class AroXmlUnitaDocObjectStorage extends AroXmlObjectStorage {
     @Id
     @Column(name = "ID_UNITA_DOC")
     public Long getIdUnitaDoc() {
-	return idUnitaDoc;
+        return idUnitaDoc;
     }
 
     public void setIdUnitaDoc(Long idUnitaDoc) {
-	this.idUnitaDoc = idUnitaDoc;
+        this.idUnitaDoc = idUnitaDoc;
     }
 
     @MapsId
     @OneToOne(mappedBy = "aroXmlUnitaDocObjectStorage")
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return aroUnitaDoc;
+        return aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 }

@@ -51,32 +51,32 @@ public class AplSistemaMigraz implements Serializable {
     @XmlID
     @Column(name = "ID_SISTEMA_MIGRAZ")
     @GenericGenerator(name = "SAPL_SISTEMA_MIGRAZ_ID_SISTEMA_MIGRAZ_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
-	    @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SAPL_SISTEMA_MIGRAZ"),
-	    @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SAPL_SISTEMA_MIGRAZ"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SAPL_SISTEMA_MIGRAZ_ID_SISTEMA_MIGRAZ_GENERATOR")
     public Long getIdSistemaMigraz() {
-	return this.idSistemaMigraz;
+        return this.idSistemaMigraz;
     }
 
     public void setIdSistemaMigraz(Long idSistemaMigraz) {
-	this.idSistemaMigraz = idSistemaMigraz;
+        this.idSistemaMigraz = idSistemaMigraz;
     }
 
     @Column(name = "DS_SISTEMA_MIGRAZ")
     public String getDsSistemaMigraz() {
-	return this.dsSistemaMigraz;
+        return this.dsSistemaMigraz;
     }
 
     public void setDsSistemaMigraz(String dsSistemaMigraz) {
-	this.dsSistemaMigraz = dsSistemaMigraz;
+        this.dsSistemaMigraz = dsSistemaMigraz;
     }
 
     @Column(name = "NM_SISTEMA_MIGRAZ")
     public String getNmSistemaMigraz() {
-	return this.nmSistemaMigraz;
+        return this.nmSistemaMigraz;
     }
 
     public void setNmSistemaMigraz(String nmSistemaMigraz) {
-	this.nmSistemaMigraz = nmSistemaMigraz;
+        this.nmSistemaMigraz = nmSistemaMigraz;
     }
 }

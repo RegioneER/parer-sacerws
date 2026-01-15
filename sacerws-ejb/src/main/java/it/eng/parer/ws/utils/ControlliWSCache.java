@@ -56,50 +56,50 @@ public class ControlliWSCache {
 
     @PostConstruct
     public void initSingleton() {
-	log.info("Inizializzazione singleton ControlliWSCache...");
-	try {
+        log.info("Inizializzazione singleton ControlliWSCache...");
+        try {
 
-	    List<DecControlloWs> list = controlliWSHelper.caricaListaControlli();
-	    controlliMap = new HashMap<>();
-	    for (DecControlloWs cnt : list) {
-		// String cdCategoria, String cdControllo, String cdFamiglia, String dsControllo,
-		// BigDecimal niOrd
-		controlliMap.put(cnt.getCdControlloWs(),
-			new ControlloWSResp(cnt.getCdCategoriaControllo(), cnt.getCdControlloWs(),
-				cnt.getCdFamigliaControllo(), cnt.getDsControlloWs(),
-				cnt.getNiOrdControllo()));
-	    }
-	} catch (RuntimeException ex) {
-	    throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
-	}
-	log.info("Inizializzazione singleton ControlliWSCache... completata.");
+            List<DecControlloWs> list = controlliWSHelper.caricaListaControlli();
+            controlliMap = new HashMap<>();
+            for (DecControlloWs cnt : list) {
+                // String cdCategoria, String cdControllo, String cdFamiglia, String dsControllo,
+                // BigDecimal niOrd
+                controlliMap.put(cnt.getCdControlloWs(),
+                        new ControlloWSResp(cnt.getCdCategoriaControllo(), cnt.getCdControlloWs(),
+                                cnt.getCdFamigliaControllo(), cnt.getDsControlloWs(),
+                                cnt.getNiOrdControllo()));
+            }
+        } catch (RuntimeException ex) {
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
+        }
+        log.info("Inizializzazione singleton ControlliWSCache... completata.");
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public String getString(String cdControllo) {
-	return StringEscapeUtils.unescapeJava(controlliMap.get(cdControllo).toString());
+        return StringEscapeUtils.unescapeJava(controlliMap.get(cdControllo).toString());
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public String getString(String cdControllo, Object... params) {
-	return StringEscapeUtils.unescapeJava(
-		MessageFormat.format(controlliMap.get(cdControllo).toString(), params));
+        return StringEscapeUtils.unescapeJava(
+                MessageFormat.format(controlliMap.get(cdControllo).toString(), params));
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public ControlloWSResp getControllo(String cdControlloWs) {
-	return controlliMap.get(cdControlloWs);
+        return controlliMap.get(cdControlloWs);
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List<ControlloWSResp> getControlli() {
-	return controlliMap.values().stream().collect(Collectors.toList());
+        return controlliMap.values().stream().collect(Collectors.toList());
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List<ControlloWSResp> getControlliByCdFamiglia(String cdFamiglia) {
-	return getControlli().stream().filter(c -> c.getCdFamiglia().equalsIgnoreCase(cdFamiglia))
-		.collect(Collectors.toList());
+        return getControlli().stream().filter(c -> c.getCdFamiglia().equalsIgnoreCase(cdFamiglia))
+                .collect(Collectors.toList());
     }
 
 }

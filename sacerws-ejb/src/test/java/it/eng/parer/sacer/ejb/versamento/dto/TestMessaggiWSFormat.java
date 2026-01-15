@@ -54,45 +54,45 @@ public class TestMessaggiWSFormat {
 
     @Test
     void testFormattaKeyPartAnnoMeseVers() {
-	String[] months = {
-		"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
-	for (String month : months) {
-	    Date date = Date.from(Instant.parse("2021-" + month + "-06T10:00:00Z"));
-	    Long actual = MessaggiWSFormat.formattaKeyPartAnnoMeseVers(date);
-	    Long expected = Long.parseLong("2021" + month);
-	    assertEquals(expected, actual);
-	}
+        String[] months = {
+                "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
+        for (String month : months) {
+            Date date = Date.from(Instant.parse("2021-" + month + "-06T10:00:00Z"));
+            Long actual = MessaggiWSFormat.formattaKeyPartAnnoMeseVers(date);
+            Long expected = Long.parseLong("2021" + month);
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
     void testFormattaKeyPartAnnoMeseVersWithTimeZone() {
-	String[] months = {
-		"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
-	for (String month : months) {
-	    ZonedDateTime zDate = ZonedDateTime.parse("2021-" + month + "-06T10:00:00Z",
-		    DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
-	    Long actual = MessaggiWSFormat.formattaKeyPartAnnoMeseVers(zDate);
-	    Long expected = Long.parseLong("2021" + month);
-	    assertEquals(expected, actual);
-	}
+        String[] months = {
+                "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
+        for (String month : months) {
+            ZonedDateTime zDate = ZonedDateTime.parse("2021-" + month + "-06T10:00:00Z",
+                    DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+            Long actual = MessaggiWSFormat.formattaKeyPartAnnoMeseVers(zDate);
+            Long expected = Long.parseLong("2021" + month);
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
     void testFormattaSubPathData() {
-	Date date = Date.from(Instant.parse("2014-06-21T10:15:00Z"));
+        Date date = Date.from(Instant.parse("2014-06-21T10:15:00Z"));
 
-	String actual = MessaggiWSFormat.formattaSubPathData(date);
-	String expected = "2014_06_21";
-	assertEquals(expected, actual);
+        String actual = MessaggiWSFormat.formattaSubPathData(date);
+        String expected = "2014_06_21";
+        assertEquals(expected, actual);
     }
 
     @Test
     void testFormattaSubPathDataWithTimeZone() {
-	ZonedDateTime zDate = ZonedDateTime.parse("2018-12-30T20:00:00Z",
-		DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
-	String actual = MessaggiWSFormat.formattaSubPathData(zDate);
-	String expected = "2018_12_30";
-	assertEquals(expected, actual);
+        ZonedDateTime zDate = ZonedDateTime.parse("2018-12-30T20:00:00Z",
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+        String actual = MessaggiWSFormat.formattaSubPathData(zDate);
+        String expected = "2018_12_30";
+        assertEquals(expected, actual);
     }
 
 }
