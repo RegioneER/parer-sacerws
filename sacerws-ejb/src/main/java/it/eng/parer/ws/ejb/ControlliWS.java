@@ -27,6 +27,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -35,14 +36,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.entity.IamAbilTipoDato;
 import it.eng.parer.entity.IamUser;
 import it.eng.parer.granted_entity.UsrUser;
 import it.eng.parer.idpjaas.logutils.LogDto;
+import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.IWSDesc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.Costanti.TipiWSPerControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.ParametroApplDB.TipoParametroAppl;
+import it.eng.parer.ws.versamento.dto.RispostaWS;
+import it.eng.parer.ws.versamento.dto.VersamentoExt;
 import it.eng.parer.ws.utils.VerificaVersione;
 import it.eng.spagoLite.security.User;
 import it.eng.spagoLite.security.auth.WSLoginHandler;
@@ -59,6 +64,7 @@ import it.eng.spagoLite.security.exception.AuthWSException;
 public class ControlliWS {
 
     private static final String ERRORE_AUTENTICAZIONE = "Eccezione nella fase di autenticazione del EJB ";
+    private static final String ERRORE_TABELLA_DECODIFICA = "Eccezione nella lettura della tabella di decodifica ";
     @EJB
     private WsIdpLogger idpLogger;
 

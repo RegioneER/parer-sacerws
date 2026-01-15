@@ -76,6 +76,8 @@ import it.eng.parer.ws.xml.versResp.ECEsitoPosNegWarType;
 import it.eng.parer.ws.xml.versResp.ECUnitaDocAggAllType;
 import it.eng.parer.ws.xml.versResp.EsitoVersAggAllegati;
 import it.eng.parer.ws.xml.versResp.SCVersatoreType;
+import java.util.List;
+import java.util.Map;
 
 @Stateless(mappedName = "VersamentoExtAggAllPrsr")
 @LocalBean

@@ -1796,5 +1796,10 @@ public class MessaggiWSBundle {
      */
     public static final String SERVIZI_USR_005 = "SERVIZI-USR-005";
 
+    /*
+     * Errore nella verifica delle abilitazioni al tipo dato
+     */
+    public static final String IAM_ABIL_TIPO_DATO_001_001 = "IAM-ABIL-TIPO-DATO-001-001";
+
     // </editor-fold>
 }
