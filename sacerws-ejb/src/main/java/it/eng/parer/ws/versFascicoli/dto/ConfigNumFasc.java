@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.versFascicoli.utils.KeyOrdFascUtility;
 
 /**
@@ -143,7 +145,7 @@ public class ConfigNumFasc {
                 // ricerco un contenuto generico, altrimenti ricerco
                 // un contenuto generico a meno del separatore
                 if (pra.isLunghezzaFissa() || pra.getSeparatore() == null
-                        || pra.getSeparatore().length() == 0) {
+                        || pra.getSeparatore().isEmpty()) {
                     tmpSb.append(String.format("(.%s)", pra.quantificatore));
                 } else {
                     // altrimenti il contenuto è generico a meno del carattere di separazione
@@ -176,7 +178,8 @@ public class ConfigNumFasc {
         descRegExp = tmpSbDesc.toString();
 
         if (this.generico && parti.size() > 1) {
-            throw new RuntimeException("Per il tipo GENERICO è ammessa una sola parte!!");
+            throw new SacerWsRuntimeException("Per il tipo GENERICO è ammessa una sola parte!!",
+                    SacerWsErrorCategory.VALIDATION_ERROR);
         }
 
     }

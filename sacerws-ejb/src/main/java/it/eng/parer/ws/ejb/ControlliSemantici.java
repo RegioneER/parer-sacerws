@@ -34,8 +34,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -690,6 +692,46 @@ public class ControlliSemantici {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
             rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliSemantici.checkTipoRegistroTipoUD: " + e.getMessage()));
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
+        }
+
+        return rispostaControlli;
+    }
+
+    public RispostaControlli getIdRegistroUnitaDoc(String nomeTipoRegistro, long idStruttura) {
+        RispostaControlli rispostaControlli;
+        rispostaControlli = new RispostaControlli();
+        rispostaControlli.setrBoolean(false);
+
+        List<DecRegistroUnitaDoc> tipoRegistroUDs = null;
+
+        try {
+            String queryStr = "select tud " + "from DecRegistroUnitaDoc tud "
+                    + "where tud.orgStrut.idStrut = :idStrutIn "
+                    + " and tud.cdRegistroUnitaDoc = :cdRegistroUnitaDoc "
+                    + " and tud.dtIstituz <= :dataDiOggiIn "
+                    + " and tud.dtSoppres > :dataDiOggiIn ";
+
+            javax.persistence.Query query = entityManager.createQuery(queryStr,
+                    DecRegistroUnitaDoc.class);
+            query.setParameter("idStrutIn", idStruttura);
+            query.setParameter("cdRegistroUnitaDoc", nomeTipoRegistro);
+            query.setParameter("dataDiOggiIn", new Date());
+            tipoRegistroUDs = query.getResultList();
+
+            if (tipoRegistroUDs.isEmpty()) {
+                rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+                rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                        "Registro non trovato: " + nomeTipoRegistro));
+                return rispostaControlli;
+            }
+
+            rispostaControlli.setrLong(tipoRegistroUDs.get(0).getIdRegistroUnitaDoc());
+            rispostaControlli.setrBoolean(true);
+        } catch (Exception e) {
+            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliSemantici.getIdRegistroUnitaDoc: " + e.getMessage()));
             log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
 
@@ -1929,6 +1971,28 @@ public class ControlliSemantici {
             log.error("Eccezione nella lettura della tabella di decodifica ", e);
         }
         return rispostaControlli;
+    }
+
+    public RispostaControlli getOrgStrutWithEnte(long idStrutVers) {
+        RispostaControlli rs;
+        rs = new RispostaControlli();
+        rs.setrLong(-1);
+
+        try {
+            final TypedQuery<OrgStrut> query = entityManager.createQuery(
+                    "SELECT org FROM OrgStrut org JOIN FETCH org.orgEnte WHERE org.idStrut=:idStrut",
+                    OrgStrut.class);
+            query.setParameter("idStrut", idStrutVers);
+            OrgStrut os = query.getSingleResult();
+            rs.setrLong(0);
+            rs.setrObject(os);
+        } catch (Exception e) {
+            rs.setCodErr(MessaggiWSBundle.ERR_666);
+            rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliPerFirme.getOrgStrutt: " + ExceptionUtils.getRootCauseMessage(e)));
+            log.error("Eccezione nella lettura della tabella di decodifica ", e);
+        }
+        return rs;
     }
 
 }

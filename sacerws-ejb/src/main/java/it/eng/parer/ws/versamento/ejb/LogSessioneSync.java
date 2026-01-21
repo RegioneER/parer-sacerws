@@ -351,8 +351,8 @@ public class LogSessioneSync {
                 vrsSessioneVersKo = Optional.of(vrsSessioneVersBuilder.buildVrsSessioneVersKo());
                 entityManager.persist(vrsSessioneVersKo.get());
             }
-        } catch (RuntimeException re) {
-            log.error("Eccezione in fase di salvataggio della sessione di versamento", re);
+        } catch (Exception ex) {
+            log.error("Eccezione in fase di salvataggio della sessione di versamento", ex);
             tmpReturn = false;
         }
 
@@ -402,9 +402,9 @@ public class LogSessioneSync {
                             tmpUnitaDocNonVer.setCdErrPrinc(CD_DS_ERR_DIVERSI);
                         }
                     }
-                } catch (RuntimeException re) {
+                } catch (Exception ex) {
                     log.error("Eccezione nella persistenza dell'unità documentaria NON versata ",
-                            re);
+                            ex);
                     tmpReturn = false;
                 }
             } else if (SyncFakeSessn.TipiSessioneVersamento.AGGIUNGI_DOCUMENTO
@@ -443,8 +443,8 @@ public class LogSessioneSync {
                             tmpDocNonVer.setCdErrPrinc(CD_DS_ERR_DIVERSI);
                         }
                     }
-                } catch (RuntimeException re) {
-                    log.error("Eccezione nella persistenza del documento NON versato ", re);
+                } catch (Exception ex) {
+                    log.error("Eccezione nella persistenza del documento NON versato ", ex);
                     tmpReturn = false;
                 }
             }
@@ -485,8 +485,8 @@ public class LogSessioneSync {
                             .of(vrsDatiSessioneVersBuilder.buildVrsDatiSessioneVersKo());
                     entityManager.persist(vrsDatiSessioneVersKo.get());
                 }
-            } catch (RuntimeException re) {
-                log.error("Eccezione nella persistenza di VrsDatiSessioneVers*", re);
+            } catch (Exception ex) {
+                log.error("Eccezione nella persistenza di VrsDatiSessioneVers*", ex);
                 tmpReturn = false;
             }
         }
@@ -641,9 +641,9 @@ public class LogSessioneSync {
                         vrsErrSessioneVersBuilder.tiErr(TIPO_ERR_WARNING);
                         entityManager.persist(vrsErrSessioneVersBuilder.buildVrsErrSessioneVers());
                     }
-                } catch (RuntimeException re) {
+                } catch (Exception ex) {
                     /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza degli errori su sessione ", re);
+                    log.error("Eccezione nella persistenza degli errori su sessione ", ex);
                     tmpReturn = false;
                     break;
                 }
@@ -686,9 +686,9 @@ public class LogSessioneSync {
                     if (tmpReturn) {
                         entityManager.persist(vrsFileSessioneKo);
                     }
-                } catch (RuntimeException re) {
+                } catch (Exception ex) {
                     /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza dei file di sessione ", re);
+                    log.error("Eccezione nella persistenza dei file di sessione ", ex);
                     tmpReturn = false;
                 }
 
@@ -820,8 +820,8 @@ public class LogSessioneSync {
                         .of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
                 entityManager.persist(vrsXmlDatiSessioneVersKo.get());
             }
-        } catch (RuntimeException re) {
-            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+        } catch (Exception ex) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, ex);
             tmpReturn = false;
         }
 
@@ -899,8 +899,8 @@ public class LogSessioneSync {
                         .of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
                 entityManager.persist(vrsXmlDatiSessioneVersKo.get());
             }
-        } catch (RuntimeException re) {
-            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+        } catch (Exception ex) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, ex);
             tmpReturn = false;
         }
 
@@ -973,8 +973,8 @@ public class LogSessioneSync {
                         .of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
                 entityManager.persist(vrsXmlDatiSessioneVersKo.get());
             }
-        } catch (RuntimeException re) {
-            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+        } catch (Exception ex) {
+            log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, ex);
             tmpReturn = false;
         }
 
@@ -1049,8 +1049,8 @@ public class LogSessioneSync {
                             .of(vrsXmlDatiSessioneVersBuilder.buildVrsXmlDatiSessioneVersKo());
                     entityManager.persist(vrsXmlDatiSessioneVersKo.get());
                 }
-            } catch (RuntimeException re) {
-                log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, re);
+            } catch (Exception ex) {
+                log.error(ECCEZIONE_SALVATAGGIO_SESSIONE, ex);
                 tmpReturn = false;
             }
             if (tmpReturn) {
@@ -1258,9 +1258,9 @@ public class LogSessioneSync {
         try {
             entityManager.persist(tmpXmlModelloSessioneVers);
             entityManager.flush();
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza della sessione ", re);
+            log.error("Eccezione nella persistenza della sessione ", ex);
             tmpReturn = false;
         }
         return tmpReturn;
@@ -1298,8 +1298,8 @@ public class LogSessioneSync {
             entityManager.persist(
                     isOkOrWarningResponse(rispostaWS) ? builder.buildVrsUrnXmlSessioneVers()
                             : builder.buildVrsUrnXmlSessioneVersKo());
-        } catch (RuntimeException re) {
-            log.error("Eccezione nella persistenza della sessione urn xml ", re);
+        } catch (Exception ex) {
+            log.error("Eccezione nella persistenza della sessione urn xml ", ex);
             tmpReturn = false;
         }
         // TODO#29834 serve? viene usato ?

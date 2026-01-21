@@ -33,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecControlloWs;
-import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
-import it.eng.parer.exception.SacerWsRuntimeException;
 
 @SuppressWarnings("unchecked")
 @Stateless(mappedName = "ControlliWSHelper")
@@ -58,14 +56,10 @@ public class ControlliWSHelper {
     public DecControlloWs caricaCdControlloWs(String cdControlloWs) {
         DecControlloWs tmperr = null;
 
-        try {
-            Query query = entityManager.createNamedQuery("DecControlloWs.findByCdControlloWs",
-                    DecControlloWs.class);
-            query.setParameter("cdControlloWs", cdControlloWs);
-            tmperr = (DecControlloWs) query.getSingleResult();
-        } catch (RuntimeException ex) {
-            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
-        }
+        Query query = entityManager.createNamedQuery("DecControlloWs.findByCdControlloWs",
+                DecControlloWs.class);
+        query.setParameter("cdControlloWs", cdControlloWs);
+        tmperr = (DecControlloWs) query.getSingleResult();
 
         return tmperr;
     }
@@ -74,16 +68,10 @@ public class ControlliWSHelper {
     public List<DecControlloWs> caricaCdControlloFamiglia(String cdFamigliaControllo) {
         List<DecControlloWs> tmperr = null;
 
-        try {
-            Query query = entityManager.createNamedQuery("DecControlloWs.findByCdFamigliaControllo",
-                    DecControlloWs.class);
-            query.setParameter("cdFamigliaControllo", cdFamigliaControllo);
-            tmperr = query.getResultList();
-        } catch (RuntimeException ex) {
-            // log.fatal("ControlliWSHelper.caricaControlloFamiglia fallita! ", ex);
-            log.error("ControlliWSHelper.caricaControlloFamiglia fallita! ", ex);
-            throw ex;
-        }
+        Query query = entityManager.createNamedQuery("DecControlloWs.findByCdFamigliaControllo",
+                DecControlloWs.class);
+        query.setParameter("cdFamigliaControllo", cdFamigliaControllo);
+        tmperr = query.getResultList();
 
         return tmperr;
     }

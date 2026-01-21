@@ -4,6 +4,26 @@
 - [#39368](https://parermine.regione.emilia-romagna.it/issues/39368) Gestione HTTP Error 404 su invocazione servizio di verifica firma digitale
 - [#39277](https://parermine.regione.emilia-romagna.it/issues/39277) Patch di sicurezza per interventi legati a CVE
 
+## 6.12.1 (09-01-2026)
+
+### Bugfix: 2
+- [#39592](https://parermine.regione.emilia-romagna.it/issues/39592) Correzione dell'esito versamento versione 1.5
+- [#39573](https://parermine.regione.emilia-romagna.it/issues/39573) Correzione nella gestione dei casi di errore con codice UD-002-001 (unità documentaria duplicata) e DOC-008-001 (documento già presente) e code refactor per abilitazione log conservazione 
+
+## 6.12.0 (22-12-2025)
+
+### Bugfix: 1
+- [#39414](https://parermine.regione.emilia-romagna.it/issues/39414) Correzione marshalling response "org.springframework.http.converter.HttpMessageNotWritableException: Could not marshal [it.eng.parer.eidas.model.EidasWSReportsDTOTree]: null"
+
+### Novità: 1
+- [#14627](https://parermine.regione.emilia-romagna.it/issues/14627) Controllo su abilitazioni del versatore - Versamento UD e Aggiunta documento
+
+## 6.11.0 (18-11-2025)
+
+### Novità: 2
+- [#39368](https://parermine.regione.emilia-romagna.it/issues/39368) Gestione HTTP Error 404 su invocazione servizio di verifica firma digitale
+- [#39277](https://parermine.regione.emilia-romagna.it/issues/39277) Patch di sicurezza per interventi legati a CVE
+
 ## 6.10.1 (13-10-2025)
 
 ### Bugfix: 1

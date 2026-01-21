@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.eng.parer.exception.SacerWsRuntimeException;
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 import it.eng.parer.ws.utils.KeyOrdUtility;
 
 /**
@@ -176,7 +178,8 @@ public class ConfigRegAnno {
         descRegExp = tmpSbDesc.toString();
 
         if (this.generico && parti.size() > 1) {
-            throw new RuntimeException("Per il tipo GENERICO è ammessa una sola parte!!");
+            throw new SacerWsRuntimeException("Per il tipo GENERICO è ammessa una sola parte!!",
+                    SacerWsErrorCategory.VALIDATION_ERROR);
         }
     }
 

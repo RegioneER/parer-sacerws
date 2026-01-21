@@ -396,6 +396,4 @@ public class Costanti {
         OFF, ON, ALL;
     }
 
-    public static final String ERRORE_CLIENT_ERRATO = "QUESTO E' UN ERRORE PROVOCATO DA UN CLIENT SCRITTO MALE: SQLIntegrityConstraintViolationException ";
-
 }

@@ -13,16 +13,16 @@
 
 package it.eng.parer.ws.versamento.ejb.prs;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-
 import static it.eng.parer.util.DateUtilsConverter.convert;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.OrgStrut;
+import it.eng.parer.util.Constants.TipoDato;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
@@ -76,8 +77,6 @@ import it.eng.parer.ws.xml.versResp.ECEsitoPosNegWarType;
 import it.eng.parer.ws.xml.versResp.ECUnitaDocAggAllType;
 import it.eng.parer.ws.xml.versResp.EsitoVersAggAllegati;
 import it.eng.parer.ws.xml.versResp.SCVersatoreType;
-import java.util.List;
-import java.util.Map;
 
 @Stateless(mappedName = "VersamentoExtAggAllPrsr")
 @LocalBean
@@ -640,8 +639,8 @@ public class VersamentoExtAggAllPrsr {
         // determino come gestire gli hash dei componenti versati e i forza controllo
         // doc
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            rispostaControlli = controlliPerFirme
-                    .getOrgStrutt(versamento.getStrutturaComponenti().getIdStruttura());
+            rispostaControlli = controlliSemantici
+                    .getOrgStrutWithEnte(versamento.getStrutturaComponenti().getIdStruttura());
             if (rispostaControlli.getrLong() != -1) {
                 OrgStrut os = (OrgStrut) rispostaControlli.getrObject();
                 // build flags
@@ -952,6 +951,12 @@ public class VersamentoExtAggAllPrsr {
                     .logAvanzamento();
         }
 
+        // verifico che l'utente sia abilitato a tipologia ud, tipo doc e registro
+        //
+        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+            this.controllaTipoDatoUserOrg(myEsito, versamento, rispostaWs);
+        }
+
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             // prepara risposta con flag
             this.buildFlagsOnEsito(myEsito, versamento);
@@ -1021,6 +1026,12 @@ public class VersamentoExtAggAllPrsr {
                                 .getValoreParamApplicByTipoUdAsFl(ParametroApplFl.FL_FORZA_FMT,
                                         idStrut, idAmbiente, idTipoUd)
                                 .equals(CostantiDB.Flag.TRUE));
+
+        // log stato conservazione
+        versamento.getStrutturaComponenti()
+                .setFlagAbilitaLogStatoConserv(configurationHelper.getValoreParamApplicByTipoUdAsFl(
+                        ParametroApplFl.FL_ABILITA_LOG_STATO_CONSERV, idStrut, idAmbiente, idTipoUd)
+                        .equals(CostantiDB.Flag.TRUE));
 
         // v1.5
         if (versamento.getModificatoriWSCalc().contains(ModificatoriWS.TAG_ABILITA_FORZA_1_5)) {
@@ -1124,10 +1135,81 @@ public class VersamentoExtAggAllPrsr {
     }
     // end MEV#23176
 
+    private void controllaTipoDatoUserOrg(EsitoVersAggAllegati myControlliVers,
+            VersamentoExtAggAll versamento, RispostaWSAggAll rispostaWs) {
+        DocumentoVers docVers = versamento.getStrutturaComponenti().getDocumentiAttesi().get(0);
+        Long idTipoDocPrincipale = docVers.getIdTipoDocumentoDB();
+
+        // Recupera idRegistro dal database
+        String registro = versamento.getVersamento().getIntestazione().getChiave()
+                .getTipoRegistro();
+        RispostaControlli rispostaControlli = controlliSemantici.getIdRegistroUnitaDoc(registro,
+                versamento.getStrutturaComponenti().getIdStruttura());
+
+        if (!rispostaControlli.isrBoolean()) {
+            rispostaWs.setSeverity(SeverityEnum.ERROR);
+            rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+            return;
+        }
+
+        long idRegistro = rispostaControlli.getrLong();
+
+        // Controllo abilitazioni per i tre tipi di dato
+        Map<Long, TipoDato> tipiDatoControlli = Map.of(
+                versamento.getStrutturaComponenti().getIdTipologiaUnitaDocumentaria(),
+                TipoDato.TIPO_UNITA_DOC, idRegistro, TipoDato.REGISTRO, idTipoDocPrincipale,
+                TipoDato.TIPO_DOC);
+
+        for (Map.Entry<Long, TipoDato> tipoDato : tipiDatoControlli.entrySet()) {
+            verificaAbilitazioneTipoDato(myControlliVers, versamento,
+                    versamento.getStrutturaComponenti().getIdStruttura(),
+                    versamento.getStrutturaComponenti().getIdUser(), tipoDato.getKey(),
+                    tipoDato.getValue(), rispostaWs);
+        }
+    }
+
+    private void verificaAbilitazioneTipoDato(EsitoVersAggAllegati myControlliVers,
+            VersamentoExtAggAll versamento, long idStrut, long idUser, long idTipoDatoApplic,
+            TipoDato tipoDato, RispostaWSAggAll rispostaWs) {
+        UnitaDocAggAllegati vers = versamento.getVersamento();
+        RispostaControlli rispostaControlli = controlliEjb.checkAbilitazioniUtenteIamAbilTipoDato(
+                vers.getIntestazione().getChiave().getNumero(), idStrut, idUser, idTipoDatoApplic,
+                tipoDato.name());
+
+        if (!rispostaControlli.isrBoolean()) {
+            // setEsitoAbilitazioneTipoDato(myControlliVers, nmClasseTipoDato,
+            // ECEsitoPosNegType.NEGATIVO);
+            rispostaWs.setSeverity(SeverityEnum.ERROR);
+            rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+        } else {
+            // setEsitoAbilitazioneTipoDato(myControlliVers, nmClasseTipoDato,
+            // ECEsitoPosNegType.POSITIVO);
+        }
+    }
+
+    // private void setEsitoAbilitazioneTipoDato(EsitoVersAggAllegati myControlliVers,
+    // TipoDato nmClasseTipoDato, ECEsitoPosNegType esito) {
+    // switch (nmClasseTipoDato) {
+    // case TIPO_UNITA_DOC:
+    // myControlliVers.setEsitoAbilitazioneTipologiaUd(esito);
+    // break;
+    // case TIPO_DOC:
+    // myControlliVers.setEsitoAbilitazioneTipoDoc(esito);
+    // break;
+    // case REGISTRO:
+    // myControlliVers.setEsitoAbilitazioneRegistro(esito);
+    // break;
+    // default:
+    // /* no-op */
+    // break;
+    // }
+    // }
+
     private void setRispostaWsError(RispostaWSAggAll rispostaWs,
             RispostaControlli rispostaControlli) {
         rispostaWs.setSeverity(SeverityEnum.ERROR);
         rispostaWs.setErrorCode(rispostaControlli.getCodErr());
         rispostaWs.setErrorMessage(rispostaControlli.getDsErr());
     }
+
 }

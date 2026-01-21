@@ -16,14 +16,16 @@ package it.eng.parer.ws.versamento.ejb;
 import static it.eng.parer.util.DateUtilsConverter.convert;
 import static it.eng.parer.util.DateUtilsConverter.format;
 import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
-import static it.eng.parer.ws.utils.Costanti.ERRORE_CLIENT_ERRATO;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +48,6 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import it.eng.parer.util.DateUtilsConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -94,7 +95,7 @@ import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
 import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.util.Constants;
-import it.eng.parer.util.ejb.help.ConfigurationHelper;
+import it.eng.parer.util.DateUtilsConverter;
 import it.eng.parer.view_entity.VrsVLisXmlDocUrnDaCalc;
 import it.eng.parer.view_entity.VrsVLisXmlUdUrnDaCalc;
 import it.eng.parer.view_entity.VrsVLisXmlUpdUrnDaCalc;
@@ -114,7 +115,6 @@ import it.eng.parer.ws.utils.HashCalculator;
 import it.eng.parer.ws.utils.JAXBUtils;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
-import it.eng.parer.ws.utils.ParametroApplDB;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
 import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
@@ -137,11 +137,6 @@ import it.eng.parer.ws.xml.versReq.CamiciaFascicoloType;
 import it.eng.parer.ws.xml.versReq.ChiaveType;
 import it.eng.parer.ws.xml.versReq.UnitaDocAggAllegati;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.io.FileNotFoundException;
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 
 /**
  *
@@ -157,8 +152,6 @@ public class SalvataggioSync {
     //
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
-    @Resource
-    private SessionContext context;
     //
     @EJB
     private SalvataggioCompFS salvataggioCompFS;
@@ -172,9 +165,6 @@ public class SalvataggioSync {
     @EJB
     private SalvataggioFirmaManager salvataggioFirmaManager;
 
-    @EJB
-    private ConfigurationHelper configurationHelper;
-    //
     private static final int DS_ERR_MAX_LEN = 1024;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -580,53 +570,39 @@ public class SalvataggioSync {
             strutV.setIdUnitaDoc(tmpTabUD.getIdUnitaDoc());
 
             // MEV #31162
-            context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(
-                    tmpTabUD.getIdUnitaDoc(), nomeAgente, Constants.VERSAMENTO_UD,
-                    CostantiDB.StatoConservazioneUnitaDoc.PRESA_IN_CARICO.name(),
-                    Constants.WS_VERSAMENTO_UD);
+            if (strutV.isFlagAbilitaLogStatoConserv()) {
+                insertLogStatoConservUd(tmpTabUD.getIdUnitaDoc(), nomeAgente,
+                        Constants.VERSAMENTO_UD,
+                        CostantiDB.StatoConservazioneUnitaDoc.PRESA_IN_CARICO.name(),
+                        Constants.WS_VERSAMENTO_UD);
+            }
             // end MEV #31162
 
-        } catch (RuntimeException re) {
+        } catch (Exception e) {
             tmpReturn = false;
-            if (ExceptionUtils.indexOfThrowable(re,
-                    java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
-                log.info(ERRORE_CLIENT_ERRATO);
-                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.UD_002_001,
-                        strutV.getUrnPartChiaveUd());
-                rispostaWS.setErroreElementoDoppio(true);
-                rispostaWS.setIdElementoDoppio(0); // non serve a nulla,
-                // ma visto che in ogni caso non esiste ancora l'ID
-                // tanto vale impostare questo dato ad un valore non trovabile
-                rispostaWS.getIstanzaEsito().setXMLVersamento(
-                        "La sessione di versamento per l'UD da versare non è presente.");
-                return tmpReturn;
-            } else {
-                /// logga l'errore e blocca tutto
-                log.error(ERROR_PERSISTENZA_UD, re);
-            }
+            rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+            rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                    "Errore interno nella fase salvataggio log stato conservazione unità documentaria: "
+                            + e.getMessage());
+            log.error(
+                    "Errore interno nella fase salvataggio log stato conservazione unità documentaria",
+                    e);
+            return tmpReturn;
         }
 
         if (tmpReturn && strutV.isWarningFormatoNumero()) {
             try {
                 tmpReturn = salvaWarningAARegistroUd(strutV, ud);
-            } catch (RuntimeException re) {
+            } catch (Exception e) {
                 tmpReturn = false;
-                if (ExceptionUtils.indexOfThrowable(re,
-                        java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
-                    // se sono arrivato qui, vuol dire che un versamento in parallelo ha creato il
-                    // record
-                    // prima di me, provocando un errore di chiave duplicata.
-                    log.info(ERRORE_CLIENT_ERRATO);
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
-                            "Impossibile salvare i dati di warning sul formato del numero, "
-                                    + "probabilmente a causa di un versamento errato effettuato in parallelo");
-                    return tmpReturn;
-                } else {
-                    /// logga l'errore e blocca tutto
-                    log.error(ERROR_PERSISTENZA_UD, re);
-                }
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Impossibile salvare i dati di warning sul formato del numero, probabilmente a causa di un versamento errato effettuato in parallelo: "
+                                + e.getMessage());
+                log.error(
+                        "Impossibile salvare i dati di warning sul formato del numero, probabilmente a causa di un versamento errato effettuato in parallelo",
+                        e);
+                return tmpReturn;
             }
         }
 
@@ -746,11 +722,11 @@ public class SalvataggioSync {
                     try {
                         entityManager.persist(tmpAaUnitaDocRegistro);
                         entityManager.flush();
-                    } catch (RuntimeException re) {
+                    } catch (Exception ex) {
                         /// logga l'errore e blocca tutto
                         log.error(
                                 "Eccezione nella persistenza della tabella MonAaUnitaDocRegistro ",
-                                re);
+                                ex);
                         tmpReturn = false;
                     }
                 }
@@ -798,9 +774,9 @@ public class SalvataggioSync {
                 log.debug("Sono stati connessi {} collegamenti forzati da precedenti versamenti",
                         numCollAggiustati);
             }
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nell'aggiornamento della tabella AroLinkUnitaDoc ", re);
+            log.error("Eccezione nell'aggiornamento della tabella AroLinkUnitaDoc ", ex);
             tmpReturn = false;
         }
 
@@ -833,9 +809,9 @@ public class SalvataggioSync {
                 log.debug("Sono stati rimossi {} tentativi falliti di versamento UD ",
                         numUdNonVersRimosse);
             }
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nell'aggiornamento della tabella VrsUnitaDocNonVer ", re);
+            log.error("Eccezione nell'aggiornamento della tabella VrsUnitaDocNonVer ", ex);
             tmpReturn = false;
         }
 
@@ -864,10 +840,10 @@ public class SalvataggioSync {
             entityManager.persist(tmpTab);
             entityManager.flush();
             strutV.setTiStatoUdDaElab(tmpTab.getTiStatoUdDaElab());
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
             log.error("Eccezione nella persistenza del UD da inserire in elenco di versamento ",
-                    re);
+                    ex);
             tmpReturn = false;
         }
         return tmpReturn;
@@ -967,9 +943,9 @@ public class SalvataggioSync {
             try {
                 entityManager.persist(tmpTabAS);
                 entityManager.flush();
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza dei fascicoli secondari ", re);
+                log.error("Eccezione nella persistenza dei fascicoli secondari ", ex);
                 tmpReturn = false;
                 break;
             }
@@ -1010,9 +986,9 @@ public class SalvataggioSync {
                 try {
                     entityManager.persist(tmpTabLUD);
                     entityManager.flush();
-                } catch (RuntimeException re) {
+                } catch (Exception ex) {
                     /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza della struttura del documento ", re);
+                    log.error("Eccezione nella persistenza della struttura del documento ", ex);
                     tmpReturn = false;
                     break;
                 }
@@ -1081,30 +1057,23 @@ public class SalvataggioSync {
 
             // se sono già stati creati degli AIP, pongo lo stato conservazione ad AIP IN
             // AGGIORNAMENTO
-            if (progressivoVersione > 0 // MAC#26281
-            // /* MAC#22948 */
-            // || tmpTabUD.getTiStatoConservazione()
-            // .equals(CostantiDB.StatoConservazioneUnitaDoc.IN_VOLUME_DI_CONSERVAZIONE.name())
-            // /* end MAC#22948 */
-            // end MAC#26281
-            ) {
+            if (progressivoVersione > 0) {
                 tmpTabUD.setTiStatoConservazione(
                         CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name());
-                // MEV #31162
-                context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(
-                        tmpTabUD.getIdUnitaDoc(), nomeAgente, Constants.AGGIUNTA_DOCUMENTO,
-                        CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
-                        Constants.WS_AGGIUNTA_DOC);
-                // end MEV #31162
-            } else {
-                // Mantengo lo stato precedente da loggare
-                // MEV #31162
-                context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(
-                        tmpTabUD.getIdUnitaDoc(), nomeAgente, Constants.AGGIUNTA_DOCUMENTO,
-                        tmpTabUD.getTiStatoConservazione(), Constants.WS_AGGIUNTA_DOC);
-                // end MEV #31162
             }
 
+            // MEV #31162
+            // log stato conservazione unità documentaria
+            // se sono già stati creati degli AIP, pongo lo stato conservazione ad AIP IN
+            // AGGIORNAMENTO altrimenti mantiene lo stato attuale
+            if (strutV.isFlagAbilitaLogStatoConserv()) {
+                insertLogStatoConservUd(tmpTabUD.getIdUnitaDoc(), nomeAgente,
+                        Constants.AGGIUNTA_DOCUMENTO,
+                        progressivoVersione > 0
+                                ? CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name()
+                                : tmpTabUD.getTiStatoConservazione(),
+                        Constants.WS_AGGIUNTA_DOC);
+            }
             // se il documento appena aggiunto è firmato, aggiorno il flag dell'unitaDoc
             Boolean firmato = rispostaWS.getIstanzaEsito().getUnitaDocumentaria()
                     .isFirmatoDigitalmente();
@@ -1152,9 +1121,9 @@ public class SalvataggioSync {
         if (tmpReturn) {
             try {
                 entityManager.flush();
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
-                log.error(ERROR_PERSISTENZA_UD, re);
+                log.error(ERROR_PERSISTENZA_UD, ex);
                 tmpReturn = false;
             }
         }
@@ -1185,9 +1154,9 @@ public class SalvataggioSync {
             // aggiorno la tabella nel db
 
             entityManager.flush();
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza aggiornamento URN dei documenti ", re);
+            log.error("Eccezione nella persistenza aggiornamento URN dei documenti ", ex);
             tmpReturn = false;
         }
 
@@ -1426,9 +1395,9 @@ public class SalvataggioSync {
 
                 // aggiorno la tabella nel db
                 entityManager.flush();
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza URN pregresso dei documenti ", re);
+                log.error("Eccezione nella persistenza URN pregresso dei documenti ", ex);
                 tmpReturn = false;
             }
 
@@ -1727,10 +1696,10 @@ public class SalvataggioSync {
             entityManager.persist(tmpTab);
             entityManager.flush();
             strutV.getDocumentiAttesi().get(0).setTiStatoDocDaElab(tmpTab.getTiStatoDocDaElab());
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
             log.error("Eccezione nella persistenza del DOC da inserire in elenco di versamento ",
-                    re);
+                    ex);
             tmpReturn = false;
         }
         return tmpReturn;
@@ -1941,28 +1910,13 @@ public class SalvataggioSync {
                 entityManager.persist(tmpTabD);
                 entityManager.flush();
                 valueDocVers.setIdRecDocumentoDB(tmpTabD.getIdDoc());
-            } catch (RuntimeException re) {
-                /// logga l'errore e blocca tutto
+            } catch (Exception e) {
                 tmpReturn = false;
-                if (configPerDoc.getTipoCreazioneDoc() == TipoCreazioneDoc.AGGIUNTA_DOCUMENTO
-                        && ExceptionUtils.indexOfThrowable(re,
-                                java.sql.SQLIntegrityConstraintViolationException.class) > -1) {
-                    log.info(ERRORE_CLIENT_ERRATO);
-                    rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
-                    rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.DOC_008_001,
-                            valueDocVers.getRifDocumento().getIDDocumento(),
-                            strutV.getUrnPartChiaveUd());
-                    rispostaWS.setErroreElementoDoppio(true);
-                    rispostaWS.setIdElementoDoppio(0); // non serve a nulla,
-                    // ma visto che in ogni caso non esiste ancora l'ID
-                    // tanto vale impostare questo dato ad un valore non trovabile
-                    ((RispostaWSAggAll) rispostaWS).getIstanzaEsito().setXMLVersamento(
-                            "La sessione di versamento per il DOC da versare non è presente.");
-                    break;
-                } else {
-                    /// logga l'errore e blocca tutto
-                    log.error("Eccezione nella persistenza del documento ", re);
-                }
+                rispostaWS.setSeverity(IRispostaWS.SeverityEnum.ERROR);
+                rispostaWS.setEsitoWsErrBundle(MessaggiWSBundle.ERR_666P,
+                        "Eccezione nella persistenza del documento: " + e.getMessage());
+                log.error("Eccezione nella persistenza del documento ", e);
+                break; // go next document
             }
 
             // salvo le tabelle dei dati accessori ai documenti (fiscali, specifici, ecc)
@@ -2020,9 +1974,9 @@ public class SalvataggioSync {
                 entityManager.persist(tmpTabSD);
                 entityManager.flush();
                 documentoVersIn.setIdRecStrutturaDB(tmpTabSD.getIdStrutDoc());
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza della struttura del documento ", re);
+                log.error("Eccezione nella persistenza della struttura del documento ", ex);
                 tmpReturn = false;
             }
         }
@@ -2051,9 +2005,9 @@ public class SalvataggioSync {
                 log.debug("Sono stati rimossi {} tentativi falliti di versamento UD ",
                         numUdNonVersRimosse);
             }
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nell'aggiornamento della tabella VrsUnitaDocNonVer ", re);
+            log.error("Eccezione nell'aggiornamento della tabella VrsUnitaDocNonVer ", ex);
             tmpReturn = false;
         }
 
@@ -2106,9 +2060,9 @@ public class SalvataggioSync {
                 entityManager.persist(tmpWarnUnitaDoc);
                 entityManager.flush();
             }
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             // logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza del warning ", re);
+            log.error("Eccezione nella persistenza del warning ", ex);
             tmpReturn = false;
         }
 
@@ -2447,11 +2401,11 @@ public class SalvataggioSync {
                     }
                     break;
                 }
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
                 risposta.setrBoolean(false);
-                risposta.setDsErr(re.getMessage());
-                log.error("Eccezione nella persistenza del componente ", re);
+                risposta.setDsErr(ex.getMessage());
+                log.error("Eccezione nella persistenza del componente ", ex);
                 tmpReturn = false;
                 break;
             }
@@ -2607,10 +2561,9 @@ public class SalvataggioSync {
                 risposta.setCodErr(MessaggiWSBundle.COMP_011_001);
                 risposta.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.COMP_011_001,
                         tmpFb.getFileName()) + " " + ex.getMessage());
-                log.error("Eccezione nel calcolo 	dell'hash del componente: il file "
-                        + tmpFb.getFileName() + " non esiste. ", ex);
+                log.error("Eccezione nel calcolo dell'hash del componente: il file {} non esiste.",
+                        tmpFb.getFileName(), ex);
                 tmpReturn = false;
-
             } catch (IOException | NoSuchAlgorithmException ex) {
                 // fai qualcosa per segnalare il problema...
                 /// logga l'errore e blocca tutto
@@ -2884,9 +2837,9 @@ public class SalvataggioSync {
             try {
                 entityManager.persist(tmpAroUsoXsdDatiSpec);
                 entityManager.flush();
-            } catch (RuntimeException re) {
+            } catch (Exception ex) {
                 /// logga l'errore e blocca tutto
-                log.error("Eccezione nella persistenza dei dati specifici ", re);
+                log.error("Eccezione nella persistenza dei dati specifici ", ex);
                 tmpReturn = false;
             }
 
@@ -2903,9 +2856,9 @@ public class SalvataggioSync {
                     try {
                         entityManager.persist(tmpAroValoreAttribDatiSpec);
                         entityManager.flush();
-                    } catch (RuntimeException re) {
+                    } catch (Exception ex) {
                         /// logga l'errore e blocca tutto
-                        log.error("Eccezione nella persistenza dei dati specifici ", re);
+                        log.error("Eccezione nella persistenza dei dati specifici ", ex);
                         tmpReturn = false;
                         break;
                     }
@@ -2948,9 +2901,9 @@ public class SalvataggioSync {
         // flush all insert
         try {
             entityManager.flush();
-        } catch (RuntimeException re) {
+        } catch (Exception ex) {
             /// logga l'errore e blocca tutto
-            log.error("Eccezione nella persistenza dei dati di aggregazioni ", re);
+            log.error("Eccezione nella persistenza dei dati di aggregazioni ", ex);
             tmpReturn = false;
         }
 
@@ -3009,39 +2962,32 @@ public class SalvataggioSync {
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void insertLogStatoConservUd(long idUnitaDoc, String nmAgente, String tiEvento,
+    /*
+     * Inserisce un log di stato conservazione unità documentaria
+     */
+    private void insertLogStatoConservUd(long idUnitaDoc, String nmAgente, String tiEvento,
             String tiStatoConservazione, String tiMod) {
         AroUnitaDoc unitaDoc = entityManager.find(AroUnitaDoc.class, idUnitaDoc);
-        long idAmbiente = unitaDoc.getOrgStrut().getOrgEnte().getOrgAmbiente().getIdAmbiente();
-        long idStrut = unitaDoc.getOrgStrut().getIdStrut();
-        long idTipoUnitaDoc = unitaDoc.getDecTipoUnitaDoc().getIdTipoUnitaDoc();
-        // Recupero il parametro per verificare se procedere o meno al log
-        boolean flAbilitaLogStatoConserv = Boolean
-                .parseBoolean(configurationHelper.getValoreParamApplicByTipoUd(
-                        ParametroApplDB.ParametroApplFl.FL_ABILITA_LOG_STATO_CONSERV, idAmbiente,
-                        idStrut, idTipoUnitaDoc));
-        if (flAbilitaLogStatoConserv) {
-            AroLogStatoConservUd logStatoConservUd = new AroLogStatoConservUd();
-            logStatoConservUd.setAroUnitaDoc(unitaDoc);
-            // Ottieni l'istante corrente
-            Instant now = Instant.now();
-            // Crea un Timestamp dall'Instant
-            Timestamp istante = Timestamp.from(now);
-            logStatoConservUd.setDtStato(istante);
-            logStatoConservUd.setOrgSubStrut(unitaDoc.getOrgSubStrut());
-            logStatoConservUd.setNmAgente(nmAgente);
-            logStatoConservUd.setTiEvento(tiEvento);
-            logStatoConservUd.setTiMod(tiMod);
-            logStatoConservUd.setAaKeyUnitaDoc(unitaDoc.getAaKeyUnitaDoc());
-            logStatoConservUd.setTiStatoConservazione(tiStatoConservazione);
-            if (unitaDoc.getAroLogStatoConservUds() == null) {
-                unitaDoc.setAroLogStatoConservUds(new ArrayList<>());
-            }
-            unitaDoc.getAroLogStatoConservUds().add(logStatoConservUd);
-            entityManager.persist(logStatoConservUd);
-            entityManager.flush();
+        AroLogStatoConservUd logStatoConservUd = new AroLogStatoConservUd();
+        logStatoConservUd.setAroUnitaDoc(unitaDoc);
+        // Ottieni l'istante corrente
+        Instant now = Instant.now();
+        // Crea un Timestamp dall'Instant
+        Timestamp istante = Timestamp.from(now);
+        logStatoConservUd.setDtStato(istante);
+        logStatoConservUd.setOrgSubStrut(unitaDoc.getOrgSubStrut());
+        logStatoConservUd.setNmAgente(nmAgente);
+        logStatoConservUd.setTiEvento(tiEvento);
+        logStatoConservUd.setTiMod(tiMod);
+        logStatoConservUd.setAaKeyUnitaDoc(unitaDoc.getAaKeyUnitaDoc());
+        logStatoConservUd.setTiStatoConservazione(tiStatoConservazione);
+        if (unitaDoc.getAroLogStatoConservUds() == null) {
+            unitaDoc.setAroLogStatoConservUds(new ArrayList<>());
         }
+        unitaDoc.getAroLogStatoConservUds().add(logStatoConservUd);
+        entityManager.persist(logStatoConservUd);
+        entityManager.flush();
+
     }
 
     private class ConfigPerDoc {

@@ -427,7 +427,7 @@ public class UpdVersamentoPrsr extends UpdVersamentoBasePrsr {
 
             // verifico tipo conservazione
             if (prosegui) {
-                prosegui = super.controllaStatoConservazione(versamento, rispostaWs, descChiaveUD);
+                prosegui = super.controllaStatoConsAndAbilLog(versamento, rispostaWs, descChiaveUD);
             }
 
             // prossimi controlli sulla base degli elementi presenti su SIP

@@ -69,7 +69,7 @@ public class ControlliWSCache {
                                 cnt.getCdFamigliaControllo(), cnt.getDsControlloWs(),
                                 cnt.getNiOrdControllo()));
             }
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         }
         log.info("Inizializzazione singleton ControlliWSCache... completata.");

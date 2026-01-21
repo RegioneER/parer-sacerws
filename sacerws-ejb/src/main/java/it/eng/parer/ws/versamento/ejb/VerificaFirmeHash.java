@@ -27,6 +27,7 @@ import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.RispostaControlli;
+import it.eng.parer.ws.ejb.ControlliSemantici;
 import it.eng.parer.ws.utils.AvanzamentoWs;
 import it.eng.parer.ws.utils.Costanti.ModificatoriWS;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -57,6 +58,8 @@ public class VerificaFirmeHash {
     private ConfigurationHelper configurationHelper;
     @EJB
     private DocumentoVersVFirmeHash myDocumentoVersVFirme;
+    @EJB
+    private ControlliSemantici controlliSemantici;
 
     public void controlloFirmeMarcheHash(VersamentoExt versamento, RispostaWS rispostaWs) {
         // Richiamo l'istanza dell'esito generale
@@ -79,7 +82,7 @@ public class VerificaFirmeHash {
         // NB: può fallire, quindi passo RispostaWS che può tornare in stato di errore
         // §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            rispostaControlli = controlliPerFirme.getOrgStrutt(strutV.getIdStruttura());
+            rispostaControlli = controlliSemantici.getOrgStrutWithEnte(strutV.getIdStruttura());
             if (rispostaControlli.getrLong() != -1) {
                 os = (OrgStrut) rispostaControlli.getrObject();
             } else {
@@ -92,7 +95,7 @@ public class VerificaFirmeHash {
 
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             //
-            elabFlagSipVDB(versamento, os);
+            elabFlagSipVDB(os, versamento);
             //
             buildFlagsOnEsito(versamento, myEsito, os.getIdStrut(),
                     os.getOrgEnte().getOrgAmbiente().getIdAmbiente(),
@@ -250,7 +253,7 @@ public class VerificaFirmeHash {
         }
     }
 
-    private void elabFlagSipVDB(VersamentoExt versamento, OrgStrut os) {
+    private void elabFlagSipVDB(OrgStrut os, VersamentoExt versamento) {
         //
         boolean isConfigurazioneOnSip = !Objects
                 .isNull(versamento.getVersamento().getConfigurazione());

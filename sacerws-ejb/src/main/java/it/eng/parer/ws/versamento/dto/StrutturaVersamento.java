@@ -93,6 +93,9 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
     private boolean flagAccettaControlloOCSPNegativo = false;
     private boolean flagAccettaControlloOCSPNoScaric = false;
     private boolean flagAccettaControlloOCSPNoValido = false;
+
+    // MEV #31162
+    private boolean flagAbilitaLogStatoConserv = false;
     // SIP vs DB
     private boolean configFlagForzaConservazione = false;
     //
@@ -917,6 +920,14 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
         this.flagAbilitaControlloRevoca = flagAbilitaControlloRevoca;
     }
 
+    public boolean isFlagAbilitaLogStatoConserv() {
+        return flagAbilitaLogStatoConserv;
+    }
+
+    public void setFlagAbilitaLogStatoConserv(boolean flagAbilitaLogStatoConserv) {
+        this.flagAbilitaLogStatoConserv = flagAbilitaLogStatoConserv;
+    }
+
     public String getGenerazioneRerortVerificaFirma() {
         return generazioneRerortVerificaFirma;
     }
@@ -970,4 +981,5 @@ public class StrutturaVersamento implements java.io.Serializable, IDatiSpecEntit
     public void setTiStatoUdDaElab(String tiStatoUdDaElab) {
         this.tiStatoUdDaElab = tiStatoUdDaElab;
     }
+
 }

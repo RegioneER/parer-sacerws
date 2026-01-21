@@ -43,7 +43,6 @@ import it.eng.parer.entity.FirCertifFirmatario;
 import it.eng.parer.entity.FirCertifOcsp;
 import it.eng.parer.entity.FirCrl;
 import it.eng.parer.entity.FirOcsp;
-import it.eng.parer.entity.OrgEnte;
 import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.entity.constraint.DecServizioVerificaCompDoc.CdServizioVerificaCompDoc;
 import it.eng.parer.entity.converter.NeverendingDateConverter;
@@ -63,33 +62,9 @@ import it.eng.parer.ws.utils.MessaggiWSBundle;
 public class ControlliPerFirme {
 
     private static final Logger LOG = LoggerFactory.getLogger(ControlliPerFirme.class);
-    // logging base messages
-    private static final String LOG_BASEMSG_ERROR_ON_DECTABLE = "Eccezione nella lettura della tabella di decodifica";
 
     @PersistenceContext(unitName = "ParerJPA")
     private EntityManager entityManager;
-
-    public RispostaControlli getOrgStrutt(long idStrutVers) {
-        RispostaControlli rs;
-        rs = new RispostaControlli();
-        rs.setrLong(-1);
-
-        try {
-            final TypedQuery<OrgStrut> query = entityManager.createQuery(
-                    "SELECT org FROM OrgStrut org JOIN FETCH org.orgEnte WHERE org.idStrut=:idStrut",
-                    OrgStrut.class);
-            query.setParameter("idStrut", idStrutVers);
-            OrgStrut os = query.getSingleResult();
-            rs.setrLong(0);
-            rs.setrObject(os);
-        } catch (Exception e) {
-            rs.setCodErr(MessaggiWSBundle.ERR_666);
-            rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "ControlliPerFirme.getOrgStrutt: " + ExceptionUtils.getRootCauseMessage(e)));
-            LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
-        }
-        return rs;
-    }
 
     /**
      * Ottieni la struttura.
@@ -170,7 +145,7 @@ public class ControlliPerFirme {
             rs.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
                     "ControlliPerFirme.confrontaFormati: "
                             + ExceptionUtils.getRootCauseMessage(e)));
-            LOG.error(LOG_BASEMSG_ERROR_ON_DECTABLE, e);
+            LOG.error("Eccezione nella lettura della tabella di decodifica", e);
         }
         return rs;
     }
@@ -602,10 +577,5 @@ public class ControlliPerFirme {
                                     + ExceptionUtils.getRootCauseMessage(e)),
                     e);
         }
-    }
-
-    public void retrieveOrgEnteFor(OrgStrut os) {
-        OrgEnte orgEnte = entityManager.find(OrgEnte.class, os.getOrgEnte().getIdEnte());
-        os.setOrgEnte(orgEnte);
     }
 }

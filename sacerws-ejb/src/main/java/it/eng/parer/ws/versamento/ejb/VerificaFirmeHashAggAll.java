@@ -24,6 +24,7 @@ import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
+import it.eng.parer.ws.ejb.ControlliSemantici;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.AvanzamentoWs;
 import it.eng.parer.ws.utils.Costanti.ModificatoriWS;
@@ -52,6 +53,8 @@ public class VerificaFirmeHashAggAll {
     private ConfigurationHelper configurationHelper;
     @EJB
     private DocumentoVersVFirmeHash myDocumentoVersVFirme;
+    @EJB
+    private ControlliSemantici controlliSemantici;
 
     public void controlloFirmeMarcheHash(VersamentoExtAggAll versamento,
             RispostaWSAggAll rispostaWs) {
@@ -74,8 +77,8 @@ public class VerificaFirmeHashAggAll {
         // NB: può fallire, quindi passo RispostaWS che può tornare in stato di errore
         // §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            RispostaControlli rispostaControlli = controlliPerFirme
-                    .getOrgStrutt(strutV.getIdStruttura());
+            RispostaControlli rispostaControlli = controlliSemantici
+                    .getOrgStrutWithEnte(strutV.getIdStruttura());
             if (rispostaControlli.getrLong() != -1) {
                 os = (OrgStrut) rispostaControlli.getrObject();
             } else {

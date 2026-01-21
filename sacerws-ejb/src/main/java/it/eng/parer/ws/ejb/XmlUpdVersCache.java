@@ -29,6 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.xml.versUpdReq.DatiSpecificiType;
 import it.eng.parer.ws.xml.versUpdReq.IndiceSIPAggiornamentoUnitaDocumentaria;
 import it.eng.parer.ws.xml.versUpdResp.EsitoAggiornamento;
@@ -92,8 +94,7 @@ public class XmlUpdVersCache {
             log.info("Inizializzazione singleton XmlUpdVersContext... completata.");
         } catch (JAXBException | SAXException ex) {
             // log.fatal("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
-            log.error("Inizializzazione singleton XmlUpdVersContext fallita! ", ex);
-            throw new RuntimeException(ex);
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         }
     }
 

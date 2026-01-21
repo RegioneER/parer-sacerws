@@ -77,18 +77,6 @@ public class SalvataggioUpdVersamentoAroHelperTest {
     }
 
     @Test
-    void retrieveSerVLisVerserByUpdUd() {
-        helper.retrieveSerVLisVerserByUpdUd(0L);
-        assertTrue(true);
-    }
-
-    @Test
-    void retrieveFasVLisFascByUpdUd() {
-        helper.retrieveFasVLisFascByUpdUdId(0L);
-        assertTrue(true);
-    }
-
-    @Test
     void checkUsoXsdDatiSpecifici() {
 
         for (CostantiDB.TipiUsoDatiSpec tiUsoXsd : CostantiDB.TipiUsoDatiSpec.values()) {

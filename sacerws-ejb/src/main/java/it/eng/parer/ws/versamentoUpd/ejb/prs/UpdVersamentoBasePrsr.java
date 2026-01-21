@@ -23,6 +23,7 @@ import javax.ejb.EJB;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.eng.parer.entity.OrgStrut;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
@@ -38,6 +39,7 @@ import it.eng.parer.ws.utils.Costanti.TipiWSPerControlli;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.CostantiDB.TipiEntitaSacer;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
+import it.eng.parer.ws.utils.ParametroApplDB.ParametroApplFl;
 import it.eng.parer.ws.versamento.dto.RispostaControlliAttSpec;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VoceDiErrore.TipiEsitoErrore;
@@ -836,7 +838,7 @@ public abstract class UpdVersamentoBasePrsr {
         return true; // prosegui controlli successivi
     }
 
-    protected boolean controllaStatoConservazione(UpdVersamentoExt versamento,
+    protected boolean controllaStatoConsAndAbilLog(UpdVersamentoExt versamento,
             RispostaWSUpdVers rispostaWs, String descChiaveUD) {
         StrutturaUpdVers strutturaUpdVers = versamento.getStrutturaUpdVers();
         FlControlliUpd flControlliUpd = strutturaUpdVers.getFlControlliUpd();
@@ -892,6 +894,28 @@ public abstract class UpdVersamentoBasePrsr {
                     rispostaWs.getSeverity(), TipiEsitoErrore.NEGATIVO, MessaggiWSBundle.UD_013_003,
                     descChiaveUD, scud);
 
+        }
+
+        // MEV #31162 : abilitazione log stato conservazione
+        RispostaControlli rc = controlliSemantici
+                .getOrgStrutWithEnte(versamento.getStrutturaUpdVers().getIdStruttura());
+        if (rc.getrLong() != -1) {
+            OrgStrut os = (OrgStrut) rc.getrObject();
+            versamento.getStrutturaUpdVers()
+                    .setFlagAbilitaLogStatoConserv(configurationHelper
+                            .getValoreParamApplicByTipoUdAsFl(
+                                    ParametroApplFl.FL_ABILITA_LOG_STATO_CONSERV, os.getIdStrut(),
+                                    os.getOrgEnte().getOrgAmbiente().getIdAmbiente(),
+                                    versamento.getStrutturaUpdVers()
+                                            .getIdTipologiaUnitaDocumentaria())
+                            .equals(CostantiDB.Flag.TRUE));
+        } else {
+            rispostaWs.setSeverity(SeverityEnum.ERROR);
+            // esito generale
+            rispostaWs.setEsitoWsError(
+                    ControlliWSBundle.getControllo(ControlliWSBundle.CTRL_GENERIC_ERROR),
+                    rc.getCodErr(), rc.getDsErr());
+            return false; // non proseguo controlli
         }
 
         return true; // prosegui controlli successivi

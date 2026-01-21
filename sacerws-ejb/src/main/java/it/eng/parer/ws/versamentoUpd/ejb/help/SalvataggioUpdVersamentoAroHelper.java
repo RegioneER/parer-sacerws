@@ -17,7 +17,12 @@
  */
 package it.eng.parer.ws.versamentoUpd.ejb.help;
 
+import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;
+
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityGraph;
+import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +41,7 @@ import it.eng.parer.entity.AroArchivSec;
 import it.eng.parer.entity.AroCompDoc;
 import it.eng.parer.entity.AroDoc;
 import it.eng.parer.entity.AroLinkUnitaDoc;
+import it.eng.parer.entity.AroLogStatoConservUd;
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdArchivSec;
 import it.eng.parer.entity.AroUpdCompUnitaDoc;
@@ -54,7 +61,6 @@ import it.eng.parer.entity.VrsXmlModelloSessioneVers;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiEntitaAroUpdDatiSpecUnitaDoc;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiUsoXsdAroUpdDatiSpecUnitaDoc;
 import it.eng.parer.util.Constants;
-import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.view_entity.FasVLisFascByUpdUdId;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
@@ -68,31 +74,15 @@ import it.eng.parer.ws.versamentoUpd.dto.UpdDocumentoVers;
 import it.eng.parer.ws.versamentoUpd.ext.UpdVersamentoExt;
 import it.eng.parer.ws.versamentoUpd.utils.UpdDocumentiUtils;
 
-import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;
-import it.eng.parer.ws.versamento.ejb.SalvataggioSync;
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.persistence.TypedQuery;
-
 /**
  *
  * @author sinatti_s
  */
-@SuppressWarnings("unchecked")
 @Stateless(mappedName = "SalvataggioUpdVersamentoAroHelper")
 @LocalBean
 public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoBaseHelper {
-    public static final String JAVAX_PERSISTENCE_FETCHGRAPH = "javax.persistence.fetchgraph";
 
-    // MEV #31162
-    @Resource
-    private SessionContext context;
-    @EJB
-    private ConfigurationHelper configurationHelper;
-    @EJB
-    private SalvataggioSync salvataggioSync;
-    // end MEV #31162
+    public static final String JAVAX_PERSISTENCE_FETCHGRAPH = "javax.persistence.fetchgraph";
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public RispostaControlli aggiornaStatoConservazione(AroUnitaDoc tmpAroUnitaDoc,
@@ -122,24 +112,22 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                         CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name());
 
                 // MEV #31162
-                // context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(),
-                // nomeAgente, Constants.AGGIORNAMENTO_UD,
-                // CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
-                // Constants.WS_AGGIORNAMENTO_UD);
-                salvataggioSync.insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
-                        Constants.AGGIORNAMENTO_UD,
-                        CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
-                        Constants.WS_AGGIORNAMENTO_UD);
+                if (strutturaUpdVers.isFlagAbilitaLogStatoConserv()) {
+                    insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
+                            Constants.AGGIORNAMENTO_UD,
+                            CostantiDB.StatoConservazioneUnitaDoc.AIP_IN_AGGIORNAMENTO.name(),
+                            Constants.WS_AGGIORNAMENTO_UD);
+                }
                 // end MEV #31162
 
             }
             // MEV #31162 - sono in modifica ud, non cambio lo stato, ma registro lo stesso stato in
             // ARO_LOG_STATO_CONSERV_UD
-            else {
+            else if (strutturaUpdVers.isFlagAbilitaLogStatoConserv()) {
                 // context.getBusinessObject(SalvataggioSync.class).insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(),
                 // nomeAgente, Constants.AGGIORNAMENTO_UD, scud.name(),
                 // Constants.WS_AGGIORNAMENTO_UD);
-                salvataggioSync.insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
+                insertLogStatoConservUd(tmpAroUnitaDoc.getIdUnitaDoc(), nomeAgente,
                         Constants.AGGIORNAMENTO_UD, scud.name(), Constants.WS_AGGIORNAMENTO_UD);
             }
 
@@ -848,7 +836,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
         return tmpRispostaControlli;
     }
 
-    public List<VrsDatiSessioneVers> retreiveVrsDatiSessioneVersByIsSessioneVers(
+    private List<VrsDatiSessioneVers> retreiveVrsDatiSessioneVersByIsSessioneVers(
             Long idSessioneVers) {
         /*
          * ricavo i documenti XML relativi alla sessione di versamento individuata
@@ -864,7 +852,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
         return query.getResultList();
     }
 
-    public List<VrsXmlModelloSessioneVers> retreiveXmlVersamentiModelloXsdUnitaDoc(
+    private List<VrsXmlModelloSessioneVers> retreiveXmlVersamentiModelloXsdUnitaDoc(
             String tiUsoModelloXsd,
             it.eng.parer.entity.constraint.DecModelloXsdUd.TiModelloXsdUd tiModelloXsdUd,
             long idUnitaDoc) {
@@ -910,7 +898,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
      *
      * return list of idVerSerie
      */
-    public List<BigDecimal> retrieveSerVLisVerserByUpdUd(long idUnitaDoc) {
+    private List<BigDecimal> retrieveSerVLisVerserByUpdUd(long idUnitaDoc) {
         TypedQuery<BigDecimal> query = entityManager.createQuery(
                 "SELECT ser.serVLisVerserByUpdUdId.idVerSerie FROM SerVLisVerserByUpdUd ser WHERE ser.serVLisVerserByUpdUdId.idUnitaDoc = :idUnitaDoc ",
                 BigDecimal.class);
@@ -925,12 +913,41 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
      *
      * return list of FasVLisFascByUpdUdId
      */
-    public List<FasVLisFascByUpdUdId> retrieveFasVLisFascByUpdUdId(long idUnitaDoc) {
+    private List<FasVLisFascByUpdUdId> retrieveFasVLisFascByUpdUdId(long idUnitaDoc) {
         TypedQuery<FasVLisFascByUpdUdId> query = entityManager.createQuery(
                 "SELECT fas.fasVLisFascByUpdUdId FROM FasVLisFascByUpdUd fas WHERE fas.fasVLisFascByUpdUdId.idUnitaDoc = :idUnitaDoc ",
                 FasVLisFascByUpdUdId.class);
         query.setParameter("idUnitaDoc", new BigDecimal(idUnitaDoc));
         return query.getResultList();
+    }
+
+    /*
+     * Il sistema inserisce un record in ARO_LOG_STATO_CONSERV_UD per l'unita documentaria in
+     * aggiornamento
+     */
+    private void insertLogStatoConservUd(long idUnitaDoc, String nmAgente, String tiEvento,
+            String tiStatoConservazione, String tiMod) {
+        AroUnitaDoc unitaDoc = entityManager.find(AroUnitaDoc.class, idUnitaDoc);
+        AroLogStatoConservUd logStatoConservUd = new AroLogStatoConservUd();
+        logStatoConservUd.setAroUnitaDoc(unitaDoc);
+        // Ottieni l'istante corrente
+        Instant now = Instant.now();
+        // Crea un Timestamp dall'Instant
+        Timestamp istante = Timestamp.from(now);
+        logStatoConservUd.setDtStato(istante);
+        logStatoConservUd.setOrgSubStrut(unitaDoc.getOrgSubStrut());
+        logStatoConservUd.setNmAgente(nmAgente);
+        logStatoConservUd.setTiEvento(tiEvento);
+        logStatoConservUd.setTiMod(tiMod);
+        logStatoConservUd.setAaKeyUnitaDoc(unitaDoc.getAaKeyUnitaDoc());
+        logStatoConservUd.setTiStatoConservazione(tiStatoConservazione);
+        if (unitaDoc.getAroLogStatoConservUds() == null) {
+            unitaDoc.setAroLogStatoConservUds(new ArrayList<>());
+        }
+        unitaDoc.getAroLogStatoConservUds().add(logStatoConservUd);
+        entityManager.persist(logStatoConservUd);
+        entityManager.flush();
+
     }
 
     @Override

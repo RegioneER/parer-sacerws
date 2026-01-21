@@ -68,7 +68,7 @@ public class MessaggiWSCache {
                 // every
                 // message
             }
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         }
         log.info("Inizializzazione singleton MessaggiWSCache... completata.");

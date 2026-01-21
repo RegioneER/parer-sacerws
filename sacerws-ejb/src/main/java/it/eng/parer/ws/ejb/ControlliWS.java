@@ -27,7 +27,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -40,14 +39,11 @@ import it.eng.parer.entity.IamAbilTipoDato;
 import it.eng.parer.entity.IamUser;
 import it.eng.parer.granted_entity.UsrUser;
 import it.eng.parer.idpjaas.logutils.LogDto;
-import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.IWSDesc;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.Costanti.TipiWSPerControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.ParametroApplDB.TipoParametroAppl;
-import it.eng.parer.ws.versamento.dto.RispostaWS;
-import it.eng.parer.ws.versamento.dto.VersamentoExt;
 import it.eng.parer.ws.utils.VerificaVersione;
 import it.eng.spagoLite.security.User;
 import it.eng.spagoLite.security.auth.WSLoginHandler;
@@ -496,5 +492,47 @@ public class ControlliWS {
             }
         }
         return rs;
+    }
+
+    public RispostaControlli checkAbilitazioniUtenteIamAbilTipoDato(String descKey,
+            long idStruttura, long idUser, long idTipoDatoApplic, String nmClasseTipoDato) {
+        RispostaControlli rispostaControlli;
+        rispostaControlli = new RispostaControlli();
+        rispostaControlli.setrBoolean(false);
+
+        List<IamAbilTipoDato> iamAbilTipoDatos = null;
+
+        try {
+            String queryStr = "select t from IamAbilTipoDato t "
+                    + "where t.iamAbilOrganiz.iamUser.idUserIam = :idUserIam "
+                    + "and t.iamAbilOrganiz.idOrganizApplic = :idOrganizApplic  "
+                    + "and t.idTipoDatoApplic = :idTipoDatoApplic  "
+                    + "and t.nmClasseTipoDato = :nmClasseTipoDato  ";
+            javax.persistence.Query query = entityManager.createQuery(queryStr,
+                    IamAbilTipoDato.class);
+            query.setParameter("idOrganizApplic", new BigDecimal(idStruttura));
+            query.setParameter("idUserIam", idUser);
+            query.setParameter("idTipoDatoApplic", new BigDecimal(idTipoDatoApplic));
+            query.setParameter("nmClasseTipoDato", nmClasseTipoDato);
+
+            iamAbilTipoDatos = query.getResultList();
+
+            // ottengo un risultato -> abilitato al tipo dato
+            if (iamAbilTipoDatos.size() == 1) {
+                rispostaControlli.setrLong(iamAbilTipoDatos.get(0).getIdAbilTipoDato());
+                rispostaControlli.setrBoolean(true);
+            } else {
+                rispostaControlli.setCodErr(MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001);
+                rispostaControlli.setDsErr(MessaggiWSBundle.getString(
+                        MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001, descKey, nmClasseTipoDato));
+            }
+        } catch (Exception e) {
+            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "ControlliWS.checkAbilitazioniUtenteIamAbilTipoDato: " + e.getMessage()));
+            log.error(ERRORE_TABELLA_DECODIFICA, e);
+        }
+
+        return rispostaControlli;
     }
 }

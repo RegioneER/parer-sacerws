@@ -35,6 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
+import it.eng.parer.exception.SacerWsRuntimeException;
 import it.eng.parer.ws.xml.versfascicolo.IndiceSIPFascicolo;
 import it.eng.parer.ws.xml.versfascicoloresp.EsitoVersamentoFascicolo;
 
@@ -49,7 +51,7 @@ public class XmlFascCache {
 
     private static final Logger log = LoggerFactory.getLogger(XmlFascCache.class);
 
-    private final String URL_SCHEMA_REQUEST_FASCICOLO = "/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo.xsd";
+    private static final String URL_SCHEMA_REQUEST_FASCICOLO = "/it/eng/parer/ws/xml/versfascicolo/WSRequestIndiceSIPFascicolo.xsd";
 
     //
     JAXBContext versReqFascicoloCtx;
@@ -75,8 +77,7 @@ public class XmlFascCache {
             versReqFascicoloSchema = sf.newSchema(new StreamSource(tmpInputStream));
             log.info("Inizializzazione singleton XmlFascCache... completata.");
         } catch (Exception ex) {
-            log.error("Inizializzazione singleton XmlFascCache fallita! ", ex);
-            throw new RuntimeException(ex);
+            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
         } finally {
             IOUtils.closeQuietly(tmpInputStream);
         }

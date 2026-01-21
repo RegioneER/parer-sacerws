@@ -40,10 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.OrgStrut;
+import it.eng.parer.util.Constants.TipoDato;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.CSChiave;
 import it.eng.parer.ws.dto.CSVersatore;
-import it.eng.parer.ws.dto.IRispostaWS;
 import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.ejb.ControlliSemantici;
@@ -88,8 +88,6 @@ import it.eng.parer.ws.xml.versReq.TipoConservazioneType;
 import it.eng.parer.ws.xml.versReq.UnitaDocumentaria;
 import it.eng.parer.ws.xml.versResp.ECConfigurazioneType;
 import it.eng.parer.ws.xml.versResp.ECDocumentoType;
-import it.eng.parer.ws.xml.versResp.ECEsitoExtType;
-import it.eng.parer.ws.xml.versResp.ECEsitoGeneraleType;
 import it.eng.parer.ws.xml.versResp.ECEsitoPosNegType;
 import it.eng.parer.ws.xml.versResp.ECEsitoPosNegWarDisType;
 import it.eng.parer.ws.xml.versResp.ECEsitoPosNegWarType;
@@ -870,11 +868,10 @@ public class VersamentoExtPrsr {
         // Determino inoltre come gestire gli hash dei componenti versati e se
         // la data e l'oggetto del Profilo UD sono obbligatori
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
-            rispostaControlli = controlliPerFirme
-                    .getOrgStrutt(versamento.getStrutturaComponenti().getIdStruttura());
+            rispostaControlli = controlliSemantici
+                    .getOrgStrutWithEnte(versamento.getStrutturaComponenti().getIdStruttura());
             if (rispostaControlli.getrLong() != -1) {
                 OrgStrut os = (OrgStrut) rispostaControlli.getrObject();
-                controlliPerFirme.retrieveOrgEnteFor(os);
                 // build flags
                 this.elabFlagSipVDB(os, versamento, parsedUnitaDoc);
             } else {
@@ -1075,6 +1072,12 @@ public class VersamentoExtPrsr {
             this.verificaDocumentiUd(rispostaWs, versamento);
         }
 
+        // verifico che l'utente sia abilitato a tipologia ud, tipo doc e registro
+        //
+        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+            this.controllaTipoDatoUserOrg(myEsito, versamento, rispostaWs);
+        }
+
         if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             // prepara risposta con flag
             buildFlagsOnEsito(myEsito, versamento);
@@ -1087,6 +1090,69 @@ public class VersamentoExtPrsr {
         }
         // end MEV#23176
     }
+
+    private void controllaTipoDatoUserOrg(EsitoVersamento myControlliVers, VersamentoExt versamento,
+            RispostaWS rispostaWs) {
+        Long idTipoDocPrincipale = 0L;
+        List<DocumentoVers> docList = versamento.getStrutturaComponenti().getDocumentiAttesi();
+        if (docList != null && !docList.isEmpty()) {
+            for (DocumentoVers docVers : docList) {
+                if (docVers.getCategoriaDoc() == Costanti.CategoriaDocumento.Principale) {
+                    idTipoDocPrincipale = docVers.getIdTipoDocumentoDB();
+                    break;
+                }
+            }
+        }
+
+        // Controllo abilitazioni per i tre tipi di dato
+        Map<Long, TipoDato> tipiDatoControlli = Map.of(
+                versamento.getStrutturaComponenti().getIdTipologiaUnitaDocumentaria(),
+                TipoDato.TIPO_UNITA_DOC,
+                versamento.getStrutturaComponenti().getIdRegistroUnitaDoc(), TipoDato.REGISTRO,
+                idTipoDocPrincipale, TipoDato.TIPO_DOC);
+
+        for (Map.Entry<Long, TipoDato> tipoDato : tipiDatoControlli.entrySet()) {
+            verificaAbilitazioneTipoDato(myControlliVers, versamento,
+                    versamento.getStrutturaComponenti().getIdStruttura(),
+                    versamento.getStrutturaComponenti().getIdUser(), tipoDato.getKey(),
+                    tipoDato.getValue(), rispostaWs);
+        }
+    }
+
+    private void verificaAbilitazioneTipoDato(EsitoVersamento myControlliVers,
+            VersamentoExt versamento, long idStrut, long idUser, long idTipoDatoApplic,
+            TipoDato tipoDato, RispostaWS rispostaWs) {
+        UnitaDocumentaria vers = versamento.getVersamento();
+        RispostaControlli rispostaControlli = controlliEjb.checkAbilitazioniUtenteIamAbilTipoDato(
+                vers.getIntestazione().getChiave().getNumero(), idStrut, idUser, idTipoDatoApplic,
+                tipoDato.name());
+
+        if (!rispostaControlli.isrBoolean()) {
+            // setEsitoAbilitazioneTipoDato(myControlliVers, tipoDato, ECEsitoPosNegType.NEGATIVO);
+            rispostaWs.setSeverity(SeverityEnum.ERROR);
+            rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
+        } else {
+            // setEsitoAbilitazioneTipoDato(myControlliVers, tipoDato, ECEsitoPosNegType.POSITIVO);
+        }
+    }
+
+    // private void setEsitoAbilitazioneTipoDato(EsitoVersamento myControlliVers, TipoDato tipoDato,
+    // ECEsitoPosNegType esito) {
+    // switch (tipoDato) {
+    // case TIPO_UNITA_DOC:
+    // myControlliVers.setEsitoAbilitazioneTipologiaUd(esito);
+    // break;
+    // case TIPO_DOC:
+    // myControlliVers.setEsitoAbilitazioneTipoDoc(esito);
+    // break;
+    // case REGISTRO:
+    // myControlliVers.setEsitoAbilitazioneRegistro(esito);
+    // break;
+    // default:
+    // /* no-op */
+    // break;
+    // }
+    // }
 
     private void elabFlagSipVDB(OrgStrut os, VersamentoExt versamento,
             UnitaDocumentaria parsedUnitaDoc) {
@@ -1194,6 +1260,12 @@ public class VersamentoExtPrsr {
                                 .getValoreParamApplicByTipoUdAsFl(ParametroApplFl.FL_FORZA_FMT,
                                         idStrut, idAmbiente, idTipoUd)
                                 .equals(CostantiDB.Flag.TRUE));
+
+        // log stato conservazione
+        versamento.getStrutturaComponenti()
+                .setFlagAbilitaLogStatoConserv(configurationHelper.getValoreParamApplicByTipoUdAsFl(
+                        ParametroApplFl.FL_ABILITA_LOG_STATO_CONSERV, idStrut, idAmbiente, idTipoUd)
+                        .equals(CostantiDB.Flag.TRUE));
 
         // v1.5
         if (versamento.getModificatoriWSCalc().contains(ModificatoriWS.TAG_ABILITA_FORZA_1_5)) {

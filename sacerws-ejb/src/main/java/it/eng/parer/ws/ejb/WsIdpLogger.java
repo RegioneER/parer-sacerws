@@ -32,6 +32,8 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.exception.SacerWsRuntimeException;
+import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
 import it.eng.parer.idpjaas.logutils.IdpConfigLog;
 import it.eng.parer.idpjaas.logutils.IdpLogger;
 import it.eng.parer.idpjaas.logutils.LogDto;
@@ -68,7 +70,9 @@ public class WsIdpLogger {
         RispostaControlli rispostaControlli = controlliSemantici
                 .caricaDefaultDaDB(ParametroApplDB.TipoParametroAppl.IAM);
         if (rispostaControlli.isrBoolean() == false) {
-            throw new RuntimeException("WsIdpLogger: Impossibile accedere alla tabella parametri");
+            throw new SacerWsRuntimeException(
+                    "WsIdpLogger: Impossibile accedere alla tabella parametri",
+                    SacerWsErrorCategory.INTERNAL_ERROR);
         } else {
             iamDefaults = (HashMap<String, String>) rispostaControlli.getrObject();
         }
@@ -121,14 +125,15 @@ public class WsIdpLogger {
                 }
 
             } catch (UnknownHostException ex) {
-                throw new RuntimeException(
-                        "WsIdpLogger: Errore nel determinare il nome host per il server: "
-                                + ex.getMessage());
+                throw new SacerWsRuntimeException(
+                        "WsIdpLogger: Errore nel determinare il nome host per il server", ex,
+                        SacerWsErrorCategory.INTERNAL_ERROR);
             } catch (SQLException ex) {
-                throw new RuntimeException(
-                        "WsIdpLogger: Errore nell'accesso ai dati di log: " + ex.getMessage());
+                throw new SacerWsRuntimeException("WsIdpLogger: Errore nell'accesso ai dati di log",
+                        ex, SacerWsErrorCategory.INTERNAL_ERROR);
             } catch (Exception ex) {
-                throw new RuntimeException("WsIdpLogger: Errore: " + ex.getMessage());
+                throw new SacerWsRuntimeException("WsIdpLogger: Errore", ex,
+                        SacerWsErrorCategory.INTERNAL_ERROR);
             } finally {
                 if (connection != null) {
                     try {

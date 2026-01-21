@@ -58,12 +58,6 @@ public class ControlliPerFirmeTest {
     }
 
     @Test
-    void getOrgStrutt_queryIsOk() {
-        final RispostaControlli rispostaControlli = helper.getOrgStrutt(2L);
-        assertNotNull(rispostaControlli.getrObject());
-    }
-
-    @Test
     void getOrgStruttAsEntity_queryIsOk() throws VerificaFirmaException {
         helper.getOrgStruttAsEntity(0L);
         assertTrue(true);
@@ -179,13 +173,4 @@ public class ControlliPerFirmeTest {
         assertTrue(true);
     }
 
-    @Test
-    void retrieveOrgEnteFor_queryIsOk() {
-        final OrgStrut os = new OrgStrut();
-        os.setIdStrut(0L);
-        os.setOrgEnte(new OrgEnte());
-        os.getOrgEnte().setIdEnte(0l);
-        helper.retrieveOrgEnteFor(os);
-        assertTrue(true);
-    }
 }

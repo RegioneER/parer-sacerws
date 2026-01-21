@@ -94,6 +94,8 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, 
     private boolean versatoreVerificato = false;
     //
     private boolean trovatiIdDocDuplicati;
+    //
+    private boolean flagAbilitaLogStatoConserv = false;
 
     // Nota : solo in presenza di documento e quindi del tag mi aspetto di
     // effettuare il controllo
@@ -566,5 +568,13 @@ public class StrutturaUpdVers implements java.io.Serializable, IDatiSpecEntity, 
     @Override
     public void setIdRecUsoXsdProfiloNormativo(Long idRecUsoXsdProfiloNormativo) {
         this.idRecUsoXsdProfiloNormativo = idRecUsoXsdProfiloNormativo;
+    }
+
+    public boolean isFlagAbilitaLogStatoConserv() {
+        return flagAbilitaLogStatoConserv;
+    }
+
+    public void setFlagAbilitaLogStatoConserv(boolean flagAbilitaLogStatoConserv) {
+        this.flagAbilitaLogStatoConserv = flagAbilitaLogStatoConserv;
     }
 }

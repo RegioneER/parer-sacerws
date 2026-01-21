@@ -33,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.eng.parer.entity.DecErrSacer;
-import it.eng.parer.exception.ParerErrorCategory.SacerWsErrorCategory;
-import it.eng.parer.exception.SacerWsRuntimeException;
 
 /**
  *
@@ -62,14 +60,10 @@ public class MessaggiWSHelper {
     public DecErrSacer caricaDecErrore(String cdErrore) {
         DecErrSacer tmperr;
 
-        try {
-            String qlString = "SELECT e FROM DecErrSacer e " + "where e.cdErr = :cdErr";
-            Query query = entityManager.createQuery(qlString);
-            query.setParameter("cdErr", cdErrore);
-            tmperr = (DecErrSacer) query.getSingleResult();
-        } catch (RuntimeException ex) {
-            throw new SacerWsRuntimeException(ex, SacerWsErrorCategory.INTERNAL_ERROR);
-        }
+        String qlString = "SELECT e FROM DecErrSacer e " + "where e.cdErr = :cdErr";
+        Query query = entityManager.createQuery(qlString);
+        query.setParameter("cdErr", cdErrore);
+        tmperr = (DecErrSacer) query.getSingleResult();
 
         return tmperr;
     }
