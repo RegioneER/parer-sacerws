@@ -1428,51 +1428,51 @@ public class SalvataggioSync {
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnIndiceSip(tmpUrn,
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnIndiceSip(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.RISPOSTA:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn,
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.RAPP_VERS:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnRappVers(tmpUrn,
                                 Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnRappVers(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.INDICE_FILE:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnPiSip(tmpUrn,
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnPiSip(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             default:
                 break;
@@ -1483,7 +1483,7 @@ public class SalvataggioSync {
                     ? xmlDatiSessioneVers.getDsUrnXmlVers()
                     : "Non disponibile";
             this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers, tmpUrnIni,
-                    TiUrnXmlSessioneVers.INIZIALE);
+                    TiUrnXmlSessioneVers.INIZIALE, vrs.getAaChiusuraSess());
 
         }
 
@@ -1499,13 +1499,15 @@ public class SalvataggioSync {
     }
 
     private boolean salvaUrnXmlSessioneVers(VrsXmlDatiSessioneVers xmlDatiSessioneVers,
-            String tmpUrn, TiUrnXmlSessioneVers tiUrn) {
+            String tmpUrn, TiUrnXmlSessioneVers tiUrn, BigDecimal aaChiusuraSess) {
 
         VrsUrnXmlSessioneVers tmpVrsUrnXmlSessioneVers = null;
 
         tmpVrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
         tmpVrsUrnXmlSessioneVers.setDsUrn(tmpUrn);
         tmpVrsUrnXmlSessioneVers.setTiUrn(tiUrn);
+        tmpVrsUrnXmlSessioneVers.setIdStrut(xmlDatiSessioneVers.getIdStrut());
+        tmpVrsUrnXmlSessioneVers.setAaChiusuraSess(aaChiusuraSess);
         tmpVrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(xmlDatiSessioneVers);
 
         // persist
@@ -1548,13 +1550,13 @@ public class SalvataggioSync {
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnIndiceSip(tmpUrn,
                                     Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnIndiceSip(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
 
                     break;
                 case TipiXmlDati.RISPOSTA:
@@ -1562,26 +1564,26 @@ public class SalvataggioSync {
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn,
                                     Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                     break;
                 case TipiXmlDati.RAPP_VERS:
                     // salvo ORIGINALE
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnRappVers(tmpUrn,
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnRappVers(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                     break;
                 default:
                     break;
@@ -1592,7 +1594,7 @@ public class SalvataggioSync {
                         ? xmlDatiSessioneVers.getDsUrnXmlVers()
                         : "Non disponibile";
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers, tmpUrnIni,
-                        TiUrnXmlSessioneVers.INIZIALE);
+                        TiUrnXmlSessioneVers.INIZIALE, vrs.getAaChiusuraSess());
 
             }
         }

@@ -28,6 +28,7 @@ public final class VrsUrnXmlSessioneVersBuilder {
     private Optional<VrsXmlDatiSessioneVers> vrsXmlDatiSessioneVers;
     private Optional<VrsXmlDatiSessioneVersKo> vrsXmlDatiSessioneVersKo;
     private BigDecimal idStrut;
+    private BigDecimal aaChiusuraSess;
 
     private VrsUrnXmlSessioneVersBuilder() {
     }
@@ -63,10 +64,17 @@ public final class VrsUrnXmlSessioneVersBuilder {
         return this;
     }
 
+    public VrsUrnXmlSessioneVersBuilder aaChiusuraSess(BigDecimal aaChiusuraSess) {
+        this.aaChiusuraSess = aaChiusuraSess;
+        return this;
+    }
+
     public VrsUrnXmlSessioneVers buildVrsUrnXmlSessioneVers() {
         VrsUrnXmlSessioneVers vrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
         vrsUrnXmlSessioneVers.setDsUrn(dsUrn);
         vrsUrnXmlSessioneVers.setTiUrn(tiUrn);
+        vrsUrnXmlSessioneVers.setIdStrut(idStrut);
+        vrsUrnXmlSessioneVers.setAaChiusuraSess(aaChiusuraSess);
         vrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(vrsXmlDatiSessioneVers.get());
         return vrsUrnXmlSessioneVers;
     }

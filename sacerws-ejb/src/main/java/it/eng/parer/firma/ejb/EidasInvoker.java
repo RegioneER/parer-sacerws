@@ -145,6 +145,7 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
         EidasWSReportsDTOTree resp = null;
         try {
             resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
+            return new EidasValidationResponse(resp);
         } catch (RestClientException rce) {
             throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
                     urlEidas);
@@ -152,8 +153,6 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
             throw new VerificaFirmaGenericInvokeException(ex,
                     CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
         }
-        return new EidasValidationResponse(resp);
-
     }
 
     /**
@@ -186,6 +185,7 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
         EidasWSReportsDTOTree resp = null;
         try {
             resp = restTemplate.postForObject(urlEidas, entity, EidasWSReportsDTOTree.class);
+            return new EidasValidationResponse(resp);
         } catch (RestClientException rce) {
             throw new VerificaFirmaConnectionException(rce, CdServizioVerificaCompDoc.EIDAS.name(),
                     urlEidas);
@@ -193,8 +193,6 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
             throw new VerificaFirmaGenericInvokeException(ex,
                     CdServizioVerificaCompDoc.EIDAS.name(), urlEidas);
         }
-        return new EidasValidationResponse(resp);
-
     }
 
     @Override

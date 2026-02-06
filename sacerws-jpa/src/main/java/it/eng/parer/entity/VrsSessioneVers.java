@@ -49,6 +49,8 @@ public class VrsSessioneVers implements Serializable {
 
     private BigDecimal aaKeyUnitaDoc;
 
+    private BigDecimal aaChiusuraVirtual;
+
     private String cdErrPrinc;
 
     private String cdKeyDocVers;
@@ -394,6 +396,15 @@ public class VrsSessioneVers implements Serializable {
 
     public void setNmUtente(String nmUtente) {
         this.nmUtente = nmUtente;
+    }
+
+    @Column(name = "AA_CHIUSURA_VIRTUAL", insertable = false, updatable = false)
+    public BigDecimal getAaChiusuraVirtual() {
+        return aaChiusuraVirtual;
+    }
+
+    public void setAaChiusuraVirtual(BigDecimal aaChiusuraVirtual) {
+        this.aaChiusuraVirtual = aaChiusuraVirtual;
     }
 
 }
