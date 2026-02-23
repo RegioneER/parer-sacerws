@@ -32,6 +32,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 import it.eng.parer.entity.constraint.VrsUrnXmlSessioneVers.TiUrnXmlSessioneVers;
+import java.math.BigDecimal;
 
 /**
  * The persistent class for the VRS_URN_XML_SESSIONE_VERS database table.
@@ -47,6 +48,10 @@ public class VrsUrnXmlSessioneVers implements Serializable {
     private String dsUrn;
 
     private TiUrnXmlSessioneVers tiUrn;
+
+    private BigDecimal idStrut;
+
+    private BigDecimal aaChiusuraSess;
 
     private VrsXmlDatiSessioneVers vrsXmlDatiSessioneVers;
 
@@ -84,6 +89,24 @@ public class VrsUrnXmlSessioneVers implements Serializable {
 
     public void setTiUrn(TiUrnXmlSessioneVers tiUrnXmlSessioneVers) {
         this.tiUrn = tiUrnXmlSessioneVers;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
+    }
+
+    @Column(name = "AA_CHIUSURA_SESS")
+    public BigDecimal getAaChiusuraSess() {
+        return this.aaChiusuraSess;
+    }
+
+    public void setAaChiusuraSess(BigDecimal aaChiusuraSess) {
+        this.aaChiusuraSess = aaChiusuraSess;
     }
 
     // bi-directional many-to-one association to OrgStrut

@@ -299,51 +299,51 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnIndiceSip(tmpUrn,
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnIndiceSip(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.RISPOSTA:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn,
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.RAPP_VERS:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnRappVers(tmpUrn,
                                 Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnRappVers(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             case TipiXmlDati.INDICE_FILE:
                 // salvo ORIGINALE
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnPiSip(tmpUrn,
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
-                        TiUrnXmlSessioneVers.ORIGINALE);
+                        TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                 // salvo NORMALIZZATO
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                         MessaggiWSFormat.formattaUrnPiSip(tmpUrnNorm,
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
-                        TiUrnXmlSessioneVers.NORMALIZZATO);
+                        TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                 break;
             default:
                 break;
@@ -353,7 +353,7 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                     ? xmlDatiSessioneVers.getDsUrnXmlVers()
                     : "Non disponibile";
             this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers, tmpUrnIni,
-                    TiUrnXmlSessioneVers.INIZIALE);
+                    TiUrnXmlSessioneVers.INIZIALE, vrs.getAaChiusuraSess());
 
         }
     }
@@ -400,13 +400,13 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnIndiceSip(tmpUrn,
                                     Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnIndiceSip(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_INDICE_SIP_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
 
                     break;
                 case TipiXmlDati.RISPOSTA:
@@ -414,26 +414,26 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnEsitoVers(tmpUrn,
                                     Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnEsitoVers(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_ESITO_VERS_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                     break;
                 case TipiXmlDati.RAPP_VERS:
                     // salvo ORIGINALE
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnRappVers(tmpUrn,
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.ORIGINALE);
+                            TiUrnXmlSessioneVers.ORIGINALE, vrs.getAaChiusuraSess());
 
                     // salvo NORMALIZZATO
                     this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers,
                             MessaggiWSFormat.formattaUrnRappVers(tmpUrnNorm,
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
-                            TiUrnXmlSessioneVers.NORMALIZZATO);
+                            TiUrnXmlSessioneVers.NORMALIZZATO, vrs.getAaChiusuraSess());
                     break;
                 default:
                     break;
@@ -443,7 +443,7 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
                         ? xmlDatiSessioneVers.getDsUrnXmlVers()
                         : "Non disponibile";
                 this.salvaUrnXmlSessioneVers(xmlDatiSessioneVers, tmpUrnIni,
-                        TiUrnXmlSessioneVers.INIZIALE);
+                        TiUrnXmlSessioneVers.INIZIALE, vrs.getAaChiusuraSess());
             }
         }
     }
@@ -526,13 +526,15 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
     }
 
     private void salvaUrnXmlSessioneVers(VrsXmlDatiSessioneVers xmlDatiSessioneVers, String tmpUrn,
-            TiUrnXmlSessioneVers tiUrn) {
+            TiUrnXmlSessioneVers tiUrn, BigDecimal aaChiusuraSess) {
 
         VrsUrnXmlSessioneVers tmpVrsUrnXmlSessioneVers;
 
         tmpVrsUrnXmlSessioneVers = new VrsUrnXmlSessioneVers();
         tmpVrsUrnXmlSessioneVers.setDsUrn(tmpUrn);
         tmpVrsUrnXmlSessioneVers.setTiUrn(tiUrn);
+        tmpVrsUrnXmlSessioneVers.setIdStrut(xmlDatiSessioneVers.getIdStrut());
+        tmpVrsUrnXmlSessioneVers.setAaChiusuraSess(aaChiusuraSess);
         tmpVrsUrnXmlSessioneVers.setVrsXmlDatiSessioneVers(xmlDatiSessioneVers);
 
         // persist

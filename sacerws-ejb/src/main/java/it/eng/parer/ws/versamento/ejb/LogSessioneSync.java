@@ -830,13 +830,19 @@ public class LogSessioneSync {
          */
         if (tmpReturn) {
             final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+             BigDecimal aaChiusuraSess = null;
+            if (sessione.getTmChiusura() != null) {
+                // getYear() restituisce int, lo convertiamo in BigDecimal
+                aaChiusuraSess = new BigDecimal(sessione.getTmChiusura().getYear());
+            }
             if (urns.getUrn() != null) {
                 // salvo ORIGINALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         MessaggiWSFormat.formattaUrnIndiceSip(urns.getUrn(),
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
                         TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (urns.getUrnNormalizzato() != null) {
                 // salvo NORMALIZZATO
@@ -844,14 +850,16 @@ public class LogSessioneSync {
                         MessaggiWSFormat.formattaUrnIndiceSip(urns.getUrnNormalizzato(),
                                 Costanti.UrnFormatter.URN_INDICE_SIP_V2),
                         TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
                 // salvo INIZIALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
                         TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
         }
 
@@ -906,13 +914,20 @@ public class LogSessioneSync {
 
         if (tmpReturn) {
             final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+            BigDecimal aaChiusuraSess = null;
+            if (sessione.getTmChiusura() != null) {
+                // getYear() restituisce int, lo convertiamo in BigDecimal
+                aaChiusuraSess = new BigDecimal(sessione.getTmChiusura().getYear());
+            }
+
             if (urns.getUrn() != null) {
                 // salvo ORIGINALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(),
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
                         TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (urns.getUrnNormalizzato() != null) {
                 // salvo NORMALIZZATO
@@ -920,14 +935,16 @@ public class LogSessioneSync {
                         MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
                                 Costanti.UrnFormatter.URN_ESITO_VERS_V2),
                         TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
                 // salvo INIZIALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
                         TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
         }
         return tmpReturn;
@@ -980,13 +997,19 @@ public class LogSessioneSync {
 
         if (tmpReturn) {
             final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+            BigDecimal aaChiusuraSess = null;
+            if (sessione.getTmChiusura() != null) {
+                // getYear() restituisce int, lo convertiamo in BigDecimal
+                aaChiusuraSess = new BigDecimal(sessione.getTmChiusura().getYear());
+            }
             if (urns.getUrn() != null) {
                 // salvo ORIGINALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(),
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
                         TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (urns.getUrnNormalizzato() != null) {
                 // salvo NORMALIZZATO
@@ -994,14 +1017,16 @@ public class LogSessioneSync {
                         MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
                                 Costanti.UrnFormatter.URN_PI_SIP_V2),
                         TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
             if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
                 // salvo INIZIALE
                 tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                         vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
                         TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers,
-                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                        vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                        aaChiusuraSess);
             }
         }
         return tmpReturn;
@@ -1055,13 +1080,19 @@ public class LogSessioneSync {
             }
             if (tmpReturn) {
                 final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
+                BigDecimal aaChiusuraSess = null;
+                if (sessione.getTmChiusura() != null) {
+                    // getYear() restituisce int, lo convertiamo in BigDecimal
+                    aaChiusuraSess = new BigDecimal(sessione.getTmChiusura().getYear());
+                }
                 if (urns.getUrn() != null) {
                     // salvo ORIGINALE
                     tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                             MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrn(),
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
                             TiUrnXmlSessioneVers.ORIGINALE, vrsXmlDatiSessioneVers,
-                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                            aaChiusuraSess);
                 }
                 if (urns.getUrnNormalizzato() != null) {
                     // salvo NORMALIZZATO
@@ -1069,14 +1100,16 @@ public class LogSessioneSync {
                             MessaggiWSFormat.formattaUrnEsitoVers(urns.getUrnNormalizzato(),
                                     Costanti.UrnFormatter.URN_RAPP_VERS_V2),
                             TiUrnXmlSessioneVers.NORMALIZZATO, vrsXmlDatiSessioneVers,
-                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                            aaChiusuraSess);
                 }
                 if (vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers() != null) {
                     // salvo INIZIALE
                     tmpReturn = this.salvaVrsUrnXmlSessioneVers(
                             vrsXmlDatiSessioneVersBuilder.getDsUrnXmlVers(),
                             TiUrnXmlSessioneVers.INIZIALE, vrsXmlDatiSessioneVers,
-                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento));
+                            vrsXmlDatiSessioneVersKo, rispostaWS, getIdStrut(versamento),
+                            aaChiusuraSess);
                 }
             }
         }
@@ -1289,11 +1322,11 @@ public class LogSessioneSync {
     private boolean salvaVrsUrnXmlSessioneVers(String tmpUrn, TiUrnXmlSessioneVers tiUrn,
             Optional<VrsXmlDatiSessioneVers> xmlDatiSessioneVers,
             Optional<VrsXmlDatiSessioneVersKo> xmlDatiSessioneVersKo, IRispostaVersWS rispostaWS,
-            BigDecimal idStrut) {
+            BigDecimal idStrut, BigDecimal aaChiusuraSess) {
         boolean tmpReturn = true;
         VrsUrnXmlSessioneVersBuilder builder = VrsUrnXmlSessioneVersBuilder.builder().dsUrn(tmpUrn)
                 .tiUrn(tiUrn).idStrut(idStrut).vrsXmlDatiSessioneVers(xmlDatiSessioneVers)
-                .vrsXmlDatiSessioneVersKo(xmlDatiSessioneVersKo);
+                .vrsXmlDatiSessioneVersKo(xmlDatiSessioneVersKo).aaChiusuraSess(aaChiusuraSess);
         try {
             entityManager.persist(
                     isOkOrWarningResponse(rispostaWS) ? builder.buildVrsUrnXmlSessioneVers()
