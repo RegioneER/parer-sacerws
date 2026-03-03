@@ -1,7 +1,4 @@
-## 6.13.0 (06-02-2026)
-
-### Bugfix: 1
-- [#39785](https://parermine.regione.emilia-romagna.it/issues/39785) Correzione mancata gestione di errori generici nella validazione della risposa del servizio di verifica firma digitale eIDAS
+## 6.14.0 (03-03-2026)
 
 ### Novità: 1
-- [#38893](https://parermine.regione.emilia-romagna.it/issues/38893) Aggiunta informazione ID_STRUT ai fini del partizionamento automatico delle tabelle delle sessioni di versamento andate a buon fine
+- [#40019](https://parermine.regione.emilia-romagna.it/issues/40019) Patch di sicurezza per interventi legati a CVE
