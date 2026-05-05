@@ -830,7 +830,7 @@ public class LogSessioneSync {
          */
         if (tmpReturn) {
             final URNVersamento urns = calcolaUrn(versamento, documentoVersIn, sessione);
-             BigDecimal aaChiusuraSess = null;
+            BigDecimal aaChiusuraSess = null;
             if (sessione.getTmChiusura() != null) {
                 // getYear() restituisce int, lo convertiamo in BigDecimal
                 aaChiusuraSess = new BigDecimal(sessione.getTmChiusura().getYear());

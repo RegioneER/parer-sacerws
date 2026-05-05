@@ -14,6 +14,7 @@
 package it.eng.parer.restWS;
 
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.VERSAMENTO_SYNC_MAX_FILE_SIZE;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.VERSAMENTO_SYNC_MAX_HEADERPART_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.VERSAMENTO_SYNC_MAX_REQUEST_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.VERSAMENTO_SYNC_SAVE_LOG_SESSION;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
@@ -72,6 +73,7 @@ public class VersamentoMultiMSyncSrvlt extends HttpServlet {
     private boolean salvaLogSessione;
     private long maxRequestSize;
     private long maxFileSize;
+    private int maxHeaderPartSize;
     private String instanceName;
 
     @EJB(mappedName = "java:app/sacerws-ejb/VersamentoSyncMM")
@@ -91,6 +93,8 @@ public class VersamentoMultiMSyncSrvlt extends HttpServlet {
                 .getLongValue(VERSAMENTO_SYNC_MAX_REQUEST_SIZE.name());
         maxFileSize = ConfigSingleton.getInstance()
                 .getLongValue(VERSAMENTO_SYNC_MAX_FILE_SIZE.name());
+        maxHeaderPartSize = ConfigSingleton.getInstance()
+                .getIntValue(VERSAMENTO_SYNC_MAX_HEADERPART_SIZE.name());
         instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
     }
 
@@ -153,6 +157,7 @@ public class VersamentoMultiMSyncSrvlt extends HttpServlet {
                 // maximum size before a FileUploadException will be thrown
                 upload.setSizeMax(maxRequestSize);
                 upload.setFileSizeMax(maxFileSize);
+                upload.setPartHeaderSizeMax(maxHeaderPartSize);
 
                 tmpAvanzamento.setFase("Servlet pronta a ricevere i file").logAvanzamento();
 

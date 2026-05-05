@@ -13,6 +13,7 @@
 
 package it.eng.parer.restWS;
 
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.VERSAMENTO_UPD_MAX_HEADERPART_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
@@ -73,6 +74,7 @@ public class UpdVersamentoSrvlt extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(UpdVersamentoSrvlt.class);
     private String uploadDir;
     private String instanceName;
+    private int maxHeaderPartSize;
 
     @EJB(mappedName = "java:app/sacerws-ejb/AggiornamentoVersamentoSync")
     private AggiornamentoVersamentoSync aggVersamentoSync;
@@ -86,6 +88,8 @@ public class UpdVersamentoSrvlt extends HttpServlet {
         // custom
         uploadDir = ConfigSingleton.getInstance().getStringValue(WS_STAGING_UPLOAD_DIR.name());
         instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
+        maxHeaderPartSize = ConfigSingleton.getInstance()
+                .getIntValue(VERSAMENTO_UPD_MAX_HEADERPART_SIZE.name());
     }
 
     @Override
@@ -147,6 +151,8 @@ public class UpdVersamentoSrvlt extends HttpServlet {
 
                 // Create a new file upload handler
                 ServletFileUpload upload = new ServletFileUpload(factory);
+                upload.setPartHeaderSizeMax(maxHeaderPartSize);
+
                 tmpAvanzamento.setFase("Servlet pronta a ricevere i file").logAvanzamento();
                 try {
                     tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.TrasferimentoPayloadIn)

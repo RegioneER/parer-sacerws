@@ -500,7 +500,8 @@ public class VersamentoExtAggAllPrsr {
             rispostaControlli.reset();
             rispostaControlli = controlliSemantici.checkChiave(tmpCSChiave,
                     versamento.getStrutturaComponenti().getIdStruttura(),
-                    ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE);
+                    ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE,
+                    ControlliSemantici.TipiGestioneUDScartate.CONSIDERA_ASSENTE);
             if (rispostaControlli.isrBoolean() || rispostaControlli.getrLong() == -1) {
                 setRispostaWsError(rispostaWs, rispostaControlli);
                 myEsito.getUnitaDocumentaria().getEsitoUnitaDocumentaria()

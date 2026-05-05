@@ -531,7 +531,8 @@ public abstract class UpdVersamentoBasePrsr {
         // controlla prensa chiave UD
         RispostaControlli rispostaControlli = updVersamentoControlli.checkChiaveAndTipoDocPrinc(
                 strutturaUpdVers.getChiaveNonVerificata(), strutturaUpdVers.getIdStruttura(),
-                ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE);
+                ControlliSemantici.TipiGestioneUDAnnullate.CONSIDERA_ASSENTE,
+                ControlliSemantici.TipiGestioneUDScartate.CONSIDERA_ASSENTE);
         if (rispostaControlli.isrBoolean()) {
             rispostaWs.setSeverity(SeverityEnum.ERROR);
 

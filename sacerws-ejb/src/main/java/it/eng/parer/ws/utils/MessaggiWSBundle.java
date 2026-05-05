@@ -863,6 +863,11 @@ public class MessaggiWSBundle {
     public static final String UD_012_002 = "UD-012-002";
 
     /**
+     * Unità Documentaria {0}: L''unità documentaria è oggetto di scarto
+     */
+    public static final String UD_012_003 = "UD-012-003";
+
+    /**
      * Unità Documentaria {0}: L''unità documentaria è inserita in almeno una serie; per aggiungere
      * il documento è necessario richiedere l''aggiornamento della serie
      */

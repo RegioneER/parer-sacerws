@@ -1000,4 +1000,40 @@ public class CostantiDB {
 
     }
 
+    public enum TipoCreazioneRichScartoVers {
+        UPLOAD_FILE
+    }
+
+    public enum StatoRichScartoVers {
+
+        APERTA, CHIUSA, EVASA
+    }
+
+    public enum TipoFileRichScartoVers {
+
+        FILE_UD_SCARTO // , XML_RICH, XML_RISP, FILE_FASC_ANNUL
+    }
+
+    public enum StatoItemRichScartoVers {
+
+        SCARTATO, DA_SCARTARE, NON_SCARTABILE
+    }
+
+    public enum TipoErrRichScartoVers {
+
+        ITEM_GIA_PRESENTE, ITEM_IN_CORSO_DI_SCARTO, ITEM_NON_ESISTE, TIPO_UNITA_DOC_NON_ABILITATO,
+        REGISTRO_NON_ABILITATO, TIPO_DOC_PRINC_NON_ABILITATO, ITEM_GIA_SCARTATO;
+
+        public static String[] getStatiControlloItem() {
+            // Ritorna tutti gli stati tranne ITEM_NON_ESISTE e ITEM_GIA_PRESENTE - DA
+            // MODIFICARE IN CASO DI AGGIUNTE
+
+            return new String[] {
+                    TipoErrRichScartoVers.ITEM_IN_CORSO_DI_SCARTO.name(),
+                    TipoErrRichScartoVers.TIPO_UNITA_DOC_NON_ABILITATO.name(),
+                    TipoErrRichScartoVers.REGISTRO_NON_ABILITATO.name(),
+                    TipoErrRichScartoVers.TIPO_DOC_PRINC_NON_ABILITATO.name() };
+        }
+    }
+
 }

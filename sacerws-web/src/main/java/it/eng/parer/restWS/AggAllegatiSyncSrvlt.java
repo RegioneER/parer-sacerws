@@ -16,6 +16,7 @@ package it.eng.parer.restWS;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_FILE_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_REQUEST_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_SAVE_LOG_SESSION;
+import static it.eng.spagoCore.ConfigProperties.StandardProperty.AGG_ALLEGATI_MAX_HEADERPART_SIZE;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_INSTANCE_NAME;
 import static it.eng.spagoCore.ConfigProperties.StandardProperty.WS_STAGING_UPLOAD_DIR;
 
@@ -73,6 +74,7 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
     private boolean salvaLogSessione;
     private long maxRequestSize;
     private long maxFileSize;
+    private int maxHeaderPartSize;
     private String instanceName;
 
     @EJB(mappedName = "java:app/sacerws-ejb/AggiuntaAllSync")
@@ -91,6 +93,8 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
         maxRequestSize = ConfigSingleton.getInstance()
                 .getLongValue(AGG_ALLEGATI_MAX_REQUEST_SIZE.name());
         maxFileSize = ConfigSingleton.getInstance().getLongValue(AGG_ALLEGATI_MAX_FILE_SIZE.name());
+        maxHeaderPartSize = ConfigSingleton.getInstance()
+                .getIntValue(AGG_ALLEGATI_MAX_HEADERPART_SIZE.name());
         instanceName = ConfigSingleton.getInstance().getStringValue(WS_INSTANCE_NAME.name());
     }
 
@@ -150,6 +154,7 @@ public class AggAllegatiSyncSrvlt extends HttpServlet {
                 // maximum size before a FileUploadException will be thrown
                 upload.setSizeMax(maxRequestSize);
                 upload.setFileSizeMax(maxFileSize);
+                upload.setPartHeaderSizeMax(maxHeaderPartSize);
 
                 tmpAvanzamento.setFase("Servlet pronta a ricevere i file").logAvanzamento();
 

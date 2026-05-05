@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sacerws</artifactId>
         <groupId>it.eng.parer</groupId>
-    	<version>6.14.1-SNAPSHOT</version>
+    	<version>6.15.0</version>
     </parent>
 
     <artifactId>sacerws-ear</artifactId>
@@ -47,20 +47,6 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.eng.parer</groupId>
-            <artifactId>spagofat-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.eng.parer</groupId>
-            <artifactId>spagofat-middle</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<groupId>org.apache.logging.log4j</groupId>
-            		<artifactId>log4j-api</artifactId>
-            	</exclusion>
-            </exclusions>
         </dependency>
         <!-- FINE dipendenze progetto WEB -->
         <dependency>

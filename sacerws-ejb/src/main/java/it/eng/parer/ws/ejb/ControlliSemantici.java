@@ -109,6 +109,11 @@ public class ControlliSemantici {
         CARICA, CONSIDERA_ASSENTE
     }
 
+    public enum TipiGestioneUDScartate {
+
+        CARICA, CONSIDERA_ASSENTE
+    }
+
     public RispostaControlli caricaDefaultDaDB(String tipoPar) {
         return caricaDefaultDaDB(new String[] {
                 tipoPar });
@@ -398,6 +403,11 @@ public class ControlliSemantici {
 
     public RispostaControlli checkChiave(CSChiave key, long idStruttura,
             TipiGestioneUDAnnullate tguda) {
+        return checkChiave(key, idStruttura, tguda, TipiGestioneUDScartate.CARICA);
+    }
+
+    public RispostaControlli checkChiave(CSChiave key, long idStruttura,
+            TipiGestioneUDAnnullate tguda, TipiGestioneUDScartate tguds) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrLong(-1);
@@ -431,55 +441,67 @@ public class ControlliSemantici {
             // chiave già presente (uno o più righe trovate, mi interessa solo l'ultima -
             // più recente)
             if (!unitaDocS.isEmpty()) {
-                StatoConservazioneUnitaDoc scud = StatoConservazioneUnitaDoc
-                        .valueOf(unitaDocS.get(0).getTiStatoConservazione());
-                if (scud == StatoConservazioneUnitaDoc.ANNULLATA
-                        && tguda == TipiGestioneUDAnnullate.CONSIDERA_ASSENTE) {
-                    // commuto l'errore in UD annullata e rendo true come risposta: in pratica come
-                    // se non
-                    // avesse trovato l'UD ma con un errore diverso: è lo stesso comportamento della
-                    // vecchia versione del metodo
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_012_002);
+                if (tguds == TipiGestioneUDScartate.CONSIDERA_ASSENTE
+                        && isUnitaDocOggettoDiScarto(unitaDocS.get(0).getIdUnitaDoc())) {
+                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_012_003);
                     rispostaControlli
-                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_012_002,
+                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_012_003,
                                     MessaggiWSFormat.formattaUrnPartUnitaDoc(key)));
                     rispostaControlli.setrBoolean(true);
                 } else {
-                    // gestione normale: ho trovato l'UD e non è annullata.
-                    // Oppure è annullata e voglio caricarla lo stesso (il solo caso è nel ws
-                    // recupero stato UD)
-                    // intanto rendo l'errore di chiave già presente
-                    rispostaControlli.setCodErr(MessaggiWSBundle.UD_002_001);
-                    rispostaControlli
-                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_002_001,
-                                    MessaggiWSFormat.formattaUrnPartUnitaDoc(key)));
+                    StatoConservazioneUnitaDoc scud = StatoConservazioneUnitaDoc
+                            .valueOf(unitaDocS.get(0).getTiStatoConservazione());
+                    if (scud == StatoConservazioneUnitaDoc.ANNULLATA
+                            && tguda == TipiGestioneUDAnnullate.CONSIDERA_ASSENTE) {
+                        // commuto l'errore in UD annullata e rendo true come risposta: in pratica
+                        // come
+                        // se non
+                        // avesse trovato l'UD ma con un errore diverso: è lo stesso comportamento
+                        // della
+                        // vecchia versione del metodo
+                        rispostaControlli.setCodErr(MessaggiWSBundle.UD_012_002);
+                        rispostaControlli
+                                .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_012_002,
+                                        MessaggiWSFormat.formattaUrnPartUnitaDoc(key)));
+                        rispostaControlli.setrBoolean(true);
+                    } else {
+                        // gestione normale: ho trovato l'UD e non è annullata.
+                        // Oppure è annullata e voglio caricarla lo stesso (il solo caso è nel ws
+                        // recupero stato UD)
+                        // intanto rendo l'errore di chiave già presente
+                        rispostaControlli.setCodErr(MessaggiWSBundle.UD_002_001);
+                        rispostaControlli
+                                .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_002_001,
+                                        MessaggiWSFormat.formattaUrnPartUnitaDoc(key)));
 
-                    rispostaControlli.setrLong(unitaDocS.get(0).getIdUnitaDoc());
-                    // se la chiave è già presente, oltre all'id dell'UD trovata,
-                    // recupero il tipo di salvataggio. Mi serve sia nell'aggiunta documenti
-                    // che nel recupero UD
-                    rispostaControlli
-                            .setrString(unitaDocS.get(0).getDecTipoUnitaDoc().getTiSaveFile());
-                    //
-                    rispostaControlli.setrStringExtended(
-                            unitaDocS.get(0).getDecTipoUnitaDoc().getNmTipoUnitaDoc());
-                    // lo stato conservazione viene usato per l'aggiunta doc:
-                    // non posso aggiungere doc se l'ud è nello stato sbagliato
-                    rispostaControlli.setrObject(scud);
+                        rispostaControlli.setrLong(unitaDocS.get(0).getIdUnitaDoc());
+                        // se la chiave è già presente, oltre all'id dell'UD trovata,
+                        // recupero il tipo di salvataggio. Mi serve sia nell'aggiunta documenti
+                        // che nel recupero UD
+                        rispostaControlli
+                                .setrString(unitaDocS.get(0).getDecTipoUnitaDoc().getTiSaveFile());
+                        //
+                        rispostaControlli.setrStringExtended(
+                                unitaDocS.get(0).getDecTipoUnitaDoc().getNmTipoUnitaDoc());
+                        // lo stato conservazione viene usato per l'aggiunta doc:
+                        // non posso aggiungere doc se l'ud è nello stato sbagliato
+                        rispostaControlli.setrObject(scud);
 
-                    // recupero id registro
-                    rispostaControlli.setrLongExtended(unitaDocS.get(0).getIdDecRegistroUnitaDoc());
-                    // **************
-                    // EXTENDED VALUES
-                    // **************
-                    // recupero id tipo ud
-                    rispostaControlli.getrMap().put(
-                            RispostaControlli.ValuesOnrMap.ID_TIPO_UD.name(),
-                            unitaDocS.get(0).getDecTipoUnitaDoc().getIdTipoUnitaDoc());
-                    // recupero chiave normalizzata (se esiste)
-                    rispostaControlli.getrMap().put(
-                            RispostaControlli.ValuesOnrMap.CD_KEY_NORMALIZED.name(),
-                            unitaDocS.get(0).getCdKeyUnitaDocNormaliz());
+                        // recupero id registro
+                        rispostaControlli
+                                .setrLongExtended(unitaDocS.get(0).getIdDecRegistroUnitaDoc());
+                        // **************
+                        // EXTENDED VALUES
+                        // **************
+                        // recupero id tipo ud
+                        rispostaControlli.getrMap().put(
+                                RispostaControlli.ValuesOnrMap.ID_TIPO_UD.name(),
+                                unitaDocS.get(0).getDecTipoUnitaDoc().getIdTipoUnitaDoc());
+                        // recupero chiave normalizzata (se esiste)
+                        rispostaControlli.getrMap().put(
+                                RispostaControlli.ValuesOnrMap.CD_KEY_NORMALIZED.name(),
+                                unitaDocS.get(0).getCdKeyUnitaDocNormaliz());
+                    }
                 }
                 return rispostaControlli;
             }
@@ -498,6 +520,17 @@ public class ControlliSemantici {
         }
 
         return rispostaControlli;
+    }
+
+    private boolean isUnitaDocOggettoDiScarto(long idUnitaDoc) {
+        TypedQuery<Long> query = entityManager
+                .createQuery("select count(item) from AroItemRichScartoVers item "
+                        + "where item.aroUnitaDoc.idUnitaDoc = :idUnitaDoc "
+                        + "and item.tiStatoItemScarto = :tiStatoItemScarto", Long.class);
+        query.setParameter("idUnitaDoc", idUnitaDoc);
+        query.setParameter("tiStatoItemScarto", CostantiDB.StatoItemRichScartoVers.SCARTATO.name());
+        Long count = query.getSingleResult();
+        return count != null && count.longValue() > 0;
     }
 
     public RispostaControlli checkTipologiaUD(String tipologiaUD, String descKey,
