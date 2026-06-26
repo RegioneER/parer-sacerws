@@ -188,14 +188,17 @@ public class CryptoInvoker implements IVerificaFirmaInvoker {
     /**
      * Verifica delle firme utilizzando la <em>cryptolibrary</em>.
      *
-     * @param componenteVers          file firmato oppure file originale in caso di contenuto
-     *                                detached
-     * @param sottoComponentiFirma    firme detached
-     * @param sottoComponentiMarca    marche detached
-     * @param dataDiRiferimento       data a cui effettuare la verifica delle firme
-     * @param controlliAbilitati      mappa di alcuni controlli che la verifica può non effettuare
-     * @param verificaAllaDataDiFirma true o false
-     * @param uuid                    identificativo univoco del processo di verifica
+     * @param componenteVers               file firmato oppure file originale in caso di contenuto
+     *                                     detached
+     * @param sottoComponentiFirma         firme detached
+     * @param sottoComponentiMarca         marche detached
+     * @param dataDiRiferimento            data a cui effettuare la verifica delle firme
+     * @param controlliAbilitati           mappa di alcuni controlli che la verifica può non
+     *                                     effettuare
+     * @param verificaAllaDataDiFirma      true o false
+     * @param uuid                         identificativo univoco del processo di verifica
+     * @param skipDocumentSignVerification non effettuare la verifica della firma sul documento, ma
+     *                                     solo il controllo del mimetype del documento stesso
      *
      * @return modello comune a tutte le modalità di verifica delle firme.
      *
@@ -207,14 +210,15 @@ public class CryptoInvoker implements IVerificaFirmaInvoker {
     public VerificaFirmaWrapper verificaAndWrapIt(ComponenteVers componenteVers,
             List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
             Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
-            boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
+            boolean verificaAllaDataDiFirma, String uuid, boolean skipDocumentSignVerification,
+            AbsVersamentoExt versamento)
             throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
             VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException {
 
         // Preparo i metadati
         CryptoDataToValidateMetadata metadata = buildMetadata(componenteVers, sottoComponentiFirma,
                 sottoComponentiMarca, controlliAbilitati, dataDiRiferimento,
-                verificaAllaDataDiFirma, uuid);
+                verificaAllaDataDiFirma, uuid, skipDocumentSignVerification);
 
         final boolean hasFirmeDetached = sottoComponentiFirma != null
                 && !sottoComponentiFirma.isEmpty();
@@ -263,7 +267,7 @@ public class CryptoInvoker implements IVerificaFirmaInvoker {
     private CryptoDataToValidateMetadata buildMetadata(ComponenteVers componenteVers,
             List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
             Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
-            boolean verificaAllaDataDiFirma, String uuid) {
+            boolean verificaAllaDataDiFirma, String uuid, boolean skipDocumentSignVerification) {
         // Configurazione profilo di verificaCrypto custom per la struttura.
         CryptoProfiloVerifica profiloVerifica = new CryptoProfiloVerifica()
                 .setControlloCrittograficoAbilitato(
@@ -275,7 +279,8 @@ public class CryptoInvoker implements IVerificaFirmaInvoker {
                 .setControlloCrlAbilitato(
                         controlliAbilitati.get(ParametroApplFl.FL_ABILITA_CONTR_REVOCA_VERS))
                 .setIncludeCertificateAndRevocationValues(
-                        controlliAbilitati.get(ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64));
+                        controlliAbilitati.get(ParametroApplFl.FL_CRYPTO_INCLUDI_FILEBASE64))
+                .setSkipDocumentSignVerification(skipDocumentSignVerification);
 
         CryptoDataToValidateMetadata metadata = new CryptoDataToValidateMetadata();
         metadata.setUuid(uuid);

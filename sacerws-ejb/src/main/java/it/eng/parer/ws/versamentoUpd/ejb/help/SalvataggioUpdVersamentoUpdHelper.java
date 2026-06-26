@@ -20,6 +20,7 @@ import it.eng.parer.entity.constraint.AroUpdUnitaDoc.AroUpdUDTiStatoUpdElencoVer
 import it.eng.parer.entity.constraint.AroXmlUpdUnitaDoc.TiXmlUpdUnitaDoc;
 import it.eng.parer.entity.constraint.ElvUpdUdDaElabElenco.ElvUpdUdDaElabTiStatoUpdElencoVers;
 import it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo;
+import it.eng.parer.objectStorage.dto.BackendStorage;
 import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.*;
@@ -55,7 +56,6 @@ import java.util.stream.Collectors;
 import static it.eng.parer.util.DateUtilsConverter.convert;
 import static it.eng.parer.util.DateUtilsConverter.convertLocal;
 import static it.eng.parer.util.FlagUtilsConverter.booleanToFlag;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
 
 /**
  *

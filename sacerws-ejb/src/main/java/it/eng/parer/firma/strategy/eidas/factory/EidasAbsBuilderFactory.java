@@ -39,6 +39,7 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      * @param controlliAbilitati            controlli abilitati recuperti a sistema
      * @param isDataDiRiferimentoOnCompVers se data riferimento per verifica esplicita
      * @param dataDiRiferimento             data di verifica (esplicitata su metadati o sysdate)
+     * @param verificaAllaDataDiFirma       verifica alla data firma
      * @param modificatoriWSCalc            modificatori ws (dipendono dalla versione)
      * @param eidasReportsDto               dto contentenete la risposta del servizio di verifica
      *                                      firma EIDAS
@@ -56,14 +57,14 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      * @throws NoSuchMethodException     eccezione generica
      */
     public V create(Map<String, Boolean> controlliAbilitati, boolean isDataDiRiferimentoOnCompVers,
-            ZonedDateTime dataDiRiferimento, Set<Costanti.ModificatoriWS> modificatoriWSCalc,
-            EidasWSReportsDTOTree eidasReportsDto, VerificaFirmaWrapper vfWrapper,
-            SignatureWrapper signatureW, Optional<TimestampWrapper> timestampW, BigDecimal[] pgs)
-            throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
+            ZonedDateTime dataDiRiferimento, boolean verificaAllaDataDiFirma,
+            Set<Costanti.ModificatoriWS> modificatoriWSCalc, EidasWSReportsDTOTree eidasReportsDto,
+            VerificaFirmaWrapper vfWrapper, SignatureWrapper signatureW,
+            Optional<TimestampWrapper> timestampW, BigDecimal[] pgs) throws NoSuchMethodException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
         IEidasBuilderVFObj<V> buider = init(controlliAbilitati, isDataDiRiferimentoOnCompVers,
-                modificatoriWSCalc);
+                verificaAllaDataDiFirma, modificatoriWSCalc);
 
         return buider.build(eidasReportsDto, vfWrapper, signatureW, timestampW, dataDiRiferimento,
                 pgs);
@@ -74,10 +75,12 @@ public abstract class EidasAbsBuilderFactory<V extends Object> {
      *
      * @param controlliAbilitati            controlli abilitati recuperti a sistema
      * @param isDataDiRiferimentoOnCompVers data di verifica (esplicitata su metadati o sysdate)
+     * @param verificaAllaDataDiFirma       verifica alla data firma
      * @param modificatoriWSCalc            modificatori ws (dipendono dalla versione)
      *
      * @return implementazione stratey effettivo
      */
     protected abstract IEidasBuilderVFObj<V> init(Map<String, Boolean> controlliAbilitati,
-            boolean isDataDiRiferimentoOnCompVers, Set<Costanti.ModificatoriWS> modificatoriWSCalc);
+            boolean isDataDiRiferimentoOnCompVers, boolean verificaAllaDataDiFirma,
+            Set<Costanti.ModificatoriWS> modificatoriWSCalc);
 }

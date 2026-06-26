@@ -11,36 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.dto;
-
-import java.io.Serializable;
+package it.eng.parer.objectStorage.dto;
 
 /**
- * Backend su cui viene salvata la risorsa.
- *
+ * Backend di tipo file. Attualmente non è utilizzato serve solo come riferimento per eventuali
+ * evoluzioni.
  *
  * @author Snidero_L
  */
-public interface BackendStorage extends Serializable {
+public interface FileStorageBackend extends BackendStorage {
 
-    enum STORAGE_TYPE {
-        OS, BLOB, FILE
+    String getRootFolder();
+
+    @Override
+    default STORAGE_TYPE getType() {
+        return STORAGE_TYPE.FILE;
     }
-
-    STORAGE_TYPE getType();
-
-    String getBackendName();
-
-    default boolean isObjectStorage() {
-        return STORAGE_TYPE.OS.equals(getType());
-    }
-
-    default boolean isDataBase() {
-        return STORAGE_TYPE.BLOB.equals(getType());
-    }
-
-    default boolean isFile() {
-        return STORAGE_TYPE.FILE.equals(getType());
-    }
-
 }

@@ -64,6 +64,7 @@ import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
 import it.eng.parer.entity.AroUsoXsdDatiSpec;
 import it.eng.parer.entity.AroValoreAttribDatiSpec;
+import it.eng.parer.entity.AroValoreAttribDatiSpecRicDs;
 import it.eng.parer.entity.AroVerIndiceAipUd;
 import it.eng.parer.entity.AroWarnUnitaDoc;
 import it.eng.parer.entity.AroXmlUpdUnitaDoc;
@@ -94,6 +95,9 @@ import it.eng.parer.entity.constraint.VrsUrnXmlSessioneVers.TiUrnXmlSessioneVers
 import it.eng.parer.firma.dto.CompDocMock;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
 import it.eng.parer.firma.util.VerificaFirmaEnums.SacerIndication;
+import it.eng.parer.objectStorage.dto.BackendStorage;
+import it.eng.parer.objectStorage.dto.ObjectStorageResource;
+import it.eng.parer.objectStorage.ejb.ObjectStorageService;
 import it.eng.parer.util.Constants;
 import it.eng.parer.util.DateUtilsConverter;
 import it.eng.parer.view_entity.VrsVLisXmlDocUrnDaCalc;
@@ -116,13 +120,11 @@ import it.eng.parer.ws.utils.JAXBUtils;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.dto.DatoSpecifico;
 import it.eng.parer.ws.versamento.dto.DocumentoVers;
 import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.IRispostaVersWS;
-import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.RispostaWS;
 import it.eng.parer.ws.versamento.dto.RispostaWSAggAll;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
@@ -2845,24 +2847,61 @@ public class SalvataggioSync {
                 tmpReturn = false;
             }
 
-            // salvo i valori dei dati specifici
+            // salvo i valori dei dati specifici (doppio binario:
+            // ARO_VALORE_ATTRIB_DATI_SPEC + ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS)
             if (tmpReturn) {
+                // Valori necessari per le colonne di partizionamento e denormalizzazione
+                AroUnitaDoc aroUnitaDoc = tmpAroUsoXsdDatiSpec.getAroUnitaDoc();
+                String cdVersioneXsd = tmpAroUsoXsdDatiSpec.getDecXsdDatiSpec().getCdVersioneXsd();
+                boolean isUniDoc = TipiEntitaSacer.UNI_DOC.equals(tipoEntity);
+                Long idDocPerRicDs = isUniDoc ? null : idEntity;
+
                 for (DatoSpecifico tmpDS : datiSpecifici.values()) {
+                    // --- scrittura vecchia tabella ARO_VALORE_ATTRIB_DATI_SPEC ---
                     tmpAroValoreAttribDatiSpec = new AroValoreAttribDatiSpec();
                     tmpAroValoreAttribDatiSpec.setAroUsoXsdDatiSpec(tmpAroUsoXsdDatiSpec);
                     tmpAroValoreAttribDatiSpec.setIdStrut(BigDecimal.valueOf(idStrut));
                     tmpAroValoreAttribDatiSpec.setDecAttribDatiSpec(
                             entityManager.find(DecAttribDatiSpec.class, tmpDS.getIdDatoSpec()));
                     tmpAroValoreAttribDatiSpec.setDlValore(tmpDS.getValore());
-                    // inserisco su DB
                     try {
                         entityManager.persist(tmpAroValoreAttribDatiSpec);
-                        entityManager.flush();
+                        entityManager.flush(); // flush per ottenere la PK generata
                     } catch (Exception ex) {
-                        /// logga l'errore e blocca tutto
                         log.error("Eccezione nella persistenza dei dati specifici ", ex);
                         tmpReturn = false;
                         break;
+                    }
+
+                    // --- scrittura nuova tabella ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS ---
+                    // si scrive solo se il valore non e' nullo/vuoto
+                    if (tmpDS.getValore() != null && !tmpDS.getValore().isEmpty()) {
+                        try {
+                            AroValoreAttribDatiSpecRicDs newRicDs = new AroValoreAttribDatiSpecRicDs();
+                            // stessa PK del record appena inserito nella vecchia tabella
+                            newRicDs.setIdValoreAttribDatiSpec(
+                                    tmpAroValoreAttribDatiSpec.getIdValoreAttribDatiSpec());
+                            newRicDs.setIdStrut(BigDecimal.valueOf(idStrut));
+                            newRicDs.setDecAttribDatiSpec(
+                                    tmpAroValoreAttribDatiSpec.getDecAttribDatiSpec());
+                            newRicDs.setDlValoreOri(tmpDS.getValore());
+                            newRicDs.setIdUnitaDoc(aroUnitaDoc.getIdUnitaDoc());
+                            newRicDs.setIdUsoXsdDatiSpec(
+                                    tmpAroUsoXsdDatiSpec.getIdUsoXsdDatiSpec());
+                            newRicDs.setAaKeyUnitaDoc(aroUnitaDoc.getAaKeyUnitaDoc());
+                            newRicDs.setTiUsoXsd(tipoUso.name());
+                            newRicDs.setTiEntitaSacer(tipoEntity.name());
+                            newRicDs.setIdDoc(idDocPerRicDs);
+                            newRicDs.setCdVersioneXsdUd(isUniDoc ? cdVersioneXsd : null);
+                            newRicDs.setCdVersioneXsdDoc(isUniDoc ? null : cdVersioneXsd);
+                            entityManager.persist(newRicDs);
+                            entityManager.flush();
+                        } catch (Exception ex) {
+                            log.error("Eccezione nella persistenza dei dati specifici (RIC_DS) ",
+                                    ex);
+                            tmpReturn = false;
+                            break;
+                        }
                     }
                 }
             }

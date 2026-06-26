@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.ejb;
+package it.eng.parer.objectStorage.ejb;
 
 import static it.eng.parer.ws.utils.Costanti.S3Constants.KEY_PREFIX_COMPUD;
 import static it.eng.parer.ws.utils.Costanti.S3Constants.KEY_PREFIX_SIPPUD;
@@ -24,7 +24,6 @@ import static it.eng.parer.ws.utils.Costanti.S3Constants.TAG_VALUE_VRSOBJ_METADA
 import static it.eng.parer.ws.utils.Costanti.S3Constants.TAG_VALUE_VRSOBJ_TMP;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -44,6 +43,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -66,18 +66,20 @@ import it.eng.parer.entity.DecServizioVerificaCompDoc;
 import it.eng.parer.entity.constraint.AroUpdDatiSpecUnitaDoc.TiEntitaAroUpdDatiSpecUnitaDoc;
 import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiEntitaSacerAroVersIniDatiSpec;
 import it.eng.parer.entity.inheritance.oop.AroXmlObjectStorage;
+import it.eng.parer.objectStorage.dto.BackendStorage;
+import it.eng.parer.objectStorage.dto.ObjectStorageBackend;
+import it.eng.parer.objectStorage.dto.ObjectStorageResource;
+import it.eng.parer.objectStorage.exceptions.BackendException;
+import it.eng.parer.objectStorage.exceptions.ObjectStorageException;
+import it.eng.parer.objectStorage.helper.BackendHelper;
+import it.eng.parer.objectStorage.helper.ObjectStorageHelper;
+import it.eng.parer.objectStorage.util.CRC32CChecksum;
 import it.eng.parer.ws.dto.IWSDesc;
-import it.eng.parer.ws.utils.CRC32CChecksum;
 import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.CostantiDB;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.FileBinario;
-import it.eng.parer.ws.versamento.dto.ObjectStorageBackend;
-import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
-import it.eng.parer.ws.versamento.ejb.help.SalvataggioBackendHelper;
-import it.eng.parer.ws.versamento.exceptions.ObjectStorageException;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
 import it.eng.spagoCore.util.UUIDMdcLogUtil;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -106,7 +108,10 @@ public class ObjectStorageService {
     private static final String STD_FILE_SAVED_LOG_MESSAGE = "Salvato file {}/{}";
 
     @EJB
-    private SalvataggioBackendHelper salvataggioBackendHelper;
+    private BackendHelper backendHelper;
+
+    @EJB
+    private ObjectStorageHelper objectStorageHelper;
 
     /**
      * Effettua la lookup per stabilire come sia configurato il backend per l'area di staging
@@ -116,12 +121,12 @@ public class ObjectStorageService {
      */
     public BackendStorage lookupBackendVrsStaging() {
         try {
-            String tipoBackend = salvataggioBackendHelper.getBackendStaging();
+            String tipoBackend = backendHelper.getBackendStaging();
 
             // tipo backend
-            return salvataggioBackendHelper.getBackend(tipoBackend);
+            return backendHelper.getBackend(tipoBackend);
 
-        } catch (ObjectStorageException e) {
+        } catch (Exception e) {
             // EJB spec (14.2.2 in the EJB 3)
             throw new EJBException(e);
         }
@@ -137,10 +142,10 @@ public class ObjectStorageService {
      */
     public BackendStorage lookupBackendVrsSessioniErrKoAggMd() {
         try {
-            String tipoBackend = salvataggioBackendHelper.getBackendSessioniErrKoAggMd();
+            String tipoBackend = backendHelper.getBackendSessioniErrKoAggMd();
 
             // tipo backend
-            return salvataggioBackendHelper.getBackend(tipoBackend);
+            return backendHelper.getBackend(tipoBackend);
 
         } catch (Exception e) {
             // EJB spec (14.2.2 in the EJB 3)
@@ -161,11 +166,10 @@ public class ObjectStorageService {
     public BackendStorage lookupBackendByServiceName(long idTipoUnitaDoc, String nomeWs) {
         try {
 
-            String tipoBackend = salvataggioBackendHelper.getBackendByServiceName(idTipoUnitaDoc,
-                    nomeWs);
-            return salvataggioBackendHelper.getBackend(tipoBackend);
+            String tipoBackend = backendHelper.getBackendByServiceName(idTipoUnitaDoc, nomeWs);
+            return backendHelper.getBackend(tipoBackend);
 
-        } catch (ObjectStorageException e) {
+        } catch (BackendException e) {
             // EJB spec (14.2.2 in the EJB 3)
             throw new EJBException(e);
         }
@@ -181,7 +185,7 @@ public class ObjectStorageService {
      */
     public ObjectStorageResource createTmpResourceInStaging(String nomeBackend, File resource) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, STAGING_W);
             // 1. s3 key object
             final String key = createRandomKeyWithPrefix(KEY_PREFIX_TMP);
@@ -190,15 +194,12 @@ public class ObjectStorageService {
             tags.add(Tag.builder().key(TAG_KEY_VRSOBJ_TYPE).value(TAG_VALUE_VRSOBJ_TMP).build());
 
             // 3. put on o.s. + save link
-            try (FileInputStream fis = new FileInputStream(resource)) {
+            ObjectStorageResource savedFile = objectStorageHelper.putS3ObjectFromFile(
+                    resource.toPath(), key, configuration, Optional.empty(), Optional.of(tags),
+                    Optional.of(calculateFileCRC32CBase64(resource.toPath())));
+            log.debug(STD_FILE_SAVED_LOG_MESSAGE, savedFile.getBucket(), savedFile.getKey());
 
-                ObjectStorageResource savedFile = salvataggioBackendHelper.putObject(fis,
-                        resource.length(), key, configuration, Optional.empty(), Optional.of(tags),
-                        Optional.of(calculateFileCRC32CBase64(resource.toPath())));
-                log.debug(STD_FILE_SAVED_LOG_MESSAGE, savedFile.getBucket(), savedFile.getKey());
-
-                return savedFile;
-            }
+            return savedFile;
         } catch (ObjectStorageException | IOException ex) {
             throw new EJBException(ex);
         }
@@ -218,7 +219,7 @@ public class ObjectStorageService {
     public ObjectStorageResource createSipInStaging(String nomeBackend,
             Map<String, String> xmlFiles, long idDatiSessioneVersKo, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, STAGING_W);
             // generate std tag
             Set<Tag> tags = new HashSet<>();
@@ -228,7 +229,7 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucketWithKeyPrefix(
                     KEY_PREFIX_SIPPUD, xmlFiles, configuration, tags);
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipSessione(savedFile, nomeBackend,
+            objectStorageHelper.saveObjectStorageLinkSipSessione(savedFile, nomeBackend,
                     idDatiSessioneVersKo, idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
@@ -251,7 +252,7 @@ public class ObjectStorageService {
             AroCompDoc compntEntity, String nomeBackendDest, FileBinario riferimentoBlob) {
         try {
 
-            ObjectStorageBackend destinationConfiguration = salvataggioBackendHelper
+            ObjectStorageBackend destinationConfiguration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackendDest, COMPONENTI_W);
 
             final String urn = calculateS3UrnComponente(strutV, compntEntity);
@@ -262,18 +263,18 @@ public class ObjectStorageService {
             // stabilisci dove sia l'oggetto in staging (object storage o filesystem).
             BackendStorage lookupBackendStaging = lookupBackendVrsStaging();
             if (lookupBackendStaging.isObjectStorage()) {
-                ObjectStorageBackend sourceConfiguration = salvataggioBackendHelper
+                ObjectStorageBackend sourceConfiguration = objectStorageHelper
                         .getObjectStorageConfiguration(lookupBackendStaging.getBackendName(),
                                 STAGING_W);
                 final String sourceKey = riferimentoBlob.getObjectStorageResource().getKey();
-                newComponente = salvataggioBackendHelper.getObjectFromSrcAndPutObjectOnDest(
-                        sourceKey, sourceConfiguration, destKey, destinationConfiguration);
+                newComponente = objectStorageHelper.getS3ObjectFromSrcAndPutObjectOnDest(sourceKey,
+                        sourceConfiguration, destKey, destinationConfiguration);
             } else {
                 newComponente = createResourceInComponenti(riferimentoBlob.getFileSuDisco(),
                         destKey, destinationConfiguration);
             }
 
-            salvataggioBackendHelper.saveObjectStorageLinkCompDoc(newComponente, nomeBackendDest,
+            objectStorageHelper.saveObjectStorageLinkCompDoc(newComponente, nomeBackendDest,
                     compntEntity.getIdCompDoc().longValue());
 
             return newComponente;
@@ -302,7 +303,7 @@ public class ObjectStorageService {
             // E' UN SOTTOCOMPONENTE
             // DOCXXXXX:NNNNN
             tmpUrnDoc = MessaggiWSFormat.formattaS3UrnPartComp(tmpUrnPartDoc,
-                    compntEntity.getNiOrdCompDoc().intValue());
+                    compntEntity.getAroCompDoc().getNiOrdCompDoc().intValue());
             // DOCXXXXX:NNNNN:KK
             tmpUrnDoc = MessaggiWSFormat.formattaS3UrnPartComp(tmpUrnDoc,
                     compntEntity.getNiOrdCompDoc().intValue());
@@ -319,8 +320,8 @@ public class ObjectStorageService {
     private ObjectStorageResource createResourceInComponenti(File componente, String destKey,
             ObjectStorageBackend destConfiguration) throws ObjectStorageException {
 
-        try (FileInputStream fis = new FileInputStream(componente)) {
-            return salvataggioBackendHelper.putObject(fis, componente.length(), destKey,
+        try {
+            return objectStorageHelper.putS3ObjectFromFile(componente.toPath(), destKey,
                     destConfiguration, Optional.empty(), Optional.empty(),
                     Optional.of(calculateFileCRC32CBase64(componente.toPath())));
         } catch (IOException e) {
@@ -347,18 +348,18 @@ public class ObjectStorageService {
             ObjectStorageResource stagingResource, long idFileSessione, BigDecimal idStrut) {
         try {
             // 0. get staging configuration
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, STAGING_W);
 
             // 1. generate destination s3 key object
             final String destKey = createRandomKeyWithPrefix(KEY_PREFIX_COMPUD);
             // 2. get source key
             final String sourceKey = stagingResource.getKey();
-            ObjectStorageResource newComponenteInStaging = salvataggioBackendHelper
-                    .getObjectFromSrcAndPutObjectOnDest(sourceKey, configuration, destKey,
+            ObjectStorageResource newComponenteInStaging = objectStorageHelper
+                    .getS3ObjectFromSrcAndPutObjectOnDest(sourceKey, configuration, destKey,
                             configuration);
 
-            salvataggioBackendHelper.saveObjectStorageLinkFileSessione(newComponenteInStaging,
+            objectStorageHelper.saveObjectStorageLinkFileSessione(newComponenteInStaging,
                     nomeBackend, idFileSessione, idStrut);
 
             return newComponenteInStaging;
@@ -381,7 +382,7 @@ public class ObjectStorageService {
     public ObjectStorageResource createResourcesInSipUnitaDoc(String nomeBackend,
             Map<String, String> xmlFiles, StrutturaVersamento strutV) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, SIP_W);
             // calculate urn
             String tmpUrnUd = MessaggiWSFormat.formattaS3UrnPartUd(
@@ -392,7 +393,7 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucketWithKeyUrn(urn, xmlFiles,
                     configuration, SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipUd(savedFile, nomeBackend,
+            objectStorageHelper.saveObjectStorageLinkSipUd(savedFile, nomeBackend,
                     strutV.getIdUnitaDoc());
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
@@ -414,7 +415,7 @@ public class ObjectStorageService {
     public ObjectStorageResource createResourcesInSipDocumento(String nomeBackend,
             Map<String, String> xmlFiles, StrutturaVersamento strutV, long idDoc) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, SIP_W);
 
             // calculate urn
@@ -426,7 +427,7 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucketWithKeyUrn(urn, xmlFiles,
                     configuration, SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipDoc(savedFile, nomeBackend, idDoc);
+            objectStorageHelper.saveObjectStorageLinkSipDoc(savedFile, nomeBackend, idDoc);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
             throw new EJBException(ex);
@@ -448,13 +449,13 @@ public class ObjectStorageService {
     public ObjectStorageResource createSipInSessioniKoAggMd(String nomeBackend,
             Map<String, String> xmlFiles, long idSesUpdUnitaDocKo, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, AGG_MD_SES_ERR_KO_W);
             // punt on O.S.
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucket(xmlFiles, configuration,
                     SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipSessioneKoAggMd(savedFile, nomeBackend,
+            objectStorageHelper.saveObjectStorageLinkSipSessioneKoAggMd(savedFile, nomeBackend,
                     idSesUpdUnitaDocKo, idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
@@ -475,14 +476,14 @@ public class ObjectStorageService {
     public ObjectStorageResource createSipInSessioniErrAggMd(String nomeBackend,
             Map<String, String> xmlFiles, long idSesUpdUnitaDocErr, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, AGG_MD_SES_ERR_KO_W);
             // punt on O.S.
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucket(xmlFiles, configuration,
                     SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipSessioneErrAggMd(savedFile,
-                    nomeBackend, idSesUpdUnitaDocErr, idStrut);
+            objectStorageHelper.saveObjectStorageLinkSipSessioneErrAggMd(savedFile, nomeBackend,
+                    idSesUpdUnitaDocErr, idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
             throw new EJBException(ex);
@@ -504,7 +505,7 @@ public class ObjectStorageService {
             Map<String, String> xmlFiles, StrutturaUpdVers strutUpdVers,
             AroUpdUnitaDoc tmpAroUpdUnitaDoc, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, AGG_MD_W);
 
             // calculate urn
@@ -514,7 +515,7 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createSipXmlMapAndPutOnBucketWithKeyUrn(urn, xmlFiles,
                     configuration, SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkSipAggMd(savedFile, nomeBackend,
+            objectStorageHelper.saveObjectStorageLinkSipAggMd(savedFile, nomeBackend,
                     tmpAroUpdUnitaDoc.getIdUpdUnitaDoc(), idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
@@ -541,7 +542,7 @@ public class ObjectStorageService {
             TiEntitaAroUpdDatiSpecUnitaDoc tipoEntitySacerUpd, StrutturaUpdVers strutUpdVers,
             AroUpdUnitaDoc tmpAroUpdUnitaDoc, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, AGG_MD_W);
 
             // calculate urn
@@ -551,7 +552,7 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createDatiSpecXmlMapAndPutOnBucket(urn, xmlFiles,
                     configuration, SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkUpdDatiSpecAggMd(savedFile, nomeBackend,
+            objectStorageHelper.saveObjectStorageLinkUpdDatiSpecAggMd(savedFile, nomeBackend,
                     idEntitySacerUpd, tipoEntitySacerUpd, idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
@@ -579,7 +580,7 @@ public class ObjectStorageService {
             TiEntitaSacerAroVersIniDatiSpec tipoEntitySacerVersIni, StrutturaUpdVers strutUpdVers,
             AroUpdUnitaDoc tmpAroUpdUnitaDoc, BigDecimal idStrut) {
         try {
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, AGG_MD_W);
 
             // calculate urn
@@ -589,8 +590,8 @@ public class ObjectStorageService {
             ObjectStorageResource savedFile = createDatiSpecXmlMapAndPutOnBucket(urn, xmlFiles,
                     configuration, SetUtils.emptySet());
             // link
-            salvataggioBackendHelper.saveObjectStorageLinkVersIniDatiSpecAggMd(savedFile,
-                    nomeBackend, idEntitySacerVersIni, tipoEntitySacerVersIni, idStrut);
+            objectStorageHelper.saveObjectStorageLinkVersIniDatiSpecAggMd(savedFile, nomeBackend,
+                    idEntitySacerVersIni, tipoEntitySacerVersIni, idStrut);
             return savedFile;
         } catch (ObjectStorageException | IOException ex) {
             throw new EJBException(ex);
@@ -618,26 +619,20 @@ public class ObjectStorageService {
     private ObjectStorageResource createDatiSpecXmlMapAndPutOnBucket(final String urn,
             Map<String, String> xmlFiles, ObjectStorageBackend configuration, Set<Tag> tags)
             throws IOException, ObjectStorageException {
-        ObjectStorageResource savedFile = null;
         Path tempZip = Files.createTempFile("dati_spec-", ".zip");
-        //
-        try (InputStream is = Files.newInputStream(tempZip)) {
+        try {
             // create key
             final String key = createRandomKeyWithUrn(urn) + ".zip";
-            // create zip file
-            createZipFile(xmlFiles, tempZip);
+            // write zip and compute CRC32C inline — no second read of the file
+            String crc32cBase64 = createZipFileAndComputeCRC32C(xmlFiles, tempZip);
             // put on O.S.
-            savedFile = salvataggioBackendHelper.putObject(is, Files.size(tempZip), key,
-                    configuration, Optional.empty(), Optional.of(tags),
-                    Optional.of(calculateFileCRC32CBase64(tempZip)));
+            ObjectStorageResource savedFile = objectStorageHelper.putS3ObjectFromFile(tempZip, key,
+                    configuration, Optional.empty(), Optional.of(tags), Optional.of(crc32cBase64));
             log.debug(STD_FILE_SAVED_LOG_MESSAGE, savedFile.getBucket(), savedFile.getKey());
+            return savedFile;
         } finally {
-            if (tempZip != null) {
-                Files.delete(tempZip);
-            }
+            Files.delete(tempZip);
         }
-
-        return savedFile;
     }
     // end MEV#29276
 
@@ -669,26 +664,20 @@ public class ObjectStorageService {
             Optional<String> urn, final Map<String, String> xmlFiles,
             ObjectStorageBackend configuration, final Set<Tag> tags)
             throws IOException, ObjectStorageException {
-        ObjectStorageResource savedFile = null;
         Path tempZip = Files.createTempFile("sip-", ".zip");
-        //
-        try (InputStream is = Files.newInputStream(tempZip)) {
+        try {
             // create key
             final String key = createRandomKey(keyPrefix, urn) + ".zip";
-            // create zip file
-            createZipFile(xmlFiles, tempZip);
+            // write zip and compute CRC32C inline — no second read of the file
+            String crc32cBase64 = createZipFileAndComputeCRC32C(xmlFiles, tempZip);
             // put on O.S.
-            savedFile = salvataggioBackendHelper.putObject(is, Files.size(tempZip), key,
-                    configuration, Optional.empty(), Optional.of(tags),
-                    Optional.of(calculateFileCRC32CBase64(tempZip)));
+            ObjectStorageResource savedFile = objectStorageHelper.putS3ObjectFromFile(tempZip, key,
+                    configuration, Optional.empty(), Optional.of(tags), Optional.of(crc32cBase64));
             log.debug(STD_FILE_SAVED_LOG_MESSAGE, savedFile.getBucket(), savedFile.getKey());
+            return savedFile;
         } finally {
-            if (tempZip != null) {
-                Files.delete(tempZip);
-            }
+            Files.delete(tempZip);
         }
-
-        return savedFile;
     }
 
     /**
@@ -712,9 +701,8 @@ public class ObjectStorageService {
             DecServizioVerificaCompDoc servizioFirma, Path reportZip)
             throws ObjectStorageException {
         //
-        try (InputStream is = Files.newInputStream(reportZip)) {
-
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+        try {
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, REPORTVF_W);
 
             // calculate key
@@ -731,8 +719,8 @@ public class ObjectStorageService {
             tags.add(Tag.builder().key(TAG_KEY_RVF_NMVERS).value(servizioFirma.getNmVersione())
                     .build());
 
-            ObjectStorageResource resource = salvataggioBackendHelper.putObject(is,
-                    Files.size(reportZip), key, configuration, Optional.empty(), Optional.of(tags),
+            ObjectStorageResource resource = objectStorageHelper.putS3ObjectFromFile(reportZip, key,
+                    configuration, Optional.empty(), Optional.of(tags),
                     Optional.of(calculateFileCRC32CBase64(reportZip)));
 
             log.debug("Salvato {} sul bucket {} con eTag {}", key, resource.getBucket(),
@@ -746,24 +734,22 @@ public class ObjectStorageService {
     }
 
     /**
-     * Crea i file zip contenente i vari xml di versamento.Possono essere di tipo:
-     * <ul>
-     * <li>{@link CostantiDB.TipiXmlDati#RICHIESTA}, obbligatorio è il sip di versamento</li>
-     * <li>{@link CostantiDB.TipiXmlDati#RISPOSTA}, obbligatorio è la risposta del sip di
-     * versamento</li>
-     * <li>{@link CostantiDB.TipiXmlDati#RAPP_VERS}, obbligatorio è il rapporto di versamento</li>
-     * <li>{@link CostantiDB.TipiXmlDati#INDICE_FILE}, è presente solo nel caso di Versamento
-     * Multimedia</li>
-     * </ul>
-     *
+     * Crea il file zip contenente i vari xml di versamento e calcola il CRC32C inline durante la
+     * scrittura, evitando una successiva lettura del file su disco.
      *
      * @param xmlFiles mappa dei file delle tipologie indicate in descrizione.
      * @param zipFile  file zip su cui salvare tutto
      *
+     * @return rappresentazione base64 del CRC32C dell'intero file zip prodotto
+     *
      * @throws IOException in caso di errore
      */
-    private void createZipFile(Map<String, String> xmlFiles, Path zipFile) throws IOException {
-        try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile))) {
+    private String createZipFileAndComputeCRC32C(Map<String, String> xmlFiles, Path zipFile)
+            throws IOException {
+        CRC32CChecksum crc32c = new CRC32CChecksum();
+        try (CheckedOutputStream checkedOut = new CheckedOutputStream(
+                Files.newOutputStream(zipFile), crc32c);
+                ZipOutputStream out = new ZipOutputStream(checkedOut)) {
             for (Entry<String, String> sipBlob : xmlFiles.entrySet()) {
                 ZipEntry entry = new ZipEntry(sipBlob.getKey() + ".xml");
                 out.putNextEntry(entry);
@@ -771,6 +757,7 @@ public class ObjectStorageService {
                 out.closeEntry();
             }
         }
+        return Base64.getEncoder().encodeToString(crc32c.getValueAsBytes());
     }
 
     private static String createRandomKeyWithPrefix(final String prefix) {
@@ -845,7 +832,7 @@ public class ObjectStorageService {
      */
     public Map<String, String> getObjectSipUnitaDoc(long idUnitaDoc) {
         try {
-            return getObjectSip(salvataggioBackendHelper.getLinkSipUnitaDocOs(idUnitaDoc));
+            return getObjectSip(objectStorageHelper.getLinkSipUnitaDocOs(idUnitaDoc));
         } catch (IOException | ObjectStorageException e) {
             // EJB spec (14.2.2 in the EJB 3)
             throw new EJBException(e);
@@ -862,7 +849,7 @@ public class ObjectStorageService {
      */
     public Map<String, String> getObjectSipDoc(long idDoc) {
         try {
-            return getObjectSip(salvataggioBackendHelper.getLinkSipDocOs(idDoc));
+            return getObjectSip(objectStorageHelper.getLinkSipDocOs(idDoc));
         } catch (IOException | ObjectStorageException e) {
             // EJB spec (14.2.2 in the EJB 3)
             throw new EJBException(e);
@@ -872,10 +859,10 @@ public class ObjectStorageService {
     private Map<String, String> getObjectSip(AroXmlObjectStorage xmlObjectStorage)
             throws ObjectStorageException, IOException {
         if (!Objects.isNull(xmlObjectStorage)) {
-            ObjectStorageBackend config = salvataggioBackendHelper.getObjectStorageConfiguration(
+            ObjectStorageBackend config = objectStorageHelper.getObjectStorageConfiguration(
                     xmlObjectStorage.getDecBackend().getNmBackend(), SIP_R);
-            ResponseInputStream<GetObjectResponse> object = salvataggioBackendHelper.getObject(
-                    config, xmlObjectStorage.getNmBucket(), xmlObjectStorage.getCdKeyFile());
+            ResponseInputStream<GetObjectResponse> object = objectStorageHelper.getS3Object(config,
+                    xmlObjectStorage.getNmBucket(), xmlObjectStorage.getCdKeyFile());
             return unzipFile(object);
         } else {
             return Collections.emptyMap();
@@ -925,7 +912,7 @@ public class ObjectStorageService {
     public void tagComponenteInStaging(ObjectStorageResource stagingResource, String nomeBackend) {
         try {
             // get base config for staging writing
-            ObjectStorageBackend configuration = salvataggioBackendHelper
+            ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, STAGING_W);
 
             // generate std tag
@@ -933,7 +920,7 @@ public class ObjectStorageService {
             tags.add(Tag.builder().key(TAG_KEY_VRSOBJ_TYPE).value(TAG_VALUE_VRSOBJ_FILE_COMP)
                     .build());
 
-            salvataggioBackendHelper.taggingObject(stagingResource, configuration, tags);
+            objectStorageHelper.taggingS3Object(stagingResource, configuration, tags);
         } catch (ObjectStorageException ex) {
             throw new EJBException(ex);
 

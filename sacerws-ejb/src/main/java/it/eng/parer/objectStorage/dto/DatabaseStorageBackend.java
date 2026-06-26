@@ -11,33 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.dto;
-
-import java.net.URI;
+package it.eng.parer.objectStorage.dto;
 
 /**
- * Backend di tipo <strong>Object Storage</strong>
+ * Backend predefinito, ovvero il database a cui è collegata l'applicazione.
  *
  * @author Snidero_L
  */
-public interface ObjectStorageBackend extends BackendStorage {
-
-    /**
-     * Indirizzo dell'object storage
-     *
-     * @return URI dell'object storage
-     */
-    URI getAddress();
-
-    String getBucket();
-
-    String getAccessKeyId();
-
-    String getSecretKey();
+public interface DatabaseStorageBackend extends BackendStorage {
 
     @Override
     default STORAGE_TYPE getType() {
-        return STORAGE_TYPE.OS;
+        return STORAGE_TYPE.BLOB;
     }
-
 }

@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.dto;
+package it.eng.parer.objectStorage.dto;
 
 import java.net.URI;
 

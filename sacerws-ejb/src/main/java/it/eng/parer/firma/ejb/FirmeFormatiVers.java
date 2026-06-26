@@ -169,7 +169,9 @@ public class FirmeFormatiVers {
                         && CollectionUtils.isNotEmpty(sottoComponentiMarca))
                 .withHasMultipleFirmaDetached(CollectionUtils.isNotEmpty(sottoComponentiFirma)
                         && sottoComponentiFirma.size() > 1)
-                .withHasMarcaDetached(CollectionUtils.isNotEmpty(sottoComponentiMarca));
+                .withHasMarcaDetached(CollectionUtils.isNotEmpty(sottoComponentiMarca))
+                .withSkipDocumentSignVerification(
+                        !versamento.getStrutturaComponenti().effettuaVerificaFirma());
 
         return verifica(componenteVers, sottoComponentiFirma, sottoComponentiMarca,
                 dataDiRiferimento, idTipoUd, versamento, rule);
@@ -191,10 +193,13 @@ public class FirmeFormatiVers {
 
             boolean verificaAllaDataDiFirma = mock.getFlRifTempDataFirmaVers() != null
                     && mock.getFlRifTempDataFirmaVers().equals(CostantiDB.Flag.TRUE);
+
+            boolean skipDocumentSignVerification = !versamento.getStrutturaComponenti()
+                    .effettuaVerificaFirma();
             // input
             InvokeVerificaInput in = new InvokeVerificaInput(componenteVers, sottoComponentiFirma,
                     sottoComponentiMarca, dataDiRiferimento, rule.getAbilitazioni(),
-                    verificaAllaDataDiFirma);
+                    verificaAllaDataDiFirma, skipDocumentSignVerification);
 
             // call ws
             LOG.debug("Inizio verifica firma");

@@ -78,6 +78,10 @@ import it.eng.parer.firma.xml.VFUrlDistribCrlType;
 import it.eng.parer.firma.xml.VFUrlDistribOcspType;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper;
 import it.eng.parer.firma.xml.VerificaFirmaWrapper.VFBusta;
+import it.eng.parer.objectStorage.dto.BackendStorage;
+import it.eng.parer.objectStorage.dto.ObjectStorageResource;
+import it.eng.parer.objectStorage.ejb.ObjectStorageService;
+import it.eng.parer.objectStorage.exceptions.ObjectStorageException;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.Costanti;
@@ -85,14 +89,10 @@ import it.eng.parer.ws.utils.Costanti.GenReportVerificaFirma;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.utils.XmlDateUtility;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
 import it.eng.parer.ws.versamento.dto.FileBinario;
-import it.eng.parer.ws.versamento.dto.ObjectStorageResource;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
 import it.eng.parer.ws.versamento.ejb.ControlliPerFirme;
-import it.eng.parer.ws.versamento.ejb.ObjectStorageService;
 import it.eng.parer.ws.versamento.ejb.oracleBlb.WriteCompBlbOracle;
-import it.eng.parer.ws.versamento.exceptions.ObjectStorageException;
 
 /**
  * Parser (base) per la gestione del result wrapper post verifica documento firmato

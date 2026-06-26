@@ -51,6 +51,7 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
     private Map<String, Boolean> controlliAbilitati;
     private boolean isDataDiRiferimentoOnCompVers;
     private ZonedDateTime dataDiRiferimento;
+    private boolean verificaAllaDataDiFirma;
     private Set<Costanti.ModificatoriWS> modificatoriWSCalc;
 
     /**
@@ -61,15 +62,17 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
      * @param controlliAbilitati            lista dei controlli (flag true/false)
      * @param isDataDiRiferimentoOnCompVers data di riferimento specificata su componente
      * @param dataDiRiferimento             data di rifiremento da utilizzare per verifica firma
+     * @param verificaAllaDataDiFirma       flag per verifica alla data firma
      * @param modificatoriWSCalc            modificatori versione SIP
      */
     public EidasWrapperResultStrategy(Map<String, Boolean> controlliAbilitati,
             boolean isDataDiRiferimentoOnCompVers, ZonedDateTime dataDiRiferimento,
-            Set<Costanti.ModificatoriWS> modificatoriWSCalc) {
+            boolean verificaAllaDataDiFirma, Set<Costanti.ModificatoriWS> modificatoriWSCalc) {
         super();
         this.controlliAbilitati = controlliAbilitati;
         this.isDataDiRiferimentoOnCompVers = isDataDiRiferimentoOnCompVers;
         this.dataDiRiferimento = dataDiRiferimento;
+        this.verificaAllaDataDiFirma = verificaAllaDataDiFirma;
         this.modificatoriWSCalc = modificatoriWSCalc;
     }
 
@@ -117,7 +120,7 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
             BigDecimal[] pgs) throws NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
         // root element
-        if (!dto.isParent()) {
+        if (!dto.isParent() && dto.getReport() != null) {
             // build busta
             buildBusta(wrapper, dto, pgs);
         }
@@ -160,8 +163,8 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
         for (SignatureWrapper signature : signatures) {
             // build firma
             VFFirmaCompType firmaCompType = new EidasVFFirmaCompBuilder().create(controlliAbilitati,
-                    isDataDiRiferimentoOnCompVers, dataDiRiferimento, modificatoriWSCalc, dto,
-                    wrapper, signature, Optional.empty(), pgs);
+                    isDataDiRiferimentoOnCompVers, dataDiRiferimento, verificaAllaDataDiFirma,
+                    modificatoriWSCalc, dto, wrapper, signature, Optional.empty(), pgs);
 
             // inc pgFirma
             pgs[PG_FIRMA] = pgs[PG_FIRMA].add(BigDecimal.ONE);
@@ -171,7 +174,8 @@ public class EidasWrapperResultStrategy extends EidasBaseWrapperResult
                 // build marca
                 VFMarcaCompType marcaCompType = new EidasVFMarcaCompBuilder().create(
                         controlliAbilitati, isDataDiRiferimentoOnCompVers, dataDiRiferimento,
-                        modificatoriWSCalc, dto, wrapper, signature, Optional.of(ts), pgs);
+                        verificaAllaDataDiFirma, modificatoriWSCalc, dto, wrapper, signature,
+                        Optional.of(ts), pgs);
 
                 // add on list
                 firmaCompType.getMarcaComps().add(marcaCompType);

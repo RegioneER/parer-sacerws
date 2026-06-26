@@ -106,11 +106,9 @@ public class VerificaFirmeHash {
                 // init non firmato
                 valueDocVers.setFlFileFirmato(CostantiDB.Flag.FALSE);
                 // verifica firma
-                if (versamento.getStrutturaComponenti().effettuaVerificaFirma()
-                        && myDocumentoVersVFirme.verificaDocumentoGenFirma(valueDocVers,
-                                versamento.getStrutturaComponenti()
-                                        .getIdTipologiaUnitaDocumentaria(),
-                                versamento, rispostaWs, myEsito.getConfigurazione())) {
+                if (myDocumentoVersVFirme.verificaDocumentoGenFirma(valueDocVers,
+                        versamento.getStrutturaComponenti().getIdTipologiaUnitaDocumentaria(),
+                        versamento, rispostaWs, myEsito.getConfigurazione())) {
                     // se non si sono verificati errori catastrofici, aggiorno alcune variabili
                     // interne
                     if (valueDocVers.getFlFileFirmato().equals(CostantiDB.Flag.TRUE)) {

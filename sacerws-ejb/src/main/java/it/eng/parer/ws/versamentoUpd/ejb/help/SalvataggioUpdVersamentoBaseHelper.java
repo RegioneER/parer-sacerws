@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 
 import it.eng.parer.entity.AroUsoXsdDatiSpec;
 import it.eng.parer.entity.AroValoreAttribDatiSpec;
+import it.eng.parer.entity.AroValoreAttribDatiSpecRicDs;
 import it.eng.parer.entity.DecXsdAttribDatiSpec;
 import it.eng.parer.util.ejb.AppServerInstance;
 import it.eng.parer.ws.dto.RispostaControlli;
@@ -185,6 +186,57 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
                     "SalvataggioUpdVersamentoBaseHelper.getAroValoreAttribDatiSpecs: "
                             + e.getMessage()));
             getLogger().error("Eccezione nella lettura  dei valori dei dati specifici ", e);
+        }
+
+        return rispostaControlli;
+    }
+
+    /**
+     * Legge i valori dei dati specifici dalla nuova tabella ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS.
+     * Affianca il vecchio metodo {@link #getAroValoreAttribDatiSpecs} mantenendolo per il
+     * doppio-binario; a regime sostituira' completamente la lettura dalla vecchia tabella.
+     *
+     * @param idUsoXsdDatiSpec parametro idUsoXsdDatiSpec
+     * @param idAttribDatiSpec attributo dati spec
+     * @param idStrut          struttura
+     * @return risposta ai controlli
+     */
+    public RispostaControlli getAroValoreAttribDatiSpecsRicDs(long idUsoXsdDatiSpec,
+            long idAttribDatiSpec, long idStrut) {
+
+        RispostaControlli rispostaControlli;
+        rispostaControlli = new RispostaControlli();
+        rispostaControlli.setrLong(-1);
+        rispostaControlli.setrBoolean(false);
+
+        List<AroValoreAttribDatiSpecRicDs> aroValoreAttribDatiSpecRicDs = null;
+
+        try {
+            String queryStr = "select r from AroValoreAttribDatiSpecRicDs r "
+                    + "where r.idUsoXsdDatiSpec = :idUsoXsdDatiSpec "
+                    + "and r.decAttribDatiSpec.idAttribDatiSpec = :idAttribDatiSpec "
+                    + "and r.idStrut = :idStrut ";
+
+            javax.persistence.Query query = entityManager.createQuery(queryStr,
+                    AroValoreAttribDatiSpecRicDs.class);
+            query.setParameter("idUsoXsdDatiSpec", idUsoXsdDatiSpec);
+            query.setParameter("idAttribDatiSpec", idAttribDatiSpec);
+            query.setParameter("idStrut", new BigDecimal(idStrut));
+
+            aroValoreAttribDatiSpecRicDs = query.getResultList();
+
+            if (!aroValoreAttribDatiSpecRicDs.isEmpty()) {
+                rispostaControlli.setrObject(aroValoreAttribDatiSpecRicDs);
+                rispostaControlli.setrLong(0);
+            }
+
+            rispostaControlli.setrBoolean(true); // query is good
+        } catch (Exception e) {
+            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
+            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
+                    "SalvataggioUpdVersamentoBaseHelper.getAroValoreAttribDatiSpecsRicDs: "
+                            + e.getMessage()));
+            getLogger().error("Eccezione nella lettura dei valori dei dati specifici (RIC_DS) ", e);
         }
 
         return rispostaControlli;

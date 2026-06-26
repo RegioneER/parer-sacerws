@@ -33,6 +33,7 @@ import org.xadisk.connector.outbound.XADiskConnectionFactory;
 import it.eng.ArquillianTestUtils;
 import it.eng.parer.firma.ejb.SalvataggioFirmaManager;
 import it.eng.parer.firma.ejb.VerificaFirmaReportHelper;
+import it.eng.parer.objectStorage.ejb.ObjectStorageService;
 import it.eng.parer.ws.versamento.ejb.oracleBlb.WriteCompBlbOracle;
 import it.eng.parer.ws.versamentoTpi.ejb.SalvataggioCompFS;
 import it.eng.parer.ws.versamentoTpi.ejb.StatoCreaCartelle;

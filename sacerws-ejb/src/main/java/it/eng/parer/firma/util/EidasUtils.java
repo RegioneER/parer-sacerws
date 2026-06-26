@@ -61,17 +61,20 @@ public class EidasUtils {
      * Compila l'input per la verifica firma tramite DSS. Utilizzata la versione /v2 in cui si
      * utilizza multipart con stream da file.
      *
-     * @param componenteVers       componente versato
-     * @param sottoComponentiFirma sotto componente di tipo FIRMA
-     * @param controlliAbilitati   lista controlli abilitati (flag true/false)
-     * @param dataDiRiferimento    data di riferimento
-     * @param uuid                 UUID generato
+     * @param componenteVers               componente versato
+     * @param sottoComponentiFirma         sotto componente di tipo FIRMA
+     * @param controlliAbilitati           lista controlli abilitati (flag true/false)
+     * @param dataDiRiferimento            data di riferimento
+     * @param uuid                         UUID generato
+     * @param skipDocumentSignVerification flag 1/0 (true/false) per abilitare o meno il salto della
+     *                                     verifica della firma del documento (solo mimetype)
      *
      * @return Bean utilizzato per invocare il servizio di verifica EIDAS.
      */
     public static EidasDataToValidateMetadata buildDataToValidateMetadataFromCompVers(
             ComponenteVers componenteVers, List<ComponenteVers> sottoComponentiFirma,
-            Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento, String uuid) {
+            Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento, String uuid,
+            boolean skipDocumentSignVerification) {
 
         final boolean hasFirmeDetached = sottoComponentiFirma != null
                 && !sottoComponentiFirma.isEmpty();
@@ -82,7 +85,7 @@ public class EidasUtils {
              */
             FileBinario signedFB = componenteVers.getRifFileBinario();
             return buildDocuments(controlliAbilitati, dataDiRiferimento, signedFB,
-                    componenteVers.getId(), uuid);
+                    componenteVers.getId(), uuid, skipDocumentSignVerification);
         } else {
             /*
              * Firma detached : il file firmato è su sottocomponente
@@ -91,21 +94,23 @@ public class EidasUtils {
             FileBinario originalFB = componenteVers.getRifFileBinario();
             return buildDocuments(controlliAbilitati, dataDiRiferimento, signedFB,
                     componenteVers.getId(), true, originalFB, sottoComponentiFirma.get(0).getId(),
-                    uuid);
+                    uuid, skipDocumentSignVerification);
         }
     }
 
     private static EidasDataToValidateMetadata buildDocuments(
             Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
-            FileBinario signedDoc, String idComponente, String uuid) {
+            FileBinario signedDoc, String idComponente, String uuid,
+            boolean skipDocumentSignVerification) {
         return buildDocuments(controlliAbilitati, dataDiRiferimento, signedDoc, idComponente, false,
-                null, null, uuid);
+                null, null, uuid, skipDocumentSignVerification);
     }
 
     private static EidasDataToValidateMetadata buildDocuments(
             Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
             FileBinario signedDoc, String idComponente, boolean hasFirmeDetached,
-            FileBinario originalDoc, String idSottoComponente, String uuid) {
+            FileBinario originalDoc, String idSottoComponente, String uuid,
+            boolean skipDocumentSignVerification) {
 
         EidasDataToValidateMetadata input = new EidasDataToValidateMetadata();
 
@@ -151,6 +156,7 @@ public class EidasUtils {
         input.setUuid(uuid);
         input.setDataDiRiferimento(Date.from(dataDiRiferimento.toInstant()));
 
+        input.setSkipDocumentSignVerification(skipDocumentSignVerification);
         return input;
     }
 

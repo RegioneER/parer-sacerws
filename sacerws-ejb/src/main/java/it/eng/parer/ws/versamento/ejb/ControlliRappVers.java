@@ -31,6 +31,7 @@ import javax.persistence.TypedQuery;
 
 import it.eng.parer.entity.VrsSessioneVers;
 import it.eng.parer.entity.VrsXmlDatiSessioneVers;
+import it.eng.parer.objectStorage.ejb.ObjectStorageService;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.CostantiDB;
 import static it.eng.parer.ws.utils.CostantiDB.TiStatoSesioneVers.CHIUSA_OK;

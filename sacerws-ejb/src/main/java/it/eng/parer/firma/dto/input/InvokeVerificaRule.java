@@ -51,6 +51,7 @@ public class InvokeVerificaRule implements Serializable {
     private boolean hasFirmaAndMarcaDetached = false;
     private boolean hasMarcaDetached = false;
     private boolean verificaAllaDataDiFirma = false;
+    boolean skipDocumentSignVerification = false;
 
     // abilitazioni
     private Map<String, Boolean> abilitazioni = defaultAbilitazioni();
@@ -134,6 +135,12 @@ public class InvokeVerificaRule implements Serializable {
         return this;
     }
 
+    public InvokeVerificaRule withSkipDocumentSignVerification(
+            final boolean skipDocumentSignVerification) {
+        setSkipDocumentSignVerification(skipDocumentSignVerification);
+        return this;
+    }
+
     public Map<String, Boolean> getAbilitazioni() {
         return abilitazioni;
     }
@@ -149,4 +156,13 @@ public class InvokeVerificaRule implements Serializable {
     public void setEseguiVerificaFirmaOnlyCrypto(boolean eseguiVerificaFirmaOnlyCrypto) {
         this.eseguiVerificaFirmaOnlyCrypto = eseguiVerificaFirmaOnlyCrypto;
     }
+
+    public boolean isSkipDocumentSignVerification() {
+        return skipDocumentSignVerification;
+    }
+
+    public void setSkipDocumentSignVerification(boolean skipDocumentSignVerification) {
+        this.skipDocumentSignVerification = skipDocumentSignVerification;
+    }
+
 }

@@ -76,14 +76,16 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult
 
     private Map<String, Boolean> controlliAbilitati;
     private boolean isDataDiRiferimentoOnCompVers;
+    private boolean verificaAllaDataDiFirma;
     private Set<Costanti.ModificatoriWS> modificatoriWSCalc;
 
     public EidasFirmaBuilder(Map<String, Boolean> controlliAbilitati,
-            boolean isDataDiRiferimentoOnCompVers,
+            boolean isDataDiRiferimentoOnCompVers, boolean verificaAllaDataDiFirma,
             Set<Costanti.ModificatoriWS> modificatoriWSCalc) {
         super();
         this.controlliAbilitati = controlliAbilitati;
         this.isDataDiRiferimentoOnCompVers = isDataDiRiferimentoOnCompVers;
+        this.verificaAllaDataDiFirma = verificaAllaDataDiFirma;
         this.modificatoriWSCalc = modificatoriWSCalc;
     }
 
@@ -225,17 +227,20 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult
                 XmlDateUtility.dateToXMLGregorianCalendar(signatureW.getClaimedSigningTime()));
 
         //
-        if (!signatureW.getTimestampList().isEmpty()) {
-            firmaCompType.setTmRifTempUsato(
-                    XmlDateUtility.dateToXMLGregorianCalendar(signatureW.getClaimedSigningTime()));
-            firmaCompType.setTipoRiferimentoTemporaleUsato(
-                    VerificaFirmaEnums.TipoRifTemporale.MT_VERS_NORMA.name());
-        } else {
+        if (!verificaAllaDataDiFirma) {
             firmaCompType.setTmRifTempUsato(
                     XmlDateUtility.dateToXMLGregorianCalendar(dataDiRiferimento));
             firmaCompType.setTipoRiferimentoTemporaleUsato(isDataDiRiferimentoOnCompVers
                     ? VerificaFirmaEnums.TipoRifTemporale.RIF_TEMP_VERS.name()
                     : VerificaFirmaEnums.TipoRifTemporale.DATA_VERS.name());
+        } else {
+            Date riferimentoTemporale = signatureW.getClaimedSigningTime() != null
+                    ? signatureW.getClaimedSigningTime()
+                    : Date.from(dataDiRiferimento.toInstant());
+            firmaCompType.setTmRifTempUsato(
+                    XmlDateUtility.dateToXMLGregorianCalendar(riferimentoTemporale));
+            firmaCompType.setTipoRiferimentoTemporaleUsato(
+                    VerificaFirmaEnums.TipoRifTemporale.DATA_FIRMA.name());
         }
 
         //
@@ -513,26 +518,12 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult
                         case EXPIRED:
                         case OUT_OF_BOUNDS_NO_POE:
                         case OUT_OF_BOUNDS_NOT_REVOKED:
-                            // The current time is not in the validity range of the signers
-                            // certificate.
-                            // Non è chiaro se la data di firma sia precedente o successiva alla
-                            // validità
-                            // del
-                            // certificato.
-                            // vedi anche https://ec.europa.eu/cefdigital/tracker/browse/DSS-2070
-                            esito = SacerIndication.CERTIFICATO_SCADUTO;
-                            details = Optional.of((xmlcertificate.getNotAfter() != null
-                                    ? " scaduto in data "
-                                            + dateFormatter.format(xmlcertificate.getNotAfter())
-                                    : "")
-                                    + (xmlcertificate.getNotBefore() != null
-                                            ? " valido a partire dalla data " + dateFormatter
-                                                    .format(xmlcertificate.getNotBefore())
-                                            : "")
-                                    + " successivo al riferimento temporale utilizzato "
-                                    + dateFormatter
-                                            .format(XmlDateUtility.xmlGregorianCalendarToDate(
-                                                    firmaCompType.getTmRifTempUsato())));
+                            Date riferimentoTemporale = XmlDateUtility
+                                    .xmlGregorianCalendarToDate(firmaCompType.getTmRifTempUsato());
+                            esito = evaluateCertificateValidityOutOfBounds(xmlcertificate,
+                                    riferimentoTemporale);
+                            details = Optional.of(buildCertificateValidityOutOfBoundsDetail(
+                                    xmlcertificate, riferimentoTemporale));
                             break;
                         case NO_POE:
                         case CRYPTO_CONSTRAINTS_FAILURE_NO_POE:
@@ -622,6 +613,69 @@ public class EidasFirmaBuilder extends EidasBaseWrapperResult
             contrFirmaCompType.setTiEsitoContrFirma(esito.name());
             contrFirmaCompType.setDsMsgEsitoContrFirma(esito.message());
         }
+    }
+
+    private SacerIndication evaluateCertificateValidityOutOfBounds(
+            CertificateWrapper xmlcertificate, Date riferimentoTemporale) {
+        Date dataInizioValidita = xmlcertificate.getNotBefore();
+        Date dataFineValidita = xmlcertificate.getNotAfter();
+
+        if (riferimentoTemporale != null && dataInizioValidita != null
+                && riferimentoTemporale.before(dataInizioValidita)) {
+            return SacerIndication.CERTIFICATO_NON_VALIDO;
+        }
+        if (riferimentoTemporale != null && dataFineValidita != null
+                && riferimentoTemporale.after(dataFineValidita)) {
+            return SacerIndication.CERTIFICATO_SCADUTO;
+        }
+        if (dataFineValidita != null && dataInizioValidita == null) {
+            return SacerIndication.CERTIFICATO_SCADUTO;
+        }
+        return SacerIndication.CERTIFICATO_NON_VALIDO;
+    }
+
+    private String buildCertificateValidityOutOfBoundsDetail(CertificateWrapper xmlcertificate,
+            Date riferimentoTemporale) {
+        Date dataInizioValidita = xmlcertificate.getNotBefore();
+        Date dataFineValidita = xmlcertificate.getNotAfter();
+        String riferimentoTemporaleFormattato = riferimentoTemporale != null
+                ? dateFormatter.format(riferimentoTemporale)
+                : "non disponibile";
+
+        if (riferimentoTemporale != null && dataInizioValidita != null
+                && riferimentoTemporale.before(dataInizioValidita)) {
+            return "la data di riferimento per la verifica " + riferimentoTemporaleFormattato
+                    + " è inferiore alla data di emissione del certificato "
+                    + dateFormatter.format(dataInizioValidita)
+                    + buildCertificateValidityRangeSuffix(dataInizioValidita, dataFineValidita);
+        }
+        if (riferimentoTemporale != null && dataFineValidita != null
+                && riferimentoTemporale.after(dataFineValidita)) {
+            return "la data di riferimento per la verifica " + riferimentoTemporaleFormattato
+                    + " è successiva alla data di scadenza del certificato "
+                    + dateFormatter.format(dataFineValidita)
+                    + buildCertificateValidityRangeSuffix(dataInizioValidita, dataFineValidita);
+        }
+        return "la data di riferimento per la verifica " + riferimentoTemporaleFormattato
+                + " non è compresa nell'intervallo di validità del certificato"
+                + buildCertificateValidityRangeSuffix(dataInizioValidita, dataFineValidita);
+    }
+
+    private String buildCertificateValidityRangeSuffix(Date dataInizioValidita,
+            Date dataFineValidita) {
+        if (dataInizioValidita == null && dataFineValidita == null) {
+            return StringUtils.EMPTY;
+        }
+        StringBuilder range = new StringBuilder(" (intervallo di validità");
+        if (dataInizioValidita != null) {
+            range.append(" da ").append(dateFormatter.format(dataInizioValidita));
+        }
+        if (dataFineValidita != null) {
+            range.append(dataInizioValidita != null ? " a " : " fino a ")
+                    .append(dateFormatter.format(dataFineValidita));
+        }
+        range.append(")");
+        return range.toString();
     }
 
     private void buildFirmaCompCERwithCRL(CertificateWrapper xmlcertificate,

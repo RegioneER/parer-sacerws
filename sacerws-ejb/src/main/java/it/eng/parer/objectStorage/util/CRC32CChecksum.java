@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.utils;
+package it.eng.parer.objectStorage.util;
 
 import java.util.zip.Checksum;
 

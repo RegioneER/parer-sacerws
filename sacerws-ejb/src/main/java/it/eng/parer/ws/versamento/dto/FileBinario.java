@@ -15,6 +15,8 @@ package it.eng.parer.ws.versamento.dto;
 
 import java.io.File;
 
+import it.eng.parer.objectStorage.dto.ObjectStorageResource;
+
 /**
  *
  * @author Fioravanti_F

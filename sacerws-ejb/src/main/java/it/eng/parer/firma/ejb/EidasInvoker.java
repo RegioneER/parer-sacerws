@@ -199,7 +199,8 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
     public VerificaFirmaWrapper verificaAndWrapIt(ComponenteVers componenteVers,
             List<ComponenteVers> sottoComponentiFirma, List<ComponenteVers> sottoComponentiMarca,
             Map<String, Boolean> controlliAbilitati, ZonedDateTime dataDiRiferimento,
-            boolean verificaAllaDataDiFirma, String uuid, AbsVersamentoExt versamento)
+            boolean verificaAllaDataDiFirma, String uuid, boolean skipDocumentSignVerification,
+            AbsVersamentoExt versamento)
             throws VerificaFirmaWrapperResNotFoundException, VerificaFirmaConnectionException,
             VerificaFirmaWrapperGenericException, VerificaFirmaGenericInvokeException {
 
@@ -207,7 +208,8 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
 
         // create metadata
         EidasDataToValidateMetadata dto = EidasUtils.buildDataToValidateMetadataFromCompVers(
-                componenteVers, sottoComponentiFirma, controlliAbilitati, dataDiRiferimento, uuid);
+                componenteVers, sottoComponentiFirma, controlliAbilitati, dataDiRiferimento, uuid,
+                skipDocumentSignVerification);
 
         // file from o.s.
         if (isComponenteSuObjectStorage(componenteVers)
@@ -235,7 +237,7 @@ public class EidasInvoker implements IVerificaFirmaInvoker {
         //
         EidasWrapperResultStrategy strategy = new EidasWrapperResultStrategy(controlliAbilitati,
                 !Objects.isNull(componenteVers.withAcdEntity().getTmRifTempVers()),
-                dataDiRiferimento, versamento.getModificatoriWSCalc());
+                dataDiRiferimento, verificaAllaDataDiFirma, versamento.getModificatoriWSCalc());
         VerificaFirmaWrapper wrapper = strategy.buildVFWrapper(esito,
                 CollectionUtils.isNotEmpty(sottoComponentiFirma));
         /*

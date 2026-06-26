@@ -11,16 +11,18 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.ejb;
+package it.eng.parer.objectStorage.ejb;
 
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PreDestroy;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
@@ -28,9 +30,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.parer.objectStorage.dto.ObjectStorageBackend;
 import it.eng.parer.util.ejb.help.ConfigurationHelper;
 import it.eng.parer.ws.utils.ParametroApplDB;
-import it.eng.parer.ws.versamento.dto.ObjectStorageBackend;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -52,11 +54,12 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  * @author Snidero_L
  */
 @Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class AwsPresigner {
 
     private Logger log = LoggerFactory.getLogger(AwsPresigner.class);
 
-    private final Map<CacheKey, S3Presigner> presignerCache = new HashMap<>();
+    private final Map<CacheKey, S3Presigner> presignerCache = new ConcurrentHashMap<>();
 
     @EJB
     protected ConfigurationHelper configurationHelper;
@@ -92,7 +95,7 @@ public class AwsPresigner {
     /**
      * Ottieni la PRE-signed URL per il backend indicato dalla configurazione. La durata predefinita
      * è di 10 minuti. Se risulta necessario modificare la durata utilizzare
-     * {@link #getPresignedUrl(it.eng.parer.ws.versamento.dto.ObjectStorageBackend, java.lang.String, java.time.Duration) }
+     * {@link #getPresignedUrl(it.eng.parer.objectStorage.dto.ObjectStorageBackend, java.lang.String, java.time.Duration) }
      *
      * @param configuration configurazione backend
      * @param key           chiave per cui fornire la presigned URL

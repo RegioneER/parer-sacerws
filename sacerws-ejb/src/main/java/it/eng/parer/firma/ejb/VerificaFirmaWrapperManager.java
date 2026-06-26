@@ -112,7 +112,10 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
              */
             VerificaFirmaWrapper wrapper = invokeEidas(in, versamento);
             // firme individuate (altrimenti tenta su crypto)
-            if (wrapper != null && BooleanUtils.isTrue(wrapper.isSignsDetected())) {
+            // opppure non ha individuato firme perché è stata skippata la verifica stessa di
+            // documento firmato (vale solo il mimetype contenuto nella risposta)
+            if (wrapper != null && (BooleanUtils.isTrue(wrapper.isSignsDetected())
+                    || rule.isSkipDocumentSignVerification())) {
                 return wrapper;
             } else {
                 return invokeCrypto(in, versamento);
@@ -126,7 +129,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
             wrapper = eidasInvoker.verificaAndWrapIt(in.getComponenteVers(),
                     in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
                     in.getAbilitazioni(), in.getDataDiRiferimento(), Boolean.FALSE/* default */,
-                    in.getUuid(), versamento);
+                    in.getUuid(), in.isSkipDocumentSignVerification(), versamento);
         } catch (VerificaFirmaConnectionException ex) {
             /* Errore su invocazione (GRAVE) */
             LOG.warn("Errore invocazione servizio verifica firma {}", ex.getCdService(), ex);
@@ -151,7 +154,7 @@ public class VerificaFirmaWrapperManager implements IGenericVerificaFirmaWrapper
             return cryptoInvoker.verificaAndWrapIt(in.getComponenteVers(),
                     in.getSottoComponentiFirma(), in.getSottoComponentiMarca(),
                     in.getAbilitazioni(), in.getDataDiRiferimento(), in.isVerificaAllaDataDiFirma(),
-                    in.getUuid(), versamento);
+                    in.getUuid(), in.isSkipDocumentSignVerification(), versamento);
         } catch (VerificaFirmaGenericInvokeException | VerificaFirmaWrapperResNotFoundException
                 | VerificaFirmaWrapperGenericException cpex) {
             /* Errore restituito da endpoint o su wrapping della risposta */

@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-package it.eng.parer.ws.versamento.exceptions;
+package it.eng.parer.objectStorage.exceptions;
 
 import java.text.MessageFormat;
 

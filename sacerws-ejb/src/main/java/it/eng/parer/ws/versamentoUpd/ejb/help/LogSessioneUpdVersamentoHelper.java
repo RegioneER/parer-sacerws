@@ -22,6 +22,7 @@ import it.eng.parer.entity.constraint.VrsSesUpdUnitaDocKo.TiStatoSesUpdKo;
 import it.eng.parer.entity.constraint.VrsUpdUnitaDocKo.TiStatoUdpUdKo;
 import it.eng.parer.entity.constraint.VrsXmlSesUpdUnitaDocErr.TiXmlVrsXmlSesUpdUnitaDocErr;
 import it.eng.parer.entity.constraint.VrsXmlSesUpdUnitaDocKo.TiXmlVrsXmlSesUpdUnitaDocKo;
+import it.eng.parer.objectStorage.dto.BackendStorage;
 import it.eng.parer.util.Constants;
 import it.eng.parer.util.ejb.AppServerInstance;
 import it.eng.parer.view_entity.LogVVisLastSched;
@@ -57,7 +58,6 @@ import java.util.*;
 
 import static it.eng.parer.util.DateUtilsConverter.convert;
 import static it.eng.parer.util.DateUtilsConverter.convertLocal;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
 
 /**
  *

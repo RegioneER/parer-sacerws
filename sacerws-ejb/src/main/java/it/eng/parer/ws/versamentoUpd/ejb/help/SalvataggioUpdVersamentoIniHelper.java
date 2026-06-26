@@ -16,6 +16,7 @@ package it.eng.parer.ws.versamentoUpd.ejb.help;
 import it.eng.parer.entity.*;
 import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiEntitaSacerAroVersIniDatiSpec;
 import it.eng.parer.entity.constraint.AroVersIniDatiSpec.TiUsoXsdAroVersIniDatiSpec;
+import it.eng.parer.objectStorage.dto.BackendStorage;
 import it.eng.parer.util.Constants;
 import it.eng.parer.ws.dto.RispostaControlli;
 import it.eng.parer.ws.utils.MessaggiWSBundle;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static it.eng.parer.util.DateUtilsConverter.convertLocal;
-import it.eng.parer.ws.versamento.dto.BackendStorage;
+
 import it.eng.parer.ws.versamentoUpd.dto.DatiSpecLinkOsKeyMap;
 
 /**
