@@ -1074,7 +1074,7 @@ public class VersamentoExtPrsr {
 
         // verifico che l'utente sia abilitato a tipologia ud, tipo doc e registro
         //
-        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+        if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             this.controllaTipoDatoUserOrg(myEsito, versamento, rispostaWs);
         }
 
@@ -1123,9 +1123,10 @@ public class VersamentoExtPrsr {
             VersamentoExt versamento, long idStrut, long idUser, long idTipoDatoApplic,
             TipoDato tipoDato, RispostaWS rispostaWs) {
         UnitaDocumentaria vers = versamento.getVersamento();
+        String descKey = getDescKey(vers);
+        String nmTipoDato = getNomeTipoDato(versamento, tipoDato);
         RispostaControlli rispostaControlli = controlliEjb.checkAbilitazioniUtenteIamAbilTipoDato(
-                vers.getIntestazione().getChiave().getNumero(), idStrut, idUser, idTipoDatoApplic,
-                tipoDato.name());
+                descKey, idStrut, idUser, idTipoDatoApplic, tipoDato.name(), nmTipoDato);
 
         if (!rispostaControlli.isrBoolean()) {
             // setEsitoAbilitazioneTipoDato(myControlliVers, tipoDato, ECEsitoPosNegType.NEGATIVO);
@@ -1133,6 +1134,26 @@ public class VersamentoExtPrsr {
             rispostaWs.setEsitoWsError(rispostaControlli.getCodErr(), rispostaControlli.getDsErr());
         } else {
             // setEsitoAbilitazioneTipoDato(myControlliVers, tipoDato, ECEsitoPosNegType.POSITIVO);
+        }
+    }
+
+    private String getDescKey(UnitaDocumentaria vers) {
+        return vers.getIntestazione().getChiave().getTipoRegistro() + "/"
+                + vers.getIntestazione().getChiave().getAnno() + "/"
+                + vers.getIntestazione().getChiave().getNumero();
+    }
+
+    private String getNomeTipoDato(VersamentoExt versamento, TipoDato tipoDato) {
+        UnitaDocumentaria vers = versamento.getVersamento();
+        switch (tipoDato) {
+        case TIPO_UNITA_DOC:
+            return vers.getIntestazione().getTipologiaUnitaDocumentaria();
+        case REGISTRO:
+            return vers.getIntestazione().getChiave().getTipoRegistro();
+        case TIPO_DOC:
+            return vers.getDocumentoPrincipale().getTipoDocumento();
+        default:
+            return tipoDato.name();
         }
     }
 

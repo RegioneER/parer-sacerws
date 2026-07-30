@@ -54,6 +54,7 @@ import it.eng.parer.ws.utils.ejb.JmsProducerUtilEjb;
 import it.eng.parer.ws.versamento.dto.AbsVersamentoExt;
 import it.eng.parer.ws.versamento.dto.ComponenteVers;
 import it.eng.parer.ws.versamento.dto.FileBinario;
+import it.eng.parer.ws.versamento.dto.IRispostaVersWS;
 import it.eng.parer.ws.versamento.dto.RispostaWS;
 import it.eng.parer.ws.versamento.dto.SyncFakeSessn;
 import it.eng.parer.ws.versamento.dto.VersamentoExt;
@@ -365,13 +366,13 @@ public abstract class VersamentoSyncBase {
     }
 
     /**
-     * Effettua l'upload dei file sull'object storage nel caso il backend configurato sia di tipo OS
-     * - Versamento sync/Aggiunta documenti. Nel caso in cui non risulti disponibile l'object
-     * storage verrà emesso un errore bloccante non gestito.
+     * Effettua l'upload dei file sull'object storage per i versamenti sincroni e l'aggiunta
+     * documenti, solo se il backend di staging configurato e' di tipo object storage.
      *
-     * @param sessioneFinta Contenitore dei file
+     * @param sessioneFinta contenitore dei file
+     * @param rispostaWs    risposta del versamento propagata alle chiamate di upload dei file
      */
-    public void uploadComponentiStaging(SyncFakeSessn sessioneFinta) {
+    public void uploadComponentiStaging(SyncFakeSessn sessioneFinta, IRispostaVersWS rispostaWs) {
 
         BackendStorage backendStaging = objectStorageService.lookupBackendVrsStaging();
 
@@ -380,7 +381,7 @@ public abstract class VersamentoSyncBase {
                 logger.debug("Sto per salvare {} su OS", rifFileBinario.getFileName());
                 ObjectStorageResource componenteStaging = objectStorageService
                         .createTmpResourceInStaging(backendStaging.getBackendName(),
-                                rifFileBinario.getFileSuDisco());
+                                rifFileBinario.getFileSuDisco(), rispostaWs);
                 rifFileBinario.setObjectStorageResource(componenteStaging);
             }
         }

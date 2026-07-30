@@ -895,6 +895,11 @@ public class MessaggiWSBundle {
     public static final String UD_014_002 = "UD-014-002";
 
     /**
+     * Unità Documentaria {0}: L''utente non è abilitato al tipo dato {1}
+     */
+    public static final String UD_019_001 = "UD-019-001";
+
+    /**
      * L’unità Documentaria {0} ha tipo diverso da {1}
      */
     public static final String UD_015_001 = "UD-015-001";
@@ -1800,11 +1805,6 @@ public class MessaggiWSBundle {
      * Utente che attiva il servizio non riconosciuto o non abilitato
      */
     public static final String SERVIZI_USR_005 = "SERVIZI-USR-005";
-
-    /*
-     * Errore nella verifica delle abilitazioni al tipo dato
-     */
-    public static final String IAM_ABIL_TIPO_DATO_001_001 = "IAM-ABIL-TIPO-DATO-001-001";
 
     // </editor-fold>
 }

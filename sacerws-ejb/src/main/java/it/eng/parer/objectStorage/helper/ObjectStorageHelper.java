@@ -205,7 +205,8 @@ public class ObjectStorageHelper {
             final long end = System.currentTimeMillis() - start;
             if (log.isDebugEnabled()) {
                 log.debug("Salvato oggetto {} di {} byte sul bucket {} con ETag {} in {} ms", key,
-                        requestBody.optionalContentLength().orElse(-1L), bucket, response.eTag(), end);
+                        requestBody.optionalContentLength().orElse(-1L), bucket, response.eTag(),
+                        end);
             }
             final URL presignedUrl = presigner.getPresignedUrl(configuration, key);
             final URI presignedURLasURI = presignedUrl.toURI();

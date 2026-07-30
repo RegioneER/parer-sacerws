@@ -24,6 +24,7 @@ import static it.eng.parer.ws.utils.Costanti.S3Constants.TAG_VALUE_VRSOBJ_METADA
 import static it.eng.parer.ws.utils.Costanti.S3Constants.TAG_VALUE_VRSOBJ_TMP;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -74,13 +75,16 @@ import it.eng.parer.objectStorage.exceptions.ObjectStorageException;
 import it.eng.parer.objectStorage.helper.BackendHelper;
 import it.eng.parer.objectStorage.helper.ObjectStorageHelper;
 import it.eng.parer.objectStorage.util.CRC32CChecksum;
+import it.eng.parer.ws.dto.IRispostaWS.SeverityEnum;
 import it.eng.parer.ws.dto.IWSDesc;
 import it.eng.parer.ws.utils.Costanti;
 import it.eng.parer.ws.utils.CostantiDB;
+import it.eng.parer.ws.utils.MessaggiWSBundle;
 import it.eng.parer.ws.utils.MessaggiWSFormat;
 import it.eng.parer.ws.versamento.dto.FileBinario;
 import it.eng.parer.ws.versamento.dto.StrutturaVersamento;
 import it.eng.parer.ws.versamentoUpd.dto.StrutturaUpdVers;
+import it.eng.parer.ws.versamento.dto.IRispostaVersWS;
 import it.eng.spagoCore.util.UUIDMdcLogUtil;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
@@ -178,12 +182,13 @@ public class ObjectStorageService {
     /**
      * Salva il file nel bucket di Staging.
      *
-     * @param nomeBackend backend configurato (per esempio OBJECT_STORAGE_PRIMARIO)
+     * @param nomeBackend backend configurato
      * @param resource    file da salvare
-     *
-     * @return risorsa su OS che identifica il file caricato
+     * @param rispostaWs  risposta del versamento, aggiornata in caso di file non trovato
+     * @return risorsa su OS che identifica il file caricato oppure null se il file non esiste
      */
-    public ObjectStorageResource createTmpResourceInStaging(String nomeBackend, File resource) {
+    public ObjectStorageResource createTmpResourceInStaging(String nomeBackend, File resource,
+            IRispostaVersWS rispostaWs) {
         try {
             ObjectStorageBackend configuration = objectStorageHelper
                     .getObjectStorageConfiguration(nomeBackend, STAGING_W);
@@ -200,6 +205,14 @@ public class ObjectStorageService {
             log.debug(STD_FILE_SAVED_LOG_MESSAGE, savedFile.getBucket(), savedFile.getKey());
 
             return savedFile;
+        } catch (FileNotFoundException ex) {
+            rispostaWs.setSeverity(SeverityEnum.ERROR);
+            rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.COMP_011_001,
+                    MessaggiWSBundle.getString(MessaggiWSBundle.COMP_011_001,
+                            resource.getName()) + " " + ex.getMessage());
+            log.error("Eccezione nel calcolo 	dell'hash del componente: il file "
+                    + resource.getName() + " non esiste. ", ex);
+            return null;
         } catch (ObjectStorageException | IOException ex) {
             throw new EJBException(ex);
         }

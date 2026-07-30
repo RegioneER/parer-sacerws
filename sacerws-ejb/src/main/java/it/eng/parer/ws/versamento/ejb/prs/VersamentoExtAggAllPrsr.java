@@ -954,7 +954,7 @@ public class VersamentoExtAggAllPrsr {
 
         // verifico che l'utente sia abilitato a tipologia ud, tipo doc e registro
         //
-        if (rispostaWs.getSeverity() == SeverityEnum.OK) {
+        if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
             this.controllaTipoDatoUserOrg(myEsito, versamento, rispostaWs);
         }
 
@@ -1173,9 +1173,10 @@ public class VersamentoExtAggAllPrsr {
             VersamentoExtAggAll versamento, long idStrut, long idUser, long idTipoDatoApplic,
             TipoDato tipoDato, RispostaWSAggAll rispostaWs) {
         UnitaDocAggAllegati vers = versamento.getVersamento();
+        String descKey = getDescKey(vers);
+        String nmTipoDato = getNomeTipoDato(versamento, tipoDato);
         RispostaControlli rispostaControlli = controlliEjb.checkAbilitazioniUtenteIamAbilTipoDato(
-                vers.getIntestazione().getChiave().getNumero(), idStrut, idUser, idTipoDatoApplic,
-                tipoDato.name());
+                descKey, idStrut, idUser, idTipoDatoApplic, tipoDato.name(), nmTipoDato);
 
         if (!rispostaControlli.isrBoolean()) {
             // setEsitoAbilitazioneTipoDato(myControlliVers, nmClasseTipoDato,
@@ -1188,23 +1189,25 @@ public class VersamentoExtAggAllPrsr {
         }
     }
 
-    // private void setEsitoAbilitazioneTipoDato(EsitoVersAggAllegati myControlliVers,
-    // TipoDato nmClasseTipoDato, ECEsitoPosNegType esito) {
-    // switch (nmClasseTipoDato) {
-    // case TIPO_UNITA_DOC:
-    // myControlliVers.setEsitoAbilitazioneTipologiaUd(esito);
-    // break;
-    // case TIPO_DOC:
-    // myControlliVers.setEsitoAbilitazioneTipoDoc(esito);
-    // break;
-    // case REGISTRO:
-    // myControlliVers.setEsitoAbilitazioneRegistro(esito);
-    // break;
-    // default:
-    // /* no-op */
-    // break;
-    // }
-    // }
+    private String getDescKey(UnitaDocAggAllegati vers) {
+        return vers.getIntestazione().getChiave().getTipoRegistro() + "/"
+                + vers.getIntestazione().getChiave().getAnno() + "/"
+                + vers.getIntestazione().getChiave().getNumero();
+    }
+
+    private String getNomeTipoDato(VersamentoExtAggAll versamento, TipoDato tipoDato) {
+        switch (tipoDato) {
+        case TIPO_UNITA_DOC:
+            return versamento.getStrutturaComponenti().getDescTipologiaUnitaDocumentaria();
+        case REGISTRO:
+            return versamento.getVersamento().getIntestazione().getChiave().getTipoRegistro();
+        case TIPO_DOC:
+            return versamento.getStrutturaComponenti().getDocumentiAttesi().get(0)
+                    .getRifDocumento().getTipoDocumento();
+        default:
+            return tipoDato.name();
+        }
+    }
 
     private void setRispostaWsError(RispostaWSAggAll rispostaWs,
             RispostaControlli rispostaControlli) {

@@ -1,9 +1,8 @@
-## 6.16.0 (26-06-2026)
+## 6.17.0 (30-07-2026)
 
-### Bugfix: 1
-- [#40352](https://parermine.regione.emilia-romagna.it/issues/40352) Correzione gestione messaggio in caso di "certificato scaduto" (verifica firma eidas)
+### Bugfix: 2
+- [#40918](https://parermine.regione.emilia-romagna.it/issues/40918) Correzione controllo su abilitazione tipi dato in caso di Warning
+- [#40885](https://parermine.regione.emilia-romagna.it/issues/40885) Correggere l'errore restituito nel versamento e aggiunta allegati da IAM-ABIL-TIPO-DATO-001-001 in UD-019-001
 
-### Novità: 3
-- [#40797](https://parermine.regione.emilia-romagna.it/issues/40797) Adeguamento servizi di versamento al fine di scrivere le informazioni aggiuntive prensenti nella nuova tabella dei dati specifici
-- [#40779](https://parermine.regione.emilia-romagna.it/issues/40779) Ottimizzazione integrazione con cloud storage S3
-- [#40766](https://parermine.regione.emilia-romagna.it/issues/40766) Modifica gestione "disattivazione verifica firma digitale"
+### Novità: 1
+- [#40783](https://parermine.regione.emilia-romagna.it/issues/40783) Perfezionamento estensione informazioni log durante il processo di versamento con aggiunta dei riferimento al file versato

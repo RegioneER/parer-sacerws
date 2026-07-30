@@ -495,7 +495,8 @@ public class ControlliWS {
     }
 
     public RispostaControlli checkAbilitazioniUtenteIamAbilTipoDato(String descKey,
-            long idStruttura, long idUser, long idTipoDatoApplic, String nmClasseTipoDato) {
+            long idStruttura, long idUser, long idTipoDatoApplic, String nmClasseTipoDato,
+            String nmTipoDato) {
         RispostaControlli rispostaControlli;
         rispostaControlli = new RispostaControlli();
         rispostaControlli.setrBoolean(false);
@@ -522,9 +523,29 @@ public class ControlliWS {
                 rispostaControlli.setrLong(iamAbilTipoDatos.get(0).getIdAbilTipoDato());
                 rispostaControlli.setrBoolean(true);
             } else {
-                rispostaControlli.setCodErr(MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001);
-                rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                        MessaggiWSBundle.IAM_ABIL_TIPO_DATO_001_001, descKey, nmClasseTipoDato));
+                rispostaControlli.setCodErr(MessaggiWSBundle.UD_019_001);
+                switch (nmClasseTipoDato) {
+                case "REGISTRO":
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
+                            MessaggiWSBundle.UD_019_001, descKey,
+                            String.format("'REGISTRO': %s", nmTipoDato)));
+                    break;
+                case "TIPO_UNITA_DOC":
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
+                            MessaggiWSBundle.UD_019_001, descKey,
+                            String.format("'TIPO_UNITA_DOC': %s", nmTipoDato)));
+                    break;
+                case "TIPO_DOC":
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
+                            MessaggiWSBundle.UD_019_001, descKey,
+                            String.format("'TIPO_DOC': %s", nmTipoDato)));
+                    break;
+                default:
+                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
+                            MessaggiWSBundle.UD_019_001, descKey,
+                            String.format("'%s': %s", nmClasseTipoDato, nmTipoDato)));
+                    break;
+                }
             }
         } catch (Exception e) {
             rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);

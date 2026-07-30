@@ -194,7 +194,7 @@ public class VersamentoSyncSrvlt extends HttpServlet {
                     if (rispostaWs.getSeverity() != SeverityEnum.ERROR) {
                         tmpAvanzamento.setCheckPoint(AvanzamentoWs.CheckPoints.CopiaBackendStaging)
                                 .setFase("inizio verifica/copia backend staging").logAvanzamento();
-                        versamentoSync.uploadComponentiStaging(sessioneFinta);
+                        versamentoSync.uploadComponentiStaging(sessioneFinta, rispostaWs);
 
                         tmpAvanzamento.setFase("fine verifica/copia backend staging")
                                 .logAvanzamento();
