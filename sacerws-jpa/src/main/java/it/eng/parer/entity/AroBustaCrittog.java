@@ -57,6 +57,8 @@ public class AroBustaCrittog implements Serializable {
 
     private List<AroMarcaComp> aroMarcaComps = new ArrayList<>();
 
+    private BigDecimal aaKeyUnitaDoc;
+
     public AroBustaCrittog() {/* Hibernate */
     }
 
@@ -132,6 +134,15 @@ public class AroBustaCrittog implements Serializable {
 
     public void setAroMarcaComps(List<AroMarcaComp> aroMarcaComps) {
         this.aroMarcaComps = aroMarcaComps;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
 }

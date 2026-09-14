@@ -15,13 +15,16 @@ package it.eng.parer.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import it.eng.parer.entity.inheritance.oop.AroXmlObjectStorage;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ARO_XML_DOC_OBJECT_STORAGE")
@@ -35,6 +38,7 @@ public class AroXmlDocObjectStorage extends AroXmlObjectStorage {
 
     private Long idDoc;
     private AroDoc aroDoc;
+    private BigDecimal idStrut;
 
     @Id
     @Column(name = "ID_DOC")
@@ -56,4 +60,14 @@ public class AroXmlDocObjectStorage extends AroXmlObjectStorage {
     public void setAroDoc(AroDoc aroDoc) {
         this.aroDoc = aroDoc;
     }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
+    }
+
 }

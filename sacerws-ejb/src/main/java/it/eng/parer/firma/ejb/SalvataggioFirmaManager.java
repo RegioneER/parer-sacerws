@@ -341,6 +341,7 @@ public class SalvataggioFirmaManager {
         tmpBustaCrittog.setAroMarcaComps(new ArrayList<>());
         tmpBustaCrittog.setPgBustaCrittog(busta.getPgBusta());
         tmpBustaCrittog.setIdStrut(tmpAroCompDoc.getIdStrut());
+        tmpBustaCrittog.setAaKeyUnitaDoc(tmpAroCompDoc.getAaKeyUnitaDoc());
 
         if (busta.getAdditionalInfo() != null
                 && busta.getAdditionalInfo().getIdFormatoFileStandard() != null) {
@@ -415,6 +416,7 @@ public class SalvataggioFirmaManager {
         tmpFirmaComp.setAroCompDoc(tmpTabCDComponente);
         // Setto id struttura
         tmpFirmaComp.setIdStrut(tmpTabCDComponente.getIdStrut());
+        tmpFirmaComp.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
         tmpTabCDComponente.getAroFirmaComps().add(tmpFirmaComp);
         tmpFirmaComp.setCdFirmatario(firmaCompType.getCdFirmatario());
         tmpFirmaComp.setNmCognomeFirmatario(firmaCompType.getNmCognomeFirmatario());
@@ -463,6 +465,7 @@ public class SalvataggioFirmaManager {
                 .collect(Collectors.toMap(VFContrFirmaCompType::getTiContr, t -> t));
 
         // CONTROLLI FIRMA - CRITTOGRAFICO
+
         {
             VFContrFirmaCompType vfControllo = controlliFirma
                     .get(VFTipoControlloType.CRITTOGRAFICO);
@@ -470,6 +473,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             // persist
             entityManager.persist(controllo);
@@ -483,6 +488,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO_ABILITATO.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             // persist
             entityManager.persist(controllo);
@@ -496,6 +503,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
 
             ArrayList<AroUsoCertifCaContrComp> usoCerifiCaContrComp = new ArrayList<>();
@@ -508,6 +517,8 @@ public class SalvataggioFirmaManager {
             usoCertifCatena.setFirCrl(crlUso);
             // OCSP (se presente)
             usoCertifCatena.setFirOcsp(ocspUso);
+            usoCertifCatena.setIdStrut(tmpTabCDComponente.getIdStrut());
+            usoCertifCatena.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             //
             usoCerifiCaContrComp.add(usoCertifCatena);
             // persist
@@ -525,6 +536,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED_ABILITATO.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             // persist
             entityManager.persist(controllo);
@@ -537,6 +550,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CRL.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             controllo.setFirCrl(crlContr);
             // persist
@@ -550,6 +565,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.OCSP.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             controllo.setFirOcsp(ocspContr);
 
@@ -564,6 +581,9 @@ public class SalvataggioFirmaManager {
                 // CA
                 usoCertifOcsp.setFirCertifCa(ocspContr.getFirCertifOcsp().getFirCertifCa());
                 usoCertifOcsp.setFirOcsp(ocspContr);
+
+                usoCertifOcsp.setIdStrut(tmpTabCDComponente.getIdStrut());
+                usoCertifOcsp.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
 
                 //
                 usoCerifiCaContrComp.add(usoCertifOcsp);
@@ -582,6 +602,8 @@ public class SalvataggioFirmaManager {
             controllo.setAroFirmaComp(tmpFirmaComp);
             controllo.setTiContr(VFTipoControlloType.CERTIFICATO.name());
             controllo.setTiEsitoContrFirma(vfControllo.getTiEsitoContrFirma());
+            controllo.setIdStrut(tmpFirmaComp.getIdStrut());
+            controllo.setAaKeyUnitaDoc(tmpTabCDComponente.getAaKeyUnitaDoc());
             controllo.setDsMsgEsitoContrFirma(vfControllo.getDsMsgEsitoContrFirma());
             // persist
             entityManager.persist(controllo);
@@ -646,6 +668,7 @@ public class SalvataggioFirmaManager {
 
         tmpMarcaComp.setPgBusta(busta.getPgBusta());
         tmpMarcaComp.setPgMarca(marcaCompType.getPgMarca());
+        tmpMarcaComp.setIdStrut(tmpTabCDComponente.getIdStrut());
 
         if (isDetached) {
             tmpBustaCrittogSottoComp.getAroMarcaComps().add(tmpMarcaComp);
@@ -691,6 +714,7 @@ public class SalvataggioFirmaManager {
                 controllo.setTiContr(VFTipoControlloType.CRITTOGRAFICO.name());
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
+                controllo.setIdStrut(tmpTabCDComponente.getIdStrut());
             }
 
             // CONTROLLI MARCA - CATENA_TRUSTED CertificateAssociation &&
@@ -705,6 +729,7 @@ public class SalvataggioFirmaManager {
                 controllo.setTiContr(VFTipoControlloType.CATENA_TRUSTED.name());
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
+                controllo.setIdStrut(tmpTabCDComponente.getIdStrut());
 
                 ArrayList<AroUsoCertifCaContrMarca> usoCerifiCaContrComp = new ArrayList<>();
 
@@ -718,7 +743,7 @@ public class SalvataggioFirmaManager {
                 usoCertifCatena.setFirCrl(crlTsa);
                 // OCSP (se presente)
                 usoCertifCatena.setFirOcsp(ocspTsa);
-                //
+                usoCertifCatena.setIdStrut(tmpTabCDComponente.getIdStrut());
                 usoCerifiCaContrComp.add(usoCertifCatena);
                 controllo.getAroUsoCertifCaContrMarcas().add(usoCertifCatena);
             }
@@ -733,6 +758,7 @@ public class SalvataggioFirmaManager {
                 controllo.setTiContr(VFTipoControlloType.CERTIFICATO.name());
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
+                controllo.setIdStrut(tmpTabCDComponente.getIdStrut());
             }
 
             // CONTROLLI MARCA - CRL CertificateRevocation
@@ -745,6 +771,7 @@ public class SalvataggioFirmaManager {
                 controllo.setFirCrl(crlTsa);
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
+                controllo.setIdStrut(tmpTabCDComponente.getIdStrut());
             }
 
             // CONTROLLI MARCA - OCSP CertificateRevocation
@@ -756,6 +783,7 @@ public class SalvataggioFirmaManager {
                 controllo.setFirOcsp(ocspTsa);
                 controllo.setTiEsitoContrMarca(vfControllo.getTiEsitoContrMarca());
                 controllo.setDsMsgEsitoContrMarca(vfControllo.getDsMsgEsitoContrMarca());
+                controllo.setIdStrut(tmpTabCDComponente.getIdStrut());
 
                 // USO CONTR
                 if (ocspTsa != null) {
@@ -768,6 +796,8 @@ public class SalvataggioFirmaManager {
                     // CA
                     usoCertifOcsp.setFirCertifCa(ocspTsa.getFirCertifOcsp().getFirCertifCa());
                     usoCertifOcsp.setFirOcsp(ocspTsa);
+
+                    usoCertifOcsp.setIdStrut(tmpTabCDComponente.getIdStrut());
 
                     //
                     usoCerifiCaContrComp.add(usoCertifOcsp);

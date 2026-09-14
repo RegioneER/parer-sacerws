@@ -61,6 +61,8 @@ public class AroUsoXsdDatiSpec implements Serializable {
 
     private List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs = new ArrayList<>();
 
+    private BigDecimal aaKeyUnitaDoc;
+
     public AroUsoXsdDatiSpec() {/* Hibernate */
     }
 
@@ -159,6 +161,15 @@ public class AroUsoXsdDatiSpec implements Serializable {
     public void setAroValoreAttribDatiSpecs(
             List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs) {
         this.aroValoreAttribDatiSpecs = aroValoreAttribDatiSpecs;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
 }

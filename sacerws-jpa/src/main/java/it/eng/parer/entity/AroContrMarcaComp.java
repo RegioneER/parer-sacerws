@@ -14,6 +14,7 @@
 package it.eng.parer.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +54,8 @@ public class AroContrMarcaComp implements Serializable {
     private AroMarcaComp aroMarcaComp;
 
     private FirCrl firCrl;
+
+    private BigDecimal idStrut;
 
     private FirOcsp firOcsp;
 
@@ -123,6 +126,15 @@ public class AroContrMarcaComp implements Serializable {
 
     public void setFirCrl(FirCrl firCrl) {
         this.firCrl = firCrl;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
     }
 
     // uni-directional many-to-one association to FirCrl

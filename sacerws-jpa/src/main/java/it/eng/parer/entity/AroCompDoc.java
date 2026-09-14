@@ -144,6 +144,8 @@ public class AroCompDoc implements Serializable {
 
     private DecServizioVerificaCompDoc decServizioVerificaCompDoc;
 
+    private BigDecimal aaKeyUnitaDoc;
+
     public AroCompDoc() {
         // hibernate
     }
@@ -624,5 +626,14 @@ public class AroCompDoc implements Serializable {
 
     public void setAroAroCompUrnCalcs(List<AroCompUrnCalc> aroAroCompUrnCalcs) {
         this.aroAroCompUrnCalcs = aroAroCompUrnCalcs;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 }

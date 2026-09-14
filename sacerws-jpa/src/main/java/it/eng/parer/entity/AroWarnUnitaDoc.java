@@ -53,6 +53,10 @@ public class AroWarnUnitaDoc implements Serializable {
 
     private AroUnitaDoc aroUnitaDoc;
 
+    private BigDecimal aaKeyUnitaDoc;
+
+    private BigDecimal idStrut;
+
     public AroWarnUnitaDoc() {/* Hibernate */
     }
 
@@ -126,5 +130,23 @@ public class AroWarnUnitaDoc implements Serializable {
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
         this.aroUnitaDoc = aroUnitaDoc;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
     }
 }

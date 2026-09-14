@@ -51,6 +51,8 @@ public class AroLinkUnitaDoc implements Serializable {
 
     private BigDecimal idStrut;
 
+    private BigDecimal aaKeyUnitaDoc;
+
     private AroUnitaDoc aroUnitaDocLink;
 
     private AroUnitaDoc aroUnitaDoc;
@@ -115,6 +117,15 @@ public class AroLinkUnitaDoc implements Serializable {
 
     public void setIdStrut(BigDecimal idStrut) {
         this.idStrut = idStrut;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc

@@ -340,6 +340,8 @@ public class ObjectStorageHelper {
             AroCompDoc aroCompDoc = entityManager.find(AroCompDoc.class, idCompDoc);
             AroCompObjectStorage osLink = new AroCompObjectStorage();
             osLink.setAroCompDoc(aroCompDoc);
+            osLink.setIdStrut(aroCompDoc.getIdStrut());
+            osLink.setAaKeyUnitaDoc(aroCompDoc.getAaKeyUnitaDoc());
 
             osLink.setCdKeyFile(object.getKey());
             osLink.setNmBucket(object.getBucket());
@@ -373,7 +375,8 @@ public class ObjectStorageHelper {
             osLink.setCdKeyFile(object.getKey());
             osLink.setNmBucket(object.getBucket());
             osLink.setNmTenant(object.getTenant());
-
+            osLink.setIdStrut(BigDecimal.valueOf(aroUnitaDoc.getOrgStrut().getIdStrut()));
+            osLink.setAaKeyUnitaDoc(aroUnitaDoc.getAaKeyUnitaDoc());
             osLink.setDecBackend(backendHelper.getBackendEntity(nmBackend));
             entityManager.persist(osLink);
 
@@ -402,6 +405,7 @@ public class ObjectStorageHelper {
             osLink.setCdKeyFile(object.getKey());
             osLink.setNmBucket(object.getBucket());
             osLink.setNmTenant(object.getTenant());
+            osLink.setIdStrut(aroDoc.getIdStrut());
 
             osLink.setDecBackend(backendHelper.getBackendEntity(nmBackend));
             entityManager.persist(osLink);

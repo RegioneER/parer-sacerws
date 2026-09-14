@@ -105,6 +105,8 @@ public class AroFirmaComp implements Serializable {
 
     private List<AroVerifFirmaDtVer> aroVerifFirmaDtVers = new ArrayList<>();
 
+    private BigDecimal aaKeyUnitaDoc;
+
     public AroFirmaComp() {/* Hibernate */
     }
 
@@ -393,5 +395,14 @@ public class AroFirmaComp implements Serializable {
 
     public void setAroVerifFirmaDtVers(List<AroVerifFirmaDtVer> aroVerifFirmaDtVers) {
         this.aroVerifFirmaDtVers = aroVerifFirmaDtVers;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 }

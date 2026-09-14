@@ -57,6 +57,8 @@ public class AroStrutDoc implements Serializable {
 
     private DecTipoStrutDoc decTipoStrutDoc;
 
+    private BigDecimal aaKeyUnitaDoc;
+
     public AroStrutDoc() {/* Hibernate */
     }
 
@@ -132,6 +134,15 @@ public class AroStrutDoc implements Serializable {
 
     public void setDecTipoStrutDoc(DecTipoStrutDoc decTipoStrutDoc) {
         this.decTipoStrutDoc = decTipoStrutDoc;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
 }

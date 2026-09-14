@@ -84,6 +84,8 @@ public class AroMarcaComp implements Serializable {
 
     private FirCertifCa firCertifCa;
 
+    private BigDecimal idStrut;
+
     public AroMarcaComp() {/* Hibernate */
     }
 
@@ -273,6 +275,15 @@ public class AroMarcaComp implements Serializable {
 
     public void setFirCertifCa(FirCertifCa firCertifCa) {
         this.firCertifCa = firCertifCa;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
     }
 
 }

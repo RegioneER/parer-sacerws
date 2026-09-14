@@ -50,6 +50,8 @@ public class AroUsoCertifCaContrMarca implements Serializable {
 
     private FirCrl firCrl;
 
+    private BigDecimal idStrut;
+
     private FirOcsp firOcsp;
 
     public AroUsoCertifCaContrMarca() {/* Hibernate */
@@ -111,6 +113,15 @@ public class AroUsoCertifCaContrMarca implements Serializable {
 
     public void setFirCrl(FirCrl firCrl) {
         this.firCrl = firCrl;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
     }
 
     // uni-directional many-to-one association to FirCrl

@@ -265,6 +265,8 @@ public class SalvataggioPregVersamentoAroHelper extends SalvataggioUpdVersamento
         tmpTabCDUrnComponenteCalc.setAroCompDoc(aroCompDoc);
         tmpTabCDUrnComponenteCalc.setDsUrn(tmpUrn);
         tmpTabCDUrnComponenteCalc.setTiUrn(tiUrn);
+        tmpTabCDUrnComponenteCalc.setIdStrut(aroCompDoc.getIdStrut());
+        tmpTabCDUrnComponenteCalc.setAaKeyUnitaDoc(aroCompDoc.getAaKeyUnitaDoc());
 
         // persist
         entityManager.persist(tmpTabCDUrnComponenteCalc);

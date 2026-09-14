@@ -348,6 +348,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                 newAroLinkUnitaDoc.setDsLinkUnitaDoc(updAroLinkUnitaDoc.getDsLinkUnitaDoc());
                 // idStrut
                 newAroLinkUnitaDoc.setIdStrut(new BigDecimal(tmpAroUnitaDoc.getIdOrgStrut()));
+                newAroLinkUnitaDoc.setAaKeyUnitaDoc(tmpAroUnitaDoc.getAaKeyUnitaDoc());
 
                 // persist
                 entityManager.persist(newAroLinkUnitaDoc);
@@ -459,6 +460,8 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                                     .setDecXsdDatiSpec(tmpAroUpdDocUnitaDoc.getDecXsdDatiSpec());
                             tmpUsoXsdDatiSpec
                                     .setIdStrut(new BigDecimal(tmpAroUnitaDoc.getIdOrgStrut()));
+                            tmpUsoXsdDatiSpec
+                                    .setAaKeyUnitaDoc(tmpAroUnitaDoc.getAaKeyUnitaDoc());
                             //
                             tmpUsoXsdDatiSpec.setTiEntitaSacer(TipiEntitaSacer.UNI_DOC.name());// fixed
                             tmpUsoXsdDatiSpec.setTiUsoXsd(tipiUsoDatiSpec.name());
@@ -745,6 +748,8 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                             .setDecXsdDatiSpec(tmpAroUpdDatiSpecUnitaDoc.getDecXsdDatiSpec());
                     tmpUsoXsdDatiSpec
                             .setIdStrut(new BigDecimal(aroDoc.getAroUnitaDoc().getIdOrgStrut()));
+                    tmpUsoXsdDatiSpec
+                            .setAaKeyUnitaDoc(aroDoc.getAroUnitaDoc().getAaKeyUnitaDoc());
                     //
                     tmpUsoXsdDatiSpec.setTiEntitaSacer(
                             ((TipiEntitaSacer) UpdDocumentiUtils.convertEnumTiEntita(false,

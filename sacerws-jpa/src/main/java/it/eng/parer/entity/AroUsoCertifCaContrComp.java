@@ -52,6 +52,10 @@ public class AroUsoCertifCaContrComp implements Serializable {
 
     private FirOcsp firOcsp;
 
+    private BigDecimal aaKeyUnitaDoc;
+
+    private BigDecimal idStrut;
+
     public AroUsoCertifCaContrComp() {/* Hibernate */
     }
 
@@ -123,5 +127,23 @@ public class AroUsoCertifCaContrComp implements Serializable {
 
     public void setFirOcsp(FirOcsp firOcsp) {
         this.firOcsp = firOcsp;
+    }
+
+    @Column(name = "AA_KEY_UNITA_DOC")
+    public BigDecimal getAaKeyUnitaDoc() {
+        return this.aaKeyUnitaDoc;
+    }
+
+    public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+    }
+
+    @Column(name = "ID_STRUT")
+    public BigDecimal getIdStrut() {
+        return this.idStrut;
+    }
+
+    public void setIdStrut(BigDecimal idStrut) {
+        this.idStrut = idStrut;
     }
 }

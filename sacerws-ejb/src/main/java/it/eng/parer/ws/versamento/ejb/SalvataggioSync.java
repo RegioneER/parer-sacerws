@@ -965,9 +965,10 @@ public class SalvataggioSync {
                 // Creo l'entità per ogni documento collegato da inserire in ARO_LINK_UNITA_DOC
                 AroLinkUnitaDoc tmpTabLUD = new AroLinkUnitaDoc();
 
-                tmpTabLUD.setAroUnitaDoc(
-                        entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
+                AroUnitaDoc ud1 = entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc());
+                tmpTabLUD.setAroUnitaDoc(ud1);
                 tmpTabLUD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
+                tmpTabLUD.setAaKeyUnitaDoc(ud1.getAaKeyUnitaDoc());
                 tmpTabLUD.setCdRegistroKeyUnitaDocLink(
                         tmpUnitaDocColl.getChiave().getTipoRegistro());
                 tmpTabLUD.setAaKeyUnitaDocLink(
@@ -1850,7 +1851,8 @@ public class SalvataggioSync {
             tmpTabD = new AroDoc();
 
             // setto i valori generici
-            tmpTabD.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc()));
+            AroUnitaDoc ud = entityManager.find(AroUnitaDoc.class, strutV.getIdUnitaDoc());
+            tmpTabD.setAroUnitaDoc(ud);
             tmpTabD.setPgDoc(BigDecimal.valueOf(valueDocVers.getProgressivo()));
             tmpTabD.setDecTipoDoc(
                     entityManager.find(DecTipoDoc.class, valueDocVers.getIdTipoDocumentoDB()));
@@ -1876,6 +1878,7 @@ public class SalvataggioSync {
             //
             tmpTabD.setCdKeyDocVers(valueDocVers.getRifDocumento().getIDDocumento());
             tmpTabD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
+            tmpTabD.setAaKeyUnitaDoc(ud.getAaKeyUnitaDoc());
 
             // aggiunti da Paolo
             tmpTabD.setFlDocFirmato(valueDocVers.getFlFileFirmato());
@@ -1965,13 +1968,14 @@ public class SalvataggioSync {
             tmpTabSD = new AroStrutDoc();
 
             // setto i valori generici
-            tmpTabSD.setAroDoc(
-                    entityManager.find(AroDoc.class, documentoVersIn.getIdRecDocumentoDB()));
+            AroDoc doc = entityManager.find(AroDoc.class, documentoVersIn.getIdRecDocumentoDB());
+            tmpTabSD.setAroDoc(doc);
             tmpTabSD.setNiOrdStrutDoc(BigDecimal.valueOf(1));
             tmpTabSD.setDecTipoStrutDoc(entityManager.find(DecTipoStrutDoc.class,
                     documentoVersIn.getIdTipoStrutturaDB()));
             tmpTabSD.setFlStrutOrig("1");
             tmpTabSD.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
+            tmpTabSD.setAaKeyUnitaDoc(doc.getAaKeyUnitaDoc());
 
             // inserisco su DB
             try {
@@ -2053,8 +2057,11 @@ public class SalvataggioSync {
                 tmpWarnUnitaDoc.setDsWarn(tmpErrMess);
                 tmpWarnUnitaDoc.setPgWarnUnitaDoc(BigDecimal.valueOf(progWarn));
                 tmpWarnUnitaDoc.setTiEntitaSacer(tmpVdE.getElementoResponsabile().name());
-                tmpWarnUnitaDoc.setAroUnitaDoc(entityManager.find(AroUnitaDoc.class,
-                        versamento.getStrutturaComponenti().getIdUnitaDoc()));
+                AroUnitaDoc ud = entityManager.find(AroUnitaDoc.class,
+                        versamento.getStrutturaComponenti().getIdUnitaDoc());
+                tmpWarnUnitaDoc.setAroUnitaDoc(ud);
+                tmpWarnUnitaDoc.setIdStrut(BigDecimal.valueOf(ud.getOrgStrut().getIdStrut()));
+                tmpWarnUnitaDoc.setAaKeyUnitaDoc(ud.getAaKeyUnitaDoc());
                 if (tmpVdE.getRifDocumentoVers() != null) {
                     tmpWarnUnitaDoc.setAroDoc(entityManager.find(AroDoc.class,
                             tmpVdE.getRifDocumentoVers().getIdRecDocumentoDB()));
@@ -2131,6 +2138,7 @@ public class SalvataggioSync {
 
                     // non viene più persistito
                     tmpTabCDComponente.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
+                    tmpTabCDComponente.setAaKeyUnitaDoc(tmpAroStrutDoc.getAaKeyUnitaDoc());
                     // TODO: (da firma MEV#18660)
                     CompDocMock mock = tmpCV.withAcdEntity();
                     Date tmRifTempVers = null;
@@ -2271,6 +2279,7 @@ public class SalvataggioSync {
 
                     // non viene più persistito
                     tmpTabCDSottoComp.setIdStrut(BigDecimal.valueOf(strutV.getIdStruttura()));
+                    tmpTabCDSottoComp.setAaKeyUnitaDoc(tmpAroStrutDoc.getAaKeyUnitaDoc());
 
                     // salvo nell'esito del sottocomponente il valore dell'URN calcolato
                     if (tmpAroStrutDoc.getAroCompDocs() == null) {
@@ -2437,6 +2446,8 @@ public class SalvataggioSync {
         tmpTabCDUrnComponenteCalc.setAroCompDoc(aroCompDoc);
         tmpTabCDUrnComponenteCalc.setDsUrn(tmpUrn);
         tmpTabCDUrnComponenteCalc.setTiUrn(tiUrn);
+        tmpTabCDUrnComponenteCalc.setIdStrut(aroCompDoc.getIdStrut());
+        tmpTabCDUrnComponenteCalc.setAaKeyUnitaDoc(aroCompDoc.getAaKeyUnitaDoc());
 
         aroCompDoc.getAroAroCompUrnCalcs().add(tmpTabCDUrnComponenteCalc);
     }
@@ -2815,8 +2826,8 @@ public class SalvataggioSync {
             tmpAroUsoXsdDatiSpec.setTiUsoXsd(tipoUso.name());
             tmpAroUsoXsdDatiSpec.setTiEntitaSacer(tipoEntity.name());
             //
-            tmpAroUsoXsdDatiSpec
-                    .setAroUnitaDoc(entityManager.find(AroUnitaDoc.class, idAroUnitaDoc));
+            AroUnitaDoc ud = entityManager.find(AroUnitaDoc.class, idAroUnitaDoc);
+            tmpAroUsoXsdDatiSpec.setAroUnitaDoc(ud);
             //
             switch (tipoEntity) {
             case UNI_DOC:
@@ -2835,6 +2846,7 @@ public class SalvataggioSync {
             }
 
             tmpAroUsoXsdDatiSpec.setIdStrut(BigDecimal.valueOf(idStrut));
+            tmpAroUsoXsdDatiSpec.setAaKeyUnitaDoc(ud.getAaKeyUnitaDoc());
             tmpAroUsoXsdDatiSpec.setDecXsdDatiSpec(entityManager.find(DecXsdDatiSpec.class, idXsd));
 
             // inserisco su DB
