@@ -19,16 +19,22 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
 /**
  * The persistent class for the ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS database table.
  *
- * La PK (ID_VALORE_ATTRIB_DATI_SPEC) viene impostata manualmente con lo stesso valore usato per il
- * corrispondente record in ARO_VALORE_ATTRIB_DATI_SPEC (doppio binario). Non usa @GeneratedValue.
+ * La PK (ID_VALORE_ATTRIB_DATI_SPEC) viene generata dalla stessa sequence usata storicamente su
+ * ARO_VALORE_ATTRIB_DATI_SPEC.
  *
  * DL_VALORE e' una colonna virtuale GENERATED ALWAYS AS (UPPER(DL_VALORE_ORI)), quindi non e'
  * inseribile/aggiornabile da JPA. Il valore originale (case-sensitive) va in DL_VALORE_ORI.
@@ -41,10 +47,7 @@ public class AroValoreAttribDatiSpecRicDs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * PK: stesso valore del corrispondente record in ARO_VALORE_ATTRIB_DATI_SPEC. Non
-     * auto-generata.
-     */
+    /** PK generata da sequence SARO_VALORE_ATTRIB_DATI_SPEC. */
     private Long idValoreAttribDatiSpec;
 
     /** Valore originale (case-sensitive). Colonna DL_VALORE_ORI. NOT NULL. */
@@ -89,6 +92,10 @@ public class AroValoreAttribDatiSpecRicDs implements Serializable {
 
     @Id
     @Column(name = "ID_VALORE_ATTRIB_DATI_SPEC")
+    @GenericGenerator(name = "SARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS_ID_VALORE_ATTRIB_DATI_SPEC_GENERATOR", strategy = "it.eng.sequences.hibernate.NonMonotonicSequenceGenerator", parameters = {
+            @Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value = "SARO_VALORE_ATTRIB_DATI_SPEC"),
+            @Parameter(name = SequenceStyleGenerator.INCREMENT_PARAM, value = "1") })
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS_ID_VALORE_ATTRIB_DATI_SPEC_GENERATOR")
     public Long getIdValoreAttribDatiSpec() {
         return idValoreAttribDatiSpec;
     }

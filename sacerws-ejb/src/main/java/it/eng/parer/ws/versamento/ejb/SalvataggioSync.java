@@ -63,7 +63,6 @@ import it.eng.parer.entity.AroStrutDoc;
 import it.eng.parer.entity.AroUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
 import it.eng.parer.entity.AroUsoXsdDatiSpec;
-import it.eng.parer.entity.AroValoreAttribDatiSpec;
 import it.eng.parer.entity.AroValoreAttribDatiSpecRicDs;
 import it.eng.parer.entity.AroVerIndiceAipUd;
 import it.eng.parer.entity.AroWarnUnitaDoc;
@@ -2817,7 +2816,6 @@ public class SalvataggioSync {
             long idAroUnitaDoc) {
         boolean tmpReturn = true;
         AroUsoXsdDatiSpec tmpAroUsoXsdDatiSpec = null;
-        AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec = null;
 
         // salvo dati specifici, tabelle nuove
         if (datiSpecifici != null) {
@@ -2859,8 +2857,7 @@ public class SalvataggioSync {
                 tmpReturn = false;
             }
 
-            // salvo i valori dei dati specifici (doppio binario:
-            // ARO_VALORE_ATTRIB_DATI_SPEC + ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS)
+            // salvo i valori dei dati specifici su ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS
             if (tmpReturn) {
                 // Valori necessari per le colonne di partizionamento e denormalizzazione
                 AroUnitaDoc aroUnitaDoc = tmpAroUsoXsdDatiSpec.getAroUnitaDoc();
@@ -2869,33 +2866,14 @@ public class SalvataggioSync {
                 Long idDocPerRicDs = isUniDoc ? null : idEntity;
 
                 for (DatoSpecifico tmpDS : datiSpecifici.values()) {
-                    // --- scrittura vecchia tabella ARO_VALORE_ATTRIB_DATI_SPEC ---
-                    tmpAroValoreAttribDatiSpec = new AroValoreAttribDatiSpec();
-                    tmpAroValoreAttribDatiSpec.setAroUsoXsdDatiSpec(tmpAroUsoXsdDatiSpec);
-                    tmpAroValoreAttribDatiSpec.setIdStrut(BigDecimal.valueOf(idStrut));
-                    tmpAroValoreAttribDatiSpec.setDecAttribDatiSpec(
-                            entityManager.find(DecAttribDatiSpec.class, tmpDS.getIdDatoSpec()));
-                    tmpAroValoreAttribDatiSpec.setDlValore(tmpDS.getValore());
-                    try {
-                        entityManager.persist(tmpAroValoreAttribDatiSpec);
-                        entityManager.flush(); // flush per ottenere la PK generata
-                    } catch (Exception ex) {
-                        log.error("Eccezione nella persistenza dei dati specifici ", ex);
-                        tmpReturn = false;
-                        break;
-                    }
-
-                    // --- scrittura nuova tabella ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS ---
                     // si scrive solo se il valore non e' nullo/vuoto
                     if (tmpDS.getValore() != null && !tmpDS.getValore().isEmpty()) {
                         try {
                             AroValoreAttribDatiSpecRicDs newRicDs = new AroValoreAttribDatiSpecRicDs();
-                            // stessa PK del record appena inserito nella vecchia tabella
-                            newRicDs.setIdValoreAttribDatiSpec(
-                                    tmpAroValoreAttribDatiSpec.getIdValoreAttribDatiSpec());
                             newRicDs.setIdStrut(BigDecimal.valueOf(idStrut));
                             newRicDs.setDecAttribDatiSpec(
-                                    tmpAroValoreAttribDatiSpec.getDecAttribDatiSpec());
+                                    entityManager.find(DecAttribDatiSpec.class,
+                                            tmpDS.getIdDatoSpec()));
                             newRicDs.setDlValoreOri(tmpDS.getValore());
                             newRicDs.setIdUnitaDoc(aroUnitaDoc.getIdUnitaDoc());
                             newRicDs.setIdUsoXsdDatiSpec(

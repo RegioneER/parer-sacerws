@@ -408,6 +408,10 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                     }
 
                     AroUsoXsdDatiSpec tmpUsoXsdDatiSpec = new AroUsoXsdDatiSpec();
+                    long idRecXsdDatiSpec = TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS
+                            .equals(tiUsoXsdAroUpdDatiSpecUnitaDoc)
+                                    ? strutturaUpdVers.getIdRecXsdDatiSpec()
+                                    : strutturaUpdVers.getIdRecXsdDatiSpecMigrazione();
                     // � presente ...
                     if (tmpRispostaControlli.getrLong() != -1) {
                         tmpUsoXsdDatiSpec = (AroUsoXsdDatiSpec) tmpRispostaControlli.getrObject();
@@ -450,7 +454,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                         tmpUsoXsdDatiSpec
                                 .setDecXsdDatiSpec(tmpAroUpdDocUnitaDoc.getDecXsdDatiSpec());
                     } else {
-                        if (strutturaUpdVers.getIdRecXsdDatiSpec() != 0) {
+                        if (idRecXsdDatiSpec != 0) {
                             // 4.1.3.1. inserisci record in ARO_USO_XSD_DATI_SPEC relativo all�unita
                             // doc in
                             // modifica con tipo entita = UNI_DOC e tipo uso = VERS, specificando:
@@ -473,52 +477,15 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                         }
                     }
 
-                    if (strutturaUpdVers.getIdRecXsdDatiSpec() != 0) {
+                    if (idRecXsdDatiSpec != 0) {
                         Map<String, DatoSpecifico> datiSpecifici = TiUsoXsdAroUpdDatiSpecUnitaDoc.VERS
                                 .equals(tiUsoXsdAroUpdDatiSpecUnitaDoc)
                                         ? strutturaUpdVers.getDatiSpecifici()
                                         : strutturaUpdVers.getDatiSpecificiMigrazione();
-                        // 4.1.4.1. registra record in ARO_VALORE_ATTRIB_DATI_SPEC (doppio
-                        // binario: anche ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS)
-                        String cdVersioneXsdUd = tmpUsoXsdDatiSpec.getDecXsdDatiSpec()
-                                .getCdVersioneXsd();
-                        for (DatoSpecifico datoSpec : datiSpecifici.values()) {
-                            // --- vecchia tabella ---
-                            AroValoreAttribDatiSpec newAroValoreAttribDatiSpec = new AroValoreAttribDatiSpec();
-                            newAroValoreAttribDatiSpec.setDecAttribDatiSpec(entityManager
-                                    .find(DecAttribDatiSpec.class, datoSpec.getIdDatoSpec()));
-                            newAroValoreAttribDatiSpec
-                                    .setIdStrut(new BigDecimal(tmpAroUnitaDoc.getIdOrgStrut()));
-                            newAroValoreAttribDatiSpec.setDlValore(datoSpec.getValore());
-                            newAroValoreAttribDatiSpec.setAroUsoXsdDatiSpec(tmpUsoXsdDatiSpec);
-                            entityManager.persist(newAroValoreAttribDatiSpec);
-                            entityManager.flush(); // flush per ottenere la PK generata
-                            // Nota: se l'entity è appena creata non ho relazione quindi la lista
-                            // non è inizializzata
-                            tmpUsoXsdDatiSpec.getAroValoreAttribDatiSpecs()
-                                    .add(newAroValoreAttribDatiSpec);
-                            // --- nuova tabella (solo se valore non nullo/vuoto) ---
-                            if (datoSpec.getValore() != null && !datoSpec.getValore().isEmpty()) {
-                                AroValoreAttribDatiSpecRicDs newRicDs = new AroValoreAttribDatiSpecRicDs();
-                                newRicDs.setIdValoreAttribDatiSpec(
-                                        newAroValoreAttribDatiSpec.getIdValoreAttribDatiSpec());
-                                newRicDs.setIdStrut(new BigDecimal(tmpAroUnitaDoc.getIdOrgStrut()));
-                                newRicDs.setDecAttribDatiSpec(
-                                        newAroValoreAttribDatiSpec.getDecAttribDatiSpec());
-                                newRicDs.setDlValoreOri(datoSpec.getValore());
-                                newRicDs.setIdUnitaDoc(tmpAroUnitaDoc.getIdUnitaDoc());
-                                newRicDs.setIdUsoXsdDatiSpec(
-                                        tmpUsoXsdDatiSpec.getIdUsoXsdDatiSpec());
-                                newRicDs.setAaKeyUnitaDoc(tmpAroUnitaDoc.getAaKeyUnitaDoc());
-                                newRicDs.setTiUsoXsd(tipiUsoDatiSpec.name());
-                                newRicDs.setTiEntitaSacer(TipiEntitaSacer.UNI_DOC.name());
-                                newRicDs.setIdDoc(null);
-                                newRicDs.setCdVersioneXsdUd(cdVersioneXsdUd);
-                                newRicDs.setCdVersioneXsdDoc(null);
-                                entityManager.persist(newRicDs);
-                                entityManager.flush();
-                            }
-                        }
+                        // 4.1.4.1. registra record in ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS
+                        // Usa il metodo unificato per garantire coerenza con DOC e COMP
+                        buildDatoSpecificoUnitaDoc(tmpAroUnitaDoc, tmpUsoXsdDatiSpec,
+                                datiSpecifici);
                     }
                 } // if
             } // for AroUpdDatiSpecUnitaDoc
@@ -844,22 +811,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
     private void buildDatoSpecifico(AroDoc aroDoc, AroUsoXsdDatiSpec tmpUsoXsdDatiSpec,
             Map<String, DatoSpecifico> datiSpecifici) {
         for (DatoSpecifico datoSpec : datiSpecifici.values()) {
-            AroValoreAttribDatiSpec newAroValoreAttribDatiSpec = new AroValoreAttribDatiSpec();
-            // FK
-            newAroValoreAttribDatiSpec.setDecAttribDatiSpec(
-                    entityManager.find(DecAttribDatiSpec.class, datoSpec.getIdDatoSpec()));
-            newAroValoreAttribDatiSpec.setIdStrut(aroDoc.getIdStrut());
-            newAroValoreAttribDatiSpec.setDlValore(datoSpec.getValore());
-            newAroValoreAttribDatiSpec.setAroUsoXsdDatiSpec(tmpUsoXsdDatiSpec);
-            entityManager.persist(newAroValoreAttribDatiSpec);
-            entityManager.flush(); // flush per ottenere la PK generata
-            // add on list
-            // Nota: se l'entity � appena creata non ho relazione quindi la lista non �
-            // inizializzata
-            tmpUsoXsdDatiSpec.getAroValoreAttribDatiSpecs().add(newAroValoreAttribDatiSpec);
-
-            // --- nuova tabella ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS (solo se valore non nullo/vuoto)
-            // ---
+            // scrive solo su RIC_DS e solo se valore non nullo/vuoto
             if (datoSpec.getValore() != null && !datoSpec.getValore().isEmpty()) {
                 AroUnitaDoc aroUnitaDoc = aroDoc.getAroUnitaDoc();
                 String tiEntitaSacer = tmpUsoXsdDatiSpec.getTiEntitaSacer();
@@ -873,10 +825,9 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                     idDocPerRicDs = tmpUsoXsdDatiSpec.getAroCompDoc().getIdCompDoc();
                 }
                 AroValoreAttribDatiSpecRicDs newRicDs = new AroValoreAttribDatiSpecRicDs();
-                newRicDs.setIdValoreAttribDatiSpec(
-                        newAroValoreAttribDatiSpec.getIdValoreAttribDatiSpec());
                 newRicDs.setIdStrut(aroDoc.getIdStrut());
-                newRicDs.setDecAttribDatiSpec(newAroValoreAttribDatiSpec.getDecAttribDatiSpec());
+                newRicDs.setDecAttribDatiSpec(
+                        entityManager.find(DecAttribDatiSpec.class, datoSpec.getIdDatoSpec()));
                 newRicDs.setDlValoreOri(datoSpec.getValore());
                 newRicDs.setIdUnitaDoc(aroUnitaDoc.getIdUnitaDoc());
                 newRicDs.setIdUsoXsdDatiSpec(tmpUsoXsdDatiSpec.getIdUsoXsdDatiSpec());
@@ -886,6 +837,42 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                 newRicDs.setIdDoc(idDocPerRicDs);
                 newRicDs.setCdVersioneXsdUd(isUniDoc ? cdVersioneXsd : null);
                 newRicDs.setCdVersioneXsdDoc(isUniDoc ? null : cdVersioneXsd);
+                entityManager.persist(newRicDs);
+                entityManager.flush();
+            }
+        }
+    }
+
+    /**
+     * Metodo specializzato per inserire dati specifici di UNI_DOC in
+     * ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS. Unifica la logica di inserimento tra UNI_DOC, DOC e COMP
+     * per evitare inconsistenze.
+     *
+     * @param aroUnitaDoc       unità documentaria
+     * @param tmpUsoXsdDatiSpec configurazione XSD per i dati specifici
+     * @param datiSpecifici     map dei dati specifici da inserire
+     */
+    private void buildDatoSpecificoUnitaDoc(AroUnitaDoc aroUnitaDoc,
+            AroUsoXsdDatiSpec tmpUsoXsdDatiSpec, Map<String, DatoSpecifico> datiSpecifici) {
+        for (DatoSpecifico datoSpec : datiSpecifici.values()) {
+            // scrive solo su RIC_DS e solo se valore non nullo/vuoto
+            if (datoSpec.getValore() != null && !datoSpec.getValore().isEmpty()) {
+                String tiEntitaSacer = tmpUsoXsdDatiSpec.getTiEntitaSacer();
+                String cdVersioneXsd = tmpUsoXsdDatiSpec.getDecXsdDatiSpec().getCdVersioneXsd();
+
+                AroValoreAttribDatiSpecRicDs newRicDs = new AroValoreAttribDatiSpecRicDs();
+                newRicDs.setIdStrut(new BigDecimal(aroUnitaDoc.getIdOrgStrut()));
+                newRicDs.setDecAttribDatiSpec(
+                        entityManager.find(DecAttribDatiSpec.class, datoSpec.getIdDatoSpec()));
+                newRicDs.setDlValoreOri(datoSpec.getValore());
+                newRicDs.setIdUnitaDoc(aroUnitaDoc.getIdUnitaDoc());
+                newRicDs.setIdUsoXsdDatiSpec(tmpUsoXsdDatiSpec.getIdUsoXsdDatiSpec());
+                newRicDs.setAaKeyUnitaDoc(aroUnitaDoc.getAaKeyUnitaDoc());
+                newRicDs.setTiUsoXsd(tmpUsoXsdDatiSpec.getTiUsoXsd());
+                newRicDs.setTiEntitaSacer(tiEntitaSacer);
+                newRicDs.setIdDoc(null); // Per UNI_DOC, idDoc è sempre NULL
+                newRicDs.setCdVersioneXsdUd(cdVersioneXsd);
+                newRicDs.setCdVersioneXsdDoc(null);
                 entityManager.persist(newRicDs);
                 entityManager.flush();
             }
