@@ -37,7 +37,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import it.eng.parer.entity.AroUsoXsdDatiSpec;
-import it.eng.parer.entity.AroValoreAttribDatiSpec;
 import it.eng.parer.entity.AroValoreAttribDatiSpecRicDs;
 import it.eng.parer.entity.DecXsdAttribDatiSpec;
 import it.eng.parer.util.ejb.AppServerInstance;
@@ -148,53 +147,8 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
         return rispostaControlli;
     }
 
-    public RispostaControlli getAroValoreAttribDatiSpecs(long idUsoXsdDatiSpec,
-            long idAttribDatiSpec, long idStrut) {
-
-        RispostaControlli rispostaControlli;
-        rispostaControlli = new RispostaControlli();
-        rispostaControlli.setrLong(-1);
-        rispostaControlli.setrBoolean(false);
-
-        List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpec = null;
-
-        try {
-            String queryStr = "select ud from AroValoreAttribDatiSpec ud "
-                    + "where ud.aroUsoXsdDatiSpec.idUsoXsdDatiSpec = :idUsoXsdDatiSpec  "
-                    + "and ud.decAttribDatiSpec.idAttribDatiSpec = :idAttribDatiSpec "
-                    + "and ud.idStrut = :idStrut ";
-
-            javax.persistence.Query query = entityManager.createQuery(queryStr,
-                    AroValoreAttribDatiSpec.class);
-            query.setParameter("idUsoXsdDatiSpec", idUsoXsdDatiSpec);
-            query.setParameter("idAttribDatiSpec", idAttribDatiSpec);
-            query.setParameter("idStrut", new BigDecimal(idStrut));
-
-            aroValoreAttribDatiSpec = query.getResultList();
-
-            // se esiste ...
-            if (!aroValoreAttribDatiSpec.isEmpty()) {
-                // livello attuale
-                rispostaControlli.setrObject(aroValoreAttribDatiSpec);
-                rispostaControlli.setrLong(0);
-            }
-
-            rispostaControlli.setrBoolean(true); // query is good
-        } catch (Exception e) {
-            rispostaControlli.setCodErr(MessaggiWSBundle.ERR_666);
-            rispostaControlli.setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.ERR_666,
-                    "SalvataggioUpdVersamentoBaseHelper.getAroValoreAttribDatiSpecs: "
-                            + e.getMessage()));
-            getLogger().error("Eccezione nella lettura  dei valori dei dati specifici ", e);
-        }
-
-        return rispostaControlli;
-    }
-
     /**
      * Legge i valori dei dati specifici dalla nuova tabella ARO_VALORE_ATTRIB_DATI_SPEC_RIC_DS.
-     * Affianca il vecchio metodo {@link #getAroValoreAttribDatiSpecs} mantenendolo per il
-     * doppio-binario; a regime sostituira' completamente la lettura dalla vecchia tabella.
      *
      * @param idUsoXsdDatiSpec parametro idUsoXsdDatiSpec
      * @param idAttribDatiSpec attributo dati spec
@@ -288,9 +242,9 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
         for (DecXsdAttribDatiSpec ds : attrDs) {
             String attr = ds.getDecAttribDatiSpec().getNmAttribDatiSpec();
 
-            List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs = new ArrayList<>(0);
-            // recupero il valore per quell'attributo
-            tmpRispostaControlli = this.getAroValoreAttribDatiSpecs(idAroUsoXsdDatiSpec,
+            List<AroValoreAttribDatiSpecRicDs> aroValoreAttribDatiSpecsRicDs = new ArrayList<>(0);
+            // recupero il valore per quell'attributo dalla nuova tabella RIC_DS
+            tmpRispostaControlli = this.getAroValoreAttribDatiSpecsRicDs(idAroUsoXsdDatiSpec,
                     ds.getDecAttribDatiSpec().getIdAttribDatiSpec(), idStrut);
 
             // query is not good ..
@@ -299,17 +253,17 @@ public abstract class SalvataggioUpdVersamentoBaseHelper {
             }
 
             if (tmpRispostaControlli.getrLong() != -1) {
-                aroValoreAttribDatiSpecs = (List<AroValoreAttribDatiSpec>) tmpRispostaControlli
+                aroValoreAttribDatiSpecsRicDs = (List<AroValoreAttribDatiSpecRicDs>) tmpRispostaControlli
                         .getrObject();
             }
 
-            for (AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec : aroValoreAttribDatiSpecs) {
+            for (AroValoreAttribDatiSpecRicDs tmpAroValoreAttribDatiSpec : aroValoreAttribDatiSpecsRicDs) {
                 // create the element
                 Element element = doc.createElement(attr);
                 // gestito anche il caso di valore nullo </EmptyTag>
                 element.appendChild(doc.createTextNode(
-                        StringUtils.isBlank(tmpAroValoreAttribDatiSpec.getDlValore()) ? ""
-                                : tmpAroValoreAttribDatiSpec.getDlValore()));
+                        StringUtils.isBlank(tmpAroValoreAttribDatiSpec.getDlValoreOri()) ? ""
+                                : tmpAroValoreAttribDatiSpec.getDlValoreOri()));
                 //
                 datiSpec.getAny().add(element);
             }

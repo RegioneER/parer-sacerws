@@ -526,24 +526,24 @@ public class ControlliWS {
                 rispostaControlli.setCodErr(MessaggiWSBundle.UD_019_001);
                 switch (nmClasseTipoDato) {
                 case "REGISTRO":
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                            MessaggiWSBundle.UD_019_001, descKey,
-                            String.format("'REGISTRO': %s", nmTipoDato)));
+                    rispostaControlli
+                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_019_001,
+                                    descKey, String.format("'REGISTRO': %s", nmTipoDato)));
                     break;
                 case "TIPO_UNITA_DOC":
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                            MessaggiWSBundle.UD_019_001, descKey,
-                            String.format("'TIPO_UNITA_DOC': %s", nmTipoDato)));
+                    rispostaControlli
+                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_019_001,
+                                    descKey, String.format("'TIPO_UNITA_DOC': %s", nmTipoDato)));
                     break;
                 case "TIPO_DOC":
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                            MessaggiWSBundle.UD_019_001, descKey,
-                            String.format("'TIPO_DOC': %s", nmTipoDato)));
+                    rispostaControlli
+                            .setDsErr(MessaggiWSBundle.getString(MessaggiWSBundle.UD_019_001,
+                                    descKey, String.format("'TIPO_DOC': %s", nmTipoDato)));
                     break;
                 default:
-                    rispostaControlli.setDsErr(MessaggiWSBundle.getString(
-                            MessaggiWSBundle.UD_019_001, descKey,
-                            String.format("'%s': %s", nmClasseTipoDato, nmTipoDato)));
+                    rispostaControlli.setDsErr(
+                            MessaggiWSBundle.getString(MessaggiWSBundle.UD_019_001, descKey,
+                                    String.format("'%s': %s", nmClasseTipoDato, nmTipoDato)));
                     break;
                 }
             }

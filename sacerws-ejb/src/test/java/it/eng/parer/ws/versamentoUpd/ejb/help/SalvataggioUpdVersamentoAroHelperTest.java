@@ -87,10 +87,4 @@ public class SalvataggioUpdVersamentoAroHelperTest {
             }
         }
     }
-
-    @Test
-    void getAroValoreAttribDatiSpecs() {
-        final RispostaControlli rispostaControlli = helper.getAroValoreAttribDatiSpecs(0L, 0L, 0L);
-        assertTrue(rispostaControlli.isrBoolean());
-    }
 }

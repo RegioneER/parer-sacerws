@@ -59,8 +59,6 @@ public class DecAttribDatiSpec implements Serializable {
 
     private String tiAttribDatiSpec;
 
-    private List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs = new ArrayList<>();
-
     private DecTipoCompDoc decTipoCompDoc;
 
     private DecTipoDoc decTipoDoc;
@@ -143,18 +141,6 @@ public class DecAttribDatiSpec implements Serializable {
 
     public void setTiAttribDatiSpec(String tiAttribDatiSpec) {
         this.tiAttribDatiSpec = tiAttribDatiSpec;
-    }
-
-    // bi-directional many-to-one association to AroValoreAttribDatiSpec
-    @OneToMany(mappedBy = "decAttribDatiSpec")
-    @XmlTransient
-    public List<AroValoreAttribDatiSpec> getAroValoreAttribDatiSpecs() {
-        return this.aroValoreAttribDatiSpecs;
-    }
-
-    public void setAroValoreAttribDatiSpecs(
-            List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs) {
-        this.aroValoreAttribDatiSpecs = aroValoreAttribDatiSpecs;
     }
 
     // bi-directional many-to-one association to DecTipoCompDoc

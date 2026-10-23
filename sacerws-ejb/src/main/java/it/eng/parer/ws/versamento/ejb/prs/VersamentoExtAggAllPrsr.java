@@ -1202,8 +1202,8 @@ public class VersamentoExtAggAllPrsr {
         case REGISTRO:
             return versamento.getVersamento().getIntestazione().getChiave().getTipoRegistro();
         case TIPO_DOC:
-            return versamento.getStrutturaComponenti().getDocumentiAttesi().get(0)
-                    .getRifDocumento().getTipoDocumento();
+            return versamento.getStrutturaComponenti().getDocumentiAttesi().get(0).getRifDocumento()
+                    .getTipoDocumento();
         default:
             return tipoDato.name();
         }

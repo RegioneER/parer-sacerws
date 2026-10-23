@@ -59,8 +59,6 @@ public class AroUsoXsdDatiSpec implements Serializable {
 
     private DecXsdDatiSpec decXsdDatiSpec;
 
-    private List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs = new ArrayList<>();
-
     private BigDecimal aaKeyUnitaDoc;
 
     public AroUsoXsdDatiSpec() {/* Hibernate */
@@ -149,18 +147,6 @@ public class AroUsoXsdDatiSpec implements Serializable {
 
     public void setDecXsdDatiSpec(DecXsdDatiSpec decXsdDatiSpec) {
         this.decXsdDatiSpec = decXsdDatiSpec;
-    }
-
-    // bi-directional many-to-one association to AroValoreAttribDatiSpec
-    @OneToMany(mappedBy = "aroUsoXsdDatiSpec", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-    public List<AroValoreAttribDatiSpec> getAroValoreAttribDatiSpecs() {
-        return this.aroValoreAttribDatiSpecs;
-    }
-
-    public void setAroValoreAttribDatiSpecs(
-            List<AroValoreAttribDatiSpec> aroValoreAttribDatiSpecs) {
-        this.aroValoreAttribDatiSpecs = aroValoreAttribDatiSpecs;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")

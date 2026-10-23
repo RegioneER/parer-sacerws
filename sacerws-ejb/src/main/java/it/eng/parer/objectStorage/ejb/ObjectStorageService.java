@@ -208,8 +208,8 @@ public class ObjectStorageService {
         } catch (FileNotFoundException ex) {
             rispostaWs.setSeverity(SeverityEnum.ERROR);
             rispostaWs.setEsitoWsErrBundle(MessaggiWSBundle.COMP_011_001,
-                    MessaggiWSBundle.getString(MessaggiWSBundle.COMP_011_001,
-                            resource.getName()) + " " + ex.getMessage());
+                    MessaggiWSBundle.getString(MessaggiWSBundle.COMP_011_001, resource.getName())
+                            + " " + ex.getMessage());
             log.error("Eccezione nel calcolo 	dell'hash del componente: il file "
                     + resource.getName() + " non esiste. ", ex);
             return null;

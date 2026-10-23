@@ -50,7 +50,6 @@ import it.eng.parer.entity.AroUpdDocUnitaDoc;
 import it.eng.parer.entity.AroUpdLinkUnitaDoc;
 import it.eng.parer.entity.AroUpdUnitaDoc;
 import it.eng.parer.entity.AroUsoXsdDatiSpec;
-import it.eng.parer.entity.AroValoreAttribDatiSpec;
 import it.eng.parer.entity.AroValoreAttribDatiSpecRicDs;
 import it.eng.parer.entity.DecAttribDatiSpec;
 import it.eng.parer.entity.DecUsoModelloXsdUniDoc;
@@ -421,16 +420,8 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                         // del XSD per dati specifici relativo all�unita doc in modifica con tipo
                         // entita
                         // = UNI_DOC e tipo uso = VERS (ARO_USO_XSD_DATI_SPEC)
-                        for (AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec : tmpUsoXsdDatiSpec
-                                .getAroValoreAttribDatiSpecs()) {
-                            // remove
-                            entityManager.remove(tmpAroValoreAttribDatiSpec);
-                        }
-                        // clear list
-                        tmpUsoXsdDatiSpec.getAroValoreAttribDatiSpecs().clear();
-                        // delete vecchia tabella
                         entityManager.flush();
-                        // delete nuova tabella (doppio binario)
+                        // solo delete dalla nuova tabella
                         entityManager.createQuery("DELETE FROM AroValoreAttribDatiSpecRicDs r "
                                 + "WHERE r.idStrut = :idStrut "
                                 + "AND r.idUsoXsdDatiSpec = :idUsoXsdDatiSpec "
@@ -464,8 +455,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                                     .setDecXsdDatiSpec(tmpAroUpdDocUnitaDoc.getDecXsdDatiSpec());
                             tmpUsoXsdDatiSpec
                                     .setIdStrut(new BigDecimal(tmpAroUnitaDoc.getIdOrgStrut()));
-                            tmpUsoXsdDatiSpec
-                                    .setAaKeyUnitaDoc(tmpAroUnitaDoc.getAaKeyUnitaDoc());
+                            tmpUsoXsdDatiSpec.setAaKeyUnitaDoc(tmpAroUnitaDoc.getAaKeyUnitaDoc());
                             //
                             tmpUsoXsdDatiSpec.setTiEntitaSacer(TipiEntitaSacer.UNI_DOC.name());// fixed
                             tmpUsoXsdDatiSpec.setTiUsoXsd(tipiUsoDatiSpec.name());
@@ -660,17 +650,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                     // (ARO_VALORE_ATTRIB_DATI_SPEC) determinati mediante il record relativo all�uso
                     // del XSD per dati specifici relativo all�unita doc in modifica con tipo entita
                     // = UNI_DOC e tipo uso = VERS (ARO_USO_XSD_DATI_SPEC)
-                    for (AroValoreAttribDatiSpec tmpAroValoreAttribDatiSpec : tmpUsoXsdDatiSpec
-                            .getAroValoreAttribDatiSpecs()) {
-                        // remove
-                        entityManager.remove(tmpAroValoreAttribDatiSpec);
-                    }
-
-                    // clear list
-                    tmpUsoXsdDatiSpec.getAroValoreAttribDatiSpecs().clear();
-                    // delete vecchia tabella
                     entityManager.flush();
-                    // delete nuova tabella (doppio binario)
                     Long idDocRicDs = null;
                     if (TipiEntitaSacer.DOC.name().equals(tmpUsoXsdDatiSpec.getTiEntitaSacer())
                             && tmpUsoXsdDatiSpec.getAroDoc() != null) {
@@ -715,8 +695,7 @@ public class SalvataggioUpdVersamentoAroHelper extends SalvataggioUpdVersamentoB
                             .setDecXsdDatiSpec(tmpAroUpdDatiSpecUnitaDoc.getDecXsdDatiSpec());
                     tmpUsoXsdDatiSpec
                             .setIdStrut(new BigDecimal(aroDoc.getAroUnitaDoc().getIdOrgStrut()));
-                    tmpUsoXsdDatiSpec
-                            .setAaKeyUnitaDoc(aroDoc.getAroUnitaDoc().getAaKeyUnitaDoc());
+                    tmpUsoXsdDatiSpec.setAaKeyUnitaDoc(aroDoc.getAroUnitaDoc().getAaKeyUnitaDoc());
                     //
                     tmpUsoXsdDatiSpec.setTiEntitaSacer(
                             ((TipiEntitaSacer) UpdDocumentiUtils.convertEnumTiEntita(false,
